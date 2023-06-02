@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main class="container py-5 mt-5">
+
+    <div class="row">
+
+        <div class="col-md-6 offset-md-3">
+
+            <h1 class="text-center display-5">Solicitudes de proveedores</h1>
+
+            <ul style="list-style-type: none;" class="list-group mt-3">
+                {% for proveedor in proveedores %}
+                <a class="list-group-item" href="{% url 'proveedor_detail' proveedor.id %}">
+                    <h2>{{proveedor.nombre_comercial}}</h2>
+                    <p>{{proveedor.fecha}}</p>
+                    <section class="d-flex justify-content-between">
+                        <p>Empresa: {{proveedor.empresa}}</p>
+                        <p>Solicitante: {{proveedor.usuario}}</p>
+                    </section>
+                    {% if proveedor.compras %}
+                    <p class="text-success">✅ Compras</p>
+                    {% else %}
+                    <p>🕐 Compras</p>
+                    {% endif %}
+                    {% if proveedor.finanzas %}
+                    <p class="text-success">✅ Finanzas</p>
+                    {% else %}
+                    <p>🕐 Finanzas</p>
+                    {% endif %}
+                    {% if proveedor.sistemas %}
+                    <p class="text-success">✅ Sistemas</p>
+                    {% else %}
+                    <p>🕐 Sistemas</p>
+                    {% endif %}
+                </a>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}

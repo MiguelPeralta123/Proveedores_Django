@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main class="container py-5 mt-5">
+
+    <section class="card card-body">
+
+        <h1 class="text-center display-5 py-3">Alta de proveedores, clientes y materiales</h1>
+
+        {% if user.puede_comprar %}
+
+        <p class="mt-3">Seleccione la siguiente opción para crear una nueva solicitud de alta de proveedor.</p>
+
+        <a class="btn btn-primary" href="proveedores/crear">Crear proveedor</a>
+
+        <p class="mt-3">Seleccione la siguiente opción para crear una nueva solicitud de alta de material.</p>
+
+        <a class="btn btn-primary" href="materiales/crear">Crear material</a>
+
+        {% else %}
+
+        <p class="mt-3">Aprobar solicitudes de alta de proveedor.</p>
+
+        <a class="btn btn-primary" href="proveedores">Ver solicitudes</a>
+
+        <p class="mt-3">Aprobar solicitudes de alta de material.</p>
+
+        <a class="btn btn-primary" href="./materiales">Ver solicitudes</a>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+{% endblock %}
