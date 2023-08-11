@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main class="container py-5 mt-5">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-6 align-self-center mx-auto">
+          <form class="card card-body" method="POST">
+
+            <h1 class="mb-4">Registrar material</h1>
+          
+            {{error}}
+          
+            {% csrf_token %}
+            
+            {{ solicitud_form.as_p }}
+            
+            <h3>Materiales</h3>
+            {{ material_formset.management_form }}
+            
+            <div id="material-forms-container">
+              {% for material_form in material_formset %}
+                <div class="material-form">
+                  {{ material_form.as_table }}
+                  
+                  {% if forloop.counter != 1 %}
+                    <button type="button" class="delete-form">Delete Form</button>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+            
+            <button type="button" id="add-form">Add Form</button>
+            
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+    </div>
+</main>
+
+<script>
+  function attachDeleteFormEvent(button) {
+    button.addEventListener('click', function () {
+      var formCount = parseInt('{{ material_formset.total_form_count }}');
+      var formContainer = this.parentNode;
+      formContainer.parentNode.removeChild(formContainer);
+      document.getElementById('id_material-TOTAL_FORMS').value = formCount - 1;
+    });
+  }
+
+  document.getElementById('add-form').addEventListener('click', function () {
+    var formCount = parseInt('{{ material_formset.total_form_count }}');
+    var newForm = '{{ material_formset.empty_form|safe }}'.replace(/__prefix__/g, formCount);
+    document.getElementById('id_material-TOTAL_FORMS').value = formCount + 1;
+    
+    var formContainer = document.createElement('div');
+    formContainer.classList.add('material-form');
+    formContainer.innerHTML = newForm;
+    
+    var deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.classList.add('delete-form');
+    deleteButton.textContent = 'Delete Form';
+    attachDeleteFormEvent(deleteButton);
+    
+    if (formCount !== 0) {
+      formContainer.appendChild(deleteButton);
+    }
+    
+    document.getElementById('material-forms-container').appendChild(formContainer);
+  });
+
+  var deleteButtons = document.getElementsByClassName('delete-form');
+  for (var i = 0; i < deleteButtons.length; i++) {
+    attachDeleteFormEvent(deleteButtons[i]);
+  }
+</script>
+
+{% endblock %}

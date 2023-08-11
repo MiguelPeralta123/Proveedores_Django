@@ -17,7 +17,7 @@
                     <p>{{material.fecha}}</p>
                     <section class="d-flex justify-content-between">
                         <p>Empresa: {{material.empresa}}</p>
-                        <p>Solicitante: {{material.usuario}}</p>
+                        <p>Solicitante: {{material.usuario.first_name}} {{material.usuario.last_name}}</p>
                     </section>
                     {% if material.compras %}
                     <p class="text-success">✅ Compras</p>

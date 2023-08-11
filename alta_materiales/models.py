@@ -4,16 +4,11 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 # Create your models here.
-class Material(models.Model):
+class MaterialSolicitud(models.Model):
+    id_solicitud = models.CharField(max_length=10, default='123')
     empresa = models.CharField(max_length=50)
-    nombre_producto = models.CharField(max_length=50)
-    tipo_alta = models.CharField(max_length=50)
-    tipo = models.CharField(max_length=50)
-    familia = models.CharField(max_length=50)
-    subfamilia = models.CharField(max_length=50)
-    unidad_medida = models.CharField(max_length=50)
     justificacion = models.CharField(max_length=255)
-    compras = models.BooleanField(default=False)
+    compras = models.BooleanField(default=True)
     finanzas = models.BooleanField(default=False)
     sistemas = models.BooleanField(default=False)
     aprobadas = models.BooleanField(default=False)
@@ -21,4 +16,16 @@ class Material(models.Model):
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id) + " - " + self.nombre_producto + " - " + self.usuario.username
+        return str(self.id) + " - " + self.empresa + " - " + self.usuario.username
+
+class Material(models.Model):
+    id_solicitud = models.CharField(max_length=10, default='123')
+    nombre_producto = models.CharField(max_length=50)
+    tipo_alta = models.CharField(max_length=50)
+    tipo = models.CharField(max_length=50)
+    familia = models.CharField(max_length=50)
+    subfamilia = models.CharField(max_length=50)
+    unidad_medida = models.CharField(max_length=50)
+
+    def __str__(self):
+        return str(self.id) + " - " + self.tipo + " - " + self.nombre_producto

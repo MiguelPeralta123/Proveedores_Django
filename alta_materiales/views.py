@@ -1,90 +1,153 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.db import IntegrityError
-from .forms import MaterialForm, MaterialFormForCompras, MaterialFormForFinanzas, MaterialFormForSistemas, MaterialDetailForm
-from .models import Material
+from .forms import *
+from .models import MaterialSolicitud, Material
 # Decorator to protect routes from accessing before sign in
 from django.contrib.auth.decorators import login_required
 
 # Options lists
 from .options import *
 
+# Generando un id unico para cada solicitud
+import random
+import string
+
+from django.forms import formset_factory
+
+def generar_codigo_unico():
+    caracteres = string.ascii_letters + string.digits
+    codigo = ''.join(random.choice(caracteres) for _ in range(10))
+    return codigo
+
+
 # Create your views here.
 
-# VISTAS DE PROVEEDOR (GET ALL, CREATE, DETAIL)
-
+# VISTAS DE MATERIAL (GET ALL, CREATE, DETAIL)
 
 @login_required
 def material(request):
     # Si el usuario tiene permisos de compras, podrá ver las solicitudes de todos los usuarios
     if request.user.compras:
         # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por compras
-        materiales = Material.objects.filter(compras=False)
+        materiales = MaterialSolicitud.objects.filter(compras=False)
     elif request.user.finanzas:
         # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por finanzas
-        materiales = Material.objects.filter(compras=True, finanzas=False)
+        materiales = MaterialSolicitud.objects.filter(compras=True, finanzas=False)
     elif request.user.sistemas:
         # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por sistemas
-        materiales = Material.objects.filter(
+        materiales = MaterialSolicitud.objects.filter(
             compras=True, finanzas=True, sistemas=False)
     else:
         # Trayendo de la base de datos los materiales que correspondan al usuario logueado
-        materiales = Material.objects.filter(usuario=request.user)
+        materiales = MaterialSolicitud.objects.filter(usuario=request.user)
 
     return render(request, 'material/material.html', {
         'materiales': materiales
     })
 
 
-@login_required
-def material_create(request):
-    # Verificamos si el usuario tiene permisos para requerir, en caso contrario, lo redireccionamos a la ventana de materiales
-    if request.user.puede_comprar:
-        if request.method == 'GET':
-            return render(request, 'material/material_create.html', {
-                'form': MaterialForm,
-                'tipo_list': TIPO_LIST,
-                'familia_list': FAMILIA_LIST,
-                'subfamilia_list': SUBFAMILIA_LIST,
-                'unidad_medida_list': UNIDAD_MEDIDA_LIST,
-            })
-        else:
-            try:
-                form = MaterialForm(request.POST)
-                new_material = form.save(commit=False)
-                new_material.usuario = request.user
-                new_material.save()
-                return redirect('material')
-            except ValueError:
-                return render(request, 'material/material_create.html', {
-                    'form': MaterialForm,
-                    'error': 'Por favor ingrese datos válidos'
-                })
+def material_view(request):
+    if request.method == 'POST':
+        solicitud_form = MaterialSolicitudForm(request.POST)
+        material_formset = MaterialFormset(request.POST, prefix='material')
+        
+        if solicitud_form.is_valid() and material_formset.is_valid():
+            # Process the main form data
+            #empresa = solicitud_form.cleaned_data['empresa']
+            #justificacion = solicitud_form.cleaned_data['justificacion']
+            print("Solicitud creada")
+            
+            # Process the nested formset data
+            for material_form in material_formset:
+                if material_form.is_valid():
+                    #nombre = material_form.cleaned_data['nombre']
+                    #tipo_alta = material_form.cleaned_data['tipo_alta']
+                    #tipo = material_form.cleaned_data['tipo']
+                    #familia = material_form.cleaned_data['familia']
+                    #subfamilia = material_form.cleaned_data['subfamilia']
+                    #unidad_medida = material_form.cleaned_data['unidad_medida']
+                    
+                    # Process the nested form data here or pass it to another view
+                    print("Material creado")
+            
+            # Redirect or render a success page
+            #return render(request, 'success.html')
     else:
-        return redirect('material')
+        solicitud_form = MaterialSolicitudForm()
+        material_formset = MaterialFormset(prefix='material')
+    
+    return render(request, 'material/material_crear.html', {'solicitud_form': solicitud_form, 'material_formset': material_formset})
+
+
+def solicitud_material_view(request):
+    if request.method == 'POST':
+        material_solicitud_form = MaterialSolicitudForm(request.POST)
+        material_forms = [MaterialFormset(prefix=f'material-{i}', data=request.POST) for i in range(
+            1, len(request.POST) - 1) if f'material-{i}-nombre_producto' in request.POST]
+        
+        print(len(material_forms))
+
+        if material_solicitud_form.is_valid() and all(form.is_valid() for form in material_forms):
+            codigo = generar_codigo_unico()
+
+            form = material_solicitud_form
+            new_solicitud = form.save(commit=False)
+            new_solicitud.id_solicitud = codigo
+            new_solicitud.usuario = request.user
+            #new_solicitud.save()
+
+            for form in material_forms:
+                new_material = form.save(commit=False)
+                new_material.id_solicitud = codigo
+                #new_material.save()
+
+            #return redirect('material')
+    else:
+        material_solicitud_form = MaterialSolicitudForm()
+        material_forms = [MaterialForm(prefix='material-1')]
+
+    context = {
+        'material_solicitud_form': material_solicitud_form,
+        'material_forms': material_forms,
+        'tipo_list': TIPO_LIST,
+        'familia_list': FAMILIA_LIST,
+        'subfamilia_list': SUBFAMILIA_LIST,
+        'unidad_medida_list': UNIDAD_MEDIDA_LIST,
+    }
+    return render(request, 'material/solicitud_material.html', context)
 
 
 @login_required
 def material_detail(request, material_id):
     # Traemos el material que tenga el id que seleccionamos
-    material = get_object_or_404(Material, pk=material_id)
+    solicitud = get_object_or_404(MaterialSolicitud, pk=material_id)
     if request.method == 'GET':
         # Validamos si el usuario es compras para permitir aprobar solicitudes
         if request.user.compras:
-            form = MaterialFormForCompras(instance=material)
+            form = MaterialFormForCompras(instance=solicitud)
         else:
             # Validamos si el usuario es finanzas para permitir aprobar solicitudes
             if request.user.finanzas:
-                form = MaterialFormForFinanzas(instance=material)
+                form = MaterialFormForFinanzas(instance=solicitud)
             else:
                 # Validamos si el usuario es sistemas para permitir aprobar solicitudes
                 if request.user.sistemas:
-                    form = MaterialFormForSistemas(instance=material)
+                    form = MaterialFormForSistemas(instance=solicitud)
                 else:
-                    form = MaterialDetailForm(instance=material)
+                    form = MaterialDetailForm(instance=solicitud)
+
+        # Añadiendo un formulario por cada material de la solicitud
+        materiales = Material.objects.filter(id_solicitud=solicitud.id_solicitud)
+        MaterialFormSet = formset_factory(MaterialForm, extra=len(materiales))
+        material_forms = MaterialFormSet(initial=[{'nombre_producto': material.nombre_producto, 'tipo_alta': material.tipo_alta, 'tipo': material.tipo, 'familia': material.familia, 'subfamilia': material.subfamilia, 'unidad_medida': material.unidad_medida} for material in materiales])
+
+        print(materiales[1].unidad_medida)
+
         return render(request, 'material/material_detail.html', {
             'material': material,
-            'form': form
+            'form': form,
+            'material_forms': material_forms
         })
     else:
         try:
