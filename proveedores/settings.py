@@ -79,6 +79,7 @@ WSGI_APPLICATION = 'proveedores.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# Development database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -90,6 +91,19 @@ DATABASES = {
     }
 }
 
+# Docker container database
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'proveedores',
+#        'USER': 'root',
+#        'PASSWORD': 'Maik99*docker',
+#        'HOST': 'db',
+#        'PORT': '3306',
+#    }
+#}
+
+# Default database
 #DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.sqlite3',

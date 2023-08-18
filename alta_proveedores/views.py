@@ -21,15 +21,15 @@ def proveedor(request):
     # Si el usuario tiene permisos de compras, podrá ver las solicitudes de todos los usuarios
     if request.user.compras:
         # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por compras
-        proveedores = Proveedor.objects.filter(compras = False)
+        proveedores = Proveedor.objects.filter(pendiente = True)
     else:
         if request.user.finanzas:
             # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por finanzas
-            proveedores = Proveedor.objects.filter(compras = True, finanzas = False)
+            proveedores = Proveedor.objects.filter(compras = True)
         else:
             if request.user.sistemas:
                 # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por sistemas
-                proveedores = Proveedor.objects.filter(compras = True, finanzas = True, sistemas = False)
+                proveedores = Proveedor.objects.filter(finanzas = True)
             else:
                 # Trayendo de la base de datos los proveedores que correspondan al usuario logueado
                 proveedores = Proveedor.objects.filter(usuario = request.user)
@@ -42,8 +42,11 @@ def proveedor_create(request):
     # Verificamos si el usuario tiene permisos para requerir, en caso contrario, lo redireccionamos a la ventana de proveedores
     if request.user.puede_comprar:
         if request.method == 'GET':
+
+            default_values = {'pendiente':False, 'compras':False, 'finanzas':False, 'sistemas':False, 'aprobado':False, 'rechazado_compras':False, 'rechazado_finanzas':False, 'rechazado_sistemas':False}
+        
             return render(request, 'proveedor/proveedor_create.html', {
-                'form': ProveedorForm
+                'form': ProveedorForm(initial=default_values)
             })
         else:
             try:
@@ -65,20 +68,23 @@ def proveedor_detail(request, proveedor_id):
     # Traemos el proveedor que tenga el id que seleccionamos
     proveedor = get_object_or_404(Proveedor, pk=proveedor_id)
     if request.method == 'GET':
-        # Validamos si el usuario es compras para mostrar el checkbox para aprobar
+
+        default_values = {'pendiente':False, 'compras':False, 'finanzas':False, 'sistemas':False, 'aprobado':False, 'rechazado_compras':False, 'rechazado_finanzas':False, 'rechazado_sistemas':False}
+
         if request.user.compras:
-            form = ProveedorFormForCompras(instance=proveedor)
+            form = ProveedorFormForCompras(instance=proveedor, initial=default_values)
         else:
             if request.user.finanzas:
-                form = ProveedorFormForFinanzas(instance=proveedor)
+                form = ProveedorFormForFinanzas(instance=proveedor, initial=default_values)
             else:
                 if request.user.sistemas:
-                    form = ProveedorFormForSistemas(instance=proveedor)
+                    form = ProveedorFormForSistemas(instance=proveedor, initial=default_values)
                 else:
-                    form = ProveedorDetailForm(instance=proveedor)
+                    form = ProveedorDetailForm(instance=proveedor, initial=default_values)
         return render(request, 'proveedor/proveedor_detail.html', {
             'proveedor': proveedor,
-            'form': form
+            'form': form,
+            'current_user': request.user
         })
     else:
         try:

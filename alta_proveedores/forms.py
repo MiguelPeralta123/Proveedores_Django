@@ -5,7 +5,7 @@ from .options import *
 class ProveedorForm(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'constancia_situacion_fiscal', 'estado_cuenta_bancario']
+        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'constancia_situacion_fiscal', 'estado_cuenta_bancario', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'codigo': forms.TextInput(attrs={'class':'form-control'}),
@@ -66,12 +66,19 @@ class ProveedorForm(forms.ModelForm):
             'no_relacionar_OC': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'constancia_situacion_fiscal': forms.FileInput(attrs={'class':'form-file'}),
             'estado_cuenta_bancario': forms.FileInput(attrs={'class':'form-file'}),
+            'pendiente': forms.HiddenInput(),
+            'compras': forms.HiddenInput(),
+            'finanzas': forms.HiddenInput(),
+            'sistemas': forms.HiddenInput(),
+            'rechazado_compras': forms.HiddenInput(),
+            'rechazado_finanzas': forms.HiddenInput(),
+            'rechazado_sistemas': forms.HiddenInput(),
         }
 
 class ProveedorDetailForm(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC']
+        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'codigo': forms.TextInput(attrs={'class':'form-control'}),
@@ -130,12 +137,19 @@ class ProveedorDetailForm(forms.ModelForm):
             'usar_en_portal_proveedores': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'no_aplica_para_rafaga': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'no_relacionar_OC': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'pendiente': forms.HiddenInput(),
+            'compras': forms.HiddenInput(),
+            'finanzas': forms.HiddenInput(),
+            'sistemas': forms.HiddenInput(),
+            'rechazado_compras': forms.HiddenInput(),
+            'rechazado_finanzas': forms.HiddenInput(),
+            'rechazado_sistemas': forms.HiddenInput(),
         }
 
 class ProveedorFormForCompras(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'compras']
+        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'codigo': forms.TextInput(attrs={'class':'form-control'}),
@@ -194,13 +208,19 @@ class ProveedorFormForCompras(forms.ModelForm):
             'usar_en_portal_proveedores': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'no_aplica_para_rafaga': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'no_relacionar_OC': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'compras': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'pendiente': forms.HiddenInput(),
+            'compras': forms.HiddenInput(),
+            'finanzas': forms.HiddenInput(),
+            'sistemas': forms.HiddenInput(),
+            'rechazado_compras': forms.HiddenInput(),
+            'rechazado_finanzas': forms.HiddenInput(),
+            'rechazado_sistemas': forms.HiddenInput(),
         }
 
 class ProveedorFormForFinanzas(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'finanzas']
+        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'codigo': forms.TextInput(attrs={'class':'form-control'}),
@@ -259,13 +279,19 @@ class ProveedorFormForFinanzas(forms.ModelForm):
             'usar_en_portal_proveedores': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'no_aplica_para_rafaga': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'no_relacionar_OC': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'finanzas': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'pendiente': forms.HiddenInput(),
+            'compras': forms.HiddenInput(),
+            'finanzas': forms.HiddenInput(),
+            'sistemas': forms.HiddenInput(),
+            'rechazado_compras': forms.HiddenInput(),
+            'rechazado_finanzas': forms.HiddenInput(),
+            'rechazado_sistemas': forms.HiddenInput(),
         }
 
 class ProveedorFormForSistemas(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'sistemas']
+        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'codigo': forms.TextInput(attrs={'class':'form-control'}),
@@ -324,5 +350,11 @@ class ProveedorFormForSistemas(forms.ModelForm):
             'usar_en_portal_proveedores': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'no_aplica_para_rafaga': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'no_relacionar_OC': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'sistemas': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'pendiente': forms.HiddenInput(),
+            'compras': forms.HiddenInput(),
+            'finanzas': forms.HiddenInput(),
+            'sistemas': forms.HiddenInput(),
+            'rechazado_compras': forms.HiddenInput(),
+            'rechazado_finanzas': forms.HiddenInput(),
+            'rechazado_sistemas': forms.HiddenInput(),
         }

@@ -17,22 +17,28 @@
                     <p>{{proveedor.fecha}}</p>
                     <section class="d-flex justify-content-between">
                         <p>Empresa: {{proveedor.empresa}}</p>
-                        <p>Solicitante: {{proveedor.usuario}}</p>
+                        <p>Solicitante: {{proveedor.usuario.get_full_name}}</p>
                     </section>
+                    {% if proveedor.pendiente %}
+                    <p class="text-success">🕐 Pendiente</p>
+                    {% endif %}
                     {% if proveedor.compras %}
                     <p class="text-success">✅ Compras</p>
-                    {% else %}
-                    <p>🕐 Compras</p>
+                    {% endif %}
+                    {% if proveedor.rechazado_compras %}
+                    <p class="text-success">❌ Rechazado por compras</p>
                     {% endif %}
                     {% if proveedor.finanzas %}
                     <p class="text-success">✅ Finanzas</p>
-                    {% else %}
-                    <p>🕐 Finanzas</p>
+                    {% endif %}
+                    {% if proveedor.rechazado_finanzas %}
+                    <p class="text-success">❌ Rechazado por finanzas</p>
                     {% endif %}
                     {% if proveedor.sistemas %}
-                    <p class="text-success">✅ Sistemas</p>
-                    {% else %}
-                    <p>🕐 Sistemas</p>
+                    <p class="text-success">✅ Aprobado</p>
+                    {% endif %}
+                    {% if proveedor.rechazado_sistemas %}
+                    <p class="text-success">❌ Rechazado por sistemas</p>
                     {% endif %}
                 </a>
                 {% endfor %}

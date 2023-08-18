@@ -1,0 +1,40 @@
+version: '3'
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: proveedores
+      MYSQL_ROOT_PASSWORD: contraseña_base_de_datos
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "33061:3306"
+    networks:
+      - proveedores_red
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8001:8000"
+    networks:
+      - proveedores_red
+    depends_on:
+      - db
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-proveedores
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+    ports:
+      - 8080:80
+    networks:
+      - proveedores_red
+
+volumes:
+  mysql-data:
+
+networks:
+  proveedores_red:

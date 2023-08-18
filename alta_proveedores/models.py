@@ -62,15 +62,23 @@ class Proveedor(models.Model):
     clabe_2 = models.CharField(max_length=18, blank=True)
     constancia_situacion_fiscal = models.FileField(upload_to='static/documentos/constancias/')
     estado_cuenta_bancario = models.FileField(upload_to='static/documentos/estados_cuenta')
+    pendiente = models.BooleanField(default=False)
     compras = models.BooleanField(default=False)
     finanzas = models.BooleanField(default=False)
     sistemas = models.BooleanField(default=False)
     aprobadas = models.BooleanField(default=False)
+    rechazado_compras = models.BooleanField(default=False)
+    rechazado_finanzas = models.BooleanField(default=False)
+    rechazado_sistemas = models.BooleanField(default=False)
     fecha = models.DateTimeField(auto_now_add=True)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     usar_en_portal_proveedores = models.BooleanField(default=False)
     no_aplica_para_rafaga = models.BooleanField(default=False)
     no_relacionar_OC = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name = 'proveedor'
+        verbose_name_plural = "proveedores"
+
     def __str__(self):
-        return str(self.id) + " - " + self.razon_social + " - " + self.usuario.username
+        return str(self.id) + ".- " + self.razon_social + " - " + self.usuario.first_name + " " + self.usuario.last_name

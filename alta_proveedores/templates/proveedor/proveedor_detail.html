@@ -18,9 +18,41 @@
                 <a href="/{{proveedor.constancia_situacion_fiscal}}" class="d-block my-2" download="">Descargar constancia de situación fiscal</a>
                 <a href="/{{proveedor.estado_cuenta_bancario}}" class="d-block my-2" download="">Descargar estado de cuenta bancario</a>
 
-                <button class="btn btn-primary" style="margin: 10px 0;">
-                    Actualizar
-                </button>
+                {% if proveedor.pendiente == True and current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False or proveedor.rechazado_compras == True or proveedor.rechazado_finanzas == True or proveedor.rechazado_sistemas == True %}
+                    <button class="btn btn-primary" style="margin: 10px 0;" type="submit" name="pendiente" value="True">
+                        Guardar cambios
+                    </button>
+                {% endif %}
+
+                {% if current_user.compras == True %}
+                    <button class="btn btn-primary" style="margin: 10px 0;" type="submit" name="compras" value="True">
+                        Aprobar compras
+                    </button>
+
+                    <button class="btn btn-primary" style="margin: 10px 0;" type="submit" name="rechazado_compras" value="True">
+                        Rechazar compras
+                    </button>
+                {% endif %}
+
+                {% if current_user.finanzas == True %}
+                    <button class="btn btn-primary" style="margin: 10px 0;" type="submit" name="finanzas" value="True">
+                        Aprobar finanzas
+                    </button>
+
+                    <button class="btn btn-primary" style="margin: 10px 0;" type="submit" name="rechazado_finanzas" value="True">
+                        Rechazar finanzas
+                    </button>
+                {% endif %}
+
+                {% if current_user.sistemas == True %}
+                    <button class="btn btn-primary" style="margin: 10px 0;" type="submit" name="sistemas" value="True">
+                        Aprobar sistemas
+                    </button>
+
+                    <button class="btn btn-primary" style="margin: 10px 0;" type="submit" name="rechazado_sistemas" value="True">
+                        Rechazar sistemas
+                    </button>
+                {% endif %}
 
             </form>
         </div>
