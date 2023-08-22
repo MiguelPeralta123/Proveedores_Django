@@ -75,6 +75,7 @@ class Proveedor(models.Model):
     usar_en_portal_proveedores = models.BooleanField(default=False)
     no_aplica_para_rafaga = models.BooleanField(default=False)
     no_relacionar_OC = models.BooleanField(default=False)
+    comentarios = models.CharField(max_length=250, blank=True)
 
     class Meta:
         verbose_name = 'proveedor'
