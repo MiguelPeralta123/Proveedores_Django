@@ -42,7 +42,6 @@ def proveedor_create(request):
     # Verificamos si el usuario tiene permisos para requerir, en caso contrario, lo redireccionamos a la ventana de proveedores
     if request.user.puede_comprar:
         if request.method == 'GET':
-
             default_values = {'pendiente':False, 'compras':False, 'finanzas':False, 'sistemas':False, 'aprobado':False, 'rechazado_compras':False, 'rechazado_finanzas':False, 'rechazado_sistemas':False}
         
             return render(request, 'proveedor/proveedor_create.html', {

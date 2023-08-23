@@ -5,7 +5,7 @@ from django.conf import settings
 
 # Create your models here.
 class MaterialSolicitud(models.Model):
-    id_solicitud = models.CharField(max_length=10, default='123')
+    id_solicitud = models.CharField(max_length=10)
     empresa = models.CharField(max_length=50)
     justificacion = models.CharField(max_length=255)
     compras = models.BooleanField(default=True)
@@ -23,7 +23,7 @@ class MaterialSolicitud(models.Model):
         return str(self.id) + " - " + self.empresa + " - " + self.usuario.first_name + " " + self.usuario.last_name
 
 class Material(models.Model):
-    id_solicitud = models.CharField(max_length=10, default='123')
+    id_solicitud = models.CharField(max_length=10)
     nombre_producto = models.CharField(max_length=50)
     tipo_alta = models.CharField(max_length=50)
     tipo = models.CharField(max_length=50)

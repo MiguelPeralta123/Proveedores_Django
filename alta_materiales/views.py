@@ -52,17 +52,24 @@ def material_create(request):
     MaterialFormSet = formset_factory(MaterialForm, extra=1)
 
     if request.method == 'POST':
+        print(request.POST)
         solicitud_form = SolicitudForm(request.POST)
         material_formset = MaterialFormSet(request.POST, prefix='material')
         if solicitud_form.is_valid() and material_formset.is_valid():
-            solicitud = solicitud_form.save()
+            id_solicitud = generar_codigo_unico()
+            solicitud = solicitud_form.save(commit=False)
+            solicitud.id_solicitud = id_solicitud
+            solicitud.usuario = request.user
+            solicitud.save()
             for material_form in material_formset:
                 material = material_form.save(commit=False)
-                material.solicitud = solicitud
+                material.id_solicitud = id_solicitud
                 material.save()
+            return redirect('material')
     else:
         solicitud_form = SolicitudForm()
-        material_formset = MaterialFormSet(prefix='material')
+        material_formset = MaterialFormSet(prefix='material', initial=[{}]) # Renderiza al menos un formulario inicial
+    
     return render(request, 'material/material_crear.html', {'solicitud_form': solicitud_form, 'material_formset': material_formset, 'tipo_list':TIPO_LIST, 'familia_list': FAMILIA_LIST, 'subfamilia_list': SUBFAMILIA_LIST, 'unidad_medida_list': UNIDAD_MEDIDA_LIST})
 
 
@@ -89,8 +96,6 @@ def material_detail(request, material_id):
         materiales = Material.objects.filter(id_solicitud=solicitud.id_solicitud)
         MaterialFormSet = formset_factory(MaterialForm, extra=len(materiales))
         material_forms = MaterialFormSet(initial=[{'nombre_producto': material.nombre_producto, 'tipo_alta': material.tipo_alta, 'tipo': material.tipo, 'familia': material.familia, 'subfamilia': material.subfamilia, 'unidad_medida': material.unidad_medida} for material in materiales])
-
-        print(materiales[1].unidad_medida)
 
         return render(request, 'material/material_detail.html', {
             'material': material,
