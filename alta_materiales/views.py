@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.db import IntegrityError
+from django.forms import formset_factory
 from .forms import *
 from .models import MaterialSolicitud, Material
 # Decorator to protect routes from accessing before sign in
@@ -47,102 +48,22 @@ def material(request):
     })
 
 
-def material_view(request):
-    form_count = 1
+def material_create(request):
+    MaterialFormSet = formset_factory(MaterialForm, extra=1)
 
     if request.method == 'POST':
         solicitud_form = SolicitudForm(request.POST)
-        material_forms = [MaterialForm(request.POST, prefix=str(i)) for i in range(form_count)]
-
-        if solicitud_form.is_valid() and all(form.is_valid() for form in material_forms):
+        material_formset = MaterialFormSet(request.POST, prefix='material')
+        if solicitud_form.is_valid() and material_formset.is_valid():
             solicitud = solicitud_form.save()
-            for form in material_forms:
-                material = form.save(commit=False)
+            for material_form in material_formset:
+                material = material_form.save(commit=False)
                 material.solicitud = solicitud
                 material.save()
-
-            return redirect('material')
     else:
         solicitud_form = SolicitudForm()
-        for i in range(form_count):
-            material_forms = MaterialForm(prefix=str(i))
-
-    return render(request, 'material/material_crear.html', {
-        'solicitud_form': solicitud_form,
-        'material_form': material_forms,
-        'initial_form_count': form_count,
-    })
-
-
-#def material_view(request):
-#    if request.method == 'POST':
-#        solicitud_form = MaterialSolicitudForm(request.POST)
-#        material_formset = MaterialFormset(request.POST, prefix='material')
-#        
-#        if solicitud_form.is_valid() and material_formset.is_valid():
-#            # Process the main form data
-#            #empresa = solicitud_form.cleaned_data['empresa']
-#            #justificacion = solicitud_form.cleaned_data['justificacion']
-#            print("Solicitud creada")
-#            
-#            # Process the nested formset data
-#            for material_form in material_formset:
-#                if material_form.is_valid():
-#                    #nombre = material_form.cleaned_data['nombre']
-#                    #tipo_alta = material_form.cleaned_data['tipo_alta']
-#                    #tipo = material_form.cleaned_data['tipo']
-#                    #familia = material_form.cleaned_data['familia']
-#                    #subfamilia = material_form.cleaned_data['subfamilia']
-#                    #unidad_medida = material_form.cleaned_data['unidad_medida']
-#                    
-#                    # Process the nested form data here or pass it to another view
-#                    print("Material creado")
-#            
-#            # Redirect or render a success page
-#            #return render(request, 'success.html')
-#    else:
-#        solicitud_form = MaterialSolicitudForm()
-#        material_formset = MaterialFormset(prefix='material')
-#    
-#    return render(request, 'material/material_crear.html', {'solicitud_form': solicitud_form, 'material_formset': material_formset})
-
-
-#def solicitud_material_view(request):
-#    if request.method == 'POST':
-#        material_solicitud_form = MaterialSolicitudForm(request.POST)
-#        material_forms = [MaterialFormset(prefix=f'material-{i}', data=request.POST) for i in range(
-#            1, len(request.POST) - 1) if f'material-{i}-nombre_producto' in request.POST]
-#        
-#        print(len(material_forms))
-#
-#        if material_solicitud_form.is_valid() and all(form.is_valid() for form in material_forms):
-#            codigo = generar_codigo_unico()
-#
-#            form = material_solicitud_form
-#            new_solicitud = form.save(commit=False)
-#            new_solicitud.id_solicitud = codigo
-#            new_solicitud.usuario = request.user
-#            #new_solicitud.save()
-#
-#            for form in material_forms:
-#                new_material = form.save(commit=False)
-#                new_material.id_solicitud = codigo
-#                #new_material.save()
-#
-#            #return redirect('material')
-#    else:
-#        material_solicitud_form = MaterialSolicitudForm()
-#        material_forms = [MaterialForm(prefix='material-1')]
-#
-#    context = {
-#        'material_solicitud_form': material_solicitud_form,
-#        'material_forms': material_forms,
-#        'tipo_list': TIPO_LIST,
-#        'familia_list': FAMILIA_LIST,
-#        'subfamilia_list': SUBFAMILIA_LIST,
-#        'unidad_medida_list': UNIDAD_MEDIDA_LIST,
-#    }
-#    return render(request, 'material/solicitud_material.html', context)
+        material_formset = MaterialFormSet(prefix='material')
+    return render(request, 'material/material_crear.html', {'solicitud_form': solicitud_form, 'material_formset': material_formset, 'tipo_list':TIPO_LIST, 'familia_list': FAMILIA_LIST, 'subfamilia_list': SUBFAMILIA_LIST, 'unidad_medida_list': UNIDAD_MEDIDA_LIST})
 
 
 @login_required

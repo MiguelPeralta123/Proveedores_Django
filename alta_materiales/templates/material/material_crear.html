@@ -5,45 +5,145 @@
 <main class="container py-5 mt-5">
     <div class="row d-flex justify-content-center">
         <div class="col-md-6 align-self-center mx-auto">
+
           <form class="card card-body" method="POST">
-
             <h1 class="mb-4">Registrar material</h1>
-          
             {{error}}
-          
             {% csrf_token %}
-            
             {{ solicitud_form.as_p }}
-            
-            <h3>Materiales</h3>
 
-            <div id="material_container">
-              {{ material_form.as_p }}
+            <h3>Materiales</h3>
+            {{ material_formset.management_form }}
+            <div id="material-forms">
+              {% for material_form in material_formset %}
+                <div class="material-form">
+                  {{ material_form.as_p }}
+                </div>
+              {% endfor %}
             </div>
-            
-            <button type="button" id="add-material">Añadir Material</button>
-            
-            <button type="submit">Submit</button>
+
+            <button class="btn btn-primary mb-2" type="button" id="add-material">Agregar Material</button>
+            <button class="btn btn-primary" type="submit">Guardar</button>
           </form>
+
         </div>
     </div>
 </main>
 
 <script>
-  $(document).ready(function() {
-
-    let formCount = {{ initial_form_count }};
-
-    $("#add-material").click(function() {
-      const formHtml = {{ material_form.as_table }}.replace(/__prefix__/g, formCount);
-      $("#material_container").append(formHtml);
+  document.addEventListener('DOMContentLoaded', function() {
+    const addButton = document.getElementById('add-material');
+    const materialFormsContainer = document.getElementById('material-forms');
+    let formCount = {{ material_formset.total_form_count }};
+  
+    addButton.addEventListener('click', function() {
+      const formHtml = `
+        <hr />
+        {{ material_formset.empty_form.as_p }}
+        <button class="btn btn-danger remove-material" type="button">Eliminar material</button>
+        <hr />
+      `;
+      const form = document.createElement('div');
+      form.classList.add('material-form')
+      form.innerHTML = formHtml.replace(/__prefix__/g, formCount);
+      materialFormsContainer.appendChild(form);
       formCount++;
     });
 
-    $(document).on("click", ".delete_material", function() {
-      $(this).closest(".material_container").remove();
+    materialFormsContainer.addEventListener('click', function(event) {
+      // If the delete button is clicked, remove the whole parent node
+      if (event.target && event.target.classList.contains('remove-material')) {
+        const form = event.target.closest('.material-form');
+        if (form) {
+          form.remove();
+        }
+      }
+
+      // Loading dinamically the data on the selects depending on the other selects
+      var tipo_alta = document.querySelector("#id_material-0-tipo_alta")
+      var tipo = document.querySelector("#id_material-0-tipo")
+      var familia = document.querySelector("#id_material-0-familia")
+      var subfamilia = document.querySelector("#id_material-0-subfamilia")
+      var unidad_medida = document.querySelector("#id_material-0-unidad_medida")
+
+      const setSelects = (id) => {
+        tipo_alta = document.querySelector(`#id_material-${id}-tipo_alta`)
+        tipo = document.querySelector(`#id_material-${id}-tipo`)
+        familia = document.querySelector(`#id_material-${id}-familia`)
+        subfamilia = document.querySelector(`#id_material-${id}-subfamilia`)
+        unidad_medida = document.querySelector(`#id_material-${id}-unidad_medida`)
+      }
+
+      if (event.target && event.target.classList.contains('select-tipo-alta')) {
+        setSelects(event.target.id.substring(12, event.target.id.length - 10))
+      }
+      if (event.target && event.target.classList.contains('select-tipo')) {
+        setSelects(event.target.id.substring(12, event.target.id.length - 5))
+      }
+      if (event.target && event.target.classList.contains('select-familia')) {
+        setSelects(event.target.id.substring(12, event.target.id.length - 8))
+      }
+      if (event.target && event.target.classList.contains('select-subfamilia')) {
+        setSelects(event.target.id.substring(12, event.target.id.length - 11))
+      }
+      if (event.target && event.target.classList.contains('select-unidad-medida')) {
+        setSelects(event.target.id.substring(12, event.target.id.length - 14))
+      }
+
+      const actualizarOpcionesTipo = () => {
+        var opcionSeleccionada = tipo_alta.value
+        var opciones = {{ tipo_list|safe }}
+        tipo.options.length = 0
+        opciones[opcionSeleccionada].forEach((opcion) => {
+            var option = document.createElement("option")
+            option.value = opcion.value
+            option.text = opcion.display
+            tipo.appendChild(option)
+        })
+      }
+
+      const actualizarOpcionesUnidadMedida = () => {
+          var opcionSeleccionada = tipo_alta.value
+          var opciones = {{ unidad_medida_list|safe }}
+          unidad_medida.options.length = 0
+          opciones[opcionSeleccionada].forEach((opcion) => {
+              var option = document.createElement("option")
+              option.value = opcion.value
+              option.text = opcion.display
+              unidad_medida.appendChild(option)
+          })
+      }
+
+      const actualizarOpcionesFamilia = () => {
+          var opcionSeleccionada = tipo.value
+          var opciones = {{ familia_list|safe }}
+          familia.options.length = 0
+          opciones[opcionSeleccionada].forEach((opcion) => {
+              var option = document.createElement("option")
+              option.value = opcion.value
+              option.text = opcion.display
+              familia.appendChild(option)
+          })
+      }
+
+      const actualizarOpcionesSubfamilia = () => {
+          var opcionSeleccionada = familia.value
+          var opciones = {{ subfamilia_list|safe }}
+          subfamilia.options.length = 0
+          opciones[opcionSeleccionada].forEach((opcion) => {
+              var option = document.createElement("option")
+              option.value = opcion.value
+              option.text = opcion.display
+              subfamilia.appendChild(option)
+          })
+      }
+
+      tipo_alta.addEventListener("change", actualizarOpcionesTipo)
+      tipo_alta.addEventListener("change", actualizarOpcionesUnidadMedida)
+      tipo.addEventListener("change", actualizarOpcionesFamilia)
+      familia.addEventListener("change", actualizarOpcionesSubfamilia)
     });
   });
-</script>
+  </script>
 
 {% endblock %}

@@ -18,11 +18,11 @@ class MaterialForm(forms.ModelForm):
         fields = ['nombre_producto', 'tipo_alta', 'tipo', 'familia', 'subfamilia', 'unidad_medida']
         widgets = {
             'nombre_producto': forms.TextInput(attrs={'class':'form-control material-nombre'}),
-            'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta', 'initial':''}),
-            'tipo': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-tipo', 'initial':''}),
-            'familia': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-familia', 'initial':''}),
-            'subfamilia': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-subfamilia', 'initial':''}),
-            'unidad_medida': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-unidad-medida', 'initial':''}),
+            'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta select-tipo-alta', 'initial':''}),
+            'tipo': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-tipo select-tipo', 'initial':''}),
+            'familia': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-familia select-familia', 'initial':''}),
+            'subfamilia': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
+            'unidad_medida': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-unidad-medida select-unidad-medida', 'initial':''}),
         }
 
 #class MaterialFormset(forms.ModelForm):

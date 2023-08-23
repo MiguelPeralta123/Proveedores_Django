@@ -41,6 +41,6 @@ urlpatterns = [
 
     # URLs para solicitudes y materiales
     path('materiales/', views_materiales.material, name='material'),
-    path('materiales/crear/', views_materiales.material_view, name='material_create'),
+    path('materiales/crear/', views_materiales.material_create, name='material_create'),
     path('materiales/<int:material_id>/', views_materiales.material_detail, name='material_detail'),
 ]
