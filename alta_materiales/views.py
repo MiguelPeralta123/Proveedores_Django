@@ -49,10 +49,9 @@ def material(request):
 
 
 def material_create(request):
-    MaterialFormSet = formset_factory(MaterialForm, extra=1)
+    MaterialFormSet = formset_factory(MaterialForm, extra=0)
 
     if request.method == 'POST':
-        print(request.POST)
         solicitud_form = SolicitudForm(request.POST)
         material_formset = MaterialFormSet(request.POST, prefix='material')
         if solicitud_form.is_valid() and material_formset.is_valid():
@@ -68,64 +67,66 @@ def material_create(request):
             return redirect('material')
     else:
         solicitud_form = SolicitudForm()
-        material_formset = MaterialFormSet(prefix='material', initial=[{}]) # Renderiza al menos un formulario inicial
+        material_formset = MaterialFormSet(prefix='material', initial=[{}])
     
-    return render(request, 'material/material_crear.html', {'solicitud_form': solicitud_form, 'material_formset': material_formset, 'tipo_list':TIPO_LIST, 'familia_list': FAMILIA_LIST, 'subfamilia_list': SUBFAMILIA_LIST, 'unidad_medida_list': UNIDAD_MEDIDA_LIST})
+    return render(request, 'material/material_create.html', {'solicitud_form': solicitud_form, 'material_formset': material_formset, 'tipo_list':TIPO_LIST, 'familia_list': FAMILIA_LIST, 'subfamilia_list': SUBFAMILIA_LIST, 'unidad_medida_list': UNIDAD_MEDIDA_LIST})
 
 
 @login_required
 def material_detail(request, material_id):
-    # Traemos el material que tenga el id que seleccionamos
     solicitud = get_object_or_404(MaterialSolicitud, pk=material_id)
+    materiales = Material.objects.filter(id_solicitud=solicitud.id_solicitud)
+    
     if request.method == 'GET':
         # Validamos si el usuario es compras para permitir aprobar solicitudes
         if request.user.compras:
-            form = MaterialFormForCompras(instance=solicitud)
+            solicitud_form = MaterialFormForCompras(instance=solicitud)
         else:
             # Validamos si el usuario es finanzas para permitir aprobar solicitudes
             if request.user.finanzas:
-                form = MaterialFormForFinanzas(instance=solicitud)
+                solicitud_form = MaterialFormForFinanzas(instance=solicitud)
             else:
                 # Validamos si el usuario es sistemas para permitir aprobar solicitudes
                 if request.user.sistemas:
-                    form = MaterialFormForSistemas(instance=solicitud)
+                    solicitud_form = MaterialFormForSistemas(instance=solicitud)
                 else:
-                    form = MaterialDetailForm(instance=solicitud)
-
-        # Añadiendo un formulario por cada material de la solicitud
-        materiales = Material.objects.filter(id_solicitud=solicitud.id_solicitud)
-        MaterialFormSet = formset_factory(MaterialForm, extra=len(materiales))
-        material_forms = MaterialFormSet(initial=[{'nombre_producto': material.nombre_producto, 'tipo_alta': material.tipo_alta, 'tipo': material.tipo, 'familia': material.familia, 'subfamilia': material.subfamilia, 'unidad_medida': material.unidad_medida} for material in materiales])
+                    solicitud_form = SolicitudForm(instance=solicitud)
+                    material_forms = [MaterialDetailForm(instance=material, prefix=f'material-{material.id}') for material in materiales]
 
         return render(request, 'material/material_detail.html', {
-            'material': material,
-            'form': form,
+            #'material': material,
+            'solicitud_form': solicitud_form,
             'material_forms': material_forms
         })
     else:
         try:
             # Validamos si el usuario es compras para permitir aprobar solicitudes
             if request.user.compras:
-                form = MaterialFormForCompras(request.POST, instance=material)
+                solicitud_form = MaterialFormForCompras(request.POST, instance=material)
             else:
                 # Validamos si el usuario es finanzas para permitir aprobar solicitudes
                 if request.user.finanzas:
-                    form = MaterialFormForFinanzas(
+                    solicitud_form = MaterialFormForFinanzas(
                         request.POST, instance=material)
                 else:
                     # Validamos si el usuario es sistemas para permitir aprobar solicitudes
                     if request.user.sistemas:
-                        form = MaterialFormForSistemas(
+                        solicitud_form = MaterialFormForSistemas(
                             request.POST, instance=material)
                     else:
-                        form = MaterialDetailForm(
-                            request.POST, instance=material)
-            form.save()
-            return redirect('material')
+                        solicitud_form = SolicitudForm(request.POST, instance=solicitud)
+                        material_forms = [MaterialForm(request.POST, instance=material, prefix=f'material-{material.id}') for material in materiales]
+            
+            if solicitud_form.is_valid() and all(form.is_valid() for form in material_forms):
+                solicitud_form.save()
+                for form in material_forms:
+                    form.save()
+                return redirect('material')
+
         except ValueError:
-            form = MaterialDetailForm(instance=material)
+            solicitud_form = SolicitudForm(instance=material)
             return render(request, 'material/material_detail.html', {
                 'material': material,
-                'form': form,
+                'form': solicitud_form,
                 'error': 'Se produjo un error al actualizar, intente de nuevo'
             })

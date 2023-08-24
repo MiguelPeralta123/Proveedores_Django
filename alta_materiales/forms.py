@@ -25,36 +25,27 @@ class MaterialForm(forms.ModelForm):
             'unidad_medida': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-unidad-medida select-unidad-medida', 'initial':''}),
         }
 
-#class MaterialFormset(forms.ModelForm):
-#    class Meta:
-#        model = Material
-#        fields = ['nombre_producto', 'tipo_alta', 'tipo', 'familia', 'subfamilia', 'unidad_medida']
-#        widgets = {
-#            'nombre_producto': forms.TextInput(attrs={'class':'form-control material-nombre'}),
-#            'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta', 'initial':''}),
-#            'tipo': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-tipo', 'initial':''}),
-#            'familia': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-familia', 'initial':''}),
-#            'subfamilia': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-subfamilia', 'initial':''}),
-#            'unidad_medida': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-unidad-medida', 'initial':''}),
-#        }
-
-#class MaterialSolicitudForm(forms.ModelForm):
-#    class Meta:
-#        model = MaterialSolicitud
-#        fields = ['empresa', 'justificacion']
-#        widgets = {
-#            'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
-#            'justificacion': forms.Textarea(attrs={'class':'form-control'}),
-#        }
-#        NestedFormSet = formset_factory(MaterialFormset, extra=1)  # Set extra to control the number of forms displayed initially
-
-class MaterialDetailForm(forms.ModelForm):
+class SolicitudMaterialDetailForm(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
         fields = ['empresa', 'justificacion']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control'}),
+        }
+
+class MaterialDetailForm(forms.ModelForm):
+    class Meta:
+        model = Material
+        fields = ['nombre_producto', 'tipo_alta', 'tipo', 'familia', 'subfamilia', 'unidad_medida']
+        widgets = {
+            # Make readonly: attrs={'class':'form-control material-nombre', 'readonly':'readonly'}
+            'nombre_producto': forms.TextInput(attrs={'class':'form-control material-nombre'}),
+            'tipo_alta': forms.TextInput(attrs={'class':'form-control material-tipo-alta'}),
+            'tipo': forms.TextInput(attrs={'class':'form-control material-tipo'}),
+            'familia': forms.TextInput(attrs={'class':'form-control material-familia'}),
+            'subfamilia': forms.TextInput(attrs={'class':'form-control material-subfamilia'}),
+            'unidad_medida': forms.TextInput(attrs={'class':'form-control material-unidad-medida'}),
         }
 
 class MaterialFormForCompras(forms.ModelForm):

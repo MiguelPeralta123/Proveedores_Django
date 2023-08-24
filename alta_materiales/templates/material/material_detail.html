@@ -5,23 +5,121 @@
 <main class="container py-5 mt-5">
     <div class="row d-flex justify-content-center">
         <div class="col-md-6 align-self-center mx-auto">
+
             <form class="card card-body" method="POST">
-
-                <h1>Detalle de la solicitud</h1>
-
+                <h1 class="mb-4">Detalle de la solicitud</h1>
+                {{ error }}
                 {% csrf_token %}
+                {{ solicitud_form.as_p }}
 
-                {{form.as_p}}
+                <h3>Materiales</h3>
+                <div id="material-forms">
+                {% for form in material_forms %}
+                    <div class="material-form">
+                        {{ form.as_p }}
+                        <hr />
+                    </div>
+                {% endfor %}
+                </div>
 
-                {{material_forms.as_p}}
-
-                <button class="btn btn-primary" style="margin: 10px 0;">
+                <button class="btn btn-primary" type="submit" style="margin: 10px 0;">
                     Actualizar
                 </button>
-
             </form>
         </div>
     </div>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const materialFormsContainer = document.getElementById('material-forms');
+  
+      // Loading dinamically the data on the selects depending on the other selects
+      materialFormsContainer.addEventListener('click', function(event) {
+        var tipo_alta = document.querySelector("#id_material-0-tipo_alta")
+        var tipo = document.querySelector("#id_material-0-tipo")
+        var familia = document.querySelector("#id_material-0-familia")
+        var subfamilia = document.querySelector("#id_material-0-subfamilia")
+        var unidad_medida = document.querySelector("#id_material-0-unidad_medida")
+  
+        const setSelects = (id) => {
+          tipo_alta = document.querySelector(`#id_material-${id}-tipo_alta`)
+          tipo = document.querySelector(`#id_material-${id}-tipo`)
+          familia = document.querySelector(`#id_material-${id}-familia`)
+          subfamilia = document.querySelector(`#id_material-${id}-subfamilia`)
+          unidad_medida = document.querySelector(`#id_material-${id}-unidad_medida`)
+        }
+  
+        if (event.target && event.target.classList.contains('select-tipo-alta')) {
+          setSelects(event.target.id.substring(12, event.target.id.length - 10))
+        }
+        if (event.target && event.target.classList.contains('select-tipo')) {
+          setSelects(event.target.id.substring(12, event.target.id.length - 5))
+        }
+        if (event.target && event.target.classList.contains('select-familia')) {
+          setSelects(event.target.id.substring(12, event.target.id.length - 8))
+        }
+        if (event.target && event.target.classList.contains('select-subfamilia')) {
+          setSelects(event.target.id.substring(12, event.target.id.length - 11))
+        }
+        if (event.target && event.target.classList.contains('select-unidad-medida')) {
+          setSelects(event.target.id.substring(12, event.target.id.length - 14))
+        }
+  
+        const actualizarOpcionesTipo = () => {
+          var opcionSeleccionada = tipo_alta.value
+          var opciones = {{ tipo_list|safe }}
+          tipo.options.length = 0
+          opciones[opcionSeleccionada].forEach((opcion) => {
+              var option = document.createElement("option")
+              option.value = opcion.value
+              option.text = opcion.display
+              tipo.appendChild(option)
+          })
+        }
+  
+        const actualizarOpcionesUnidadMedida = () => {
+            var opcionSeleccionada = tipo_alta.value
+            var opciones = {{ unidad_medida_list|safe }}
+            unidad_medida.options.length = 0
+            opciones[opcionSeleccionada].forEach((opcion) => {
+                var option = document.createElement("option")
+                option.value = opcion.value
+                option.text = opcion.display
+                unidad_medida.appendChild(option)
+            })
+        }
+  
+        const actualizarOpcionesFamilia = () => {
+            var opcionSeleccionada = tipo.value
+            var opciones = {{ familia_list|safe }}
+            familia.options.length = 0
+            opciones[opcionSeleccionada].forEach((opcion) => {
+                var option = document.createElement("option")
+                option.value = opcion.value
+                option.text = opcion.display
+                familia.appendChild(option)
+            })
+        }
+  
+        const actualizarOpcionesSubfamilia = () => {
+            var opcionSeleccionada = familia.value
+            var opciones = {{ subfamilia_list|safe }}
+            subfamilia.options.length = 0
+            opciones[opcionSeleccionada].forEach((opcion) => {
+                var option = document.createElement("option")
+                option.value = opcion.value
+                option.text = opcion.display
+                subfamilia.appendChild(option)
+            })
+        }
+  
+        tipo_alta.addEventListener("change", actualizarOpcionesTipo)
+        tipo_alta.addEventListener("change", actualizarOpcionesUnidadMedida)
+        tipo.addEventListener("change", actualizarOpcionesFamilia)
+        familia.addEventListener("change", actualizarOpcionesSubfamilia)
+      });
+    });
+</script>
 
 {% endblock %}
