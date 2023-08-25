@@ -1,27 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<main class="container py-5 mt-5">
+  <main class="container py-5 mt-5">
     <div class="row d-flex justify-content-center">
-        <div class="col-md-6 align-self-center mx-auto">
-            <form class="card card-body" method="POST" enctype="multipart/form-data">
+      <div class="col-md-6 align-self-center mx-auto">
+        <form class="card card-body" method="POST" enctype="multipart/form-data">
+          <h1 class="mb-4">Registrar proveedor</h1>
 
-                <h1 class="mb-4">Registrar proveedor</h1>
+          {{ error }}
 
-                {{error}}
+          {% csrf_token %}
 
-                {% csrf_token %}
+          {{ form.as_p }}
 
-                {{ form.as_p }}
-
-                <button class="btn btn-primary" type="submit" name="pendiente" value="True">
-                    Guardar
-                </button>
-                
-            </form>
-        </div>
+          <button class="btn btn-primary" type="submit" name="pendiente" value="True">Guardar</button>
+        </form>
+      </div>
     </div>
-</main>
-
+  </main>
 {% endblock %}

@@ -6,10 +6,17 @@ from .options import *
 class SolicitudForm(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['empresa', 'justificacion']
+        fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control'}),
+            'pendiente': forms.HiddenInput(),
+            'compras': forms.HiddenInput(),
+            'finanzas': forms.HiddenInput(),
+            'sistemas': forms.HiddenInput(),
+            'rechazado_compras': forms.HiddenInput(),
+            'rechazado_finanzas': forms.HiddenInput(),
+            'rechazado_sistemas': forms.HiddenInput(),
         }
 
 class MaterialForm(forms.ModelForm):
@@ -23,15 +30,6 @@ class MaterialForm(forms.ModelForm):
             'familia': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-familia select-familia', 'initial':''}),
             'subfamilia': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
             'unidad_medida': forms.Select(choices=DEFAULT_LIST, attrs={'class':'form-control material-unidad-medida select-unidad-medida', 'initial':''}),
-        }
-
-class SolicitudMaterialDetailForm(forms.ModelForm):
-    class Meta:
-        model = MaterialSolicitud
-        fields = ['empresa', 'justificacion']
-        widgets = {
-            'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
-            'justificacion': forms.Textarea(attrs={'class':'form-control'}),
         }
 
 class MaterialDetailForm(forms.ModelForm):
@@ -48,32 +46,70 @@ class MaterialDetailForm(forms.ModelForm):
             'unidad_medida': forms.TextInput(attrs={'class':'form-control material-unidad-medida'}),
         }
 
-class MaterialFormForCompras(forms.ModelForm):
+class SolicitudDetailForm(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['empresa', 'justificacion', 'compras']
+        fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control'}),
-            'compras': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'pendiente': forms.HiddenInput(),
+            'compras': forms.HiddenInput(),
+            'finanzas': forms.HiddenInput(),
+            'sistemas': forms.HiddenInput(),
+            'rechazado_compras': forms.HiddenInput(),
+            'rechazado_finanzas': forms.HiddenInput(),
+            'rechazado_sistemas': forms.HiddenInput(),
+            'comentarios': forms.TextInput(attrs={'class':'form-control', 'readonly':'readonly'})
         }
 
-class MaterialFormForFinanzas(forms.ModelForm):
+class SolicitudFormForCompras(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['empresa', 'justificacion', 'finanzas']
+        fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control'}),
-            'finanzas': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'pendiente': forms.HiddenInput(),
+            'compras': forms.HiddenInput(),
+            'finanzas': forms.HiddenInput(),
+            'sistemas': forms.HiddenInput(),
+            'rechazado_compras': forms.HiddenInput(),
+            'rechazado_finanzas': forms.HiddenInput(),
+            'rechazado_sistemas': forms.HiddenInput(),
+            'comentarios': forms.TextInput(attrs={'class':'form-control'})
         }
 
-class MaterialFormForSistemas(forms.ModelForm):
+class SolicitudFormForFinanzas(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['empresa', 'justificacion', 'sistemas']
+        fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control'}),
-            'sistemas': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'pendiente': forms.HiddenInput(),
+            'compras': forms.HiddenInput(),
+            'finanzas': forms.HiddenInput(),
+            'sistemas': forms.HiddenInput(),
+            'rechazado_compras': forms.HiddenInput(),
+            'rechazado_finanzas': forms.HiddenInput(),
+            'rechazado_sistemas': forms.HiddenInput(),
+            'comentarios': forms.TextInput(attrs={'class':'form-control'})
+        }
+
+class SolicitudFormForSistemas(forms.ModelForm):
+    class Meta:
+        model = MaterialSolicitud
+        fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
+        widgets = {
+            'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
+            'justificacion': forms.Textarea(attrs={'class':'form-control'}),
+            'pendiente': forms.HiddenInput(),
+            'compras': forms.HiddenInput(),
+            'finanzas': forms.HiddenInput(),
+            'sistemas': forms.HiddenInput(),
+            'rechazado_compras': forms.HiddenInput(),
+            'rechazado_finanzas': forms.HiddenInput(),
+            'rechazado_sistemas': forms.HiddenInput(),
+            'comentarios': forms.TextInput(attrs={'class':'form-control'})
         }

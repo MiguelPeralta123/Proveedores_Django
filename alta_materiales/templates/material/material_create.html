@@ -1,36 +1,31 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<main class="container py-5 mt-5">
+  <main class="container py-5 mt-5">
     <div class="row d-flex justify-content-center">
-        <div class="col-md-6 align-self-center mx-auto">
+      <div class="col-md-6 align-self-center mx-auto">
+        <form class="card card-body" method="POST">
+          <h1 class="mb-4">Registrar material</h1>
+          {{ error }}
+          {% csrf_token %}
+          {{ solicitud_form.as_p }}
 
-          <form class="card card-body" method="POST">
-            <h1 class="mb-4">Registrar material</h1>
-            {{ error }}
-            {% csrf_token %}
-            {{ solicitud_form.as_p }}
+          <h3>Materiales</h3>
+          {{ material_formset.management_form }}
+          <div id="material-forms">
+            {% for material_form in material_formset %}
+              <div class="material-form">{{ material_form.as_p }}</div>
+            {% endfor %}
+          </div>
 
-            <h3>Materiales</h3>
-            {{ material_formset.management_form }}
-            <div id="material-forms">
-              {% for material_form in material_formset %}
-                <div class="material-form">
-                  {{ material_form.as_p }}
-                </div>
-              {% endfor %}
-            </div>
-
-            <button class="btn btn-primary mb-2" type="button" id="add-material">Agregar Material</button>
-            <button class="btn btn-primary" type="submit">Guardar</button>
-          </form>
-
-        </div>
+          <button class="btn btn-primary mb-2" type="button" id="add-material">Agregar Material</button>
+          <button class="btn btn-primary" type="submit" name="pendiente" value="True">Guardar</button>
+        </form>
+      </div>
     </div>
-</main>
+  </main>
 
-<script>
+  <script>
   document.addEventListener('DOMContentLoaded', function() {
     const addButton = document.getElementById('add-material');
     const materialFormsContainer = document.getElementById('material-forms');
@@ -157,5 +152,4 @@
     });
   });
   </script>
-
 {% endblock %}

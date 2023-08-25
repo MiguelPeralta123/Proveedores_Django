@@ -1,49 +1,47 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ProveedorForm, ProveedorDetailForm, ProveedorFormForCompras, ProveedorFormForFinanzas, ProveedorFormForSistemas
+from .forms import *
 from .models import Proveedor
-# Decorator to protect routes from accessing before sign in
 from django.contrib.auth.decorators import login_required
 
-# Create your views here.
-
 # VISTA DE INICIO
+# Decorator to force login. The return route is defined in proveedores/settings.py
 
-# Using the decorator to force login, the return route to login is defined in proveedores/settings.py
+
 @login_required
 def home(request):
     return render(request, 'home.html')
 
-
 # VISTAS DE PROVEEDOR (GET ALL, CREATE, DETAIL)
+
 
 @login_required
 def proveedor(request):
-    # Si el usuario tiene permisos de compras, podrá ver las solicitudes de todos los usuarios
+    # Compras, finanzas y sistemas pueden ver las solicitudes de todos los usuarios
     if request.user.compras:
         # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por compras
-        proveedores = Proveedor.objects.filter(pendiente = True)
+        proveedores = Proveedor.objects.filter(pendiente=True)
+    elif request.user.finanzas:
+        # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por finanzas
+        proveedores = Proveedor.objects.filter(compras=True)
+    elif request.user.sistemas:
+        # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por sistemas
+        proveedores = Proveedor.objects.filter(finanzas=True)
     else:
-        if request.user.finanzas:
-            # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por finanzas
-            proveedores = Proveedor.objects.filter(compras = True)
-        else:
-            if request.user.sistemas:
-                # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por sistemas
-                proveedores = Proveedor.objects.filter(finanzas = True)
-            else:
-                # Trayendo de la base de datos los proveedores que correspondan al usuario logueado
-                proveedores = Proveedor.objects.filter(usuario = request.user)
+        # Trayendo de la base de datos los proveedores que correspondan al usuario logueado
+        proveedores = Proveedor.objects.filter(usuario=request.user)
+
     return render(request, 'proveedor/proveedor.html', {
-            'proveedores': proveedores
-        })
+        'proveedores': proveedores
+    })
+
 
 @login_required
 def proveedor_create(request):
-    # Verificamos si el usuario tiene permisos para requerir, en caso contrario, lo redireccionamos a la ventana de proveedores
     if request.user.puede_comprar:
         if request.method == 'GET':
-            default_values = {'pendiente':False, 'compras':False, 'finanzas':False, 'sistemas':False, 'aprobado':False, 'rechazado_compras':False, 'rechazado_finanzas':False, 'rechazado_sistemas':False}
-        
+            default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False}
+
             return render(request, 'proveedor/proveedor_create.html', {
                 'form': ProveedorForm(initial=default_values)
             })
@@ -62,47 +60,57 @@ def proveedor_create(request):
     else:
         return redirect('proveedor')
 
+
 @login_required
 def proveedor_detail(request, proveedor_id):
-    # Traemos el proveedor que tenga el id que seleccionamos
     proveedor = get_object_or_404(Proveedor, pk=proveedor_id)
+
     if request.method == 'GET':
-
-        default_values = {'pendiente':False, 'compras':False, 'finanzas':False, 'sistemas':False, 'aprobado':False, 'rechazado_compras':False, 'rechazado_finanzas':False, 'rechazado_sistemas':False}
-
+        default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
+                          'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False}
         if request.user.compras:
-            form = ProveedorFormForCompras(instance=proveedor, initial=default_values)
+            proveedor_form = ProveedorFormForCompras(
+                instance=proveedor, initial=default_values)
+        elif request.user.finanzas:
+            proveedor_form = ProveedorFormForFinanzas(
+                instance=proveedor, initial=default_values)
+        elif request.user.sistemas:
+            proveedor_form = ProveedorFormForSistemas(
+                instance=proveedor, initial=default_values)
         else:
-            if request.user.finanzas:
-                form = ProveedorFormForFinanzas(instance=proveedor, initial=default_values)
-            else:
-                if request.user.sistemas:
-                    form = ProveedorFormForSistemas(instance=proveedor, initial=default_values)
-                else:
-                    form = ProveedorDetailForm(instance=proveedor, initial=default_values)
+            proveedor_form = ProveedorDetailForm(
+                instance=proveedor, initial=default_values)
+            
         return render(request, 'proveedor/proveedor_detail.html', {
             'proveedor': proveedor,
-            'form': form,
+            'proveedor_form': proveedor_form,
             'current_user': request.user
         })
     else:
         try:
             if request.user.compras:
-                form = ProveedorFormForCompras(request.POST, instance=proveedor)
+                proveedor_form = ProveedorFormForCompras(
+                    request.POST, instance=proveedor)
             else:
                 if request.user.finanzas:
-                    form = ProveedorFormForFinanzas(request.POST, instance=proveedor)
+                    proveedor_form = ProveedorFormForFinanzas(
+                        request.POST, instance=proveedor)
                 else:
                     if request.user.sistemas:
-                        form = ProveedorFormForSistemas(request.POST, instance=proveedor)
+                        proveedor_form = ProveedorFormForSistemas(
+                            request.POST, instance=proveedor)
                     else:
-                        form = ProveedorDetailForm(request.POST, instance=proveedor)
-            form.save()
-            return redirect('proveedor')
+                        proveedor_form = ProveedorDetailForm(
+                            request.POST, instance=proveedor)
+                        
+            if proveedor_form.is_valid():
+                proveedor_form.save()
+                return redirect('proveedor')
+            
         except ValueError:
-            form = ProveedorDetailForm(instance=proveedor)
+            proveedor_form = ProveedorDetailForm(instance=proveedor)
             return render(request, 'proveedor/proveedor_detail.html', {
                 'proveedor': proveedor,
-                'form': form,
+                'proveedor_form': proveedor_form,
                 'error': 'Se produjo un error al actualizar, intente de nuevo'
             })

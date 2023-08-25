@@ -1,36 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<main class="container py-5 mt-5">
+  <main class="container py-5 mt-5">
     <div class="row d-flex justify-content-center">
-        <div class="col-md-6 align-self-center mx-auto">
+      <div class="col-md-6 align-self-center mx-auto">
+        <form class="card card-body" method="POST">
+          <h1 class="mb-4">Detalle de la solicitud</h1>
+          {{ error }}
+          {% csrf_token %}
 
-            <form class="card card-body" method="POST">
-                <h1 class="mb-4">Detalle de la solicitud</h1>
-                {{ error }}
-                {% csrf_token %}
-                {{ solicitud_form.as_p }}
+          {{ solicitud_form.as_p }}
 
-                <h3>Materiales</h3>
-                <div id="material-forms">
-                {% for form in material_forms %}
-                    <div class="material-form">
-                        {{ form.as_p }}
-                        <hr />
-                    </div>
-                {% endfor %}
-                </div>
+          <h3>Materiales</h3>
+          <div id="material-forms">
+            {% for form in material_forms %}
+              <div class="material-form">
+                {{ form.as_p }}
+                <hr />
+              </div>
+            {% endfor %}
+          </div>
 
-                <button class="btn btn-primary" type="submit" style="margin: 10px 0;">
-                    Actualizar
-                </button>
-            </form>
-        </div>
+          <div id="buttons-container">
+            {% if solicitud.pendiente == True and current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False or solicitud.rechazado_compras == True or solicitud.rechazado_finanzas == True or solicitud.rechazado_sistemas == True %}
+              <button class="btn btn-primary" style="margin: 10px 0;" type="submit" name="pendiente" value="True">Guardar cambios</button>
+            {% endif %}
+
+            {% if current_user.compras == True %}
+              <button class="btn btn-primary btn-approve" style="margin: 10px 0;" type="submit" name="compras" value="True">Aprobar compras</button>
+
+              <button class="btn btn-primary btn-reject" style="margin: 10px 0;" type="submit" name="rechazado_compras" value="True">Rechazar compras</button>
+            {% endif %}
+
+            {% if current_user.finanzas == True %}
+              <button class="btn btn-primary btn-approve" style="margin: 10px 0;" type="submit" name="finanzas" value="True">Aprobar finanzas</button>
+
+              <button class="btn btn-primary btn-reject" style="margin: 10px 0;" type="submit" name="rechazado_finanzas" value="True">Rechazar finanzas</button>
+            {% endif %}
+
+            {% if current_user.sistemas == True %}
+              <button class="btn btn-primary btn-approve" style="margin: 10px 0;" type="submit" name="sistemas" value="True">Aprobar sistemas</button>
+
+              <button class="btn btn-primary btn-reject" style="margin: 10px 0;" type="submit" name="rechazado_sistemas" value="True">Rechazar sistemas</button>
+            {% endif %}
+          </div>
+        </form>
+      </div>
     </div>
-</main>
+  </main>
 
-<script>
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
       const materialFormsContainer = document.getElementById('material-forms');
   
@@ -119,7 +138,18 @@
         tipo.addEventListener("change", actualizarOpcionesFamilia)
         familia.addEventListener("change", actualizarOpcionesSubfamilia)
       });
-    });
-</script>
 
+      const buttonsContainer = document.getElementById('buttons-container');
+      const comentarios = document.getElementById('id_comentarios');
+      
+      buttonsContainer.addEventListener('click', function(event) {  
+        if (event.target && event.target.classList.contains('btn-reject')) {
+          comentarios.setAttribute('required', 'true')
+        }
+        if (event.target && event.target.classList.contains('btn-approve')) {
+          comentarios.removeAttribute('required')
+        }
+      });
+    });
+  </script>
 {% endblock %}
