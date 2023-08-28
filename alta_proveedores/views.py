@@ -16,18 +16,13 @@ def home(request):
 
 @login_required
 def proveedor(request):
-    # Compras, finanzas y sistemas pueden ver las solicitudes de todos los usuarios
     if request.user.compras:
-        # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por compras
         proveedores = Proveedor.objects.filter(pendiente=True)
     elif request.user.finanzas:
-        # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por finanzas
         proveedores = Proveedor.objects.filter(compras=True)
     elif request.user.sistemas:
-        # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por sistemas
         proveedores = Proveedor.objects.filter(finanzas=True)
     else:
-        # Trayendo de la base de datos los proveedores que correspondan al usuario logueado
         proveedores = Proveedor.objects.filter(usuario=request.user)
 
     return render(request, 'proveedor/proveedor.html', {

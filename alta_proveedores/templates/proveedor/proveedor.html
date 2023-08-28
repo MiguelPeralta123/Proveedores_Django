@@ -4,38 +4,39 @@
 
 <main class="container py-5 mt-5">
 
-    <div class="row">
+    <div class="row mt-5">
 
         <div class="col-md-6 offset-md-3">
 
             <h1 class="text-center display-5">Solicitudes de proveedores</h1>
 
-            <ul style="list-style-type: none;" class="list-group mt-3">
+            <ul style="list-style-type: none;" class="list-group mt-4">
                 {% for proveedor in proveedores %}
                 <a class="list-group-item" href="{% url 'proveedor_detail' proveedor.id %}">
                     <h2>{{proveedor.nombre_comercial}}</h2>
+                    <p><b>Folio solicitud:</b> {{proveedor.id}}</p>
                     <p>{{proveedor.fecha}}</p>
                     <section class="d-flex justify-content-between">
                         <p>Empresa: {{proveedor.empresa}}</p>
                         <p>Solicitante: {{proveedor.usuario.get_full_name}}</p>
                     </section>
                     {% if proveedor.pendiente %}
-                    <p class="text-success">🕐 Pendiente</p>
+                    <p class="text-success">🕐 Pendiente aprobación</p>
                     {% endif %}
                     {% if proveedor.compras %}
-                    <p class="text-success">✅ Compras</p>
+                    <p class="text-success">✅ Aprobado por compras</p>
                     {% endif %}
                     {% if proveedor.rechazado_compras %}
                     <p class="text-success">❌ Rechazado por compras</p>
                     {% endif %}
                     {% if proveedor.finanzas %}
-                    <p class="text-success">✅ Finanzas</p>
+                    <p class="text-success">✅ Aprobado por finanzas</p>
                     {% endif %}
                     {% if proveedor.rechazado_finanzas %}
                     <p class="text-success">❌ Rechazado por finanzas</p>
                     {% endif %}
                     {% if proveedor.sistemas %}
-                    <p class="text-success">✅ Aprobado</p>
+                    <p class="text-success">✅ Aprobado por sistemas</p>
                     {% endif %}
                     {% if proveedor.rechazado_sistemas %}
                     <p class="text-success">❌ Rechazado por sistemas</p>

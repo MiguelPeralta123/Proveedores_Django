@@ -2,25 +2,30 @@
 
 {% block content %}
   <main class="container py-5 mt-5">
-    <section class="card card-body">
+    <section class="card card-body mt-5">
       <h1 class="text-center display-5 py-3">Alta de proveedores, clientes y materiales</h1>
 
       {% if user.puede_comprar %}
-        <p class="mt-3">Seleccione la siguiente opción para crear una nueva solicitud de alta de proveedor.</p>
+        <p class="mt-3 ms-3 fw-bold">Seleccione la siguiente opción para crear una solicitud de alta de proveedor.</p>
 
-        <a class="btn btn-primary" href="proveedores/crear">Crear proveedor</a>
+        <a class="btn" href="proveedores/crear" 
+        style="background-color: #008841; color: white; font-weight: bold;">Crear proveedor</a>
 
-        <p class="mt-3">Seleccione la siguiente opción para crear una nueva solicitud de alta de material.</p>
+        <p class="mt-3 ms-3 fw-bold">Seleccione la siguiente opción para crear una solicitud de alta de material.</p>
 
-        <a class="btn btn-primary" href="materiales/crear">Crear material</a>
+        <a class="btn" href="materiales/crear" 
+        style="background-color: #008841; color: white; font-weight: bold;">Crear material</a>
+        
       {% else %}
-        <p class="mt-3">Aprobar solicitudes de alta de proveedor.</p>
+        <p class="mt-3 ms-3 fw-bold">Aprobar solicitudes de alta de proveedor.</p>
 
-        <a class="btn btn-primary" href="proveedores">Ver solicitudes</a>
+        <a class="btn" href="proveedores" 
+        style="background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
 
-        <p class="mt-3">Aprobar solicitudes de alta de material.</p>
+        <p class="mt-3 ms-3 fw-bold">Aprobar solicitudes de alta de material.</p>
 
-        <a class="btn btn-primary" href="./materiales">Ver solicitudes</a>
+        <a class="btn" href="./materiales" 
+        style="background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
       {% endif %}
     </section>
   </main>

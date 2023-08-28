@@ -299,7 +299,6 @@ TIPO_TERCERO_LIST = [
 
 RETENCION_IVA_LIST = [
     ('', 'Seleccione una opción'),
-    ('No', 'No'),
     ('0', '0'),
     ('3%', '3%'),
     ('4%', '4%'),
@@ -317,8 +316,9 @@ RETENCION_ISR_LIST = [
 
 IVA_FRONTERA_LIST = [
     ('', 'Seleccione una opción'),
-    ('No', 'No'),
-    ('Si', 'Si'),
+    ('0', '0'),
+    ('8%', '8%'),
+    ('16%', '16%'),
 ]
 
 BANCO_LIST = [

@@ -2,7 +2,7 @@
 
 {% block content %}
   <main class="container py-5 mt-5">
-    <div class="row d-flex justify-content-center">
+    <div class="row d-flex justify-content-center mt-5">
       <div class="col-md-6 align-self-center mx-auto">
         <form class="card card-body" method="POST" enctype="multipart/form-data">
           <h1 class="mb-4">Registrar proveedor</h1>
@@ -13,9 +13,70 @@
 
           {{ form.as_p }}
 
-          <button class="btn btn-primary" type="submit" name="pendiente" value="True">Guardar</button>
+          <ul id="lista-errores" style="display:none;">
+            <hr />
+            <p class="mb-0"><b>Se encontraron los siguientes errores:</b></p>
+            <li id="error-rfc" style="display:none; color:red;">El RFC no tiene un formato válido.</li>
+            <li id="error-curp" style="display:none; color:red;">La CURP no tiene un formato válido.</li>
+          </ul>
+
+          <button id="btn-guardar" class="btn" type="submit" name="pendiente" value="True" 
+          style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
         </form>
       </div>
     </div>
   </main>
+
+  <script>
+    const rfcInput = document.getElementById('id_rfc')
+    const curpInput = document.getElementById('id_curp')
+    const listaErrores = document.getElementById('lista-errores')
+    const errorRfc = document.getElementById('error-rfc')
+    const errorCurp = document.getElementById('error-curp')
+    const btnGuardar = document.getElementById('btn-guardar')
+    const rfcPattern = /^[A-Za-z]{4}\d{6}[A-Za-z\d]{3}$/
+    const rfcPattern2 = /^[A-Za-z]{3}\d{6}[A-Za-z\d]{3}$/
+    const curpPattern = /^[A-Za-z]{4}\d{6}[A-Za-z]{6}[A-Za-z\d]{2}$/
+
+    // Validacion RFC
+    rfcInput.addEventListener('input', () => {
+      const rfc = rfcInput.value
+      const curp = curpInput.value
+      if ((rfcPattern.test(rfc) || rfcPattern2.test(rfc)) && curpPattern.test(curp)) {
+        listaErrores.style.display = 'none'
+        btnGuardar.disabled = false
+      }
+      else {
+        listaErrores.style.display = 'block'
+        btnGuardar.disabled = true
+      }
+      if (rfcPattern.test(rfc) || rfcPattern2.test(rfc)) {
+        errorRfc.style.display = 'none'
+      }
+      else {
+        errorRfc.style.display = 'block'
+      }
+    })
+
+    // Validacion CURP
+    curpInput.addEventListener('input', () => {
+      const rfc = rfcInput.value
+      const curp = curpInput.value
+      if ((rfcPattern.test(rfc) || rfcPattern2.test(rfc)) && curpPattern.test(curp)) {
+        listaErrores.style.display = 'none'
+        btnGuardar.disabled = false
+      }
+      else {
+        listaErrores.style.display = 'block'
+        btnGuardar.disabled = true
+      }
+      if (curpPattern.test(curp)) {
+        errorCurp.style.display = 'none'
+      }
+      else {
+        errorCurp.style.display = 'block'
+      }
+    })
+
+  </script>
 {% endblock %}

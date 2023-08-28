@@ -19,7 +19,7 @@ class Proveedor(models.Model):
     uso_cdfi = models.CharField(max_length=100)
     representante_legal = models.CharField(max_length=50, blank=True)
     telefono_1 = models.CharField(max_length=10)
-    telefono_2 = models.CharField(max_length=10)
+    telefono_2 = models.CharField(max_length=10, blank=True)
     contacto = models.CharField(max_length=50)
     grupo = models.CharField(max_length=50)
     correo_general = models.CharField(max_length=40)

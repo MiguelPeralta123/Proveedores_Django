@@ -9,7 +9,7 @@ class SolicitudForm(forms.ModelForm):
         fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
-            'justificacion': forms.Textarea(attrs={'class':'form-control'}),
+            'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
             'pendiente': forms.HiddenInput(),
             'compras': forms.HiddenInput(),
             'finanzas': forms.HiddenInput(),
@@ -52,7 +52,7 @@ class SolicitudDetailForm(forms.ModelForm):
         fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
-            'justificacion': forms.Textarea(attrs={'class':'form-control'}),
+            'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
             'pendiente': forms.HiddenInput(),
             'compras': forms.HiddenInput(),
             'finanzas': forms.HiddenInput(),
@@ -69,7 +69,7 @@ class SolicitudFormForCompras(forms.ModelForm):
         fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
-            'justificacion': forms.Textarea(attrs={'class':'form-control'}),
+            'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
             'pendiente': forms.HiddenInput(),
             'compras': forms.HiddenInput(),
             'finanzas': forms.HiddenInput(),
@@ -86,7 +86,7 @@ class SolicitudFormForFinanzas(forms.ModelForm):
         fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
-            'justificacion': forms.Textarea(attrs={'class':'form-control'}),
+            'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
             'pendiente': forms.HiddenInput(),
             'compras': forms.HiddenInput(),
             'finanzas': forms.HiddenInput(),
@@ -103,7 +103,7 @@ class SolicitudFormForSistemas(forms.ModelForm):
         fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
-            'justificacion': forms.Textarea(attrs={'class':'form-control'}),
+            'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
             'pendiente': forms.HiddenInput(),
             'compras': forms.HiddenInput(),
             'finanzas': forms.HiddenInput(),
