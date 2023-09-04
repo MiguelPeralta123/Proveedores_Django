@@ -72,6 +72,8 @@ def material_create(request):
                 solicitud.usuario = request.user
                 solicitud.save()
                 for material_form in material_formset:
+                    if not material_form.cleaned_data.get('nombre_producto'):
+                        continue  # Saltar formularios con nombre_producto vacío
                     material = material_form.save(commit=False)
                     material.id_solicitud = id_solicitud
                     material.save()

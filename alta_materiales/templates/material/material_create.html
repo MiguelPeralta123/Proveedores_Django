@@ -8,7 +8,20 @@
           <h1 class="mb-4">Registrar material</h1>
           {{ error }}
           {% csrf_token %}
-          {{ solicitud_form.as_p }}
+
+          <!-- Empresa field -->
+          <div style="margin-bottom:1rem;">
+            {{ solicitud_form.empresa.label_tag }}
+            {{ solicitud_form.empresa }}
+            <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Justificación field -->
+          <div style="margin-bottom:1rem;">
+            {{ solicitud_form.justificacion.label_tag }}
+            {{ solicitud_form.justificacion }}
+            <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
 
           <h3>Materiales</h3>
 
@@ -32,12 +45,14 @@
           {{ material_formset.management_form }}
           <div id="material-forms">
             {% for material_form in material_formset %}
-              <div id="material-form-0" class="material-form material-form-0">{{ material_form.as_p }}</div>
+              <div id="material-form-0" class="material-form material-form-0">
+                {{ material_form.as_p }}
+              </div>
             {% endfor %}
           </div>
 
           <button class="btn btn-secondary mb-3" type="button" id="add-material">Agregar Material</button>
-          <button class="btn" type="submit" name="pendiente" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
+          <button id="btn-guardar" class="btn" type="submit" name="pendiente" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
         </form>
       </div>
     </div>
@@ -316,5 +331,46 @@
       familia.addEventListener("change", actualizarOpcionesSubfamilia)
     });
   });
+
+  // Inputs
+  const empresa = document.getElementById('id_empresa')
+  const justificacion = document.getElementById('id_justificacion')
+  
+  // Error messages
+  const errorEmpresa = document.getElementById('error-empresa')
+  const errorJustificacion = document.getElementById('error-justificacion')
+  
+  // Buttons
+  const btnGuardar = document.getElementById('btn-guardar')
+  
+  // Validacion empresa
+  empresa.addEventListener('change', () => {
+    if (empresa.value == '') {
+      errorEmpresa.style.display = 'block'
+    } else {
+      errorEmpresa.style.display = 'none'
+    }
+    enableSaveButton()
+  })
+  
+  // Validacion justificacion
+  justificacion.addEventListener('input', () => {
+    if (justificacion.value == '') {
+      errorJustificacion.style.display = 'block'
+    } else {
+      errorJustificacion.style.display = 'none'
+    }
+    enableSaveButton()
+  })
+
+  function enableSaveButton() {
+    if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block') {
+      btnGuardar.disabled = true
+    }
+    else {
+      btnGuardar.disabled = false
+    }
+  }
+
   </script>
 {% endblock %}
