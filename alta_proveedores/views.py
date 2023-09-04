@@ -47,10 +47,10 @@ def proveedor_create(request):
                 new_proveedor.usuario = request.user
                 new_proveedor.save()
                 return redirect('proveedor')
-            except ValueError:
+            except ValueError as e:
                 return render(request, 'proveedor/proveedor_create.html', {
                     'form': ProveedorForm,
-                    'error': 'Por favor ingrese datos válidos'
+                    'error': str(e)
                 })
     else:
         return redirect('proveedor')
@@ -78,7 +78,7 @@ def proveedor_detail(request, proveedor_id):
             
         return render(request, 'proveedor/proveedor_detail.html', {
             'proveedor': proveedor,
-            'proveedor_form': proveedor_form,
+            'form': proveedor_form,
             'current_user': request.user
         })
     else:
@@ -106,6 +106,6 @@ def proveedor_detail(request, proveedor_id):
             proveedor_form = ProveedorDetailForm(instance=proveedor)
             return render(request, 'proveedor/proveedor_detail.html', {
                 'proveedor': proveedor,
-                'proveedor_form': proveedor_form,
+                'form': proveedor_form,
                 'error': 'Se produjo un error al actualizar, intente de nuevo'
             })

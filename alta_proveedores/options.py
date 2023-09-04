@@ -1,15 +1,8 @@
 EMPRESA_LIST = [
     ('', 'Seleccione una opción'),
-    ('Sonorg', 'Sonorg'),
-    ('Tago', 'Tago'),
-    ('Wichita', 'Wichita'),
-    ('Moonrise', 'Moonrise'),
-    ('Wellin', 'Wellin'),
-    ('Sonorg - Tago', 'Sonorg - Tago'),
-    ('Sonorg - Wichita', 'Sonorg - Wichita'),
-    ('Tago - Wichita', 'Tago - Wichita'),
     ('Sonorg - Tago - Wichita', 'Sonorg - Tago - Wichita'),
     ('Moonrise - Wellin', 'Moonrise - Wellin'),
+    ('Sonorg - Tago - Wichita - Moonrise - Wellin', 'Sonorg - Tago - Wichita - Moonrise - Wellin'),
 ]
 
 TIPO_ALTA_LIST = [

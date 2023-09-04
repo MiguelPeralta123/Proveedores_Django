@@ -11,72 +11,1101 @@
 
           {% csrf_token %}
 
-          {{ form.as_p }}
+          <!-- Empresa field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.empresa.label_tag }}
+            {{ form.empresa }}
+            <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
 
-          <ul id="lista-errores" style="display:none;">
+          <!-- Codigo field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.codigo.label_tag }}
+            {{ form.codigo }}
+            <p id="error-codigo" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Tipo alta field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.tipo_alta.label_tag }}
+            {{ form.tipo_alta }}
+            <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Contribuyente field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.contribuyente.label_tag }}
+            {{ form.contribuyente }}
+            <p id="error-contribuyente" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Razon social field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.razon_social.label_tag }}
+            {{ form.razon_social }}
+            <p id="error-razon-social" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- RFC field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.rfc.label_tag }}
+            {{ form.rfc }}
+            <p id="error-rfc" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
+          </div>
+
+          <!-- CURP field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.curp.label_tag }}
+            {{ form.curp }}
+            <p id="error-curp" style="color:red; margin-bottom:0; display:none;">Ingrese una CURP válida</p>
+          </div>
+
+          <!-- Regimen de capital field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.regimen_capital.label_tag }}
+            {{ form.regimen_capital }}
+            <p id="error-regimen-capital" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Nombre fiscal field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.nombre_fiscal.label_tag }}
+            {{ form.nombre_fiscal }}
+            <p id="error-nombre-fiscal" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Nombre comercial field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.nombre_comercial.label_tag }}
+            {{ form.nombre_comercial }}
+            <p id="error-nombre-comercial" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Regimen fiscal field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.regimen_fiscal.label_tag }}
+            {{ form.regimen_fiscal }}
+            <p id="error-regimen-fiscal" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Uso cfdi field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.uso_cfdi.label_tag }}
+            {{ form.uso_cfdi }}
+            <p id="error-uso-cfdi" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Representante legal field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.representante_legal.label_tag }}
+            {{ form.representante_legal }}
+            <p id="error-representante-legal" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Telefono 1 field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.telefono_1.label_tag }}
+            {{ form.telefono_1 }}
+            <p id="error-telefono-1" style="color:red; margin-bottom:0; display:none;">Ingrese un número a 10 dígitos</p>
+          </div>
+
+          <!-- Telefono 2 field -->
+          <div style="margin-bottom:2rem;">
+            {{ form.telefono_2.label_tag }}
+            {{ form.telefono_2 }}
+            <p id="error-telefono-2" style="color:red; margin-bottom:0; display:none;">Ingrese un número a 10 dígitos</p>
+          </div>
+
+          <!-- Contacto field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.contacto.label_tag }}
+            {{ form.contacto }}
+            <p id="error-contacto" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Grupo field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.grupo.label_tag }}
+            {{ form.grupo }}
+            <p id="error-grupo" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Correo general field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.correo_general.label_tag }}
+            {{ form.correo_general }}
+            <p id="error-correo-general" style="color:red; margin-bottom:0; display:none;">Ingrese un correo electrónico válido</p>
+          </div>
+
+          <!-- Correo pagos field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.correo_pagos.label_tag }}
+            {{ form.correo_pagos }}
+            <p id="error-correo-pagos" style="color:red; margin-bottom:0; display:none;">Ingrese un correo electrónico válido</p>
+          </div>
+
+          <!-- Sitio web field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.sitio_web.label_tag }}
+            {{ form.sitio_web }}
+            <p id="error-sitio-web" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Rubro field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.rubro.label_tag }}
+            {{ form.rubro }}
+            <p id="error-rubro" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Tipo operacion field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.tipo_operacion.label_tag }}
+            {{ form.tipo_operacion }}
+            <p id="error-tipo-operacion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Tipo tercero field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.tipo_tercero.label_tag }}
+            {{ form.tipo_tercero }}
+            <p id="error-tipo-tipo-tercero" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- id fiscal field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.id_fiscal.label_tag }}
+            {{ form.id_fiscal }}
+            <p id="error-id-fiscal" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Agente aduanal field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.agente_aduanal.label_tag }}
+            {{ form.agente_aduanal }}
+            <p id="error-agente-aduanal" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Reg inc fiscal field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.reg_inc_fiscal.label_tag }}
+            {{ form.reg_inc_fiscal }}
+            <p id="error-reg-inc-fiscal" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Impuesto cedular field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.impuesto_cedular.label_tag }}
+            {{ form.impuesto_cedular }}
+            <p id="error-impuesto-cedular" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Venc s fecha field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.venc_s_fecha.label_tag }}
+            {{ form.venc_s_fecha }}
+            <p id="error-venc-s-fecha" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Dias para entrega completa field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.dias_para_entrega_completa.label_tag }}
+            {{ form.dias_para_entrega_completa }}
+            <p id="error-dias-para-entrega-completa" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Limite credito MN field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.limite_credito_MN.label_tag }}
+            {{ form.limite_credito_MN }}
+            <p id="error-limite-credito-MN" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Limite credito ME field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.limite_credito_ME.label_tag }}
+            {{ form.limite_credito_ME }}
+            <p id="error-limite-credito-ME" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Dias credito field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.dias_credito.label_tag }}
+            {{ form.dias_credito }}
+            <p id="error-dias-credito" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Monto credito field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.monto_credito.label_tag }}
+            {{ form.monto_credito }}
+            <p id="error-monto-credito" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Retencion iva field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.retencion_iva.label_tag }}
+            {{ form.retencion_iva }}
+            <p id="error-retencion-iva" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Retencion isr field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.retencion_isr.label_tag }}
+            {{ form.retencion_isr }}
+            <p id="error-retencion-isr" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Iva frontera field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.iva_frontera.label_tag }}
+            {{ form.iva_frontera }}
+            <p id="error-iva-frontera" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Codigo postal field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.codigo_postal.label_tag }}
+            {{ form.codigo_postal }}
+            <p id="error-codigo-postal" style="color:red; margin-bottom:0; display:none;">Ingrese un código postal válido</p>
+          </div>
+
+          <!-- Pais field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.pais.label_tag }}
+            {{ form.pais }}
+            <p id="error-pais" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Estado field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.estado.label_tag }}
+            {{ form.estado }}
+            <p id="error-estado" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Ciudad field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.ciudad.label_tag }}
+            {{ form.ciudad }}
+            <p id="error-ciudad" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Municipio field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.municipio.label_tag }}
+            {{ form.municipio }}
+            <p id="error-municipio" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Localidad field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.localidad.label_tag }}
+            {{ form.localidad }}
+            <p id="error-localidad" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Colonia field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.colonia.label_tag }}
+            {{ form.colonia }}
+            <p id="error-colonia" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Calle field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.calle.label_tag }}
+            {{ form.calle }}
+            <p id="error-calle" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Numero exterior field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.numero_exterior.label_tag }}
+            {{ form.numero_exterior }}
+            <p id="error-numero-exterior" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Numero interior field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.numero_interior.label_tag }}
+            {{ form.numero_interior }}
+            <p id="error-numero-interior" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
+
+          <!-- Banco field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.banco.label_tag }}
+            {{ form.banco }}
+            <p id="error-banco" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Cuenta field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.cuenta.label_tag }}
+            {{ form.cuenta }}
+            <p id="error-cuenta" style="color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 10 dígitos</p>
+          </div>
+
+          <!-- Moneda field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.moneda.label_tag }}
+            {{ form.moneda }}
+            <p id="error-moneda" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Clabe field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.clabe.label_tag }}
+            {{ form.clabe }}
+            <p id="error-clabe" style="color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 18 dígitos</p>
+          </div>
+
+          <!-- Container for banco 2 fields -->
+          <div id="banco-2-container" style="display:none;">
             <hr />
-            <p class="mb-0"><b>Se encontraron los siguientes errores:</b></p>
-            <li id="error-rfc" style="display:none; color:red;">El RFC no tiene un formato válido.</li>
-            <li id="error-curp" style="display:none; color:red;">La CURP no tiene un formato válido.</li>
-          </ul>
+            <!-- Banco 2 field -->
+            <div style="margin-bottom:1rem;">
+              {{ form.banco_2.label_tag }}
+              {{ form.banco_2 }}
+              <p id="error-banco-2" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
 
-          <button id="btn-guardar" class="btn" type="submit" name="pendiente" value="True" 
-          style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
+            <!-- Cuenta 2 field -->
+            <div style="margin-bottom:1rem;">
+              {{ form.cuenta_2.label_tag }}
+              {{ form.cuenta_2 }}
+              <p id="error-cuenta-2" style="color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 10 dígitos</p>
+            </div>
+
+            <!-- Moneda 2 field -->
+            <div style="margin-bottom:1rem;">
+              {{ form.moneda_2.label_tag }}
+              {{ form.moneda_2 }}
+              <p id="error-moneda-2" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+
+            <!-- Clabe 2 field -->
+            <div style="margin-bottom:1rem;">
+              {{ form.clabe_2.label_tag }}
+              {{ form.clabe_2 }}
+              <p id="error-clabe-2" style="color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 18 dígitos</p>
+            </div>
+          </div>
+
+          <button class="btn btn-secondary mb-3" type="button" id="add-banco-2">Agregar otro banco</button>
+
+          <!-- Usar en portal proveedores field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.usar_en_portal_proveedores.label_tag }}
+            {{ form.usar_en_portal_proveedores }}
+            <p id="error-usar-en-portal-proveedores" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- No aplica para rafaga field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.no_aplica_para_rafaga.label_tag }}
+            {{ form.no_aplica_para_rafaga }}
+            <p id="error-no-aplica-para-rafaga" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- No relacionar OC field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.no_relacionar_OC.label_tag }}
+            {{ form.no_relacionar_OC }}
+            <p id="error-no-relacionar-OC" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Constancia situacion fiscal field -->
+          <div style="margin-bottom:1rem;">
+            {{ form.constancia_situacion_fiscal.label_tag }}
+            {{ form.constancia_situacion_fiscal }}
+            <p id="error-constancia-situacion-fiscal" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Estado cuenta bancario field -->
+          <div style="margin-bottom:2rem;">
+            {{ form.estado_cuenta_bancario.label_tag }}
+            {{ form.estado_cuenta_bancario }}
+            <p id="error-estado-cuenta-bancario" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <button id="btn-guardar" class="btn" type="submit" name="pendiente" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
         </form>
       </div>
     </div>
   </main>
 
   <script>
-    const rfcInput = document.getElementById('id_rfc')
-    const curpInput = document.getElementById('id_curp')
-    const listaErrores = document.getElementById('lista-errores')
+    // Container
+    const banco2Container = document.getElementById('banco-2-container')
+
+    // Inputs
+    const empresa = document.getElementById('id_empresa')
+    const codigo = document.getElementById('id_codigo')
+    const tipoAlta = document.getElementById('id_tipo_alta')
+    const contribuyente = document.getElementById('id_contribuyente')
+    const razonSocial = document.getElementById('id_razon_social')
+    const rfc = document.getElementById('id_rfc')
+    const curp = document.getElementById('id_curp')
+    const regimenCapital = document.getElementById('id_regimen_capital')
+    const nombreFiscal = document.getElementById('id_nombre_fiscal')
+    const nombreComercial = document.getElementById('id_nombre_comercial')
+    const regimenFiscal = document.getElementById('id_regimen_fiscal')
+    const usoCfdi = document.getElementById('id_uso_cfdi')
+    const representanteLegal = document.getElementById('id_representante_legal')
+    const telefono1 = document.getElementById('id_telefono_1')
+    const telefono2 = document.getElementById('id_telefono_2')
+    const contacto = document.getElementById('id_contacto')
+    const grupo = document.getElementById('id_grupo')
+    const correoGeneral = document.getElementById('id_correo_general')
+    const correoPagos = document.getElementById('id_correo_pagos')
+    const sitioWeb = document.getElementById('id_sitio_web')
+    const rubro = document.getElementById('id_rubro')
+    const tipoOperacion = document.getElementById('id_tipo_operacion')
+    const idFiscal = document.getElementById('id_id_fiscal')
+    const agenteAduanal = document.getElementById('id_agente_aduanal')
+    const regIncFiscal = document.getElementById('id_reg_inc_fiscal')
+    const impuestoCedular = document.getElementById('id_impuesto_cedular')
+    const vencSFecha = document.getElementById('id_venc_s_fecha')
+    const diasParaEntregaCompleta = document.getElementById('id_dias_para_entrega_completa')
+    const limiteCreditoMN = document.getElementById('id_limite_credito_MN')
+    const limiteCreditoME = document.getElementById('id_limite_credito_ME')
+    const diasCredito = document.getElementById('id_dias_credito')
+    const montoCredito = document.getElementById('id_monto_credito')
+    const retencionIva = document.getElementById('id_retencion_iva')
+    const retencionIsr = document.getElementById('id_retencion_isr')
+    const ivaFrontera = document.getElementById('id_iva_frontera')
+    const codigoPostal = document.getElementById('id_codigo_postal')
+    const pais = document.getElementById('id_pais')
+    const estado = document.getElementById('id_estado')
+    const ciudad = document.getElementById('id_ciudad')
+    const municipio = document.getElementById('id_municipio')
+    const localidad = document.getElementById('id_localidad')
+    const colonia = document.getElementById('id_colonia')
+    const calle = document.getElementById('id_calle')
+    const numeroExterior = document.getElementById('id_numero_exterior')
+    const numeroInterior = document.getElementById('id_numero_interior')
+    const banco = document.getElementById('id_banco')
+    const cuenta = document.getElementById('id_cuenta')
+    const moneda = document.getElementById('id_moneda')
+    const clabe = document.getElementById('id_clabe')
+    const banco2 = document.getElementById('id_banco_2')
+    const cuenta2 = document.getElementById('id_cuenta_2')
+    const moneda2 = document.getElementById('id_moneda_2')
+    const clabe2 = document.getElementById('id_clabe_2')
+    const usarEnPortalProveedores = document.getElementById('id_usar_en_portal_proveedores')
+    const noAplicaParaRafaga = document.getElementById('id_no_aplica_para_rafaga')
+    const noRelacionarOc = document.getElementById('id_no_relacionar_oc')
+
+    // Buttons
+    const addBanco = document.getElementById('add-banco-2')
+    
+    // Error messages
+    const errorEmpresa = document.getElementById('error-empresa')
+    const errorCodigo = document.getElementById('error-codigo')
+    const errorTipoAlta = document.getElementById('error-tipo-alta')
+    const errorContribuyente = document.getElementById('error-contribuyente')
+    const errorRazonSocial = document.getElementById('error-razon-social')
     const errorRfc = document.getElementById('error-rfc')
     const errorCurp = document.getElementById('error-curp')
-    const btnGuardar = document.getElementById('btn-guardar')
+    const errorRegimenCapital = document.getElementById('error-regimen-capital')
+    const errorNombreFiscal = document.getElementById('error-nombre-fiscal')
+    const errorNombreComercial = document.getElementById('error-nombre-comercial')
+    const errorRegimenFiscal = document.getElementById('error-regimen-fiscal')
+    const errorUsoCfdi = document.getElementById('error-uso-cfdi')
+    const errorRepresentanteLegal = document.getElementById('error-representante-legal')
+    const errorTelefono1 = document.getElementById('error-telefono-1')
+    const errorTelefono2 = document.getElementById('error-telefono-2')
+    const errorContacto = document.getElementById('error-contacto')
+    const errorGrupo = document.getElementById('error-grupo')
+    const errorCorreoGeneral = document.getElementById('error-correo-general')
+    const errorCorreoPagos = document.getElementById('error-correo-pagos')
+    const errorSitioWeb = document.getElementById('error-sitio-web')
+    const errorRubro = document.getElementById('error-rubro')
+    const errorTipoOperacion = document.getElementById('error-tipo-operacion')
+    const errorIdFiscal = document.getElementById('error-id-fiscal')
+    const errorAgenteAduanal = document.getElementById('error-agente-aduanal')
+    const errorRegIncFiscal = document.getElementById('error-reg-inc-fiscal')
+    const errorImpuestoCedular = document.getElementById('error-impuesto-cedular')
+    const errorVencSFecha = document.getElementById('error-venc-s-fecha')
+    const errorDiasParaEntregaCompleta = document.getElementById('error-dias-para-entrega-completa')
+    const errorLimiteCreditoMN = document.getElementById('error-limite-credito-MN')
+    const errorLimiteCreditoME = document.getElementById('error-limite-credito-ME')
+    const errorDiasCredito = document.getElementById('error-dias-credito')
+    const errorMontoCredito = document.getElementById('error-monto-credito')
+    const errorRetencionIva = document.getElementById('error-retencion-iva')
+    const errorRetencionIsr = document.getElementById('error-retencion-isr')
+    const errorIvaFrontera = document.getElementById('error-iva-frontera')
+    const errorCodigoPostal = document.getElementById('error-codigo-postal')
+    const errorPais = document.getElementById('error-pais')
+    const errorEstado = document.getElementById('error-estado')
+    const errorCiudad = document.getElementById('error-ciudad')
+    const errorMunicipio = document.getElementById('error-municipio')
+    const errorLocalidad = document.getElementById('error-localidad')
+    const errorColonia = document.getElementById('error-colonia')
+    const errorCalle = document.getElementById('error-calle')
+    const errorNumeroExterior = document.getElementById('error-numero-exterior')
+    const errorNumeroInterior = document.getElementById('error-numero-interior')
+    const errorBanco = document.getElementById('error-banco')
+    const errorCuenta = document.getElementById('error-cuenta')
+    const errorMoneda = document.getElementById('error-moneda')
+    const errorClabe = document.getElementById('error-clabe')
+    const errorBanco2 = document.getElementById('error-banco-2')
+    const errorCuenta2 = document.getElementById('error-cuenta-2')
+    const errorMoneda2 = document.getElementById('error-moneda-2')
+    const errorClabe2 = document.getElementById('error-clabe-2')
+    const errorUsarEnPortalProveedores = document.getElementById('error-usar-en-portal-proveedores')
+    const errorNoAplicaParaRafaga = document.getElementById('error-no-aplica-para-rafaga')
+    const errorNoRelacionarOc = document.getElementById('error-no-relacionar-OC')
+    
+    // Regular expressions
     const rfcPattern = /^[A-Za-z]{4}\d{6}[A-Za-z\d]{3}$/
     const rfcPattern2 = /^[A-Za-z]{3}\d{6}[A-Za-z\d]{3}$/
     const curpPattern = /^[A-Za-z]{4}\d{6}[A-Za-z]{6}[A-Za-z\d]{2}$/
+    const telefonoPattern = /^\d{10}$/
+    const correoPattern = /^[A-Za-z\d._%+-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}$/
+    const codigoPostalPattern = /^\d{5}$/
+    const cuentaPattern = /^\d{10}$/
+    const clabePattern = /^\d{18}$/
+    
+    const btnGuardar = document.getElementById('btn-guardar')
+    
+    // Validacion empresa
+    empresa.addEventListener('change', () => {
+      if (empresa.value == '') {
+        errorEmpresa.style.display = 'block'
+      } else {
+        errorEmpresa.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion codigo
+    codigo.addEventListener('input', () => {
+      if (codigo.value == '') {
+        errorCodigo.style.display = 'block'
+      } else {
+        errorCodigo.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion tipo alta
+    tipoAlta.addEventListener('change', () => {
+      if (tipoAlta.value == '') {
+        errorTipoAlta.style.display = 'block'
+      } else {
+        errorTipoAlta.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion contribuyente
+    contribuyente.addEventListener('change', () => {
+      if (contribuyente.value == '') {
+        errorContribuyente.style.display = 'block'
+      } else {
+        errorContribuyente.style.display = 'none'
 
-    // Validacion RFC
-    rfcInput.addEventListener('input', () => {
-      const rfc = rfcInput.value
-      const curp = curpInput.value
-      if ((rfcPattern.test(rfc) || rfcPattern2.test(rfc)) && curpPattern.test(curp)) {
-        listaErrores.style.display = 'none'
-        btnGuardar.disabled = false
+        // Curp is mandatory only for personas físicas
+        if(contribuyente.value == 'Persona física') {
+          curp.required = true
+          curp.disabled = false
+        }
+        else {
+          curp.required = false
+          curp.disabled = true
+          curp.value = ''
+          errorCurp.style.display = 'none'
+        }
       }
-      else {
-        listaErrores.style.display = 'block'
-        btnGuardar.disabled = true
+      enableSaveButton()
+    })
+    
+    // Validacion razon social
+    razonSocial.addEventListener('input', () => {
+      if (razonSocial.value == '') {
+        errorRazonSocial.style.display = 'block'
+      } else {
+        errorRazonSocial.style.display = 'none'
       }
-      if (rfcPattern.test(rfc) || rfcPattern2.test(rfc)) {
+      enableSaveButton()
+    })
+    
+    // Validacion rfc
+    rfc.addEventListener('input', () => {
+      if (rfcPattern.test(rfc.value) || rfcPattern2.test(rfc.value)) {
         errorRfc.style.display = 'none'
-      }
-      else {
+      } else {
         errorRfc.style.display = 'block'
       }
+      enableSaveButton()
     })
-
-    // Validacion CURP
-    curpInput.addEventListener('input', () => {
-      const rfc = rfcInput.value
-      const curp = curpInput.value
-      if ((rfcPattern.test(rfc) || rfcPattern2.test(rfc)) && curpPattern.test(curp)) {
-        listaErrores.style.display = 'none'
-        btnGuardar.disabled = false
-      }
-      else {
-        listaErrores.style.display = 'block'
-        btnGuardar.disabled = true
-      }
-      if (curpPattern.test(curp)) {
+    
+    // Validacion curp
+    curp.addEventListener('input', () => {
+      if (curpPattern.test(curp.value)) {
         errorCurp.style.display = 'none'
-      }
-      else {
+      } else {
         errorCurp.style.display = 'block'
       }
+      enableSaveButton()
     })
+    
+    // Validacion regimen de capital
+    regimenCapital.addEventListener('change', () => {
+      if (regimenCapital.value == '') {
+        errorRegimenCapital.style.display = 'block'
+      } else {
+        errorRegimenCapital.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion nombre fiscal
+    nombreFiscal.addEventListener('input', () => {
+      if (nombreFiscal.value == '') {
+        errorNombreFiscal.style.display = 'block'
+      } else {
+        errorNombreFiscal.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion nombre comercial
+    nombreComercial.addEventListener('input', () => {
+      if (nombreComercial.value == '') {
+        errorNombreComercial.style.display = 'block'
+      } else {
+        errorNombreComercial.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion regimen fiscal
+    regimenFiscal.addEventListener('change', () => {
+      if (regimenFiscal.value == '') {
+        errorRegimenFiscal.style.display = 'block'
+      } else {
+        errorRegimenFiscal.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion uso cfdi
+    usoCfdi.addEventListener('change', () => {
+      if (usoCfdi.value == '') {
+        errorUsoCfdi.style.display = 'block'
+      } else {
+        errorUsoCfdi.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion telefono 1
+    telefono1.addEventListener('input', () => {
+      if (telefonoPattern.test(telefono1.value)) {
+        errorTelefono1.style.display = 'none'
+      } else {
+        errorTelefono1.style.display = 'block'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion telefono 2
+    telefono2.addEventListener('input', () => {
+      if (telefono2.value == '' || telefonoPattern.test(telefono2.value)) {
+        errorTelefono2.style.display = 'none'
+      } else {
+        errorTelefono2.style.display = 'block'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion telefono 2
+    telefono2.addEventListener('input', () => {
+      if (telefono1.value.length < 10) {
+        errorTelefono1.style.display = 'block'
+      } else {
+        errorTelefono1.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion correo general
+    correoGeneral.addEventListener('input', () => {
+      if (correoPattern.test(correoGeneral.value)) {
+        errorCorreoGeneral.style.display = 'none'
+      } else {
+        errorCorreoGeneral.style.display = 'block'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion correo pagos
+    correoPagos.addEventListener('input', () => {
+      if (correoPattern.test(correoPagos.value)) {
+        errorCorreoPagos.style.display = 'none'
+      } else {
+        errorCorreoPagos.style.display = 'block'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion rubro
+    rubro.addEventListener('change', () => {
+      if (rubro.value == '') {
+        errorRubro.style.display = 'block'
+      } else {
+        errorRubro.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion tipo operacion
+    tipoOperacion.addEventListener('change', () => {
+      if (tipoOperacion.value == '') {
+        errorTipoOperacion.style.display = 'block'
+      } else {
+        errorTipoOperacion.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion id fiscal
+    idFiscal.addEventListener('input', () => {
+      if (idFiscal.value == '') {
+        errorIdFiscal.style.display = 'block'
+      } else {
+        errorIdFiscal.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion agente aduanal
+    agenteAduanal.addEventListener('input', () => {
+      if (agenteAduanal.value == '') {
+        errorAgenteAduanal.style.display = 'block'
+      } else {
+        errorAgenteAduanal.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion reg inc fiscal
+    regIncFiscal.addEventListener('input', () => {
+      if (regIncFiscal.value == '') {
+        errorRegIncFiscal.style.display = 'block'
+      } else {
+        errorRegIncFiscal.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion impuesto cedular
+    impuestoCedular.addEventListener('input', () => {
+      if (impuestoCedular.value == '') {
+        errorImpuestoCedular.style.display = 'block'
+      } else {
+        errorImpuestoCedular.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion dias para entrega completa
+    diasParaEntregaCompleta.addEventListener('input', () => {
+      if (diasParaEntregaCompleta.value == '') {
+        errorDiasParaEntregaCompleta.style.display = 'block'
+      } else {
+        errorDiasParaEntregaCompleta.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion limite credito MN
+    limiteCreditoMN.addEventListener('input', () => {
+      if (limiteCreditoMN.value == '') {
+        errorLimiteCreditoMN.style.display = 'block'
+      } else {
+        errorLimiteCreditoMN.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion limite credito ME
+    limiteCreditoME.addEventListener('input', () => {
+      if (limiteCreditoME.value == '') {
+        errorLimiteCreditoME.style.display = 'block'
+      } else {
+        errorLimiteCreditoME.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion dias credito
+    diasCredito.addEventListener('input', () => {
+      if (diasCredito.value == '') {
+        errorDiasCredito.style.display = 'block'
+      } else {
+        errorDiasCredito.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion monto credito
+    montoCredito.addEventListener('input', () => {
+      if (montoCredito.value == '') {
+        errorMontoCredito.style.display = 'block'
+      } else {
+        errorMontoCredito.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion retencion iva
+    retencionIva.addEventListener('change', () => {
+      if (retencionIva.value == '') {
+        errorRetencionIva.style.display = 'block'
+      } else {
+        errorRetencionIva.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion retencion isr
+    retencionIsr.addEventListener('change', () => {
+      if (retencionIsr.value == '') {
+        errorRetencionIsr.style.display = 'block'
+      } else {
+        errorRetencionIsr.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion iva frontera
+    ivaFrontera.addEventListener('change', () => {
+      if (ivaFrontera.value == '') {
+        errorIvaFrontera.style.display = 'block'
+      } else {
+        errorIvaFrontera.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion codigo postal
+    codigoPostal.addEventListener('input', () => {
+      if (codigoPostalPattern.test(codigoPostal.value)) {
+        errorCodigoPostal.style.display = 'none'
+      } else {
+        errorCodigoPostal.style.display = 'block'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion pais
+    pais.addEventListener('input', () => {
+      if (pais.value == '') {
+        errorPais.style.display = 'block'
+      } else {
+        errorPais.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion estado
+    estado.addEventListener('input', () => {
+      if (estado.value == '') {
+        errorEstado.style.display = 'block'
+      } else {
+        errorEstado.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion ciudad
+    ciudad.addEventListener('input', () => {
+      if (ciudad.value == '') {
+        errorCiudad.style.display = 'block'
+      } else {
+        errorCiudad.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion municipio
+    municipio.addEventListener('input', () => {
+      if (municipio.value == '') {
+        errorMunicipio.style.display = 'block'
+      } else {
+        errorMunicipio.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion localidad
+    localidad.addEventListener('input', () => {
+      if (localidad.value == '') {
+        errorLocalidad.style.display = 'block'
+      } else {
+        errorLocalidad.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion colonia
+    colonia.addEventListener('input', () => {
+      if (colonia.value == '') {
+        errorColonia.style.display = 'block'
+      } else {
+        errorColonia.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion calle
+    calle.addEventListener('input', () => {
+      if (calle.value == '') {
+        errorCalle.style.display = 'block'
+      } else {
+        errorCalle.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion numero exterior
+    numeroExterior.addEventListener('input', () => {
+      if (numeroExterior.value == '') {
+        errorNumeroExterior.style.display = 'block'
+      } else {
+        errorNumeroExterior.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion banco
+    banco.addEventListener('change', () => {
+      if (banco.value == '') {
+        errorBanco.style.display = 'block'
+      } else {
+        errorBanco.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion cuenta
+    cuenta.addEventListener('input', () => {
+      if (cuentaPattern.test(cuenta.value)) {
+        errorCuenta.style.display = 'none'
+      } else {
+        errorCuenta.style.display = 'block'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion moneda
+    moneda.addEventListener('change', () => {
+      if (moneda.value == '') {
+        errorMoneda.style.display = 'block'
+      } else {
+        errorMoneda.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion clabe
+    clabe.addEventListener('input', () => {
+      if (clabePattern.test(clabe.value)) {
+        errorClabe.style.display = 'none'
+      } else {
+        errorClabe.style.display = 'block'
+      }
+      enableSaveButton()
+    })
+
+    // Añadiendo un segundo banco
+    addBanco.addEventListener('click', () => {
+      banco2.selectedIndex = 0
+      cuenta2.value = ''
+      moneda2.selectedIndex = 0
+      clabe2.value = ''
+      
+      if(addBanco.textContent == 'Agregar otro banco') {
+        
+        errorBanco2.style.display = 'none'
+        errorCuenta2.style.display = 'none'
+        errorMoneda2.style.display = 'none'
+        errorClabe2.style.display = 'none'
+        banco2Container.style.display = 'block'
+
+        banco2.required = true
+        cuenta2.required = true
+        moneda2.required = true
+        clabe2.required = true
+
+        addBanco.textContent = 'Eliminar banco'
+      }
+      else {
+        banco2Container.style.display = 'none'
+
+        banco2.required = false
+        cuenta2.required = false
+        moneda2.required = false
+        clabe2.required = false
+
+        addBanco.textContent = 'Agregar otro banco'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion banco 2
+    banco2.addEventListener('change', () => {
+      if (banco2.value == '') {
+        errorBanco2.style.display = 'block'
+      } else {
+        errorBanco2.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion cuenta 2
+    cuenta2.addEventListener('input', () => {
+      if (cuentaPattern.test(cuenta2.value)) {
+        errorCuenta2.style.display = 'none'
+      } else {
+        errorCuenta2.style.display = 'block'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion moneda 2
+    moneda2.addEventListener('change', () => {
+      if (moneda2.value == '') {
+        errorMoneda2.style.display = 'block'
+      } else {
+        errorMoneda2.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion clabe 2
+    clabe2.addEventListener('input', () => {
+      if (clabePattern.test(clabe2.value)) {
+        errorClabe2.style.display = 'none'
+      } else {
+        errorClabe2.style.display = 'block'
+      }
+      enableSaveButton()
+    })
+
+    function enableSaveButton() {
+      if(errorEmpresa.style.display == 'block' || errorCodigo.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRazonSocial.style.display == 'block' || errorRfc.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorGrupo.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorRegIncFiscal.style.display == 'block' || errorImpuestoCedular.style.display == 'block' || errorVencSFecha.style.display == 'block' || errorDiasParaEntregaCompleta.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
+        btnGuardar.disabled = true
+      }
+      else {
+        btnGuardar.disabled = false
+      }
+    }
 
   </script>
 {% endblock %}

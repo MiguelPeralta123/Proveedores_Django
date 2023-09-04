@@ -2,11 +2,12 @@ from django import forms
 import re
 from .models import Proveedor
 from .options import *
+from datetime import date
 
 class ProveedorForm(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'constancia_situacion_fiscal', 'estado_cuenta_bancario', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
+        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cfdi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'constancia_situacion_fiscal', 'estado_cuenta_bancario', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'codigo': forms.TextInput(attrs={'class':'form-control'}),
@@ -19,7 +20,7 @@ class ProveedorForm(forms.ModelForm):
             'nombre_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'nombre_comercial': forms.TextInput(attrs={'class':'form-control'}),
             'regimen_fiscal': forms.Select(choices=REGIMEN_FISCAL_LIST, attrs={'class':'form-control', 'initial':''}),
-            'uso_cdfi': forms.Select(choices=USO_CFDI_LIST, attrs={'class':'form-control', 'initial':''}),
+            'uso_cfdi': forms.Select(choices=USO_CFDI_LIST, attrs={'class':'form-control', 'initial':''}),
             'representante_legal': forms.TextInput(attrs={'class':'form-control'}),
             'telefono_1': forms.TextInput(attrs={'class':'form-control'}),
             'telefono_2': forms.TextInput(attrs={'class':'form-control'}),
@@ -35,7 +36,7 @@ class ProveedorForm(forms.ModelForm):
             'agente_aduanal': forms.TextInput(attrs={'class':'form-control'}),
             'reg_inc_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'impuesto_cedular': forms.TextInput(attrs={'class':'form-control'}),
-            'venc_s_fecha': forms.DateInput(attrs={'type':'date'}),
+            'venc_s_fecha': forms.DateInput(attrs={'type':'date', 'min':date.today()}),
             'dias_para_entrega_completa': forms.TextInput(attrs={'class':'form-control'}),
             'limite_credito_MN': forms.TextInput(attrs={'class':'form-control'}),
             'limite_credito_ME': forms.TextInput(attrs={'class':'form-control'}),
@@ -79,7 +80,7 @@ class ProveedorForm(forms.ModelForm):
 class ProveedorDetailForm(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
+        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cfdi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'codigo': forms.TextInput(attrs={'class':'form-control'}),
@@ -92,7 +93,7 @@ class ProveedorDetailForm(forms.ModelForm):
             'nombre_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'nombre_comercial': forms.TextInput(attrs={'class':'form-control'}),
             'regimen_fiscal': forms.Select(choices=REGIMEN_FISCAL_LIST, attrs={'class':'form-control', 'initial':''}),
-            'uso_cdfi': forms.Select(choices=USO_CFDI_LIST, attrs={'class':'form-control', 'initial':''}),
+            'uso_cfdi': forms.Select(choices=USO_CFDI_LIST, attrs={'class':'form-control', 'initial':''}),
             'representante_legal': forms.TextInput(attrs={'class':'form-control'}),
             'telefono_1': forms.TextInput(attrs={'class':'form-control'}),
             'telefono_2': forms.TextInput(attrs={'class':'form-control'}),
@@ -108,7 +109,7 @@ class ProveedorDetailForm(forms.ModelForm):
             'agente_aduanal': forms.TextInput(attrs={'class':'form-control'}),
             'reg_inc_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'impuesto_cedular': forms.TextInput(attrs={'class':'form-control'}),
-            'venc_s_fecha': forms.DateInput(attrs={'type':'date'}),
+            'venc_s_fecha': forms.DateInput(attrs={'type':'date', 'min':date.today()}),
             'dias_para_entrega_completa': forms.TextInput(attrs={'class':'form-control'}),
             'limite_credito_MN': forms.TextInput(attrs={'class':'form-control'}),
             'limite_credito_ME': forms.TextInput(attrs={'class':'form-control'}),
@@ -151,7 +152,7 @@ class ProveedorDetailForm(forms.ModelForm):
 class ProveedorFormForCompras(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
+        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cfdi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'codigo': forms.TextInput(attrs={'class':'form-control'}),
@@ -164,7 +165,7 @@ class ProveedorFormForCompras(forms.ModelForm):
             'nombre_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'nombre_comercial': forms.TextInput(attrs={'class':'form-control'}),
             'regimen_fiscal': forms.Select(choices=REGIMEN_FISCAL_LIST, attrs={'class':'form-control', 'initial':''}),
-            'uso_cdfi': forms.Select(choices=USO_CFDI_LIST, attrs={'class':'form-control', 'initial':''}),
+            'uso_cfdi': forms.Select(choices=USO_CFDI_LIST, attrs={'class':'form-control', 'initial':''}),
             'representante_legal': forms.TextInput(attrs={'class':'form-control'}),
             'telefono_1': forms.TextInput(attrs={'class':'form-control'}),
             'telefono_2': forms.TextInput(attrs={'class':'form-control'}),
@@ -180,7 +181,7 @@ class ProveedorFormForCompras(forms.ModelForm):
             'agente_aduanal': forms.TextInput(attrs={'class':'form-control'}),
             'reg_inc_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'impuesto_cedular': forms.TextInput(attrs={'class':'form-control'}),
-            'venc_s_fecha': forms.DateInput(attrs={'type':'date'}),
+            'venc_s_fecha': forms.DateInput(attrs={'type':'date', 'min':date.today()}),
             'dias_para_entrega_completa': forms.TextInput(attrs={'class':'form-control'}),
             'limite_credito_MN': forms.TextInput(attrs={'class':'form-control'}),
             'limite_credito_ME': forms.TextInput(attrs={'class':'form-control'}),
@@ -223,7 +224,7 @@ class ProveedorFormForCompras(forms.ModelForm):
 class ProveedorFormForFinanzas(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
+        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cfdi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'codigo': forms.TextInput(attrs={'class':'form-control'}),
@@ -236,7 +237,7 @@ class ProveedorFormForFinanzas(forms.ModelForm):
             'nombre_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'nombre_comercial': forms.TextInput(attrs={'class':'form-control'}),
             'regimen_fiscal': forms.Select(choices=REGIMEN_FISCAL_LIST, attrs={'class':'form-control', 'initial':''}),
-            'uso_cdfi': forms.Select(choices=USO_CFDI_LIST, attrs={'class':'form-control', 'initial':''}),
+            'uso_cfdi': forms.Select(choices=USO_CFDI_LIST, attrs={'class':'form-control', 'initial':''}),
             'representante_legal': forms.TextInput(attrs={'class':'form-control'}),
             'telefono_1': forms.TextInput(attrs={'class':'form-control'}),
             'telefono_2': forms.TextInput(attrs={'class':'form-control'}),
@@ -252,7 +253,7 @@ class ProveedorFormForFinanzas(forms.ModelForm):
             'agente_aduanal': forms.TextInput(attrs={'class':'form-control'}),
             'reg_inc_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'impuesto_cedular': forms.TextInput(attrs={'class':'form-control'}),
-            'venc_s_fecha': forms.DateInput(attrs={'type':'date'}),
+            'venc_s_fecha': forms.DateInput(attrs={'type':'date', 'min':date.today()}),
             'dias_para_entrega_completa': forms.TextInput(attrs={'class':'form-control'}),
             'limite_credito_MN': forms.TextInput(attrs={'class':'form-control'}),
             'limite_credito_ME': forms.TextInput(attrs={'class':'form-control'}),
@@ -295,7 +296,7 @@ class ProveedorFormForFinanzas(forms.ModelForm):
 class ProveedorFormForSistemas(forms.ModelForm):
     class Meta:
         model = Proveedor
-        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cdfi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
+        fields = ['empresa', 'codigo', 'tipo_alta', 'contribuyente', 'razon_social', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cfdi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'grupo', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'reg_inc_fiscal', 'impuesto_cedular', 'venc_s_fecha', 'dias_para_entrega_completa', 'limite_credito_MN', 'limite_credito_ME', 'dias_credito', 'monto_credito', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'comentarios']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'codigo': forms.TextInput(attrs={'class':'form-control'}),
@@ -308,7 +309,7 @@ class ProveedorFormForSistemas(forms.ModelForm):
             'nombre_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'nombre_comercial': forms.TextInput(attrs={'class':'form-control'}),
             'regimen_fiscal': forms.Select(choices=REGIMEN_FISCAL_LIST, attrs={'class':'form-control', 'initial':''}),
-            'uso_cdfi': forms.Select(choices=USO_CFDI_LIST, attrs={'class':'form-control', 'initial':''}),
+            'uso_cfdi': forms.Select(choices=USO_CFDI_LIST, attrs={'class':'form-control', 'initial':''}),
             'representante_legal': forms.TextInput(attrs={'class':'form-control'}),
             'telefono_1': forms.TextInput(attrs={'class':'form-control'}),
             'telefono_2': forms.TextInput(attrs={'class':'form-control'}),
@@ -324,7 +325,7 @@ class ProveedorFormForSistemas(forms.ModelForm):
             'agente_aduanal': forms.TextInput(attrs={'class':'form-control'}),
             'reg_inc_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'impuesto_cedular': forms.TextInput(attrs={'class':'form-control'}),
-            'venc_s_fecha': forms.DateInput(attrs={'type':'date'}),
+            'venc_s_fecha': forms.DateInput(attrs={'type':'date', 'min':date.today()}),
             'dias_para_entrega_completa': forms.TextInput(attrs={'class':'form-control'}),
             'limite_credito_MN': forms.TextInput(attrs={'class':'form-control'}),
             'limite_credito_ME': forms.TextInput(attrs={'class':'form-control'}),
