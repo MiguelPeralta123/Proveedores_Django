@@ -12,13 +12,15 @@
 
             <ul style="list-style-type: none;" class="list-group mt-4">
                 {% for solicitud in solicitudes %}
-                <a class="list-group-item" href="{% url 'material_detail' solicitud.id %}">
-                    <h2>{{solicitud.empresa}}</h2>
-                    <p><b>Folio solicitud:</b> {{solicitud.id}}</p>
-                    <section class="d-flex justify-content-between">
-                        <p>Fecha: {{solicitud.fecha}}</p>
-                        <p>Solicitante: {{solicitud.usuario.first_name}} {{solicitud.usuario.last_name}}</p>
-                    </section>
+                <a class="list-group-item my-2 border rounded" href="{% url 'material_detail' solicitud.id %}">
+                    <div class="d-flex justify-content-between gap-3 my-2">
+                        <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                        <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
+                    </div>
+                    <div class="d-flex justify-content-between gap-3">
+                        <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                        <p><b>Fecha:</b> {{solicitud.fecha}}</p>
+                    </div>
                     {% if solicitud.pendiente %}
                     <p class="text-success">🕐 Pendiente aprobación</p>
                     {% endif %}
@@ -26,19 +28,22 @@
                     <p class="text-success">✅ Aprobado por compras</p>
                     {% endif %}
                     {% if solicitud.rechazado_compras %}
-                    <p class="text-success">❌ Rechazado por compras</p>
+                    <p class="text-danger">❌ Rechazado por compras</p>
+                    <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
                     {% endif %}
                     {% if solicitud.finanzas %}
                     <p class="text-success">✅ Aprobado por finanzas</p>
                     {% endif %}
                     {% if solicitud.rechazado_finanzas %}
-                    <p class="text-success">❌ Rechazado por finanzas</p>
+                    <p class="text-danger">❌ Rechazado por finanzas</p>
+                    <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
                     {% endif %}
                     {% if solicitud.sistemas %}
                     <p class="text-success">✅ Aprobado por sistemas</p>
                     {% endif %}
                     {% if solicitud.rechazado_sistemas %}
-                    <p class="text-success">❌ Rechazado por sistemas</p>
+                    <p class="text-danger">❌ Rechazado por sistemas</p>
+                    <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
                     {% endif %}
                 </a>
                 {% endfor %}
