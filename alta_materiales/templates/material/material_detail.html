@@ -9,16 +9,53 @@
           {{ error }}
           {% csrf_token %}
 
-          {{ solicitud_form.as_p }}
+          <!-- Empresa field -->
+          <div style="margin-bottom:1rem;">
+            {{ solicitud_form.empresa.label_tag }}
+            {{ solicitud_form.empresa }}
+            <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Justificación field -->
+          <div style="margin-bottom:1rem;">
+            {{ solicitud_form.justificacion.label_tag }}
+            {{ solicitud_form.justificacion }}
+            <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+          </div>
 
           <h3>Materiales</h3>
+
+          <div id="table-materials" class="table-responsive my-3">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Tipo alta</th>
+                  <th scope="col">Tipo</th>
+                  <th scope="col">Familia</th>
+                  <th scope="col">Subfamilia</th>
+                  <th scope="col">UM</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody id="tbody-materials"></tbody>
+            </table>
+          </div>
+
           <div id="material-forms">
             {% for form in material_forms %}
-              <div class="material-form">
+              <div id="material-form-{{ forloop.counter0 }}" class="material-form" style="display:none;">
                 {{ form.as_p }}
                 <hr />
               </div>
             {% endfor %}
+          </div>
+
+          <!-- Comentarios field -->
+          <div style="margin-bottom:1rem;">
+            {{ solicitud_form.comentarios.label_tag }}
+            {{ solicitud_form.comentarios }}
+            <p id="error-comentarios" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
           </div>
 
           <div id="buttons-container">
@@ -27,21 +64,21 @@
             {% endif %}
 
             {% if current_user.compras == True %}
-              <button class="btn btn-approve" style="margin: 10px 0; background-color: #008841; color: white; font-weight: bold;" type="submit" name="compras" value="True">Aprobar compras</button>
+              <button id="btn-approve" class="btn btn-approve" style="margin: 10px 0; background-color: #008841; color: white; font-weight: bold;" type="submit" name="compras" value="True">Aprobar compras</button>
 
-              <button class="btn btn-reject" style="margin: 10px 0; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar compras</button>
+              <button id="btn-decline" class="btn btn-reject" style="margin: 10px 0; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar compras</button>
             {% endif %}
 
             {% if current_user.finanzas == True %}
-              <button class="btn btn-approve" style="margin: 10px 0; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar finanzas</button>
+              <button id="btn-approve" class="btn btn-approve" style="margin: 10px 0; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar finanzas</button>
 
-              <button class="btn btn-reject" style="margin: 10px 0; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar finanzas</button>
+              <button id="btn-decline" class="btn btn-reject" style="margin: 10px 0; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar finanzas</button>
             {% endif %}
 
             {% if current_user.sistemas == True %}
-              <button class="btn btn-approve" style="margin: 10px 0; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar sistemas</button>
+              <button id="btn-approve" class="btn btn-approve" style="margin: 10px 0; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar sistemas</button>
 
-              <button class="btn btn-reject" style="margin: 10px 0; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar sistemas</button>
+              <button id="btn-decline" class="btn btn-reject" style="margin: 10px 0; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar sistemas</button>
             {% endif %}
           </div>
         </form>
@@ -52,8 +89,11 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const materialFormsContainer = document.getElementById('material-forms');
+      const materialForms = document.querySelectorAll('.material-form')
+      const tableMaterials = document.getElementById('table-materials')
+      const bodyMaterials = document.getElementById('tbody-materials')
   
-      // Loading dinamically the data on the selects depending on the other selects
+      // Loading dinamically the data on the selects depending on the other selects values
       materialFormsContainer.addEventListener('click', function(event) {
         var tipo_alta = document.querySelector("#id_material-0-tipo_alta")
         var tipo = document.querySelector("#id_material-0-tipo")
@@ -145,11 +185,113 @@
       buttonsContainer.addEventListener('click', function(event) {  
         if (event.target && event.target.classList.contains('btn-reject')) {
           comentarios.setAttribute('required', 'true')
+          if(comentarios.value == '') {
+            errorComentarios.style.display = 'block'
+          }
         }
         if (event.target && event.target.classList.contains('btn-approve')) {
           comentarios.removeAttribute('required')
+          comentarios.value = ''
         }
       });
+
+      materialForms.forEach(function(materialForm, index) {
+        const nombre = materialForm.querySelector('.material-nombre')
+        const tipoAlta = materialForm.querySelector('.material-tipo-alta')
+        const tipo = materialForm.querySelector('.material-tipo')
+        const familia = materialForm.querySelector('.material-familia')
+        const subfamilia = materialForm.querySelector('.material-subfamilia')
+        const unidadMedida = materialForm.querySelector('.material-unidad-medida')
+
+        const newRow = bodyMaterials.insertRow()
+        newRow.classList.add('table-row')
+        newRow.id = `table-row-${index}`
+        newRow.innerHTML = `
+        <td>${nombre.value}</td>
+        <td>${tipoAlta.value}</td>
+        <td>${tipo.value}</td>
+        <td>${familia.value}</td>
+        <td>${subfamilia.value}</td>
+        <td>${unidadMedida.value}</td>
+        <td>
+          <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button">Editar</button>
+        </td>`
+      });
+
+      tableMaterials.addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('edit-material')) {
+          // Disable edit button
+          const editButtons = tableMaterials.getElementsByClassName('edit-material');
+          for (let i = 0; i < editButtons.length; i++) {
+            editButtons[i].disabled = false
+          }
+          event.target.disabled = true
+          // Show the selected form
+          const forms = document.getElementsByClassName('material-form');
+          for (let i = 0; i < forms.length; i++) {
+            forms[i].style.display = 'none'
+          }
+          editingId = event.target.id.substring(14, event.target.id.length)
+          const form = document.getElementById(`material-form-${editingId}`)
+          if (form) {
+            form.style.display = "block"
+          }
+        }
+      })
     });
+
+    // Inputs
+    const empresa = document.getElementById('id_empresa')
+    const justificacion = document.getElementById('id_justificacion')
+    const comentarios = document.getElementById('id_comentarios')
+    
+    // Error messages
+    const errorEmpresa = document.getElementById('error-empresa')
+    const errorJustificacion = document.getElementById('error-justificacion')
+    const errorComentarios = document.getElementById('error-comentarios')
+    
+    // Buttons
+    const btnAprobar = document.getElementById('btn-approve')
+    const btnRechazar = document.getElementById('btn-decline')
+    
+    // Validacion empresa
+    empresa.addEventListener('change', () => {
+      if (empresa.value == '') {
+        errorEmpresa.style.display = 'block'
+      } else {
+        errorEmpresa.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion justificacion
+    justificacion.addEventListener('input', () => {
+      if (justificacion.value == '') {
+        errorJustificacion.style.display = 'block'
+      } else {
+        errorJustificacion.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+    
+    // Validacion comentarios
+    comentarios.addEventListener('input', () => {
+      if (comentarios.value == '') {
+        errorComentarios.style.display = 'block'
+      } else {
+        errorComentarios.style.display = 'none'
+      }
+      enableSaveButton()
+    })
+
+    function enableSaveButton() {
+      if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block' || errorComentarios.style.display == 'block') {
+        btnAprobar.disabled = true
+        btnRechazar.disabled = true
+      }
+      else {
+        btnRechazar.disabled = false
+      }
+    }
   </script>
 {% endblock %}
