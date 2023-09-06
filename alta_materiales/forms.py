@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import formset_factory
-from .models import Material, MaterialSolicitud
+from .models import Material, MaterialSolicitud, MaterialHistorial
 from .options import *
 
 class SolicitudForm(forms.ModelForm):
@@ -113,3 +113,8 @@ class SolicitudFormForSistemas(forms.ModelForm):
             'rechazado_sistemas': forms.HiddenInput(),
             'comentarios': forms.TextInput(attrs={'class':'form-control'})
         }
+
+class HistorialForm(forms.ModelForm):
+    class Meta:
+        model = MaterialHistorial
+        fields = []

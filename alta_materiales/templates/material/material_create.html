@@ -26,7 +26,7 @@
           <h3>Materiales</h3>
 
           <div id="table-materials" class="table-responsive my-3" style="display:none;">
-            <table class="table table-bordered">
+            <table class="table table-bordered" style="font-size: 0.8rem;">
               <thead>
                 <tr>
                   <th scope="col">Nombre</th>
@@ -35,6 +35,7 @@
                   <th scope="col">Familia</th>
                   <th scope="col">Subfamilia</th>
                   <th scope="col">UM</th>
+                  <th scope="col"></th>
                   <th scope="col"></th>
                 </tr>
               </thead>
@@ -135,7 +136,10 @@
               <td>${subfamilia}</td>
               <td>${unidadMedida}</td>
               <td>
-                <button id="edit-material-${formCount - 2}" class="btn btn-primary edit-material" type="button">Editar</button>
+                <button id="edit-material-${formCount - 2}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
+              </td>
+              <td>
+                <button id="remove-material-${formCount - 2}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
               </td>`;
             }
             else {
@@ -148,7 +152,10 @@
               <td>${subfamilia}</td>
               <td>${unidadMedida}</td>
               <td>
-                <button id="edit-material-${editingId}" class="btn btn-primary edit-material" type="button">Editar</button>
+                <button id="edit-material-${editingId}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
+              </td>
+              <td>
+                <button id="remove-material-${editingId}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
               </td>`;
               editingBand = false
             }
@@ -201,6 +208,49 @@
           document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
         }
       }
+
+      // If the delete button is clicked, remove the row and the form
+      if (event.target && event.target.classList.contains('remove-material')) {
+        const row = event.target.closest('.table-row');
+        if (row) {
+          row.remove();
+          // Recorre todos las filas restantes y actualiza sus índices
+          const rows = tableMaterials.getElementsByClassName('table-row');
+          for (let i = 0; i < rows.length; i++) {
+            rows[i].id = `table-row-${i}`
+          }
+          // Recorre todos los botones restantes y actualiza sus índices
+          const editButtons = tableMaterials.getElementsByClassName('edit-material');
+          for (let i = 0; i < editButtons.length; i++) {
+            editButtons[i].id = `edit-material-${i}`
+          }
+          const removeButtons = tableMaterials.getElementsByClassName('remove-material');
+          for (let i = 0; i < removeButtons.length; i++) {
+            removeButtons[i].id = `remove-material-${i}`
+          }
+          // Enable edit buttons
+          for (let i = 0; i < editButtons.length; i++) {
+            editButtons[i].disabled = false
+          }
+        }
+        const form = document.getElementById(`material-form-${editingId}`);
+        if (form) {
+          form.remove();
+          // Recorre todos los formularios restantes y actualiza sus índices
+          const forms = materialFormsContainer.getElementsByClassName('material-form');
+          for (let i = 0; i < forms.length; i++) {
+            forms[i].id = `material-form-${i}`
+            const inputs = forms[i].querySelectorAll('[id^=id_material-]');
+            for (let j = 0; j < inputs.length; j++) {
+              inputs[j].id = inputs[j].id.replace(/\d+/, i);
+            }
+          }
+          materialCounter--
+          addMaterialBand = false
+          formCount--;
+          document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
+        }
+      }
     })
 
     materialFormsContainer.addEventListener('click', function(event) {
@@ -229,18 +279,20 @@
             editButtons[i].disabled = false
           }
         }
-        const row = document.getElementById(`table-row-${editingId}`);
-        if (row) {
-          row.remove();
-          // Recorre todos las filas restantes y actualiza sus índices
-          const rows = tableMaterials.getElementsByClassName('table-row');
-          for (let i = 0; i < rows.length; i++) {
-            rows[i].id = `table-row-${i}`
-          }
-          // Recorre todos los botones restantes y actualiza sus índices
-          const editButtons = tableMaterials.getElementsByClassName('edit-material');
-          for (let i = 0; i < editButtons.length; i++) {
-            editButtons[i].id = `edit-material-${i}`
+        if(editingBand) {
+          const row = document.getElementById(`table-row-${editingId}`);
+          if (row) {
+            row.remove();
+            // Recorre todos las filas restantes y actualiza sus índices
+            const rows = tableMaterials.getElementsByClassName('table-row');
+            for (let i = 0; i < rows.length; i++) {
+              rows[i].id = `table-row-${i}`
+            }
+            // Recorre todos los botones restantes y actualiza sus índices
+            const editButtons = tableMaterials.getElementsByClassName('edit-material');
+            for (let i = 0; i < editButtons.length; i++) {
+              editButtons[i].id = `edit-material-${i}`
+            }
           }
         }
         createMaterialForm()

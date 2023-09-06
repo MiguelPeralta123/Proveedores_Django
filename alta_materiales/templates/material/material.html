@@ -8,7 +8,7 @@
 
         <div class="col-md-6 offset-md-3">
 
-            <h1 class="text-center display-5">Solicitudes de materiales</h1>
+            <h1 class="text-center display-5 text-green">Solicitudes de materiales</h1>
 
             <ul style="list-style-type: none;" class="list-group mt-4">
                 {% for solicitud in solicitudes %}
@@ -45,6 +45,12 @@
                     <p class="text-danger">❌ Rechazado por sistemas</p>
                     <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
                     {% endif %}
+
+                    {% for cambio in historial %}
+                        {% if solicitud.id == cambio.id_solicitud %}
+                            <p style="font-size: 0.8rem;"><i>🔸{{cambio}} - {{cambio.fecha}}</i></p>
+                        {% endif %}
+                    {% endfor %}
                 </a>
                 {% endfor %}
             </ul>

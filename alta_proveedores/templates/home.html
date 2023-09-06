@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
   <main class="container py-5 mt-5">
@@ -6,27 +7,31 @@
       <h1 class="text-center display-5 py-3">Alta de proveedores, clientes y materiales</h1>
 
       {% if user.puede_comprar %}
-        <p class="mt-3 ms-3 fw-bold">Seleccione la siguiente opción para crear una solicitud de alta de proveedor.</p>
+        <div class="d-flex align-items-center gap-4 mt-2 mb-4">
+          <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para crear una solicitud de alta de proveedor</p>
+          <a class="btn" href="proveedores/crear" style="background-color: #008841; color: white; font-weight: bold;">Crear proveedor</a>
+        </div>
 
-        <a class="btn" href="proveedores/crear" 
-        style="background-color: #008841; color: white; font-weight: bold;">Crear proveedor</a>
-
-        <p class="mt-3 ms-3 fw-bold">Seleccione la siguiente opción para crear una solicitud de alta de material.</p>
-
-        <a class="btn" href="materiales/crear" 
-        style="background-color: #008841; color: white; font-weight: bold;">Crear material</a>
-        
+        <div class="d-flex align-items-center gap-4 mb-2">
+          <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para crear una solicitud de alta de material</p>
+          <a class="btn" href="materiales/crear" style="background-color: #008841; color: white; font-weight: bold;">Crear material</a>
+        </div>
       {% else %}
-        <p class="mt-3 ms-3 fw-bold">Aprobar solicitudes de alta de proveedor.</p>
+        <div class="d-flex align-items-center gap-4 mt-2 mb-4">
+          <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para aprobar solicitudes de alta de proveedor</p>
+          <a class="btn" href="proveedores" style="background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
+        </div>
 
-        <a class="btn" href="proveedores" 
-        style="background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
-
-        <p class="mt-3 ms-3 fw-bold">Aprobar solicitudes de alta de material.</p>
-
-        <a class="btn" href="./materiales" 
-        style="background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
+        <div class="d-flex align-items-center gap-4 mb-2">
+          <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para aprobar solicitudes de alta de material</p>
+          <a class="btn" href="./materiales" style="background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
+        </div>
       {% endif %}
     </section>
+    
+    <div class="d-flex justify-content-center align-items-center gap-4 mt-5 rounded p-4" style="background-color: green;">
+      <img src="{% static 'images/ricofarms-gif.gif' %}" alt="Logo" />
+      <p class="mb-0 fw-bold text-white">En Ricofarms, estamos comprometidos en brindarte una plataforma eficiente y sencilla para gestionar tus proveedores, clientes y materiales de manera efectiva. Nuestra plataforma está diseñada pensando en tus necesidades y en simplificar tus procesos de registro y gestión.</p>
+    </div>
   </main>
 {% endblock %}

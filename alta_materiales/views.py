@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import formset_factory
 from .forms import *
-from .models import MaterialSolicitud, Material
+from .models import MaterialSolicitud, Material, MaterialHistorial
 from django.contrib.auth.decorators import login_required
 from .options import *
 
@@ -42,8 +42,13 @@ def material(request):
         # Trayendo de la base de datos las solicitudes que correspondan al usuario logueado
         solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
 
+    historial = []
+    for solicitud in solicitudes:
+        historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
+
     return render(request, 'material/material.html', {
-        'solicitudes': solicitudes
+        'solicitudes': solicitudes,
+        'historial': historial
     })
 
 
@@ -65,18 +70,28 @@ def material_create(request):
         else:
             solicitud_form = SolicitudForm(request.POST)
             material_formset = MaterialFormSet(request.POST, prefix='material')
+            historial_form = HistorialForm(request.POST)
             if solicitud_form.is_valid() and material_formset.is_valid():
                 id_solicitud = generar_codigo_unico()
+
                 solicitud = solicitud_form.save(commit=False)
                 solicitud.id_solicitud = id_solicitud
                 solicitud.usuario = request.user
                 solicitud.save()
+
                 for material_form in material_formset:
                     if not material_form.cleaned_data.get('nombre_producto'):
                         continue  # Saltar formularios con nombre_producto vacío
                     material = material_form.save(commit=False)
                     material.id_solicitud = id_solicitud
                     material.save()
+                
+                # Guardar la creacion de la solicitud en el historial de cambios
+                historial = historial_form.save(commit=False)
+                historial.id_solicitud = solicitud.id
+                historial.accion = 'creada'
+                historial.usuario = request.user
+                historial.save()
                 return redirect('material')
     else:
         return redirect('material')
