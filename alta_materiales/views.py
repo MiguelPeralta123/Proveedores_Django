@@ -144,11 +144,28 @@ def material_detail(request, material_id):
 
             material_forms = [MaterialForm(
                 request.POST, instance=material, prefix=f'material-{material.id}') for material in materiales]
+            
+            historial_form = HistorialForm(request.POST)
 
             if solicitud_form.is_valid() and all(form.is_valid() for form in material_forms):
+                
                 solicitud_form.save()
+
                 for form in material_forms:
                     form.save()
+                
+                # Guardar la modificación de la solicitud en el historial de cambios
+                historial = historial_form.save(commit=False)
+                historial.id_solicitud = solicitud.id
+                if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
+                    historial.accion = 'rechazada'
+                elif solicitud.pendiente:
+                    historial.accion = 'modificada'
+                else:
+                    historial.accion = 'aprobada'
+                historial.usuario = request.user
+                historial.save()
+
                 return redirect('material')
 
         except ValueError:

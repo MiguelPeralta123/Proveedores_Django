@@ -48,7 +48,7 @@
 
                     {% for cambio in historial %}
                         {% if solicitud.id == cambio.id_solicitud %}
-                            <p style="font-size: 0.8rem;"><i>🔸{{cambio}} - {{cambio.fecha}}</i></p>
+                            <p style="font-size: 0.8rem; color: gray;"><i>🔸{{cambio}} - {{cambio.fecha}}</i></p>
                         {% endif %}
                     {% endfor %}
                 </a>
