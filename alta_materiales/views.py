@@ -17,14 +17,12 @@ def generar_codigo_unico():
 
 # VISTA DE INICIO
 # Decorator to force login. The return route is defined in proveedores/settings.py
-
-
 @login_required
 def home(request):
     return render(request, 'home.html')
 
-# VISTAS DE MATERIAL (GET ALL, CREATE, DETAIL)
 
+# VISTAS DE MATERIAL (GET ALL, CREATE, DETAIL)
 
 @login_required
 def material(request):
@@ -67,32 +65,44 @@ def material_create(request):
             return render(request, 'material/material_create.html', {
                 'solicitud_form': solicitud_form, 'material_formset': material_formset, 'tipo_list': TIPO_LIST, 'familia_list': FAMILIA_LIST, 'subfamilia_list': SUBFAMILIA_LIST, 'unidad_medida_list': UNIDAD_MEDIDA_LIST
             })
+        
         else:
-            solicitud_form = SolicitudForm(request.POST)
-            material_formset = MaterialFormSet(request.POST, prefix='material')
-            historial_form = HistorialForm(request.POST)
-            if solicitud_form.is_valid() and material_formset.is_valid():
-                id_solicitud = generar_codigo_unico()
+            try:
+                solicitud_form = SolicitudForm(request.POST)
+                material_formset = MaterialFormSet(request.POST, prefix='material')
+                historial_form = HistorialForm(request.POST)
 
-                solicitud = solicitud_form.save(commit=False)
-                solicitud.id_solicitud = id_solicitud
-                solicitud.usuario = request.user
-                solicitud.save()
+                if solicitud_form.is_valid() and material_formset.is_valid() and historial_form.is_valid():
+                    id_solicitud = generar_codigo_unico()
+                    solicitud = solicitud_form.save(commit=False)
+                    solicitud.id_solicitud = id_solicitud
+                    solicitud.usuario = request.user
+                    solicitud.save()
 
-                for material_form in material_formset:
-                    if not material_form.cleaned_data.get('nombre_producto'):
-                        continue  # Saltar formularios con nombre_producto vacío
-                    material = material_form.save(commit=False)
-                    material.id_solicitud = id_solicitud
-                    material.save()
+                    for material_form in material_formset:
+                        if not material_form.cleaned_data.get('nombre_producto'):
+                            continue  # Saltar formularios con nombre_producto vacío
+                        material = material_form.save(commit=False)
+                        material.id_solicitud = id_solicitud
+                        material.save()
+                    
+                    # Guardar la creacion de la solicitud en el historial de cambios
+                    historial = historial_form.save(commit=False)
+                    historial.id_solicitud = solicitud.id
+                    historial.accion = 'creada'
+                    historial.usuario = request.user
+                    historial.save()
+                    return redirect('material')
+            except ValueError as e:
+                default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False}
                 
-                # Guardar la creacion de la solicitud en el historial de cambios
-                historial = historial_form.save(commit=False)
-                historial.id_solicitud = solicitud.id
-                historial.accion = 'creada'
-                historial.usuario = request.user
-                historial.save()
-                return redirect('material')
+                solicitud_form = SolicitudForm(initial=default_values)
+                material_formset = MaterialFormSet(prefix='material', initial=[{}])
+
+                return render(request, 'material/material_create.html', {
+                    'solicitud_form': solicitud_form, 'material_formset': material_formset, 'tipo_list': TIPO_LIST, 'familia_list': FAMILIA_LIST, 'subfamilia_list': SUBFAMILIA_LIST, 'unidad_medida_list': UNIDAD_MEDIDA_LIST, 'error': str(e)
+                })
     else:
         return redirect('material')
 
@@ -147,8 +157,7 @@ def material_detail(request, material_id):
             
             historial_form = HistorialForm(request.POST)
 
-            if solicitud_form.is_valid() and all(form.is_valid() for form in material_forms):
-                
+            if solicitud_form.is_valid() and all(form.is_valid() for form in material_forms) and historial_form.is_valid():
                 solicitud_form.save()
 
                 for form in material_forms:

@@ -83,3 +83,17 @@ class Proveedor(models.Model):
 
     def __str__(self):
         return str(self.id) + ".- " + self.razon_social + " - " + self.usuario.first_name + " " + self.usuario.last_name
+
+
+class ProveedorHistorial(models.Model):
+    id_proveedor = models.IntegerField()
+    accion = models.CharField(max_length=10)
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'historial de solicitudes de proveedor'
+        verbose_name_plural = "historiales de solicitudes de proveedor"
+
+    def __str__(self):
+        return "Solicitud " + self.accion + " por " + self.usuario.get_full_name()

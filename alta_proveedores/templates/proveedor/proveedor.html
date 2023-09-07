@@ -30,19 +30,28 @@
                     {% endif %}
                     {% if proveedor.rechazado_compras %}
                     <p class="text-success">❌ Rechazado por compras</p>
+                    <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
                     {% endif %}
                     {% if proveedor.finanzas %}
                     <p class="text-success">✅ Aprobado por finanzas</p>
                     {% endif %}
                     {% if proveedor.rechazado_finanzas %}
                     <p class="text-success">❌ Rechazado por finanzas</p>
+                    <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
                     {% endif %}
                     {% if proveedor.sistemas %}
                     <p class="text-success">✅ Aprobado por sistemas</p>
                     {% endif %}
                     {% if proveedor.rechazado_sistemas %}
                     <p class="text-success">❌ Rechazado por sistemas</p>
+                    <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
                     {% endif %}
+
+                    {% for cambio in historial %}
+                        {% if proveedor.id == cambio.id_proveedor %}
+                            <p style="font-size: 0.8rem; color: gray;"><i>🔸{{cambio}} - {{cambio.fecha}}</i></p>
+                        {% endif %}
+                    {% endfor %}
                 </a>
                 {% endfor %}
             </ul>

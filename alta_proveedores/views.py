@@ -5,14 +5,12 @@ from django.contrib.auth.decorators import login_required
 
 # VISTA DE INICIO
 # Decorator to force login. The return route is defined in proveedores/settings.py
-
-
 @login_required
 def home(request):
     return render(request, 'home.html')
 
-# VISTAS DE PROVEEDOR (GET ALL, CREATE, DETAIL)
 
+# VISTAS DE PROVEEDOR (GET ALL, CREATE, DETAIL)
 
 @login_required
 def proveedor(request):
@@ -25,8 +23,13 @@ def proveedor(request):
     else:
         proveedores = Proveedor.objects.filter(usuario=request.user)
 
+    historial = []
+    for proveedor in proveedores:
+        historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
+
     return render(request, 'proveedor/proveedor.html', {
-        'proveedores': proveedores
+        'proveedores': proveedores,
+        'historial': historial
     })
 
 
@@ -42,14 +45,27 @@ def proveedor_create(request):
             })
         else:
             try:
-                form = ProveedorForm(request.POST, request.FILES)
-                new_proveedor = form.save(commit=False)
-                new_proveedor.usuario = request.user
-                new_proveedor.save()
-                return redirect('proveedor')
+                proveedor_form = ProveedorForm(request.POST, request.FILES)
+                historial_form = HistorialForm(request.POST)
+
+                if proveedor_form.is_valid() and historial_form.is_valid():
+                    proveedor = proveedor_form.save(commit=False)
+                    proveedor.usuario = request.user
+                    proveedor.save()
+                    
+                    # Guardar la creacion de la solicitud en el historial de cambios
+                    historial = historial_form.save(commit=False)
+                    historial.id_proveedor = proveedor.id
+                    historial.accion = 'creada'
+                    historial.usuario = request.user
+                    historial.save()
+                    return redirect('proveedor')
             except ValueError as e:
+                default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False}
+
                 return render(request, 'proveedor/proveedor_create.html', {
-                    'form': ProveedorForm,
+                    'form': ProveedorForm(initial=default_values),
                     'error': str(e)
                 })
     else:
@@ -86,20 +102,33 @@ def proveedor_detail(request, proveedor_id):
             if request.user.compras:
                 proveedor_form = ProveedorFormForCompras(
                     request.POST, instance=proveedor)
+            elif request.user.finanzas:
+                proveedor_form = ProveedorFormForFinanzas(
+                    request.POST, instance=proveedor)
+            elif request.user.sistemas:
+                proveedor_form = ProveedorFormForSistemas(
+                    request.POST, instance=proveedor)
             else:
-                if request.user.finanzas:
-                    proveedor_form = ProveedorFormForFinanzas(
-                        request.POST, instance=proveedor)
-                else:
-                    if request.user.sistemas:
-                        proveedor_form = ProveedorFormForSistemas(
-                            request.POST, instance=proveedor)
-                    else:
-                        proveedor_form = ProveedorDetailForm(
-                            request.POST, instance=proveedor)
+                proveedor_form = ProveedorDetailForm(
+                    request.POST, instance=proveedor)
+            
+            historial_form = HistorialForm(request.POST)
                         
-            if proveedor_form.is_valid():
+            if proveedor_form.is_valid() and historial_form.is_valid():
                 proveedor_form.save()
+                
+                # Guardar la modificación de la solicitud en el historial de cambios
+                historial = historial_form.save(commit=False)
+                historial.id_proveedor = proveedor.id
+                if proveedor.rechazado_compras or proveedor.rechazado_finanzas or proveedor.rechazado_sistemas:
+                    historial.accion = 'rechazada'
+                elif proveedor.pendiente:
+                    historial.accion = 'modificada'
+                else:
+                    historial.accion = 'aprobada'
+                historial.usuario = request.user
+                historial.save()
+
                 return redirect('proveedor')
             
         except ValueError:

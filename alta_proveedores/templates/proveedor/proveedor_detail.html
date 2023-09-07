@@ -457,14 +457,17 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const buttonsContainer = document.getElementById('buttons-container')
-      const comentarios = document.getElementById('id_comentarios')
     
       buttonsContainer.addEventListener('click', function (event) {
         if (event.target && event.target.classList.contains('btn-reject')) {
           comentarios.setAttribute('required', 'true')
+          if(comentarios.value == '') {
+            errorComentarios.style.display = 'block'
+          }
         }
         if (event.target && event.target.classList.contains('btn-approve')) {
           comentarios.removeAttribute('required')
+          comentarios.value = ''
         }
       })
     
@@ -547,6 +550,7 @@
     const usarEnPortalProveedores = document.getElementById('id_usar_en_portal_proveedores')
     const noAplicaParaRafaga = document.getElementById('id_no_aplica_para_rafaga')
     const noRelacionarOc = document.getElementById('id_no_relacionar_oc')
+    const comentarios = document.getElementById('id_comentarios')
     
     // Buttons
     const addBanco = document.getElementById('add-banco-2')
@@ -608,6 +612,7 @@
     const errorUsarEnPortalProveedores = document.getElementById('error-usar-en-portal-proveedores')
     const errorNoAplicaParaRafaga = document.getElementById('error-no-aplica-para-rafaga')
     const errorNoRelacionarOc = document.getElementById('error-no-relacionar-OC')
+    const errorComentarios = document.getElementById('error-comentarios')
     
     // Regular expressions
     const rfcPattern = /^[A-Za-z]{4}\d{6}[A-Za-z\d]{3}$/

@@ -1,6 +1,6 @@
 from django import forms
 import re
-from .models import Proveedor
+from .models import Proveedor, ProveedorHistorial
 from .options import *
 from datetime import date
 
@@ -364,3 +364,9 @@ class ProveedorFormForSistemas(forms.ModelForm):
             'rechazado_sistemas': forms.HiddenInput(),
             'comentarios': forms.TextInput(attrs={'class':'form-control'})
         }
+
+
+class HistorialForm(forms.ModelForm):
+    class Meta:
+        model = ProveedorHistorial
+        fields = []
