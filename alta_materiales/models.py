@@ -17,6 +17,7 @@ class MaterialSolicitud(models.Model):
     rechazado_compras = models.BooleanField(default=False)
     rechazado_finanzas = models.BooleanField(default=False)
     rechazado_sistemas = models.BooleanField(default=False)
+    es_migracion = models.BooleanField(default=False)
     fecha = models.DateTimeField(auto_now_add=True)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     comentarios = models.CharField(max_length=250, blank=True)

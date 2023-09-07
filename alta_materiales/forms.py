@@ -6,10 +6,11 @@ from .options import *
 class SolicitudForm(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
+        fields = ['empresa', 'justificacion', 'es_migracion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas']
         widgets = {
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
+            'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'pendiente': forms.HiddenInput(),
             'compras': forms.HiddenInput(),
             'finanzas': forms.HiddenInput(),

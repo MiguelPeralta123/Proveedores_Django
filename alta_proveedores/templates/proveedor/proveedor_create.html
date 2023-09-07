@@ -430,7 +430,15 @@
             <p id="error-estado-cuenta-bancario" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
           </div>
 
-          <button id="btn-guardar" class="btn" type="submit" name="pendiente" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
+          <!-- Es migracion field -->
+          <div style="margin-bottom:2rem;">
+            <p><b>En caso de que el proveedor ya exista en otra empresa, marque la siguiente casilla:</b></p>
+            {{ form.es_migracion.label_tag }}
+            {{ form.es_migracion }}
+            <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <button id="btn-guardar" class="btn" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
         </form>
       </div>
     </div>
@@ -497,6 +505,7 @@
     const usarEnPortalProveedores = document.getElementById('id_usar_en_portal_proveedores')
     const noAplicaParaRafaga = document.getElementById('id_no_aplica_para_rafaga')
     const noRelacionarOc = document.getElementById('id_no_relacionar_oc')
+    const esMigracion = document.getElementById('id_es_migracion')
 
     // Buttons
     const addBanco = document.getElementById('add-banco-2')
@@ -1106,6 +1115,15 @@
         btnGuardar.disabled = false
       }
     }
+
+    // Si el registro ya existe en otra empresa, se envia directo a sistemas
+    btnGuardar.addEventListener('click', () => {
+      if (esMigracion.checked) {
+        btnGuardar.setAttribute('name', 'finanzas');
+      } else {
+        btnGuardar.setAttribute('name', 'pendiente');
+      }
+    })
 
   </script>
 {% endblock %}

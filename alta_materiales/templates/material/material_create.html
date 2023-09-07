@@ -52,8 +52,16 @@
             {% endfor %}
           </div>
 
+          <!-- Es migracion field -->
+          <div style="margin-bottom:2rem;">
+            <p><b>En caso de que el proveedor ya exista en otra empresa, marque la siguiente casilla:</b></p>
+            {{ solicitud_form.es_migracion.label_tag }}
+            {{ solicitud_form.es_migracion }}
+            <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
           <button class="btn btn-secondary mb-3" type="button" id="add-material">Agregar Material</button>
-          <button id="btn-guardar" class="btn" type="submit" name="pendiente" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
+          <button id="btn-guardar" class="btn" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
         </form>
       </div>
     </div>
@@ -387,6 +395,7 @@
   // Inputs
   const empresa = document.getElementById('id_empresa')
   const justificacion = document.getElementById('id_justificacion')
+  const esMigracion = document.getElementById('id_es_migracion')
   
   // Error messages
   const errorEmpresa = document.getElementById('error-empresa')
@@ -423,6 +432,15 @@
       btnGuardar.disabled = false
     }
   }
+
+  // Si el registro ya existe en otra empresa, se envia directo a sistemas
+  btnGuardar.addEventListener('click', () => {
+    if (esMigracion.checked) {
+      btnGuardar.setAttribute('name', 'finanzas');
+    } else {
+      btnGuardar.setAttribute('name', 'pendiente');
+    }
+  })
 
   </script>
 {% endblock %}
