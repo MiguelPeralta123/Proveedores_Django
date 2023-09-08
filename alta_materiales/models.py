@@ -9,6 +9,10 @@ class MaterialSolicitud(models.Model):
     id_solicitud = models.CharField(max_length=10)
     empresa = models.CharField(max_length=50)
     justificacion = models.CharField(max_length=255)
+    es_migracion = models.BooleanField(default=False)
+    fecha = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    comentarios = models.CharField(max_length=250, blank=True)
     pendiente = models.BooleanField(default=False)
     compras = models.BooleanField(default=False)
     finanzas = models.BooleanField(default=False)
@@ -17,10 +21,6 @@ class MaterialSolicitud(models.Model):
     rechazado_compras = models.BooleanField(default=False)
     rechazado_finanzas = models.BooleanField(default=False)
     rechazado_sistemas = models.BooleanField(default=False)
-    es_migracion = models.BooleanField(default=False)
-    fecha = models.DateTimeField(auto_now_add=True)
-    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    comentarios = models.CharField(max_length=250, blank=True)
 
     class Meta:
         verbose_name = 'solicitud'

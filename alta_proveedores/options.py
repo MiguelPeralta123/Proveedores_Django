@@ -290,6 +290,12 @@ TIPO_TERCERO_LIST = [
     ('Nacional Relacionado', 'Nacional Relacionado'),
 ]
 
+AGENTE_ADUANAL_LIST = [
+    ('', 'Seleccione una opción'),
+    ('Si', 'Si'),
+    ('No', 'No'),
+]
+
 RETENCION_IVA_LIST = [
     ('', 'Seleccione una opción'),
     ('0', '0'),

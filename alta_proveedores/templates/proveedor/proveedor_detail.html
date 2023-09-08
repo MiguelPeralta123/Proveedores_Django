@@ -18,13 +18,6 @@
             <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
           </div>
 
-          <!-- Codigo field -->
-          <div style="margin-bottom:1rem;">
-            {{ form.codigo.label_tag }}
-            {{ form.codigo }}
-            <p id="error-codigo" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-          </div>
-
           <!-- Tipo alta field -->
           <div style="margin-bottom:1rem;">
             {{ form.tipo_alta.label_tag }}
@@ -110,7 +103,7 @@
           </div>
 
           <!-- Telefono 2 field -->
-          <div style="margin-bottom:2rem;">
+          <div style="margin-bottom:1rem;">
             {{ form.telefono_2.label_tag }}
             {{ form.telefono_2 }}
             <p id="error-telefono-2" style="color:red; margin-bottom:0; display:none;">Ingrese un número a 10 dígitos</p>
@@ -121,13 +114,6 @@
             {{ form.contacto.label_tag }}
             {{ form.contacto }}
             <p id="error-contacto" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-          </div>
-
-          <!-- Grupo field -->
-          <div style="margin-bottom:1rem;">
-            {{ form.grupo.label_tag }}
-            {{ form.grupo }}
-            <p id="error-grupo" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
           </div>
 
           <!-- Correo general field -->
@@ -153,7 +139,7 @@
 
           <!-- Rubro field -->
           <div style="margin-bottom:1rem;">
-            {{ form.rubro.label_tag }}
+            <p>Grupo / {{ form.rubro.label_tag }}</p>
             {{ form.rubro }}
             <p id="error-rubro" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
           </div>
@@ -183,35 +169,7 @@
           <div style="margin-bottom:1rem;">
             {{ form.agente_aduanal.label_tag }}
             {{ form.agente_aduanal }}
-            <p id="error-agente-aduanal" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-          </div>
-
-          <!-- Reg inc fiscal field -->
-          <div style="margin-bottom:1rem;">
-            {{ form.reg_inc_fiscal.label_tag }}
-            {{ form.reg_inc_fiscal }}
-            <p id="error-reg-inc-fiscal" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-          </div>
-
-          <!-- Impuesto cedular field -->
-          <div style="margin-bottom:1rem;">
-            {{ form.impuesto_cedular.label_tag }}
-            {{ form.impuesto_cedular }}
-            <p id="error-impuesto-cedular" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-          </div>
-
-          <!-- Venc s fecha field -->
-          <div style="margin-bottom:1rem;">
-            {{ form.venc_s_fecha.label_tag }}
-            {{ form.venc_s_fecha }}
-            <p id="error-venc-s-fecha" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-          </div>
-
-          <!-- Dias para entrega completa field -->
-          <div style="margin-bottom:1rem;">
-            {{ form.dias_para_entrega_completa.label_tag }}
-            {{ form.dias_para_entrega_completa }}
-            <p id="error-dias-para-entrega-completa" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            <p id="error-agente-aduanal" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
           </div>
 
           <!-- Limite credito MN field -->
@@ -495,7 +453,6 @@
     
     // Inputs
     const empresa = document.getElementById('id_empresa')
-    const codigo = document.getElementById('id_codigo')
     const tipoAlta = document.getElementById('id_tipo_alta')
     const contribuyente = document.getElementById('id_contribuyente')
     const razonSocial = document.getElementById('id_razon_social')
@@ -510,7 +467,6 @@
     const telefono1 = document.getElementById('id_telefono_1')
     const telefono2 = document.getElementById('id_telefono_2')
     const contacto = document.getElementById('id_contacto')
-    const grupo = document.getElementById('id_grupo')
     const correoGeneral = document.getElementById('id_correo_general')
     const correoPagos = document.getElementById('id_correo_pagos')
     const sitioWeb = document.getElementById('id_sitio_web')
@@ -518,10 +474,6 @@
     const tipoOperacion = document.getElementById('id_tipo_operacion')
     const idFiscal = document.getElementById('id_id_fiscal')
     const agenteAduanal = document.getElementById('id_agente_aduanal')
-    const regIncFiscal = document.getElementById('id_reg_inc_fiscal')
-    const impuestoCedular = document.getElementById('id_impuesto_cedular')
-    const vencSFecha = document.getElementById('id_venc_s_fecha')
-    const diasParaEntregaCompleta = document.getElementById('id_dias_para_entrega_completa')
     const limiteCreditoMN = document.getElementById('id_limite_credito_MN')
     const limiteCreditoME = document.getElementById('id_limite_credito_ME')
     const diasCredito = document.getElementById('id_dias_credito')
@@ -557,7 +509,6 @@
     
     // Error messages
     const errorEmpresa = document.getElementById('error-empresa')
-    const errorCodigo = document.getElementById('error-codigo')
     const errorTipoAlta = document.getElementById('error-tipo-alta')
     const errorContribuyente = document.getElementById('error-contribuyente')
     const errorRazonSocial = document.getElementById('error-razon-social')
@@ -572,7 +523,6 @@
     const errorTelefono1 = document.getElementById('error-telefono-1')
     const errorTelefono2 = document.getElementById('error-telefono-2')
     const errorContacto = document.getElementById('error-contacto')
-    const errorGrupo = document.getElementById('error-grupo')
     const errorCorreoGeneral = document.getElementById('error-correo-general')
     const errorCorreoPagos = document.getElementById('error-correo-pagos')
     const errorSitioWeb = document.getElementById('error-sitio-web')
@@ -580,10 +530,6 @@
     const errorTipoOperacion = document.getElementById('error-tipo-operacion')
     const errorIdFiscal = document.getElementById('error-id-fiscal')
     const errorAgenteAduanal = document.getElementById('error-agente-aduanal')
-    const errorRegIncFiscal = document.getElementById('error-reg-inc-fiscal')
-    const errorImpuestoCedular = document.getElementById('error-impuesto-cedular')
-    const errorVencSFecha = document.getElementById('error-venc-s-fecha')
-    const errorDiasParaEntregaCompleta = document.getElementById('error-dias-para-entrega-completa')
     const errorLimiteCreditoMN = document.getElementById('error-limite-credito-MN')
     const errorLimiteCreditoME = document.getElementById('error-limite-credito-ME')
     const errorDiasCredito = document.getElementById('error-dias-credito')
@@ -634,16 +580,6 @@
         errorEmpresa.style.display = 'block'
       } else {
         errorEmpresa.style.display = 'none'
-      }
-      enableSaveButton()
-    })
-    
-    // Validacion codigo
-    codigo.addEventListener('input', () => {
-      if (codigo.value == '') {
-        errorCodigo.style.display = 'block'
-      } else {
-        errorCodigo.style.display = 'none'
       }
       enableSaveButton()
     })
@@ -829,52 +765,12 @@
       enableSaveButton()
     })
     
-    // Validacion id fiscal
-    idFiscal.addEventListener('input', () => {
-      if (idFiscal.value == '') {
-        errorIdFiscal.style.display = 'block'
-      } else {
-        errorIdFiscal.style.display = 'none'
-      }
-      enableSaveButton()
-    })
-    
     // Validacion agente aduanal
-    agenteAduanal.addEventListener('input', () => {
+    agenteAduanal.addEventListener('change', () => {
       if (agenteAduanal.value == '') {
         errorAgenteAduanal.style.display = 'block'
       } else {
         errorAgenteAduanal.style.display = 'none'
-      }
-      enableSaveButton()
-    })
-    
-    // Validacion reg inc fiscal
-    regIncFiscal.addEventListener('input', () => {
-      if (regIncFiscal.value == '') {
-        errorRegIncFiscal.style.display = 'block'
-      } else {
-        errorRegIncFiscal.style.display = 'none'
-      }
-      enableSaveButton()
-    })
-    
-    // Validacion impuesto cedular
-    impuestoCedular.addEventListener('input', () => {
-      if (impuestoCedular.value == '') {
-        errorImpuestoCedular.style.display = 'block'
-      } else {
-        errorImpuestoCedular.style.display = 'none'
-      }
-      enableSaveButton()
-    })
-    
-    // Validacion dias para entrega completa
-    diasParaEntregaCompleta.addEventListener('input', () => {
-      if (diasParaEntregaCompleta.value == '') {
-        errorDiasParaEntregaCompleta.style.display = 'block'
-      } else {
-        errorDiasParaEntregaCompleta.style.display = 'none'
       }
       enableSaveButton()
     })
@@ -1152,7 +1048,7 @@
     })
 
     function enableSaveButton() {
-      if(errorEmpresa.style.display == 'block' || errorCodigo.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRazonSocial.style.display == 'block' || errorRfc.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorGrupo.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorRegIncFiscal.style.display == 'block' || errorImpuestoCedular.style.display == 'block' || errorVencSFecha.style.display == 'block' || errorDiasParaEntregaCompleta.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
+      if(errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRazonSocial.style.display == 'block' || errorRfc.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
         if(btnGuardar) {
           btnGuardar.disabled = true
         }
