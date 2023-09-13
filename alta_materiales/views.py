@@ -63,7 +63,8 @@ def material_create(request):
             material_formset = MaterialFormSet(prefix='material', initial=[{}])
 
             return render(request, 'material/material_create.html', {
-                'solicitud_form': solicitud_form, 'material_formset': material_formset, 'tipo_list': TIPO_LIST, 'familia_list': FAMILIA_LIST, 'subfamilia_list': SUBFAMILIA_LIST, 'unidad_medida_list': UNIDAD_MEDIDA_LIST
+                'solicitud_form': solicitud_form,
+                'material_formset': material_formset
             })
         
         else:
@@ -101,7 +102,7 @@ def material_create(request):
                 material_formset = MaterialFormSet(prefix='material', initial=[{}])
 
                 return render(request, 'material/material_create.html', {
-                    'solicitud_form': solicitud_form, 'material_formset': material_formset, 'tipo_list': TIPO_LIST, 'familia_list': FAMILIA_LIST, 'subfamilia_list': SUBFAMILIA_LIST, 'unidad_medida_list': UNIDAD_MEDIDA_LIST, 'error': str(e)
+                    'solicitud_form': solicitud_form, 'material_formset': material_formset, 'error': str(e)
                 })
     else:
         return redirect('material')

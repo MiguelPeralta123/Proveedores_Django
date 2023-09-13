@@ -32,19 +32,27 @@ class MaterialSolicitud(models.Model):
 
 class Material(models.Model):
     id_solicitud = models.CharField(max_length=10)
-    nombre_producto = models.CharField(max_length=50)
     tipo_alta = models.CharField(max_length=50)
-    tipo = models.CharField(max_length=50)
-    familia = models.CharField(max_length=50)
     subfamilia = models.CharField(max_length=50)
+    nombre_producto = models.CharField(max_length=50)
+    marca = models.CharField(max_length=50, blank=True)
+    parte_modelo = models.CharField(max_length=50, blank=True)
+    nombre_comun = models.CharField(max_length=50, blank=True)
+    medida = models.CharField(max_length=50, blank=True)
+    es_parte_original = models.BooleanField(default=False)
+    ing_activo = models.CharField(max_length=50, blank=True)
+    tipo_producto = models.CharField(max_length=50, blank=True)
+    alias = models.CharField(max_length=50, blank=True)
     unidad_medida = models.CharField(max_length=50)
+    es_material_empaque = models.BooleanField(default=False)
+    es_prod_terminado = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'material'
         verbose_name_plural = "materiales"
 
     def __str__(self):
-        return str(self.id) + ".- " + self.tipo + "/" + self.nombre_producto
+        return str(self.id) + ".- " + self.tipo_alta + "/" + self.nombre_producto
 
 
 class MaterialHistorial(models.Model):

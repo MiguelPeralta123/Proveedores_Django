@@ -29,12 +29,20 @@
             <table class="table table-bordered table-sm">
               <thead class="text-center">
                 <tr>
-                  <th scope="col">Nombre</th>
                   <th scope="col">Tipo alta</th>
-                  <th scope="col">Tipo</th>
-                  <th scope="col">Familia</th>
                   <th scope="col">Subfamilia</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Marca</th>
+                  <th scope="col">Parte/Modelo</th>
+                  <th scope="col">Nombre común</th>
+                  <th scope="col">Medida</th>
+                  <th scope="col">¿Es parte original?</th>
+                  <th scope="col">Ing activo</th>
+                  <th scope="col">Tipo producto</th>
+                  <th scope="col">Alias</th>
                   <th scope="col">UM</th>
+                  <th scope="col">¿Es material empaque?</th>
+                  <th scope="col">¿Es prod terminado?</th>
                   <th scope="col"></th>
                 </tr>
               </thead>
@@ -94,6 +102,9 @@
       const bodyMaterials = document.getElementById('tbody-materials')
   
       // Loading dinamically the data on the selects depending on the other selects values
+
+      /* DINAMIC DATA LOAD IS NOT LONGER REQUIRED
+
       materialFormsContainer.addEventListener('click', function(event) {
         var tipo_alta = document.querySelector("#id_material-0-tipo_alta")
         var tipo = document.querySelector("#id_material-0-tipo")
@@ -178,6 +189,8 @@
         tipo.addEventListener("change", actualizarOpcionesFamilia)
         familia.addEventListener("change", actualizarOpcionesSubfamilia)
       });
+      
+      */
 
       const buttonsContainer = document.getElementById('buttons-container');
       const comentarios = document.getElementById('id_comentarios');
@@ -195,31 +208,58 @@
         }
       });
 
-      materialForms.forEach(function(materialForm, index) {
-        const nombre = materialForm.querySelector('.material-nombre')
-        const tipoAlta = materialForm.querySelector('.material-tipo-alta')
-        const tipo = materialForm.querySelector('.material-tipo')
-        const familia = materialForm.querySelector('.material-familia')
-        const subfamilia = materialForm.querySelector('.material-subfamilia')
-        const unidadMedida = materialForm.querySelector('.material-unidad-medida')
+      const fillTable = () => {
+        bodyMaterials.innerHTML = ''
+        materialForms.forEach(function(materialForm, index) {
+          const tipoAlta = materialForm.querySelector('.material-tipo-alta')
+          const subfamilia = materialForm.querySelector('.material-subfamilia')
+          const nombre = materialForm.querySelector('.material-nombre')
+          const marca = materialForm.querySelector('.material-marca')
+          const parteModelo = materialForm.querySelector('.material-parte-modelo')
+          const nombreComun = materialForm.querySelector('.material-nombre-comun')
+          const medida = materialForm.querySelector('.material-medida')
+          const esParteOriginal = materialForm.querySelector('.material-es-parte-original')
+          const ingActivo = materialForm.querySelector('.material-ing-activo')
+          const tipoProducto = materialForm.querySelector('.material-tipo-producto')
+          const alias = materialForm.querySelector('.material-alias')
+          const unidadMedida = materialForm.querySelector('.material-unidad-medida')
+          const esMaterialEmpaque = materialForm.querySelector('.material-es-material-empaque')
+          const esProdTerminado = materialForm.querySelector('.material-es-prod-terminado')
+  
+          esParteOriginalValue = esParteOriginal.checked == true ? 'Si' : 'No'
+          esMaterialEmpaqueValue = esMaterialEmpaque.checked == true ? 'Si' : 'No'
+          esProdTerminadoValue = esProdTerminado.checked == true ? 'Si' : 'No'
+  
+          const newRow = bodyMaterials.insertRow()
+          newRow.classList.add('table-row')
+          newRow.id = `table-row-${index}`
+          newRow.innerHTML = `
+          <td>${tipoAlta.value}</td>
+          <td>${subfamilia.value}</td>
+          <td>${nombre.value}</td>
+          <td>${marca.value}</td>
+          <td>${parteModelo.value}</td>
+          <td>${nombreComun.value}</td>
+          <td>${medida.value}</td>
+          <td>${esParteOriginalValue}</td>
+          <td>${ingActivo.value}</td>
+          <td>${tipoProducto.value}</td>
+          <td>${alias.value}</td>
+          <td>${unidadMedida.value}</td>
+          <td>${esMaterialEmpaqueValue}</td>
+          <td>${esProdTerminadoValue}</td>
+          <td>
+            <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
+          </td>`
+        })
+      }
 
-        const newRow = bodyMaterials.insertRow()
-        newRow.classList.add('table-row')
-        newRow.id = `table-row-${index}`
-        newRow.innerHTML = `
-        <td>${nombre.value}</td>
-        <td>${tipoAlta.value}</td>
-        <td>${tipo.value}</td>
-        <td>${familia.value}</td>
-        <td>${subfamilia.value}</td>
-        <td>${unidadMedida.value}</td>
-        <td>
-          <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
-        </td>`
-      });
+      fillTable()
 
       tableMaterials.addEventListener('click', function(event) {
         if (event.target && event.target.classList.contains('edit-material')) {
+          // Fill the table with the updated data
+          fillTable()
           // Disable edit button
           const editButtons = tableMaterials.getElementsByClassName('edit-material');
           for (let i = 0; i < editButtons.length; i++) {

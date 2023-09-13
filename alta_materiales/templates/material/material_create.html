@@ -28,13 +28,21 @@
           <div id="table-materials" class="table-responsive my-3" style="display:none;">
             <table class="table table-bordered" style="font-size: 0.8rem;">
               <thead>
-                <tr>
-                  <th scope="col">Nombre</th>
+                <tr>                  
                   <th scope="col">Tipo alta</th>
-                  <th scope="col">Tipo</th>
-                  <th scope="col">Familia</th>
                   <th scope="col">Subfamilia</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Marca</th>
+                  <th scope="col">Parte/Modelo</th>
+                  <th scope="col">Nombre común</th>
+                  <th scope="col">Medida</th>
+                  <th scope="col">¿Es parte original?</th>
+                  <th scope="col">Ing activo</th>
+                  <th scope="col">Tipo producto</th>
+                  <th scope="col">Alias</th>
                   <th scope="col">UM</th>
+                  <th scope="col">¿Es material empaque?</th>
+                  <th scope="col">¿Es prod terminado?</th>
                   <th scope="col"></th>
                   <th scope="col"></th>
                 </tr>
@@ -97,52 +105,79 @@
     }
   
     addButton.addEventListener('click', function() {
-      var nombreProducto
       var tipoAlta
-      var tipo
-      var familia
       var subfamilia
+      var nombreProducto
+      var marca
+      var parteModelo
+      var nombreComun
+      var medida
+      var esParteOriginal
+      var ingActivo
+      var tipoProducto
+      var alias
       var unidadMedida
+      var esMaterialEmpaque
+      var esProdTerminado
 
       if (!editingBand) {
-        nombreProducto = document.getElementById(`id_material-${materialCounter}-nombre_producto`).value
         tipoAlta = document.getElementById(`id_material-${materialCounter}-tipo_alta`).value
-        tipo = document.getElementById(`id_material-${materialCounter}-tipo`).value
-        familia = document.getElementById(`id_material-${materialCounter}-familia`).value
         subfamilia = document.getElementById(`id_material-${materialCounter}-subfamilia`).value
+        nombreProducto = document.getElementById(`id_material-${materialCounter}-nombre_producto`).value
+        marca = document.getElementById(`id_material-${materialCounter}-marca`).value
+        parteModelo = document.getElementById(`id_material-${materialCounter}-parte_modelo`).value
+        nombreComun = document.getElementById(`id_material-${materialCounter}-nombre_comun`).value
+        medida = document.getElementById(`id_material-${materialCounter}-medida`).value
+        esParteOriginal = document.getElementById(`id_material-${materialCounter}-es_parte_original`).value
+        ingActivo = document.getElementById(`id_material-${materialCounter}-ing_activo`).value
+        tipoProducto = document.getElementById(`id_material-${materialCounter}-tipo_producto`).value
+        alias = document.getElementById(`id_material-${materialCounter}-alias`).value
         unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`).value
+        esMaterialEmpaque = document.getElementById(`id_material-${materialCounter}-es_material_empaque`).value
+        esProdTerminado = document.getElementById(`id_material-${materialCounter}-es_prod_terminado`).value
       }
       else {
-        nombreProducto = document.getElementById(`id_material-${editingId}-nombre_producto`).value
         tipoAlta = document.getElementById(`id_material-${editingId}-tipo_alta`).value
-        tipo = document.getElementById(`id_material-${editingId}-tipo`).value
-        familia = document.getElementById(`id_material-${editingId}-familia`).value
         subfamilia = document.getElementById(`id_material-${editingId}-subfamilia`).value
+        nombreProducto = document.getElementById(`id_material-${editingId}-nombre_producto`).value
+        marca = document.getElementById(`id_material-${editingId}-marca`).value
+        parteModelo = document.getElementById(`id_material-${editingId}-parte_modelo`).value
+        nombreComun = document.getElementById(`id_material-${editingId}-nombre_comun`).value
+        medida = document.getElementById(`id_material-${editingId}-medida`).value
+        esParteOriginal = document.getElementById(`id_material-${editingId}-es_parte_original`).value
+        ingActivo = document.getElementById(`id_material-${editingId}-ing_activo`).value
+        tipoProducto = document.getElementById(`id_material-${editingId}-tipo_producto`).value
+        alias = document.getElementById(`id_material-${editingId}-alias`).value
         unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`).value
-      }
-
-      if (!nombreProducto) {
-        console.log('No se encontró el material')
+        esMaterialEmpaque = document.getElementById(`id_material-${editingId}-es_material_empaque`).value
+        esProdTerminado = document.getElementById(`id_material-${editingId}-es_prod_terminado`).value
       }
 
       // Field validation
-      if(nombreProducto!='' && tipoAlta!='' && tipo!='' && familia!='' && subfamilia!='' && unidadMedida!='') {
+      if(tipoAlta!='' && subfamilia!='' && nombreProducto!='' && unidadMedida!='') {
         createMaterialForm()
         // Making the table visible and adding a new row
         tableMaterials.style.display = 'block'
         if(addMaterialBand) {
-          if (nombreProducto && tipoAlta && tipo && familia && subfamilia && unidadMedida) {
             if (!editingBand) {
               const newRow = bodyMaterials.insertRow()
               newRow.classList.add('table-row')
               newRow.id = `table-row-${formCount - 2}`
               newRow.innerHTML = `
-              <td>${nombreProducto}</td>
               <td>${tipoAlta}</td>
-              <td>${tipo}</td>
-              <td>${familia}</td>
               <td>${subfamilia}</td>
+              <td>${nombreProducto}</td>
+              <td>${marca}</td>
+              <td>${parteModelo}</td>
+              <td>${nombreComun}</td>
+              <td>${medida}</td>
+              <td>${esParteOriginal}</td>
+              <td>${ingActivo}</td>
+              <td>${tipoProducto}</td>
+              <td>${alias}</td>
               <td>${unidadMedida}</td>
+              <td>${esMaterialEmpaque}</td>
+              <td>${esProdTerminado}</td>
               <td>
                 <button id="edit-material-${formCount - 2}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
               </td>
@@ -153,12 +188,20 @@
             else {
               const editingRow = document.getElementById(`table-row-${editingId}`)
               editingRow.innerHTML = `
-              <td>${nombreProducto}</td>
               <td>${tipoAlta}</td>
-              <td>${tipo}</td>
-              <td>${familia}</td>
               <td>${subfamilia}</td>
+              <td>${nombreProducto}</td>
+              <td>${marca}</td>
+              <td>${parteModelo}</td>
+              <td>${nombreComun}</td>
+              <td>${medida}</td>
+              <td>${esParteOriginal}</td>
+              <td>${ingActivo}</td>
+              <td>${tipoProducto}</td>
+              <td>${alias}</td>
               <td>${unidadMedida}</td>
+              <td>${esMaterialEmpaque}</td>
+              <td>${esProdTerminado}</td>
               <td>
                 <button id="edit-material-${editingId}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
               </td>
@@ -167,7 +210,6 @@
               </td>`;
               editingBand = false
             }
-          }
         }
         // Hiding the current material form
         var materialFormsToHide = document.getElementsByClassName('material-form');
@@ -307,6 +349,9 @@
       }
 
       // Loading dinamically the data on the selects depending on the other selects
+
+      /* DINAMIC DATA LOAD IS NOT LONGER REQUIRED
+      
       var tipo_alta = document.querySelector("#id_material-0-tipo_alta")
       var tipo = document.querySelector("#id_material-0-tipo")
       var familia = document.querySelector("#id_material-0-familia")
@@ -389,6 +434,9 @@
       tipo_alta.addEventListener("change", actualizarOpcionesUnidadMedida)
       tipo.addEventListener("change", actualizarOpcionesFamilia)
       familia.addEventListener("change", actualizarOpcionesSubfamilia)
+      
+      */
+
     });
   });
 

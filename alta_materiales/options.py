@@ -15,6 +15,24 @@ TIPO_ALTA_LIST = [
     ('Servicio', 'Servicio'),
 ]
 
+SUBFAMILIA_LIST_PROVISIONAL = [
+    ('', 'Seleccione una opción'),
+    ('Subfamilia 1', 'Subfamilia 1'),
+    ('Subfamilia 2', 'Subfamilia 2'),
+    ('Subfamilia 3', 'Subfamilia 3'),
+    ('Subfamilia 4', 'Subfamilia 4'),
+    ('Subfamilia 5', 'Subfamilia 5'),
+]
+
+UNIDAD_MEDIDA_LIST_PROVISIONAL = [
+    ('', 'Seleccione una opción'),
+    ('Unidad de medida 1', 'Unidad de medida 1'),
+    ('Unidad de medida 2', 'Unidad de medida 2'),
+    ('Unidad de medida 3', 'Unidad de medida 3'),
+    ('Unidad de medida 4', 'Unidad de medida 4'),
+    ('Unidad de medida 5', 'Unidad de medida 5'),
+]
+
 TIPO_LIST = {
     'Producto': [
         {'value': '', 'display': 'Seleccione una opción'},
