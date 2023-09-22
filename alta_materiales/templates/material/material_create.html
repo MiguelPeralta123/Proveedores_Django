@@ -1,96 +1,167 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <main class="container py-5 mt-5">
-    <div class="row d-flex justify-content-center mt-5">
-      <div class="col-md-6 align-self-center mx-auto">
-        <form class="card card-body" method="POST">
-          <h1 class="mb-4">Registrar material</h1>
-          {{ error }}
-          {% csrf_token %}
 
-          <!-- Empresa field -->
-          <div style="margin-bottom:1rem;">
-            {{ solicitud_form.empresa.label_tag }}
-            {{ solicitud_form.empresa }}
-            <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-          </div>
+<main class="container py-5 mt-5">
+  <div class="row d-flex justify-content-center mt-5">
+    <div class="col-md-6 align-self-center mx-auto">
+      <form class="card card-body" method="POST">
+        <h1 class="mb-4">Registrar material</h1>
+        {{ error }}
+        {% csrf_token %}
 
-          <!-- Justificación field -->
-          <div style="margin-bottom:1rem;">
-            {{ solicitud_form.justificacion.label_tag }}
-            {{ solicitud_form.justificacion }}
-            <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
-          </div>
+        <!-- Empresa field -->
+        <div style="margin-bottom:1rem;">
+          {{ solicitud_form.empresa.label_tag }}
+          {{ solicitud_form.empresa }}
+          <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+        </div>
 
-          <h3>Materiales</h3>
+        <!-- Justificación field -->
+        <div style="margin-bottom:1rem;">
+          {{ solicitud_form.justificacion.label_tag }}
+          {{ solicitud_form.justificacion }}
+          <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+        </div>
 
-          <div id="table-materials" class="table-responsive my-3" style="display:none;">
-            <table class="table table-bordered" style="font-size: 0.8rem;">
-              <thead>
-                <tr>                  
-                  <th scope="col">Tipo alta</th>
-                  <th scope="col">Subfamilia</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Marca</th>
-                  <th scope="col">Parte/Modelo</th>
-                  <th scope="col">Nombre común</th>
-                  <th scope="col">Medida</th>
-                  <th scope="col">¿Es parte original?</th>
-                  <th scope="col">Ing activo</th>
-                  <th scope="col">Tipo producto</th>
-                  <th scope="col">Alias</th>
-                  <th scope="col">UM</th>
-                  <th scope="col">¿Es material empaque?</th>
-                  <th scope="col">¿Es prod terminado?</th>
-                  <th scope="col"></th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody id="tbody-materials"></tbody>
-            </table>
-          </div>
+        <h3>Materiales</h3>
 
-          {{ material_formset.management_form }}
-          <div id="material-forms">
-            {% for material_form in material_formset %}
-              <div id="material-form-0" class="material-form material-form-0">
-                {{ material_form.as_p }}
-              </div>
-            {% endfor %}
-          </div>
+        <div id="table-materials" class="table-responsive my-3" style="display:none;">
+          <table class="table table-bordered" style="font-size: 0.8rem;">
+            <thead>
+              <tr>                  
+                <th scope="col">Tipo alta</th>
+                <th scope="col">Subfamilia</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Marca</th>
+                <th scope="col">Parte/Modelo</th>
+                <th scope="col">Nombre común</th>
+                <th scope="col">Medida</th>
+                <th scope="col">¿Es parte original?</th>
+                <th scope="col">Ing activo</th>
+                <th scope="col">Tipo producto</th>
+                <th scope="col">Alias</th>
+                <th scope="col">UM</th>
+                <th scope="col">¿Es material empaque?</th>
+                <th scope="col">¿Es prod terminado?</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody id="tbody-materials"></tbody>
+          </table>
+        </div>
 
-          <!-- Es migracion field -->
-          <div style="margin-bottom:2rem;">
-            <p><b>En caso de que el proveedor ya exista en otra empresa, marque la siguiente casilla:</b></p>
-            {{ solicitud_form.es_migracion.label_tag }}
-            {{ solicitud_form.es_migracion }}
-            <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-          </div>
+        {{ material_formset.management_form }}
+        <div id="material-forms">
+          {% for material_form in material_formset %}
+            <div id="material-form-0" class="material-form material-form-0">
+              {{ material_form.as_p }}
+            </div>
+          {% endfor %}
+        </div>
 
-          <button class="btn btn-secondary mb-3" type="button" id="add-material">Agregar Material</button>
-          <button id="btn-guardar" class="btn" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
-        </form>
-      </div>
+        <!-- Es migracion field -->
+        <div style="margin-bottom:2rem;">
+          <p><b>En caso de que el proveedor ya exista en otra empresa, marque la siguiente casilla:</b></p>
+          {{ solicitud_form.es_migracion.label_tag }}
+          {{ solicitud_form.es_migracion }}
+          <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+        </div>
+
+        <button class="btn btn-secondary mb-3" type="button" id="add-material">Agregar Material</button>
+        <button id="btn-guardar" class="btn" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;" disabled>Guardar</button>
+      </form>
     </div>
-  </main>
+  </div>
+</main>
 
-  <script>
+<script>
   document.addEventListener('DOMContentLoaded', function() {
-    const addButton = document.getElementById('add-material');
+    const btnAddMaterial = document.getElementById('add-material');
     const tableMaterials = document.getElementById('table-materials')
     const materialFormsContainer = document.getElementById('material-forms');
     const bodyMaterials = document.getElementById('tbody-materials')
+    const btnGuardar = document.getElementById('btn-guardar')
     let formCount = {{ material_formset.total_form_count }};
     let materialCounter = 0
     let addMaterialBand = true
     let editingBand = false
     let editingId = 0
 
-    const createMaterialForm = ()=> {
+    const fillTable = () => {
+      const materialForms = document.querySelectorAll('.material-form')
+      tableMaterials.style.display = 'block'
+      btnGuardar.disabled = false
+      bodyMaterials.innerHTML = ''
+      materialForms.forEach((materialForm, index) => {
+        const tipoAlta = materialForm.querySelector('.material-tipo-alta')
+        const subfamilia = materialForm.querySelector('.material-subfamilia')
+        const nombre = materialForm.querySelector('.material-nombre')
+        const marca = materialForm.querySelector('.material-marca')
+        const parteModelo = materialForm.querySelector('.material-parte-modelo')
+        const nombreComun = materialForm.querySelector('.material-nombre-comun')
+        const medida = materialForm.querySelector('.material-medida')
+        const esParteOriginal = materialForm.querySelector('.material-es-parte-original')
+        const ingActivo = materialForm.querySelector('.material-ing-activo')
+        const tipoProducto = materialForm.querySelector('.material-tipo-producto')
+        const alias = materialForm.querySelector('.material-alias')
+        const unidadMedida = materialForm.querySelector('.material-unidad-medida')
+        const esMaterialEmpaque = materialForm.querySelector('.material-es-material-empaque')
+        const esProdTerminado = materialForm.querySelector('.material-es-prod-terminado')
+
+        esParteOriginalValue = esParteOriginal.checked == true ? 'Si' : 'No'
+        esMaterialEmpaqueValue = esMaterialEmpaque.checked == true ? 'Si' : 'No'
+        esProdTerminadoValue = esProdTerminado.checked == true ? 'Si' : 'No'
+
+        const newRow = bodyMaterials.insertRow()
+        newRow.classList.add('table-row')
+        newRow.id = `table-row-${index}`
+        newRow.innerHTML = `
+        <td>${tipoAlta.value}</td>
+        <td>${subfamilia.value}</td>
+        <td>${nombre.value}</td>
+        <td>${marca.value}</td>
+        <td>${parteModelo.value}</td>
+        <td>${nombreComun.value}</td>
+        <td>${medida.value}</td>
+        <td>${esParteOriginalValue}</td>
+        <td>${ingActivo.value}</td>
+        <td>${tipoProducto.value}</td>
+        <td>${alias.value}</td>
+        <td>${unidadMedida.value}</td>
+        <td>${esMaterialEmpaqueValue}</td>
+        <td>${esProdTerminadoValue}</td>
+        <td>
+          <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
+        </td>
+        <td>
+          <button id="remove-material-${index}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
+        </td>`
+
+        var deleteButtons = tableMaterials.getElementsByClassName('remove-material');
+        if (deleteButtons.length > 1) {
+          for(i=0; i<deleteButtons.length; i++) {
+            deleteButtons[i].disabled = false
+          }
+        }
+        else {
+          for(i=0; i<deleteButtons.length; i++) {
+            deleteButtons[i].disabled = true
+          }
+        }
+      })
+    }
+
+    const createMaterialForm = () => {
+      // Hiding all material forms
+      const materialForms = document.querySelectorAll('.material-form')
+      materialForms.forEach(materialForm => {
+        materialForm.style.display = 'none'
+      })
+      
       const formHtml = `
           {{ material_formset.empty_form.as_p }}
-          <button class="btn btn-danger mb-3 remove-material" type="button">Eliminar material</button>
         `;
       const form = document.createElement('div');
       form.id = `material-form-${formCount}`
@@ -102,128 +173,42 @@
       formCount++;
       document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
       materialCounter++
+
+      /*if (materialCounter > 1) {
+        var deleteButtons = document.getElementsByClassName('remove-material');
+        for(i=0; i<deleteButtons.length-1; i++) {
+          deleteButtons[i].disabled = false
+        }
+      }*/
     }
   
-    addButton.addEventListener('click', function() {
+    btnAddMaterial.addEventListener('click', function() {
       var tipoAlta
       var subfamilia
       var nombreProducto
-      var marca
-      var parteModelo
-      var nombreComun
-      var medida
-      var esParteOriginal
-      var ingActivo
-      var tipoProducto
-      var alias
       var unidadMedida
-      var esMaterialEmpaque
-      var esProdTerminado
 
       if (!editingBand) {
         tipoAlta = document.getElementById(`id_material-${materialCounter}-tipo_alta`).value
         subfamilia = document.getElementById(`id_material-${materialCounter}-subfamilia`).value
         nombreProducto = document.getElementById(`id_material-${materialCounter}-nombre_producto`).value
-        marca = document.getElementById(`id_material-${materialCounter}-marca`).value
-        parteModelo = document.getElementById(`id_material-${materialCounter}-parte_modelo`).value
-        nombreComun = document.getElementById(`id_material-${materialCounter}-nombre_comun`).value
-        medida = document.getElementById(`id_material-${materialCounter}-medida`).value
-        esParteOriginal = document.getElementById(`id_material-${materialCounter}-es_parte_original`).value
-        ingActivo = document.getElementById(`id_material-${materialCounter}-ing_activo`).value
-        tipoProducto = document.getElementById(`id_material-${materialCounter}-tipo_producto`).value
-        alias = document.getElementById(`id_material-${materialCounter}-alias`).value
         unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`).value
-        esMaterialEmpaque = document.getElementById(`id_material-${materialCounter}-es_material_empaque`).value
-        esProdTerminado = document.getElementById(`id_material-${materialCounter}-es_prod_terminado`).value
       }
       else {
         tipoAlta = document.getElementById(`id_material-${editingId}-tipo_alta`).value
         subfamilia = document.getElementById(`id_material-${editingId}-subfamilia`).value
         nombreProducto = document.getElementById(`id_material-${editingId}-nombre_producto`).value
-        marca = document.getElementById(`id_material-${editingId}-marca`).value
-        parteModelo = document.getElementById(`id_material-${editingId}-parte_modelo`).value
-        nombreComun = document.getElementById(`id_material-${editingId}-nombre_comun`).value
-        medida = document.getElementById(`id_material-${editingId}-medida`).value
-        esParteOriginal = document.getElementById(`id_material-${editingId}-es_parte_original`).value
-        ingActivo = document.getElementById(`id_material-${editingId}-ing_activo`).value
-        tipoProducto = document.getElementById(`id_material-${editingId}-tipo_producto`).value
-        alias = document.getElementById(`id_material-${editingId}-alias`).value
         unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`).value
-        esMaterialEmpaque = document.getElementById(`id_material-${editingId}-es_material_empaque`).value
-        esProdTerminado = document.getElementById(`id_material-${editingId}-es_prod_terminado`).value
       }
 
-      // Field validation
-      if(tipoAlta!='' && subfamilia!='' && nombreProducto!='' && unidadMedida!='') {
+      if(tipoAlta !== '' && subfamilia !== '' && nombreProducto !== '' && unidadMedida !== '') {
+        fillTable()
         createMaterialForm()
-        // Making the table visible and adding a new row
-        tableMaterials.style.display = 'block'
-        if(addMaterialBand) {
-            if (!editingBand) {
-              const newRow = bodyMaterials.insertRow()
-              newRow.classList.add('table-row')
-              newRow.id = `table-row-${formCount - 2}`
-              newRow.innerHTML = `
-              <td>${tipoAlta}</td>
-              <td>${subfamilia}</td>
-              <td>${nombreProducto}</td>
-              <td>${marca}</td>
-              <td>${parteModelo}</td>
-              <td>${nombreComun}</td>
-              <td>${medida}</td>
-              <td>${esParteOriginal}</td>
-              <td>${ingActivo}</td>
-              <td>${tipoProducto}</td>
-              <td>${alias}</td>
-              <td>${unidadMedida}</td>
-              <td>${esMaterialEmpaque}</td>
-              <td>${esProdTerminado}</td>
-              <td>
-                <button id="edit-material-${formCount - 2}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
-              </td>
-              <td>
-                <button id="remove-material-${formCount - 2}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
-              </td>`;
-            }
-            else {
-              const editingRow = document.getElementById(`table-row-${editingId}`)
-              editingRow.innerHTML = `
-              <td>${tipoAlta}</td>
-              <td>${subfamilia}</td>
-              <td>${nombreProducto}</td>
-              <td>${marca}</td>
-              <td>${parteModelo}</td>
-              <td>${nombreComun}</td>
-              <td>${medida}</td>
-              <td>${esParteOriginal}</td>
-              <td>${ingActivo}</td>
-              <td>${tipoProducto}</td>
-              <td>${alias}</td>
-              <td>${unidadMedida}</td>
-              <td>${esMaterialEmpaque}</td>
-              <td>${esProdTerminado}</td>
-              <td>
-                <button id="edit-material-${editingId}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
-              </td>
-              <td>
-                <button id="remove-material-${editingId}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
-              </td>`;
-              editingBand = false
-            }
-        }
-        // Hiding the current material form
-        var materialFormsToHide = document.getElementsByClassName('material-form');
-        for(i=0; i<materialFormsToHide.length-1; i++) {
-          materialFormsToHide[i].style.display = 'none'
-        }
-        addMaterialBand = true
+        btnAddMaterial.innerHTML = 'Agregar Material'
       }
-
-      // Enable the edit buttons
-      const editButtons = tableMaterials.getElementsByClassName('edit-material');
-        for (let i = 0; i < editButtons.length; i++) {
-          editButtons[i].disabled = false
-        }
+      else {
+        window.alert('Algún campo está vacío')
+      }
     });
 
     tableMaterials.addEventListener('click', function(event) {
@@ -257,6 +242,8 @@
           formCount--;
           document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
         }
+
+        btnAddMaterial.innerHTML = 'Guardar Cambios'
       }
 
       // If the delete button is clicked, remove the row and the form
@@ -282,6 +269,18 @@
           for (let i = 0; i < editButtons.length; i++) {
             editButtons[i].disabled = false
           }
+
+          var deleteButtons = tableMaterials.getElementsByClassName('remove-material');
+          if (deleteButtons.length > 1) {
+            for(i=0; i<deleteButtons.length; i++) {
+              deleteButtons[i].disabled = false
+            }
+          }
+          else {
+            for(i=0; i<deleteButtons.length; i++) {
+              deleteButtons[i].disabled = true
+            }
+          }
         }
         const form = document.getElementById(`material-form-${editingId}`);
         if (form) {
@@ -299,6 +298,13 @@
           addMaterialBand = false
           formCount--;
           document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
+        }
+
+        if (materialCounter == 1) {
+          var deleteButtons = document.getElementsByClassName('remove-material');
+          for(i=0; i<deleteButtons.length-1; i++) {
+            deleteButtons[i].disabled = true
+          }
         }
       }
     })
@@ -327,6 +333,13 @@
           const editButtons = tableMaterials.getElementsByClassName('edit-material');
           for (let i = 0; i < editButtons.length; i++) {
             editButtons[i].disabled = false
+          }
+
+          if (materialCounter == 1) {
+            var deleteButtons = document.getElementsByClassName('remove-material');
+            for(i=0; i<deleteButtons.length-1; i++) {
+              deleteButtons[i].disabled = true
+            }
           }
         }
         if(editingBand) {
@@ -490,5 +503,5 @@
     }
   })
 
-  </script>
+</script>
 {% endblock %}

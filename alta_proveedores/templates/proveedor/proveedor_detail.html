@@ -384,27 +384,29 @@
           <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block my-2" style="width:fit-content;" download="">Descargar constancia de situación fiscal</a>
           <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block my-2" style="width:fit-content;" download="">Descargar estado de cuenta bancario</a>
 
-          <div id="buttons-container">
-            {% if proveedor.pendiente == True and current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False or proveedor.rechazado_compras == True or proveedor.rechazado_finanzas == True or proveedor.rechazado_sistemas == True %}
-              <button id="btn-guardar" class="btn" style="margin: 10px 0; background-color: #008841; color: white; font-weight: bold;" type="submit" name="pendiente" value="True">Guardar cambios</button>
+          <div id="buttons-container" class="d-flex justify-content-between gap-2">
+            {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and proveedor.rechazado_compras == True or current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and proveedor.rechazado_finanzas == True or current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and proveedor.rechazado_sistemas == True %}
+              <button id="btn-save" class="btn w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="pendiente" value="True">Guardar cambios</button>
+
+              <button id="btn-delete" class="btn btn-delete w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="eliminado" value="True">Eliminar solicitud</button>
             {% endif %}
 
             {% if current_user.compras == True %}
-              <button id="btn-approve" class="btn btn-approve" style="margin: 10px 0; background-color: #008841; color: white; font-weight: bold;" type="submit" name="compras" value="True">Aprobar compras</button>
+              <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="compras" value="True">Aprobar</button>
 
-              <button id="btn-decline" class="btn btn-reject" style="margin: 10px 0; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar compras</button>
+              <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
             {% endif %}
 
             {% if current_user.finanzas == True %}
-              <button id="btn-approve" class="btn btn-approve" style="margin: 10px 0; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar finanzas</button>
+              <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
 
-              <button id="btn-decline" class="btn btn-reject" style="margin: 10px 0; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar finanzas</button>
+              <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar</button>
             {% endif %}
 
             {% if current_user.sistemas == True %}
-              <button id="btn-approve" class="btn btn-approve" style="margin: 10px 0; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar sistemas</button>
+              <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
 
-              <button id="btn-decline" class="btn btn-reject" style="margin: 10px 0; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar sistemas</button>
+              <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
             {% endif %}
           </div>
         </form>
@@ -570,7 +572,8 @@
     const cuentaPattern = /^\d{10}$/
     const clabePattern = /^\d{18}$/
     
-    const btnGuardar = document.getElementById('btn-guardar')
+    const btnSave = document.getElementById('btn-save')
+    const btnDelete = document.getElementById('btn-delete')
     const btnApprove = document.getElementById('btn-approve')
     const btnDecline = document.getElementById('btn-decline')
     
@@ -1049,8 +1052,9 @@
 
     function enableSaveButton() {
       if(errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRazonSocial.style.display == 'block' || errorRfc.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
-        if(btnGuardar) {
-          btnGuardar.disabled = true
+        if(btnSave) {
+          btnSave.disabled = true
+          btnDelete.disabled = true
         }
         else {
           btnApprove.disabled = true
@@ -1058,8 +1062,9 @@
         }
       }
       else {
-        if(btnGuardar) {
-          btnGuardar.disabled = false
+        if(btnSave) {
+          btnSave.disabled = false
+          btnDelete.disabled = false
         }
         else {
           btnApprove.disabled = false

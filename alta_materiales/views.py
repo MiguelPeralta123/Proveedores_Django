@@ -29,16 +29,16 @@ def material(request):
     # Compras, finanzas y sistemas pueden ver las solicitudes de todos los usuarios
     if request.user.compras:
         # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por compras
-        solicitudes = MaterialSolicitud.objects.filter(pendiente=True)
+        solicitudes = MaterialSolicitud.objects.filter(pendiente=True, eliminado=False)
     elif request.user.finanzas:
         # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por finanzas
-        solicitudes = MaterialSolicitud.objects.filter(compras=True)
+        solicitudes = MaterialSolicitud.objects.filter(compras=True, eliminado=False)
     elif request.user.sistemas:
         # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por sistemas
-        solicitudes = MaterialSolicitud.objects.filter(finanzas=True)
+        solicitudes = MaterialSolicitud.objects.filter(finanzas=True, eliminado=False)
     else:
         # Trayendo de la base de datos las solicitudes que correspondan al usuario logueado
-        solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+        solicitudes = MaterialSolicitud.objects.filter(usuario=request.user, eliminado=False)
 
     historial = []
     for solicitud in solicitudes:
@@ -57,7 +57,7 @@ def material_create(request):
 
         if request.method == 'GET':
             default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False}
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
 
             solicitud_form = SolicitudForm(initial=default_values)
             material_formset = MaterialFormSet(prefix='material', initial=[{}])
@@ -96,7 +96,7 @@ def material_create(request):
                     return redirect('material')
             except ValueError as e:
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False}
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
                 
                 solicitud_form = SolicitudForm(initial=default_values)
                 material_formset = MaterialFormSet(prefix='material', initial=[{}])
@@ -115,7 +115,7 @@ def material_detail(request, material_id):
 
     if request.method == 'GET':
         default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                          'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False}
+                          'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
         if request.user.compras:
             solicitud_form = SolicitudFormForCompras(
                 instance=solicitud, initial=default_values)

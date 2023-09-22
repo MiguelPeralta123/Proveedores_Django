@@ -15,13 +15,13 @@ def home(request):
 @login_required
 def proveedor(request):
     if request.user.compras:
-        proveedores = Proveedor.objects.filter(pendiente=True)
+        proveedores = Proveedor.objects.filter(pendiente=True, eliminado=False)
     elif request.user.finanzas:
-        proveedores = Proveedor.objects.filter(compras=True)
+        proveedores = Proveedor.objects.filter(compras=True, eliminado=False)
     elif request.user.sistemas:
-        proveedores = Proveedor.objects.filter(finanzas=True)
+        proveedores = Proveedor.objects.filter(finanzas=True, eliminado=False)
     else:
-        proveedores = Proveedor.objects.filter(usuario=request.user)
+        proveedores = Proveedor.objects.filter(usuario=request.user, eliminado=False)
 
     historial = []
     for proveedor in proveedores:
@@ -38,7 +38,7 @@ def proveedor_create(request):
     if request.user.puede_comprar:
         if request.method == 'GET':
             default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False}
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
 
             return render(request, 'proveedor/proveedor_create.html', {
                 'form': ProveedorForm(initial=default_values)
@@ -62,7 +62,7 @@ def proveedor_create(request):
                     return redirect('proveedor')
             except ValueError as e:
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False}
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
 
                 return render(request, 'proveedor/proveedor_create.html', {
                     'form': ProveedorForm(initial=default_values),
@@ -78,7 +78,7 @@ def proveedor_detail(request, proveedor_id):
 
     if request.method == 'GET':
         default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                          'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False}
+                          'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
         if request.user.compras:
             proveedor_form = ProveedorFormForCompras(
                 instance=proveedor, initial=default_values)

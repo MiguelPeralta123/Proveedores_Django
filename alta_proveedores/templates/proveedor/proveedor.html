@@ -9,7 +9,9 @@
 
             <ul style="list-style-type: none;" class="list-group mt-4">
                 {% for proveedor in proveedores %}
-                <a class="list-group-item my-2 border rounded provider-card" href="{% url 'proveedor_detail' proveedor.id %}">
+                <a class="list-group-item my-2 border rounded provider-card" 
+                    href="{% url 'proveedor_detail' proveedor.id %}"
+                    style="transition: 0.2s ease-in-out;">
                     <div class="d-flex justify-content-between gap-3 my-2">
                         <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
                         <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
@@ -46,7 +48,7 @@
 
                     {% for cambio in historial %}
                         {% if proveedor.id == cambio.id_proveedor %}
-                            <p style="font-size: 0.8rem; color: gray;"><i>🔸{{cambio}} - {{cambio.fecha}}</i></p>
+                            <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
                         {% endif %}
                     {% endfor %}
                 </a>
@@ -59,7 +61,6 @@
 <style>
     .provider-card:hover {
       scale: 1.02;
-      transition: 0.2s ease-in-out;
       background-color: #f5f5f5;
     }
 </style>
