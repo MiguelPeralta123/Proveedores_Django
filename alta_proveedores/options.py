@@ -5,6 +5,15 @@ EMPRESA_LIST = [
     ('Sonorg - Tago - Wichita - Moonrise - Wellin', 'Sonorg - Tago - Wichita - Moonrise - Wellin'),
 ]
 
+EMPRESA_MIGRACION_LIST = [
+    ('', 'Seleccione una opción'),
+    ('Sonorg', 'Sonorg'),
+    ('Tago', 'Tago'),
+    ('Wichita', 'Wichita'),
+    ('Moonrise', 'Moonrise'),
+    ('Wellin', 'Wellin'),
+]
+
 TIPO_ALTA_LIST = [
     ('', 'Seleccione una opción'),
     ('Proveedor', 'Proveedor'),

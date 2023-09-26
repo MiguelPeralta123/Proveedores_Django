@@ -1,274 +1,252 @@
 {% extends 'base.html' %}
 
 {% block content %}
+  <main class="container py-5 mt-5">
+    <div class="row d-flex justify-content-center mt-5">
+      <div class="col-md-6 align-self-center mx-auto">
+        <form class="card card-body" method="POST">
+          <h1 class="mb-4">Registrar material</h1>
 
-<main class="container py-5 mt-5">
-  <div class="row d-flex justify-content-center mt-5">
-    <div class="col-md-6 align-self-center mx-auto">
-      <form class="card card-body" method="POST">
-        <h1 class="mb-4">Registrar material</h1>
-        {{ error }}
-        {% csrf_token %}
+          {{ error }}
 
-        <!-- Empresa field -->
-        <div style="margin-bottom:1rem;">
-          {{ solicitud_form.empresa.label_tag }}
-          {{ solicitud_form.empresa }}
-          <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-        </div>
+          {% csrf_token %}
 
-        <!-- Justificación field -->
-        <div style="margin-bottom:1rem;">
-          {{ solicitud_form.justificacion.label_tag }}
-          {{ solicitud_form.justificacion }}
-          <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
-        </div>
+          <!-- Es migracion field -->
+          <div style="margin-bottom:1rem;">
+            <p><b>En caso de que el proveedor ya exista en otra empresa, marque la siguiente casilla:</b></p>
+            {{ solicitud_form.es_migracion.label_tag }}
+            {{ solicitud_form.es_migracion }}
+            <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
 
-        <h3>Materiales</h3>
+          <!-- Material migración fields -->
+          <div id="material-migracion-fields" style="display: none; margin-bottom:1rem;">
+            <div id="material-migracion-empresas" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <!-- Empresa origen -->
+              <div style="width: 100%;">
+                <p class="m-0">{{ solicitud_form.empresa_origen.label_tag }}*</p>
+                {{ solicitud_form.empresa_origen }}
+                <p id="error-empresa-origen" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
 
-        <div id="table-materials" class="table-responsive my-3" style="display:none;">
-          <table class="table table-bordered" style="font-size: 0.8rem;">
-            <thead>
-              <tr>                  
-                <th scope="col">Tipo alta</th>
-                <th scope="col">Subfamilia</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Marca</th>
-                <th scope="col">Parte/Modelo</th>
-                <th scope="col">Nombre común</th>
-                <th scope="col">Medida</th>
-                <th scope="col">¿Es parte original?</th>
-                <th scope="col">Ing activo</th>
-                <th scope="col">Tipo producto</th>
-                <th scope="col">Alias</th>
-                <th scope="col">UM</th>
-                <th scope="col">¿Es material empaque?</th>
-                <th scope="col">¿Es prod terminado?</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody id="tbody-materials"></tbody>
-          </table>
-        </div>
-
-        {{ material_formset.management_form }}
-        <div id="material-forms">
-          {% for material_form in material_formset %}
-            <div id="material-form-0" class="material-form material-form-0">
-              {{ material_form.as_p }}
+              <!-- Empresa destino -->
+              <div style="width: 100%;">
+                <p class="m-0">{{ solicitud_form.empresa_destino.label_tag }}*</p>
+                {{ solicitud_form.empresa_destino }}
+                <p id="error-empresa-destino" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
             </div>
-          {% endfor %}
-        </div>
 
-        <!-- Es migracion field -->
-        <div style="margin-bottom:2rem;">
-          <p><b>En caso de que el proveedor ya exista en otra empresa, marque la siguiente casilla:</b></p>
-          {{ solicitud_form.es_migracion.label_tag }}
-          {{ solicitud_form.es_migracion }}
-          <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-        </div>
+            <!-- Nombre producto migracion field -->
+            <div style="margin-bottom:1rem;">
+              <p class="m-0">{{ solicitud_form.nombre_producto_migracion.label_tag }}*</p>
+              {{ solicitud_form.nombre_producto_migracion }}
+              <p id="error-rfc-migracion" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
+            </div>
+          </div>
 
-        <button class="btn btn-secondary mb-3" type="button" id="add-material">Agregar Material</button>
-        <button id="btn-guardar" class="btn" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;" disabled>Guardar</button>
-      </form>
+          <!-- Material nuevo fields -->
+          <div id="material-nuevo-fields" style="display: block;">
+            <!-- Empresa field -->
+            <div style="margin-bottom:1rem;">
+              <p class="m-0">{{ solicitud_form.empresa.label_tag }}*</p>
+              {{ solicitud_form.empresa }}
+              <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+
+            <!-- Justificación field -->
+            <div style="margin-bottom:1rem;">
+              <p class="m-0">{{ solicitud_form.justificacion.label_tag }}*</p>
+              {{ solicitud_form.justificacion }}
+              <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+            </div>
+
+            <h3>Materiales</h3>
+
+            <div id="table-materials" class="table-responsive my-3" style="display:none;">
+              <table class="table table-bordered" style="font-size: 0.8rem;">
+                <thead>
+                  <tr>                  
+                    <th scope="col">Tipo alta</th>
+                    <th scope="col">Subfamilia</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Marca</th>
+                    <th scope="col">Parte/Modelo</th>
+                    <th scope="col">Nombre común</th>
+                    <th scope="col">Medida</th>
+                    <th scope="col">¿Es parte original?</th>
+                    <th scope="col">Ing activo</th>
+                    <th scope="col">Tipo producto</th>
+                    <th scope="col">Alias</th>
+                    <th scope="col">UM</th>
+                    <th scope="col">¿Es material empaque?</th>
+                    <th scope="col">¿Es prod terminado?</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-materials"></tbody>
+              </table>
+            </div>
+
+            {{ material_formset.management_form }}
+            <div id="material-forms">
+              {% for material_form in material_formset %}
+                <div id="material-form-0" class="material-form material-form-0">
+                  {{ material_form.as_p }}
+                </div>
+              {% endfor %}
+            </div>
+
+            <button class="btn btn-secondary mb-3" type="button" id="add-material">Agregar Material</button>
+          </div>
+
+          <button id="btn-guardar" class="btn" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;" disabled>Guardar</button>
+        </form>
+      </div>
     </div>
-  </div>
-</main>
+  </main>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const btnAddMaterial = document.getElementById('add-material');
-    const tableMaterials = document.getElementById('table-materials')
-    const materialFormsContainer = document.getElementById('material-forms');
-    const bodyMaterials = document.getElementById('tbody-materials')
-    const btnGuardar = document.getElementById('btn-guardar')
-    let formCount = {{ material_formset.total_form_count }};
-    let materialCounter = 0
-    let addMaterialBand = true
-    let editingBand = false
-    let editingId = 0
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Containers
+      const materialNuevoFields = document.getElementById('material-nuevo-fields')
+      const materialMigracionFields = document.getElementById('material-migracion-fields')
+      const materialFormsContainer = document.getElementById('material-forms');
 
-    const fillTable = () => {
-      const materialForms = document.querySelectorAll('.material-form')
-      tableMaterials.style.display = 'block'
-      btnGuardar.disabled = false
-      bodyMaterials.innerHTML = ''
-      materialForms.forEach((materialForm, index) => {
-        const tipoAlta = materialForm.querySelector('.material-tipo-alta')
-        const subfamilia = materialForm.querySelector('.material-subfamilia')
-        const nombre = materialForm.querySelector('.material-nombre')
-        const marca = materialForm.querySelector('.material-marca')
-        const parteModelo = materialForm.querySelector('.material-parte-modelo')
-        const nombreComun = materialForm.querySelector('.material-nombre-comun')
-        const medida = materialForm.querySelector('.material-medida')
-        const esParteOriginal = materialForm.querySelector('.material-es-parte-original')
-        const ingActivo = materialForm.querySelector('.material-ing-activo')
-        const tipoProducto = materialForm.querySelector('.material-tipo-producto')
-        const alias = materialForm.querySelector('.material-alias')
-        const unidadMedida = materialForm.querySelector('.material-unidad-medida')
-        const esMaterialEmpaque = materialForm.querySelector('.material-es-material-empaque')
-        const esProdTerminado = materialForm.querySelector('.material-es-prod-terminado')
+      // Inputs
+      const esMigracion = document.getElementById('id_es_migracion')
+      const empresaOrigen = document.getElementById('id_empresa_origen')
+      const empresaDestino = document.getElementById('id_empresa_destino')
+      const nombreProductoMigracion = document.getElementById('id_nombre_producto_migracion')
+      const empresa = document.getElementById('id_empresa')
+      const justificacion = document.getElementById('id_justificacion')
 
-        esParteOriginalValue = esParteOriginal.checked == true ? 'Si' : 'No'
-        esMaterialEmpaqueValue = esMaterialEmpaque.checked == true ? 'Si' : 'No'
-        esProdTerminadoValue = esProdTerminado.checked == true ? 'Si' : 'No'
+      // Buttons
+      const btnAddMaterial = document.getElementById('add-material');
+      const btnGuardar = document.getElementById('btn-guardar')
 
-        const newRow = bodyMaterials.insertRow()
-        newRow.classList.add('table-row')
-        newRow.id = `table-row-${index}`
-        newRow.innerHTML = `
-        <td>${tipoAlta.value}</td>
-        <td>${subfamilia.value}</td>
-        <td>${nombre.value}</td>
-        <td>${marca.value}</td>
-        <td>${parteModelo.value}</td>
-        <td>${nombreComun.value}</td>
-        <td>${medida.value}</td>
-        <td>${esParteOriginalValue}</td>
-        <td>${ingActivo.value}</td>
-        <td>${tipoProducto.value}</td>
-        <td>${alias.value}</td>
-        <td>${unidadMedida.value}</td>
-        <td>${esMaterialEmpaqueValue}</td>
-        <td>${esProdTerminadoValue}</td>
-        <td>
-          <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
-        </td>
-        <td>
-          <button id="remove-material-${index}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
-        </td>`
+      // Error messages
+      const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
+      const errorEmpresaDestino = document.getElementById('error-empresa-destino')
+      const errorNombreProductoMigracion = document.getElementById('error-rfc-migracion')
+      const errorEmpresa = document.getElementById('error-empresa')
+      const errorJustificacion = document.getElementById('error-justificacion')
 
-        var deleteButtons = tableMaterials.getElementsByClassName('remove-material');
-        if (deleteButtons.length > 1) {
-          for(i=0; i<deleteButtons.length; i++) {
-            deleteButtons[i].disabled = false
-          }
+      // Table
+      const tableMaterials = document.getElementById('table-materials')
+      const bodyMaterials = document.getElementById('tbody-materials')
+
+      // Counters and bands
+      let formCount = {{ material_formset.total_form_count }};
+      let materialCounter = 0
+      let addMaterialBand = true
+      let editingBand = false
+      let editingId = 0
+
+      const handleEsMigracion = (esMigracionValue) => {
+        if(esMigracionValue) {
+          materialNuevoFields.style.display = 'none'
+          materialMigracionFields.style.display = 'block'
         }
         else {
-          for(i=0; i<deleteButtons.length; i++) {
-            deleteButtons[i].disabled = true
-          }
+          materialMigracionFields.style.display = 'none'
+          materialNuevoFields.style.display = 'block'
         }
-      })
-    }
 
-    const createMaterialForm = () => {
-      // Hiding all material forms
-      const materialForms = document.querySelectorAll('.material-form')
-      materialForms.forEach(materialForm => {
-        materialForm.style.display = 'none'
+        empresaOrigen.required = esMigracionValue
+        empresaDestino.required = esMigracionValue
+        nombreProductoMigracion.required = esMigracionValue
+
+        empresa.required = !esMigracionValue
+        justificacion.required = !esMigracionValue
+      }
+
+      // Handling EsMigracion state change
+      esMigracion.addEventListener('change', () => {
+        handleEsMigracion(esMigracion.checked)
+        enableSaveButton()
+      })
+    
+      // Validacion empresa origen
+      empresaOrigen.addEventListener('change', () => {
+        if (empresaOrigen.value == '') {
+          errorEmpresaOrigen.style.display = 'block'
+        } else {
+          errorEmpresaOrigen.style.display = 'none'
+        }
+        enableSaveButton()
       })
       
-      const formHtml = `
-          {{ material_formset.empty_form.as_p }}
-        `;
-      const form = document.createElement('div');
-      form.id = `material-form-${formCount}`
-      form.classList.add('material-form')
-      form.classList.add(`material-form-${formCount}`)
-      form.innerHTML = formHtml.replace(/__prefix__/g, formCount);
-      materialFormsContainer.appendChild(form);
-
-      formCount++;
-      document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
-      materialCounter++
-
-      /*if (materialCounter > 1) {
-        var deleteButtons = document.getElementsByClassName('remove-material');
-        for(i=0; i<deleteButtons.length-1; i++) {
-          deleteButtons[i].disabled = false
+      // Validacion empresa destino
+      empresaDestino.addEventListener('change', () => {
+        if (empresaDestino.value == '') {
+          errorEmpresaDestino.style.display = 'block'
+        } else {
+          errorEmpresaDestino.style.display = 'none'
         }
-      }*/
-    }
-  
-    btnAddMaterial.addEventListener('click', function() {
-      var tipoAlta
-      var subfamilia
-      var nombreProducto
-      var unidadMedida
-
-      if (!editingBand) {
-        tipoAlta = document.getElementById(`id_material-${materialCounter}-tipo_alta`).value
-        subfamilia = document.getElementById(`id_material-${materialCounter}-subfamilia`).value
-        nombreProducto = document.getElementById(`id_material-${materialCounter}-nombre_producto`).value
-        unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`).value
-      }
-      else {
-        tipoAlta = document.getElementById(`id_material-${editingId}-tipo_alta`).value
-        subfamilia = document.getElementById(`id_material-${editingId}-subfamilia`).value
-        nombreProducto = document.getElementById(`id_material-${editingId}-nombre_producto`).value
-        unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`).value
-      }
-
-      if(tipoAlta !== '' && subfamilia !== '' && nombreProducto !== '' && unidadMedida !== '') {
-        fillTable()
-        createMaterialForm()
-        btnAddMaterial.innerHTML = 'Agregar Material'
-      }
-      else {
-        window.alert('Algún campo está vacío')
-      }
-    });
-
-    tableMaterials.addEventListener('click', function(event) {
-      // If the edit button is clicked, display the corresponding form
-      if (event.target && event.target.classList.contains('edit-material')) {
-        // Disable edit buttons
-        const editButtons = tableMaterials.getElementsByClassName('edit-material');
-          for (let i = 0; i < editButtons.length; i++) {
-            editButtons[i].disabled = true
-          }
-        // Show the selected form
-        editingBand = true
-        editingId = event.target.id.substring(14, event.target.id.length)
-        const form = document.getElementById(`material-form-${editingId}`)
-        if (form) {
-          form.style.display = "block"
+        enableSaveButton()
+      })
+      
+      // Validacion rfc migracion
+      nombreProductoMigracion.addEventListener('input', () => {
+        if (nombreProductoMigracion.value != '') {
+          errorNombreProductoMigracion.style.display = 'none'
+        } else {
+          errorNombreProductoMigracion.style.display = 'block'
         }
-        // Then, the last form created is removed
-        const lastForm = document.getElementById(`material-form-${formCount - 1}`);
-        if (lastForm) {
-          lastForm.remove();
-          // Recorre todos los formularios restantes y actualiza sus índices
-          const forms = materialFormsContainer.getElementsByClassName('material-form');
-          for (let i = 0; i < forms.length; i++) {
-            const inputs = forms[i].querySelectorAll('[name^=material-]');
-            for (let j = 0; j < inputs.length; j++) {
-              inputs[j].name = inputs[j].name.replace(/\d+/, i);
-            }
-          }
-          materialCounter--
-          formCount--;
-          document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
-        }
+        enableSaveButton()
+      })
 
-        btnAddMaterial.innerHTML = 'Guardar Cambios'
-      }
+      const fillTable = () => {
+        const materialForms = document.querySelectorAll('.material-form')
+        tableMaterials.style.display = 'block'
+        btnGuardar.disabled = false
+        bodyMaterials.innerHTML = ''
+        materialForms.forEach((materialForm, index) => {
+          const tipoAlta = materialForm.querySelector('.material-tipo-alta')
+          const subfamilia = materialForm.querySelector('.material-subfamilia')
+          const nombre = materialForm.querySelector('.material-nombre')
+          const marca = materialForm.querySelector('.material-marca')
+          const parteModelo = materialForm.querySelector('.material-parte-modelo')
+          const nombreComun = materialForm.querySelector('.material-nombre-comun')
+          const medida = materialForm.querySelector('.material-medida')
+          const esParteOriginal = materialForm.querySelector('.material-es-parte-original')
+          const ingActivo = materialForm.querySelector('.material-ing-activo')
+          const tipoProducto = materialForm.querySelector('.material-tipo-producto')
+          const alias = materialForm.querySelector('.material-alias')
+          const unidadMedida = materialForm.querySelector('.material-unidad-medida')
+          const esMaterialEmpaque = materialForm.querySelector('.material-es-material-empaque')
+          const esProdTerminado = materialForm.querySelector('.material-es-prod-terminado')
 
-      // If the delete button is clicked, remove the row and the form
-      if (event.target && event.target.classList.contains('remove-material')) {
-        const row = event.target.closest('.table-row');
-        if (row) {
-          row.remove();
-          // Recorre todos las filas restantes y actualiza sus índices
-          const rows = tableMaterials.getElementsByClassName('table-row');
-          for (let i = 0; i < rows.length; i++) {
-            rows[i].id = `table-row-${i}`
-          }
-          // Recorre todos los botones restantes y actualiza sus índices
-          const editButtons = tableMaterials.getElementsByClassName('edit-material');
-          for (let i = 0; i < editButtons.length; i++) {
-            editButtons[i].id = `edit-material-${i}`
-          }
-          const removeButtons = tableMaterials.getElementsByClassName('remove-material');
-          for (let i = 0; i < removeButtons.length; i++) {
-            removeButtons[i].id = `remove-material-${i}`
-          }
-          // Enable edit buttons
-          for (let i = 0; i < editButtons.length; i++) {
-            editButtons[i].disabled = false
-          }
+          esParteOriginalValue = esParteOriginal.checked == true ? 'Si' : 'No'
+          esMaterialEmpaqueValue = esMaterialEmpaque.checked == true ? 'Si' : 'No'
+          esProdTerminadoValue = esProdTerminado.checked == true ? 'Si' : 'No'
+
+          const newRow = bodyMaterials.insertRow()
+          newRow.classList.add('table-row')
+          newRow.id = `table-row-${index}`
+          newRow.innerHTML = `
+          <td>${tipoAlta.value}</td>
+          <td>${subfamilia.value}</td>
+          <td>${nombre.value}</td>
+          <td>${marca.value}</td>
+          <td>${parteModelo.value}</td>
+          <td>${nombreComun.value}</td>
+          <td>${medida.value}</td>
+          <td>${esParteOriginalValue}</td>
+          <td>${ingActivo.value}</td>
+          <td>${tipoProducto.value}</td>
+          <td>${alias.value}</td>
+          <td>${unidadMedida.value}</td>
+          <td>${esMaterialEmpaqueValue}</td>
+          <td>${esProdTerminadoValue}</td>
+          <td>
+            <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
+          </td>
+          <td>
+            <button id="remove-material-${index}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
+          </td>`
 
           var deleteButtons = tableMaterials.getElementsByClassName('remove-material');
           if (deleteButtons.length > 1) {
@@ -281,69 +259,98 @@
               deleteButtons[i].disabled = true
             }
           }
-        }
-        const form = document.getElementById(`material-form-${editingId}`);
-        if (form) {
-          form.remove();
-          // Recorre todos los formularios restantes y actualiza sus índices
-          const forms = materialFormsContainer.getElementsByClassName('material-form');
-          for (let i = 0; i < forms.length; i++) {
-            forms[i].id = `material-form-${i}`
-            const inputs = forms[i].querySelectorAll('[id^=id_material-]');
-            for (let j = 0; j < inputs.length; j++) {
-              inputs[j].id = inputs[j].id.replace(/\d+/, i);
-            }
-          }
-          materialCounter--
-          addMaterialBand = false
-          formCount--;
-          document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
-        }
-
-        if (materialCounter == 1) {
-          var deleteButtons = document.getElementsByClassName('remove-material');
-          for(i=0; i<deleteButtons.length-1; i++) {
-            deleteButtons[i].disabled = true
-          }
-        }
+        })
       }
-    })
 
-    materialFormsContainer.addEventListener('click', function(event) {
-      // If the delete button is clicked, remove the whole parent node
-      if (event.target && event.target.classList.contains('remove-material')) {
-        const form = event.target.closest('.material-form');
-        if (form) {
-          form.remove();
-          // Recorre todos los formularios restantes y actualiza sus índices
-          const forms = materialFormsContainer.getElementsByClassName('material-form');
-          for (let i = 0; i < forms.length; i++) {
-            forms[i].id = `material-form-${i}`
-            const inputs = forms[i].querySelectorAll('[id^=id_material-]');
-            for (let j = 0; j < inputs.length; j++) {
-              inputs[j].id = inputs[j].id.replace(/\d+/, i);
-            }
-          }
-          materialCounter--
-          addMaterialBand = false
-          formCount--;
-          document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
+      const createMaterialForm = () => {
+        // Hiding all material forms
+        const materialForms = document.querySelectorAll('.material-form')
+        materialForms.forEach(materialForm => {
+          materialForm.style.display = 'none'
+        })
+        
+        const formHtml = `
+            {{ material_formset.empty_form.as_p }}
+          `;
+        const form = document.createElement('div');
+        form.id = `material-form-${formCount}`
+        form.classList.add('material-form')
+        form.classList.add(`material-form-${formCount}`)
+        form.innerHTML = formHtml.replace(/__prefix__/g, formCount);
+        materialFormsContainer.appendChild(form);
 
-          // Enable edit buttons
-          const editButtons = tableMaterials.getElementsByClassName('edit-material');
-          for (let i = 0; i < editButtons.length; i++) {
-            editButtons[i].disabled = false
-          }
+        formCount++;
+        document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
+        materialCounter++
+      }
+    
+      btnAddMaterial.addEventListener('click', function() {
+        var tipoAlta
+        var subfamilia
+        var nombreProducto
+        var unidadMedida
 
-          if (materialCounter == 1) {
-            var deleteButtons = document.getElementsByClassName('remove-material');
-            for(i=0; i<deleteButtons.length-1; i++) {
-              deleteButtons[i].disabled = true
-            }
-          }
+        if (!editingBand) {
+          tipoAlta = document.getElementById(`id_material-${materialCounter}-tipo_alta`).value
+          subfamilia = document.getElementById(`id_material-${materialCounter}-subfamilia`).value
+          nombreProducto = document.getElementById(`id_material-${materialCounter}-nombre_producto`).value
+          unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`).value
         }
-        if(editingBand) {
-          const row = document.getElementById(`table-row-${editingId}`);
+        else {
+          tipoAlta = document.getElementById(`id_material-${editingId}-tipo_alta`).value
+          subfamilia = document.getElementById(`id_material-${editingId}-subfamilia`).value
+          nombreProducto = document.getElementById(`id_material-${editingId}-nombre_producto`).value
+          unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`).value
+        }
+
+        if(tipoAlta !== '' && subfamilia !== '' && nombreProducto !== '' && unidadMedida !== '') {
+          fillTable()
+          createMaterialForm()
+          btnAddMaterial.innerHTML = 'Agregar Material'
+        }
+        else {
+          window.alert('Algún campo está vacío')
+        }
+      });
+
+      tableMaterials.addEventListener('click', function(event) {
+        // If the edit button is clicked, display the corresponding form
+        if (event.target && event.target.classList.contains('edit-material')) {
+          // Disable edit buttons
+          const editButtons = tableMaterials.getElementsByClassName('edit-material');
+            for (let i = 0; i < editButtons.length; i++) {
+              editButtons[i].disabled = true
+            }
+          // Show the selected form
+          editingBand = true
+          editingId = event.target.id.substring(14, event.target.id.length)
+          const form = document.getElementById(`material-form-${editingId}`)
+          if (form) {
+            form.style.display = "block"
+          }
+          // Then, the last form created is removed
+          const lastForm = document.getElementById(`material-form-${formCount - 1}`);
+          if (lastForm) {
+            lastForm.remove();
+            // Recorre todos los formularios restantes y actualiza sus índices
+            const forms = materialFormsContainer.getElementsByClassName('material-form');
+            for (let i = 0; i < forms.length; i++) {
+              const inputs = forms[i].querySelectorAll('[name^=material-]');
+              for (let j = 0; j < inputs.length; j++) {
+                inputs[j].name = inputs[j].name.replace(/\d+/, i);
+              }
+            }
+            materialCounter--
+            formCount--;
+            document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
+          }
+
+          btnAddMaterial.innerHTML = 'Guardar Cambios'
+        }
+
+        // If the delete button is clicked, remove the row and the form
+        if (event.target && event.target.classList.contains('remove-material')) {
+          const row = event.target.closest('.table-row');
           if (row) {
             row.remove();
             // Recorre todos las filas restantes y actualiza sus índices
@@ -356,152 +363,144 @@
             for (let i = 0; i < editButtons.length; i++) {
               editButtons[i].id = `edit-material-${i}`
             }
+            const removeButtons = tableMaterials.getElementsByClassName('remove-material');
+            for (let i = 0; i < removeButtons.length; i++) {
+              removeButtons[i].id = `remove-material-${i}`
+            }
+            // Enable edit buttons
+            for (let i = 0; i < editButtons.length; i++) {
+              editButtons[i].disabled = false
+            }
+
+            var deleteButtons = tableMaterials.getElementsByClassName('remove-material');
+            if (deleteButtons.length > 1) {
+              for(i=0; i<deleteButtons.length; i++) {
+                deleteButtons[i].disabled = false
+              }
+            }
+            else {
+              for(i=0; i<deleteButtons.length; i++) {
+                deleteButtons[i].disabled = true
+              }
+            }
+          }
+          const form = document.getElementById(`material-form-${editingId}`);
+          if (form) {
+            form.remove();
+            // Recorre todos los formularios restantes y actualiza sus índices
+            const forms = materialFormsContainer.getElementsByClassName('material-form');
+            for (let i = 0; i < forms.length; i++) {
+              forms[i].id = `material-form-${i}`
+              const inputs = forms[i].querySelectorAll('[id^=id_material-]');
+              for (let j = 0; j < inputs.length; j++) {
+                inputs[j].id = inputs[j].id.replace(/\d+/, i);
+              }
+            }
+            materialCounter--
+            addMaterialBand = false
+            formCount--;
+            document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
+          }
+
+          if (materialCounter == 1) {
+            var deleteButtons = document.getElementsByClassName('remove-material');
+            for(i=0; i<deleteButtons.length-1; i++) {
+              deleteButtons[i].disabled = true
+            }
           }
         }
-        createMaterialForm()
-      }
+      })
 
-      // Loading dinamically the data on the selects depending on the other selects
+      materialFormsContainer.addEventListener('click', function(event) {
+        // If the delete button is clicked, remove the whole parent node
+        if (event.target && event.target.classList.contains('remove-material')) {
+          const form = event.target.closest('.material-form');
+          if (form) {
+            form.remove();
+            // Recorre todos los formularios restantes y actualiza sus índices
+            const forms = materialFormsContainer.getElementsByClassName('material-form');
+            for (let i = 0; i < forms.length; i++) {
+              forms[i].id = `material-form-${i}`
+              const inputs = forms[i].querySelectorAll('[id^=id_material-]');
+              for (let j = 0; j < inputs.length; j++) {
+                inputs[j].id = inputs[j].id.replace(/\d+/, i);
+              }
+            }
+            materialCounter--
+            addMaterialBand = false
+            formCount--;
+            document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
 
-      /* DINAMIC DATA LOAD IS NOT LONGER REQUIRED
+            // Enable edit buttons
+            const editButtons = tableMaterials.getElementsByClassName('edit-material');
+            for (let i = 0; i < editButtons.length; i++) {
+              editButtons[i].disabled = false
+            }
+
+            if (materialCounter == 1) {
+              var deleteButtons = document.getElementsByClassName('remove-material');
+              for(i=0; i<deleteButtons.length-1; i++) {
+                deleteButtons[i].disabled = true
+              }
+            }
+          }
+          if(editingBand) {
+            const row = document.getElementById(`table-row-${editingId}`);
+            if (row) {
+              row.remove();
+              // Recorre todos las filas restantes y actualiza sus índices
+              const rows = tableMaterials.getElementsByClassName('table-row');
+              for (let i = 0; i < rows.length; i++) {
+                rows[i].id = `table-row-${i}`
+              }
+              // Recorre todos los botones restantes y actualiza sus índices
+              const editButtons = tableMaterials.getElementsByClassName('edit-material');
+              for (let i = 0; i < editButtons.length; i++) {
+                editButtons[i].id = `edit-material-${i}`
+              }
+            }
+          }
+          createMaterialForm()
+        }
+      });
+    
+      // Validacion empresa
+      empresa.addEventListener('change', () => {
+        if (empresa.value == '') {
+          errorEmpresa.style.display = 'block'
+        } else {
+          errorEmpresa.style.display = 'none'
+        }
+        enableSaveButton()
+      })
       
-      var tipo_alta = document.querySelector("#id_material-0-tipo_alta")
-      var tipo = document.querySelector("#id_material-0-tipo")
-      var familia = document.querySelector("#id_material-0-familia")
-      var subfamilia = document.querySelector("#id_material-0-subfamilia")
-      var unidad_medida = document.querySelector("#id_material-0-unidad_medida")
+      // Validacion justificacion
+      justificacion.addEventListener('input', () => {
+        if (justificacion.value == '') {
+          errorJustificacion.style.display = 'block'
+        } else {
+          errorJustificacion.style.display = 'none'
+        }
+        enableSaveButton()
+      })
 
-      const setSelects = (id) => {
-        tipo_alta = document.querySelector(`#id_material-${id}-tipo_alta`)
-        tipo = document.querySelector(`#id_material-${id}-tipo`)
-        familia = document.querySelector(`#id_material-${id}-familia`)
-        subfamilia = document.querySelector(`#id_material-${id}-subfamilia`)
-        unidad_medida = document.querySelector(`#id_material-${id}-unidad_medida`)
-      }
-
-      if (event.target && event.target.classList.contains('select-tipo-alta')) {
-        setSelects(event.target.id.substring(12, event.target.id.length - 10))
-      }
-      if (event.target && event.target.classList.contains('select-tipo')) {
-        setSelects(event.target.id.substring(12, event.target.id.length - 5))
-      }
-      if (event.target && event.target.classList.contains('select-familia')) {
-        setSelects(event.target.id.substring(12, event.target.id.length - 8))
-      }
-      if (event.target && event.target.classList.contains('select-subfamilia')) {
-        setSelects(event.target.id.substring(12, event.target.id.length - 11))
-      }
-      if (event.target && event.target.classList.contains('select-unidad-medida')) {
-        setSelects(event.target.id.substring(12, event.target.id.length - 14))
+      function enableSaveButton() {
+        if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block') {
+          btnGuardar.disabled = true
+        }
+        else {
+          btnGuardar.disabled = false
+        }
       }
 
-      const actualizarOpcionesTipo = () => {
-        var opcionSeleccionada = tipo_alta.value
-        var opciones = {{ tipo_list|safe }}
-        tipo.options.length = 0
-        opciones[opcionSeleccionada].forEach((opcion) => {
-            var option = document.createElement("option")
-            option.value = opcion.value
-            option.text = opcion.display
-            tipo.appendChild(option)
-        })
-      }
-
-      const actualizarOpcionesUnidadMedida = () => {
-          var opcionSeleccionada = tipo_alta.value
-          var opciones = {{ unidad_medida_list|safe }}
-          unidad_medida.options.length = 0
-          opciones[opcionSeleccionada].forEach((opcion) => {
-              var option = document.createElement("option")
-              option.value = opcion.value
-              option.text = opcion.display
-              unidad_medida.appendChild(option)
-          })
-      }
-
-      const actualizarOpcionesFamilia = () => {
-          var opcionSeleccionada = tipo.value
-          var opciones = {{ familia_list|safe }}
-          familia.options.length = 0
-          opciones[opcionSeleccionada].forEach((opcion) => {
-              var option = document.createElement("option")
-              option.value = opcion.value
-              option.text = opcion.display
-              familia.appendChild(option)
-          })
-      }
-
-      const actualizarOpcionesSubfamilia = () => {
-          var opcionSeleccionada = familia.value
-          var opciones = {{ subfamilia_list|safe }}
-          subfamilia.options.length = 0
-          opciones[opcionSeleccionada].forEach((opcion) => {
-              var option = document.createElement("option")
-              option.value = opcion.value
-              option.text = opcion.display
-              subfamilia.appendChild(option)
-          })
-      }
-
-      tipo_alta.addEventListener("change", actualizarOpcionesTipo)
-      tipo_alta.addEventListener("change", actualizarOpcionesUnidadMedida)
-      tipo.addEventListener("change", actualizarOpcionesFamilia)
-      familia.addEventListener("change", actualizarOpcionesSubfamilia)
-      
-      */
-
+      // Si el registro ya existe en otra empresa, se envia directo a sistemas
+      btnGuardar.addEventListener('click', () => {
+        if (esMigracion.checked) {
+          btnGuardar.setAttribute('name', 'finanzas');
+        } else {
+          btnGuardar.setAttribute('name', 'pendiente');
+        }
+      })
     });
-  });
-
-  // Inputs
-  const empresa = document.getElementById('id_empresa')
-  const justificacion = document.getElementById('id_justificacion')
-  const esMigracion = document.getElementById('id_es_migracion')
-  
-  // Error messages
-  const errorEmpresa = document.getElementById('error-empresa')
-  const errorJustificacion = document.getElementById('error-justificacion')
-  
-  // Buttons
-  const btnGuardar = document.getElementById('btn-guardar')
-  
-  // Validacion empresa
-  empresa.addEventListener('change', () => {
-    if (empresa.value == '') {
-      errorEmpresa.style.display = 'block'
-    } else {
-      errorEmpresa.style.display = 'none'
-    }
-    enableSaveButton()
-  })
-  
-  // Validacion justificacion
-  justificacion.addEventListener('input', () => {
-    if (justificacion.value == '') {
-      errorJustificacion.style.display = 'block'
-    } else {
-      errorJustificacion.style.display = 'none'
-    }
-    enableSaveButton()
-  })
-
-  function enableSaveButton() {
-    if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block') {
-      btnGuardar.disabled = true
-    }
-    else {
-      btnGuardar.disabled = false
-    }
-  }
-
-  // Si el registro ya existe en otra empresa, se envia directo a sistemas
-  btnGuardar.addEventListener('click', () => {
-    if (esMigracion.checked) {
-      btnGuardar.setAttribute('name', 'finanzas');
-    } else {
-      btnGuardar.setAttribute('name', 'pendiente');
-    }
-  })
-
-</script>
+  </script>
 {% endblock %}

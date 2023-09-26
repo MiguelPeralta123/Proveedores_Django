@@ -6,8 +6,16 @@ from .options import *
 class SolicitudForm(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['empresa', 'justificacion', 'es_migracion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado']
+        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'es_migracion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado']
         widgets = {
+            'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
+            'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
@@ -45,8 +53,12 @@ class MaterialForm(forms.ModelForm):
 class SolicitudDetailForm(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
+        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
         widgets = {
+            'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
             'pendiente': forms.HiddenInput(),
@@ -84,8 +96,12 @@ class MaterialDetailForm(forms.ModelForm):
 class SolicitudFormForCompras(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
+        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
         widgets = {
+            'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
             'pendiente': forms.HiddenInput(),
@@ -102,8 +118,12 @@ class SolicitudFormForCompras(forms.ModelForm):
 class SolicitudFormForFinanzas(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
+        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
         widgets = {
+            'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
             'pendiente': forms.HiddenInput(),
@@ -120,8 +140,12 @@ class SolicitudFormForFinanzas(forms.ModelForm):
 class SolicitudFormForSistemas(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
+        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
         widgets = {
+            'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
             'pendiente': forms.HiddenInput(),

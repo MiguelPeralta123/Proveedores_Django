@@ -158,3 +158,15 @@ LOGIN_URL = '/signin'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'iniciar_sesion.CustomUser'
+
+
+# Configuración del correo electrónico
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'altaproveedoresricofarms@gmail.com'
+EMAIL_HOST_PASSWORD = 'euid ehrx mkag vdmm'
+
+# Opcional: Si deseas configurar el remitente predeterminado para tus correos
+DEFAULT_FROM_EMAIL = 'altaproveedoresricofarms@gmail.com'

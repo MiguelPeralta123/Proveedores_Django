@@ -13,12 +13,20 @@
                     href="{% url 'proveedor_detail' proveedor.id %}"
                     style="transition: 0.2s ease-in-out;">
                     <div class="d-flex justify-content-between gap-3 my-2">
-                        <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
+                        {% if proveedor.nombre_comercial != '' %}
+                            <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
+                        {% else %}
+                            <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                        {% endif %}
                         <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
                     </div>
                     <p><b>Solicitante:</b> {{proveedor.usuario.get_full_name}}</p>
                     <div class="d-flex justify-content-between gap-3">
-                        <p><b>Empresa:</b> {{proveedor.empresa}}</p>
+                        {% if proveedor.empresa != '' %}
+                            <p><b>Empresa:</b> {{proveedor.empresa}}</p>
+                        {% else %}
+                            <p><b>Empresa:</b> {{proveedor.empresa_destino}}</p>
+                        {% endif %}
                         <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                     </div>
                     {% if proveedor.pendiente %}

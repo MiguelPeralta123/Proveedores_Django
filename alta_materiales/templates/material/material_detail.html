@@ -6,58 +6,98 @@
       <div class="col-md-6 align-self-center mx-auto">
         <form class="card card-body" method="POST">
           <h1 class="mb-4">Detalle de la solicitud</h1>
+
           {{ error }}
+
           {% csrf_token %}
 
-          <!-- Empresa field -->
-          <div style="margin-bottom:1rem;">
-            {{ solicitud_form.empresa.label_tag }}
-            {{ solicitud_form.empresa }}
-            <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          <div style="display: none;">
+            {{ solicitud_form.es_migracion.label_tag }}
+            {{ solicitud_form.es_migracion }}
+            <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
           </div>
 
-          <!-- Justificación field -->
-          <div style="margin-bottom:1rem;">
-            {{ solicitud_form.justificacion.label_tag }}
-            {{ solicitud_form.justificacion }}
-            <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
-          </div>
+          {% if solicitud.es_migracion %}
+            <!-- Material migración fields -->
+            <h2 style="margin-bottom: 2rem;">Migración - {{ solicitud.nombre_producto_migracion }}</h2>
 
-          <h3>Materiales</h3>
-
-          <div id="table-materials" class="table-responsive my-3" style="font-size: 0.8rem;">
-            <table class="table table-bordered table-sm">
-              <thead class="text-center">
-                <tr>
-                  <th scope="col">Tipo alta</th>
-                  <th scope="col">Subfamilia</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Marca</th>
-                  <th scope="col">Parte/Modelo</th>
-                  <th scope="col">Nombre común</th>
-                  <th scope="col">Medida</th>
-                  <th scope="col">¿Es parte original?</th>
-                  <th scope="col">Ing activo</th>
-                  <th scope="col">Tipo producto</th>
-                  <th scope="col">Alias</th>
-                  <th scope="col">UM</th>
-                  <th scope="col">¿Es material empaque?</th>
-                  <th scope="col">¿Es prod terminado?</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody id="tbody-materials"></tbody>
-            </table>
-          </div>
-
-          <div id="material-forms">
-            {% for form in material_forms %}
-              <div id="material-form-{{ forloop.counter0 }}" class="material-form" style="display:none;">
-                {{ form.as_p }}
-                <hr />
+            <div id="material-migracion-empresas" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+              <!-- Empresa origen -->
+              <div style="width: 100%;">
+                {{ solicitud_form.empresa_origen.label_tag }}
+                {{ solicitud_form.empresa_origen }}
+                <p id="error-empresa-origen" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
-            {% endfor %}
-          </div>
+
+              <!-- Empresa destino -->
+              <div style="width: 100%;">
+                {{ solicitud_form.empresa_destino.label_tag }}
+                {{ solicitud_form.empresa_destino }}
+                <p id="error-empresa-destino" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
+            </div>
+
+            <!-- Nombre producto migracion field -->
+            <div style="margin-bottom: 2rem;">
+              {{ solicitud_form.nombre_producto_migracion.label_tag }}
+              {{ solicitud_form.nombre_producto_migracion }}
+              <p id="error-rfc-migracion" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
+            </div>
+
+          {% else %}
+
+            <!-- solicitud_form nuevo fields -->
+            <!-- Empresa field -->
+            <div style="margin-bottom:1rem;">
+              {{ solicitud_form.empresa.label_tag }}
+              {{ solicitud_form.empresa }}
+              <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+
+            <!-- Justificación field -->
+            <div style="margin-bottom:1rem;">
+              {{ solicitud_form.justificacion.label_tag }}
+              {{ solicitud_form.justificacion }}
+              <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+            </div>
+
+            <h3>Materiales</h3>
+
+            <div id="table-materials" class="table-responsive my-3" style="font-size: 0.8rem;">
+              <table class="table table-bordered table-sm">
+                <thead class="text-center">
+                  <tr>
+                    <th scope="col">Tipo alta</th>
+                    <th scope="col">Subfamilia</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Marca</th>
+                    <th scope="col">Parte/Modelo</th>
+                    <th scope="col">Nombre común</th>
+                    <th scope="col">Medida</th>
+                    <th scope="col">¿Es parte original?</th>
+                    <th scope="col">Ing activo</th>
+                    <th scope="col">Tipo producto</th>
+                    <th scope="col">Alias</th>
+                    <th scope="col">UM</th>
+                    <th scope="col">¿Es material empaque?</th>
+                    <th scope="col">¿Es prod terminado?</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-materials"></tbody>
+              </table>
+            </div>
+
+            <div id="material-forms">
+              {% for form in material_forms %}
+                <div id="material-form-{{ forloop.counter0 }}" class="material-form" style="display:none;">
+                  {{ form.as_p }}
+                  <hr />
+                </div>
+              {% endfor %}
+            </div>
+
+          {% endif %}
 
           <!-- Comentarios field -->
           <div style="margin-bottom:1rem;">
@@ -68,7 +108,12 @@
 
           <div id="buttons-container" class="d-flex justify-content-between gap-2">
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and solicitud.rechazado_compras == True or current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and solicitud.rechazado_finanzas == True or current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and solicitud.rechazado_sistemas == True %}
-              <button id="btn-save" class="btn w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="pendiente" value="True">Guardar cambios</button>
+
+              {% if solicitud.es_migracion %}
+                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Guardar cambios</button>
+              {% else %}
+                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="pendiente" value="True">Guardar cambios</button>
+              {% endif %}
 
               <button id="btn-delete" class="btn btn-delete w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="eliminado" value="True">Eliminar solicitud</button>
             {% endif %}
@@ -98,106 +143,33 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Containers
       const materialFormsContainer = document.getElementById('material-forms');
       const materialForms = document.querySelectorAll('.material-form')
       const tableMaterials = document.getElementById('table-materials')
       const bodyMaterials = document.getElementById('tbody-materials')
-  
-      // Loading dinamically the data on the selects depending on the other selects values
-
-      /* DINAMIC DATA LOAD IS NOT LONGER REQUIRED
-
-      materialFormsContainer.addEventListener('click', function(event) {
-        var tipo_alta = document.querySelector("#id_material-0-tipo_alta")
-        var tipo = document.querySelector("#id_material-0-tipo")
-        var familia = document.querySelector("#id_material-0-familia")
-        var subfamilia = document.querySelector("#id_material-0-subfamilia")
-        var unidad_medida = document.querySelector("#id_material-0-unidad_medida")
-  
-        const setSelects = (id) => {
-          tipo_alta = document.querySelector(`#id_material-${id}-tipo_alta`)
-          tipo = document.querySelector(`#id_material-${id}-tipo`)
-          familia = document.querySelector(`#id_material-${id}-familia`)
-          subfamilia = document.querySelector(`#id_material-${id}-subfamilia`)
-          unidad_medida = document.querySelector(`#id_material-${id}-unidad_medida`)
-        }
-  
-        if (event.target && event.target.classList.contains('select-tipo-alta')) {
-          setSelects(event.target.id.substring(12, event.target.id.length - 10))
-        }
-        if (event.target && event.target.classList.contains('select-tipo')) {
-          setSelects(event.target.id.substring(12, event.target.id.length - 5))
-        }
-        if (event.target && event.target.classList.contains('select-familia')) {
-          setSelects(event.target.id.substring(12, event.target.id.length - 8))
-        }
-        if (event.target && event.target.classList.contains('select-subfamilia')) {
-          setSelects(event.target.id.substring(12, event.target.id.length - 11))
-        }
-        if (event.target && event.target.classList.contains('select-unidad-medida')) {
-          setSelects(event.target.id.substring(12, event.target.id.length - 14))
-        }
-  
-        const actualizarOpcionesTipo = () => {
-          var opcionSeleccionada = tipo_alta.value
-          var opciones = {{ tipo_list|safe }}
-          tipo.options.length = 0
-          opciones[opcionSeleccionada].forEach((opcion) => {
-              var option = document.createElement("option")
-              option.value = opcion.value
-              option.text = opcion.display
-              tipo.appendChild(option)
-          })
-        }
-  
-        const actualizarOpcionesUnidadMedida = () => {
-            var opcionSeleccionada = tipo_alta.value
-            var opciones = {{ unidad_medida_list|safe }}
-            unidad_medida.options.length = 0
-            opciones[opcionSeleccionada].forEach((opcion) => {
-                var option = document.createElement("option")
-                option.value = opcion.value
-                option.text = opcion.display
-                unidad_medida.appendChild(option)
-            })
-        }
-  
-        const actualizarOpcionesFamilia = () => {
-            var opcionSeleccionada = tipo.value
-            var opciones = {{ familia_list|safe }}
-            familia.options.length = 0
-            opciones[opcionSeleccionada].forEach((opcion) => {
-                var option = document.createElement("option")
-                option.value = opcion.value
-                option.text = opcion.display
-                familia.appendChild(option)
-            })
-        }
-  
-        const actualizarOpcionesSubfamilia = () => {
-            var opcionSeleccionada = familia.value
-            var opciones = {{ subfamilia_list|safe }}
-            subfamilia.options.length = 0
-            opciones[opcionSeleccionada].forEach((opcion) => {
-                var option = document.createElement("option")
-                option.value = opcion.value
-                option.text = opcion.display
-                subfamilia.appendChild(option)
-            })
-        }
-  
-        tipo_alta.addEventListener("change", actualizarOpcionesTipo)
-        tipo_alta.addEventListener("change", actualizarOpcionesUnidadMedida)
-        tipo.addEventListener("change", actualizarOpcionesFamilia)
-        familia.addEventListener("change", actualizarOpcionesSubfamilia)
-      });
-      
-      */
-
       const buttonsContainer = document.getElementById('buttons-container');
-      const comentarios = document.getElementById('id_comentarios');
+
+      // Inputs
+      const empresa = document.getElementById('id_empresa')
+      const justificacion = document.getElementById('id_justificacion')
+      const comentarios = document.getElementById('id_comentarios')
+      
+      // Error messages
+      const errorEmpresa = document.getElementById('error-empresa')
+      const errorJustificacion = document.getElementById('error-justificacion')
+      const errorComentarios = document.getElementById('error-comentarios')
+      
+      // Buttons
+      const btnSave = document.getElementById('btn-save')
+      const btnDelete = document.getElementById('btn-delete')
+      const btnApprove = document.getElementById('btn-approve')
+      const btnDecline = document.getElementById('btn-decline')
       
       buttonsContainer.addEventListener('click', function(event) {  
+        if (event.target && event.target.classList.contains('btn-save')) {
+          comentarios.value = ''
+        }
         if (event.target && event.target.classList.contains('btn-reject')) {
           comentarios.setAttribute('required', 'true')
           if(comentarios.value == '') {
@@ -281,22 +253,6 @@
         }
       })
     });
-
-    // Inputs
-    const empresa = document.getElementById('id_empresa')
-    const justificacion = document.getElementById('id_justificacion')
-    const comentarios = document.getElementById('id_comentarios')
-    
-    // Error messages
-    const errorEmpresa = document.getElementById('error-empresa')
-    const errorJustificacion = document.getElementById('error-justificacion')
-    const errorComentarios = document.getElementById('error-comentarios')
-    
-    // Buttons
-    const btnSave = document.getElementById('btn-save')
-    const btnDelete = document.getElementById('btn-delete')
-    const btnApprove = document.getElementById('btn-approve')
-    const btnDecline = document.getElementById('btn-decline')
     
     // Validacion empresa
     empresa.addEventListener('change', () => {

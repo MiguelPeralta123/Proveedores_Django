@@ -7,9 +7,12 @@ from django.conf import settings
 
 class MaterialSolicitud(models.Model):
     id_solicitud = models.CharField(max_length=10)
-    empresa = models.CharField(max_length=50)
-    justificacion = models.CharField(max_length=255)
     es_migracion = models.BooleanField(default=False)
+    empresa_origen = models.CharField(max_length=50, blank=True)
+    empresa_destino = models.CharField(max_length=50, blank=True)
+    nombre_producto_migracion = models.CharField(max_length=50, blank=True)
+    empresa = models.CharField(max_length=50, blank=True)
+    justificacion = models.CharField(max_length=255, blank=True)
     fecha = models.DateTimeField(auto_now_add=True)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     comentarios = models.CharField(max_length=250, blank=True)

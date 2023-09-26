@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from .forms import *
 from .models import Proveedor
-from django.contrib.auth.decorators import login_required
 
 # VISTA DE INICIO
 # Decorator to force login. The return route is defined in proveedores/settings.py
@@ -59,6 +60,14 @@ def proveedor_create(request):
                     historial.accion = 'creada'
                     historial.usuario = request.user
                     historial.save()
+
+                    # Enviar correo electrónico
+                    subject = 'Se ha creado una nueva solicitud de proveedor'
+                    message = str(request.user.get_full_name()) + ' ha solicitado un alta de proveedor, favor de revisar en http://127.0.0.1:8000/proveedores/'
+                    from_email = 'altaproveedoresricofarms@gmail.com'
+                    recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
                     return redirect('proveedor')
             except ValueError as e:
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
@@ -128,6 +137,14 @@ def proveedor_detail(request, proveedor_id):
                     historial.accion = 'aprobada'
                 historial.usuario = request.user
                 historial.save()
+
+                # Enviar correo electrónico
+                subject = 'Se ha modificado una solicitud de proveedor'
+                message = str(request.user.get_full_name()) + ' ha modificado un alta de proveedor, favor de revisar en http://127.0.0.1:8000/proveedores/'
+                from_email = 'altaproveedoresricofarms@gmail.com'
+                # Aquí se debería enviar al usuario creador de la solicitud y al siguiente aprobador
+                recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                 return redirect('proveedor')
             

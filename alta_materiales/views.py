@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import formset_factory
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from .forms import *
 from .models import MaterialSolicitud, Material, MaterialHistorial
-from django.contrib.auth.decorators import login_required
 from .options import *
 
 # Creating a unique id for each request
@@ -73,19 +74,21 @@ def material_create(request):
                 material_formset = MaterialFormSet(request.POST, prefix='material')
                 historial_form = HistorialForm(request.POST)
 
-                if solicitud_form.is_valid() and material_formset.is_valid() and historial_form.is_valid():
+                if solicitud_form.is_valid() and historial_form.is_valid():
                     id_solicitud = generar_codigo_unico()
                     solicitud = solicitud_form.save(commit=False)
                     solicitud.id_solicitud = id_solicitud
                     solicitud.usuario = request.user
                     solicitud.save()
 
-                    for material_form in material_formset:
-                        if not material_form.cleaned_data.get('nombre_producto'):
-                            continue  # Saltar formularios con nombre_producto vacío
-                        material = material_form.save(commit=False)
-                        material.id_solicitud = id_solicitud
-                        material.save()
+                    if solicitud.es_migracion == False:
+                        if material_formset.is_valid():
+                            for material_form in material_formset:
+                                if not material_form.cleaned_data.get('nombre_producto'):
+                                    continue  # Saltar formularios con nombre_producto vacío
+                                material = material_form.save(commit=False)
+                                material.id_solicitud = id_solicitud
+                                material.save()
                     
                     # Guardar la creacion de la solicitud en el historial de cambios
                     historial = historial_form.save(commit=False)
@@ -93,7 +96,16 @@ def material_create(request):
                     historial.accion = 'creada'
                     historial.usuario = request.user
                     historial.save()
+
+                    # Enviar correo electrónico
+                    subject = 'Se ha creado una nueva solicitud de material'
+                    message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
+                    from_email = 'altaproveedoresricofarms@gmail.com'
+                    recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
                     return redirect('material')
+                
             except ValueError as e:
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
                               'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
@@ -158,11 +170,13 @@ def material_detail(request, material_id):
             
             historial_form = HistorialForm(request.POST)
 
-            if solicitud_form.is_valid() and all(form.is_valid() for form in material_forms) and historial_form.is_valid():
+            if solicitud_form.is_valid() and historial_form.is_valid():
                 solicitud_form.save()
 
-                for form in material_forms:
-                    form.save()
+                if solicitud.es_migracion == False:
+                    if all(form.is_valid() for form in material_forms):
+                        for form in material_forms:
+                            form.save()
                 
                 # Guardar la modificación de la solicitud en el historial de cambios
                 historial = historial_form.save(commit=False)
@@ -175,6 +189,13 @@ def material_detail(request, material_id):
                     historial.accion = 'aprobada'
                 historial.usuario = request.user
                 historial.save()
+
+                # Enviar correo electrónico
+                subject = 'Se ha modificado una solicitud de material'
+                message = str(request.user.get_full_name()) + ' ha modificado un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
+                from_email = 'altaproveedoresricofarms@gmail.com'
+                recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                 return redirect('material')
 
