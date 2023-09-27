@@ -7,7 +7,7 @@
         <div class="col-md-6 offset-md-3">
             <h1 class="text-center font-weight-bold text-green">Solicitudes de materiales</h1>
 
-            <ul style="list-style-type: none;" class="list-group mt-4">
+            <ul id="solicitudes-list" style="list-style-type: none;" class="list-group mt-4">
                 {% for solicitud in solicitudes %}
                 <a class="list-group-item my-2 border rounded material-card"
                     href="{% url 'material_detail' solicitud.id %}"
@@ -63,5 +63,16 @@
       background-color: #f5f5f5;
     }
 </style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const solicitudesList = document.getElementById("solicitudes-list")
+        const solicitudesItems = Array.from(solicitudesList.children).reverse()
+        solicitudesList.innerHTML = ""
+        solicitudesItems.forEach(item => {
+            solicitudesList.appendChild(item)
+        });
+    });
+</script>
 
 {% endblock %}

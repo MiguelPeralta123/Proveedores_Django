@@ -62,13 +62,17 @@ def proveedor_create(request):
                     historial.save()
 
                     # Enviar correo electrónico
-                    subject = 'Se ha creado una nueva solicitud de proveedor'
+                    subject = 'Nueva solicitud de proveedor'
                     message = str(request.user.get_full_name()) + ' ha solicitado un alta de proveedor, favor de revisar en http://127.0.0.1:8000/proveedores/'
                     from_email = 'altaproveedoresricofarms@gmail.com'
-                    recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                    if proveedor.es_migracion:
+                        recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                    else:
+                        recipient_list = ['maikperalta123@gmail.com']
                     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     return redirect('proveedor')
+                
             except ValueError as e:
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
                               'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
@@ -111,15 +115,19 @@ def proveedor_detail(request, proveedor_id):
             if request.user.compras:
                 proveedor_form = ProveedorFormForCompras(
                     request.POST, instance=proveedor)
+                destinatario_correo = [proveedor.usuario.email, 'maikperalta248@gmail.com']
             elif request.user.finanzas:
                 proveedor_form = ProveedorFormForFinanzas(
                     request.POST, instance=proveedor)
+                destinatario_correo = [proveedor.usuario.email, 'l18330484@hermosillo.tecnm.mx']
             elif request.user.sistemas:
                 proveedor_form = ProveedorFormForSistemas(
                     request.POST, instance=proveedor)
+                destinatario_correo = [proveedor.usuario.email]
             else:
                 proveedor_form = ProveedorDetailForm(
                     request.POST, instance=proveedor)
+                destinatario_correo = ['maikperalta123@gmail.com']
             
             historial_form = HistorialForm(request.POST)
                         
@@ -131,19 +139,24 @@ def proveedor_detail(request, proveedor_id):
                 historial.id_proveedor = proveedor.id
                 if proveedor.rechazado_compras or proveedor.rechazado_finanzas or proveedor.rechazado_sistemas:
                     historial.accion = 'rechazada'
+                    action = 'rechazado'
                 elif proveedor.pendiente:
                     historial.accion = 'modificada'
+                    action = 'modificado'
                 else:
                     historial.accion = 'aprobada'
+                    action = 'abrobado'
                 historial.usuario = request.user
                 historial.save()
 
                 # Enviar correo electrónico
-                subject = 'Se ha modificado una solicitud de proveedor'
-                message = str(request.user.get_full_name()) + ' ha modificado un alta de proveedor, favor de revisar en http://127.0.0.1:8000/proveedores/'
+                subject = 'Solicitud de proveedor modificada'
+                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor, favor de revisar en http://127.0.0.1:8000/proveedores/'
                 from_email = 'altaproveedoresricofarms@gmail.com'
-                # Aquí se debería enviar al usuario creador de la solicitud y al siguiente aprobador
-                recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                if action == 'rechazado':
+                    recipient_list = [proveedor.usuario.email]
+                else:
+                    recipient_list = destinatario_correo
                 send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                 return redirect('proveedor')

@@ -98,10 +98,13 @@ def material_create(request):
                     historial.save()
 
                     # Enviar correo electrónico
-                    subject = 'Se ha creado una nueva solicitud de material'
+                    subject = 'Nueva solicitud de material'
                     message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
                     from_email = 'altaproveedoresricofarms@gmail.com'
-                    recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                    if solicitud.es_migracion:
+                        recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                    else:
+                        recipient_list = ['maikperalta123@gmail.com']
                     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     return redirect('material')
@@ -155,15 +158,19 @@ def material_detail(request, material_id):
             if request.user.compras:
                 solicitud_form = SolicitudFormForCompras(
                     request.POST, instance=solicitud)
+                destinatario_correo = [solicitud.usuario.email, 'maikperalta248@gmail.com']
             elif request.user.finanzas:
                 solicitud_form = SolicitudFormForFinanzas(
                     request.POST, instance=solicitud)
+                destinatario_correo = [solicitud.usuario.email, 'l18330484@hermosillo.tecnm.mx']
             elif request.user.sistemas:
                 solicitud_form = SolicitudFormForSistemas(
                     request.POST, instance=solicitud)
+                destinatario_correo = [solicitud.usuario.email]
             else:
                 solicitud_form = SolicitudForm(
                     request.POST, instance=solicitud)
+                destinatario_correo = ['maikperalta123@gmail.com']
 
             material_forms = [MaterialForm(
                 request.POST, instance=material, prefix=f'material-{material.id}') for material in materiales]
@@ -183,18 +190,24 @@ def material_detail(request, material_id):
                 historial.id_solicitud = solicitud.id
                 if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
                     historial.accion = 'rechazada'
+                    action = 'rechazado'
                 elif solicitud.pendiente:
                     historial.accion = 'modificada'
+                    action = 'modificado'
                 else:
                     historial.accion = 'aprobada'
+                    action = 'abrobado'
                 historial.usuario = request.user
                 historial.save()
 
                 # Enviar correo electrónico
-                subject = 'Se ha modificado una solicitud de material'
-                message = str(request.user.get_full_name()) + ' ha modificado un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
+                subject = 'Solicitud de material modificada'
+                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
                 from_email = 'altaproveedoresricofarms@gmail.com'
-                recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                if action == 'rechazado':
+                    recipient_list = [solicitud.usuario.email]
+                else:
+                    recipient_list = destinatario_correo
                 send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                 return redirect('material')

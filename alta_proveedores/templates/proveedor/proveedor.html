@@ -7,7 +7,7 @@
         <div class="col-md-6 offset-md-3">
             <h1 class="text-center font-weight-bold text-green">Solicitudes de proveedores</h1>
 
-            <ul style="list-style-type: none;" class="list-group mt-4">
+            <ul id="proveedores-list" style="list-style-type: none;" class="list-group mt-4">
                 {% for proveedor in proveedores %}
                 <a class="list-group-item my-2 border rounded provider-card" 
                     href="{% url 'proveedor_detail' proveedor.id %}"
@@ -72,5 +72,16 @@
       background-color: #f5f5f5;
     }
 </style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const proveedoresList = document.getElementById("proveedores-list")
+        const proveedoresItems = Array.from(proveedoresList.children).reverse()
+        proveedoresList.innerHTML = ""
+        proveedoresItems.forEach(item => {
+        proveedoresList.appendChild(item)
+        });
+    });
+</script>
 
 {% endblock %}
