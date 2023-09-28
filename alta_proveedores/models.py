@@ -12,7 +12,6 @@ class Proveedor(models.Model):
     empresa = models.CharField(max_length=50, blank=True)
     tipo_alta = models.CharField(max_length=20, blank=True)
     contribuyente = models.CharField(max_length=20, blank=True)
-    razon_social = models.CharField(max_length=50, blank=True)
     rfc = models.CharField(max_length=14, blank=True)
     curp = models.CharField(max_length=18, blank=True)
     regimen_capital = models.CharField(max_length=100, blank=True)

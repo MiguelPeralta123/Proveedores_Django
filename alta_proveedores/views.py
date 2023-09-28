@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.db.models import Q
 from .forms import *
 from .models import Proveedor
 
@@ -16,13 +17,39 @@ def home(request):
 @login_required
 def proveedor(request):
     if request.user.compras:
-        proveedores = Proveedor.objects.filter(pendiente=True, eliminado=False)
+        proveedores = Proveedor.objects.filter(pendiente=True)
     elif request.user.finanzas:
-        proveedores = Proveedor.objects.filter(compras=True, eliminado=False)
+        proveedores = Proveedor.objects.filter(compras=True)
     elif request.user.sistemas:
-        proveedores = Proveedor.objects.filter(finanzas=True, eliminado=False)
+        proveedores = Proveedor.objects.filter(finanzas=True)
     else:
-        proveedores = Proveedor.objects.filter(usuario=request.user, eliminado=False)
+        proveedores = Proveedor.objects.filter(usuario=request.user)
+        proveedores_pendientes = proveedores.filter(
+            Q(pendiente=True) | 
+            Q(compras=True) | 
+            Q(finanzas=True)
+        )
+        proveedores_rechazados = proveedores.filter(
+            Q(rechazado_compras=True) | 
+            Q(rechazado_finanzas=True) | 
+            Q(rechazado_sistemas=True)
+        )
+        proveedores_aprobados = proveedores.filter(sistemas=True)
+        proveedores_eliminados = proveedores.filter(eliminado=True)
+
+        historial = []
+        for proveedor in proveedores:
+            historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
+        
+        return render(request, 'proveedor/proveedor.html', {
+            'proveedores': proveedores,
+            'historial': historial,
+            'proveedores_pendientes': proveedores_pendientes,
+            'proveedores_rechazados': proveedores_rechazados,
+            'proveedores_aprobados': proveedores_aprobados,
+            'proveedores_eliminados': proveedores_eliminados,
+            'current_user': request.user
+        })
 
     historial = []
     for proveedor in proveedores:
@@ -30,7 +57,8 @@ def proveedor(request):
 
     return render(request, 'proveedor/proveedor.html', {
         'proveedores': proveedores,
-        'historial': historial
+        'historial': historial,
+        'current_user': request.user
     })
 
 

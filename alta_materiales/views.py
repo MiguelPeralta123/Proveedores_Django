@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import formset_factory
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.db.models import Q
 from .forms import *
 from .models import MaterialSolicitud, Material, MaterialHistorial
 from .options import *
@@ -27,19 +28,40 @@ def home(request):
 
 @login_required
 def material(request):
-    # Compras, finanzas y sistemas pueden ver las solicitudes de todos los usuarios
     if request.user.compras:
-        # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por compras
-        solicitudes = MaterialSolicitud.objects.filter(pendiente=True, eliminado=False)
+        solicitudes = MaterialSolicitud.objects.filter(pendiente=True)
     elif request.user.finanzas:
-        # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por finanzas
-        solicitudes = MaterialSolicitud.objects.filter(compras=True, eliminado=False)
+        solicitudes = MaterialSolicitud.objects.filter(compras=True)
     elif request.user.sistemas:
-        # Trayendo de la base de datos todas las solicitudes que no hayan sido aprobadas por sistemas
-        solicitudes = MaterialSolicitud.objects.filter(finanzas=True, eliminado=False)
+        solicitudes = MaterialSolicitud.objects.filter(finanzas=True)
     else:
-        # Trayendo de la base de datos las solicitudes que correspondan al usuario logueado
-        solicitudes = MaterialSolicitud.objects.filter(usuario=request.user, eliminado=False)
+        solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+        solicitudes_pendientes = solicitudes.filter(
+            Q(pendiente=True) | 
+            Q(compras=True) | 
+            Q(finanzas=True)
+        )
+        solicitudes_rechazadas = solicitudes.filter(
+            Q(rechazado_compras=True) | 
+            Q(rechazado_finanzas=True) | 
+            Q(rechazado_sistemas=True)
+        )
+        solicitudes_aprobadas = solicitudes.filter(sistemas=True)
+        solicitudes_eliminadas = solicitudes.filter(eliminado=True)
+
+        historial = []
+        for solicitud in solicitudes:
+            historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
+        
+        return render(request, 'material/material.html', {
+            'solicitudes': solicitudes,
+            'historial': historial,
+            'solicitudes_pendientes': solicitudes_pendientes,
+            'solicitudes_rechazadas': solicitudes_rechazadas,
+            'solicitudes_aprobadas': solicitudes_aprobadas,
+            'solicitudes_eliminadas': solicitudes_eliminadas,
+            'current_user': request.user
+        })
 
     historial = []
     for solicitud in solicitudes:
@@ -47,7 +69,8 @@ def material(request):
 
     return render(request, 'material/material.html', {
         'solicitudes': solicitudes,
-        'historial': historial
+        'historial': historial,
+        'current_user': request.user
     })
 
 

@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <main class="container py-5 mt-5">
-    <div class="row d-flex justify-content-center mt-5">
-      <div class="col-md-6 align-self-center mx-auto">
+  <main class="py-5 m-5">
+    <div class="row mt-5 justify-content-center">
+      <div style="max-width: 40rem;">
         <form class="card card-body" method="POST">
           <h1 class="mb-4">Detalle de la solicitud</h1>
 
@@ -24,39 +24,39 @@
             <div id="material-migracion-empresas" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
               <!-- Empresa origen -->
               <div style="width: 100%;">
-                {{ solicitud_form.empresa_origen.label_tag }}
+                <p class="m-0">{{ solicitud_form.empresa_origen.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ solicitud_form.empresa_origen }}
                 <p id="error-empresa-origen" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- Empresa destino -->
               <div style="width: 100%;">
-                {{ solicitud_form.empresa_destino.label_tag }}
+                <p class="m-0">{{ solicitud_form.empresa_destino.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ solicitud_form.empresa_destino }}
                 <p id="error-empresa-destino" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
             </div>
 
             <!-- Nombre producto migracion field -->
-            <div style="margin-bottom: 2rem;">
-              {{ solicitud_form.nombre_producto_migracion.label_tag }}
+            <div style="margin-bottom:1rem;">
+              <p class="m-0">{{ solicitud_form.nombre_producto_migracion.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ solicitud_form.nombre_producto_migracion }}
               <p id="error-rfc-migracion" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
             </div>
 
           {% else %}
 
-            <!-- solicitud_form nuevo fields -->
+            <!-- Material nuevo fields -->
             <!-- Empresa field -->
             <div style="margin-bottom:1rem;">
-              {{ solicitud_form.empresa.label_tag }}
+              <p class="m-0">{{ solicitud_form.empresa.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ solicitud_form.empresa }}
               <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <!-- Justificación field -->
             <div style="margin-bottom:1rem;">
-              {{ solicitud_form.justificacion.label_tag }}
+              <p class="m-0">{{ solicitud_form.justificacion.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ solicitud_form.justificacion }}
               <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
@@ -145,17 +145,23 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Containers
       const materialFormsContainer = document.getElementById('material-forms');
-      const materialForms = document.querySelectorAll('.material-form')
       const tableMaterials = document.getElementById('table-materials')
       const bodyMaterials = document.getElementById('tbody-materials')
       const buttonsContainer = document.getElementById('buttons-container');
+      let materialCounter = 0
 
       // Inputs
+      const empresaOrigen = document.getElementById('id_empresa_origen')
+      const empresaDestino = document.getElementById('id_empresa_destino')
+      const nombreProductoMigracion = document.getElementById('id_nombre_producto_migracion')
       const empresa = document.getElementById('id_empresa')
       const justificacion = document.getElementById('id_justificacion')
       const comentarios = document.getElementById('id_comentarios')
       
       // Error messages
+      const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
+      const errorEmpresaDestino = document.getElementById('error-empresa-destino')
+      const errorNombreProductoMigracion = document.getElementById('error-rfc-migracion')
       const errorEmpresa = document.getElementById('error-empresa')
       const errorJustificacion = document.getElementById('error-justificacion')
       const errorComentarios = document.getElementById('error-comentarios')
@@ -182,9 +188,26 @@
         }
       });
 
+      const disableDeleteButtons = () => {
+        const deleteButtons = tableMaterials.getElementsByClassName('delete-material')
+        if (materialCounter > 1) {
+          for (i=0; i<deleteButtons.length; i++) {
+            deleteButtons[i].removeAttribute('disabled')
+          }
+        }
+        else {
+          for (i=0; i<deleteButtons.length; i++) {
+            deleteButtons[i].setAttribute('disabled', true)
+          }
+        }
+      }
+
       const fillTable = () => {
+        materialCounter = 0
         bodyMaterials.innerHTML = ''
+        const materialForms = document.querySelectorAll('.material-form')
         materialForms.forEach(function(materialForm, index) {
+          materialCounter += 1
           const tipoAlta = materialForm.querySelector('.material-tipo-alta')
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
@@ -224,87 +247,159 @@
           <td>${esProdTerminadoValue}</td>
           <td>
             <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
+          </td>
+          <td>
+            <button id="delete-material-${index}" class="btn btn-danger delete-material" type="button" style="font-size:0.8rem">Eliminar</button>
           </td>`
+        })
+
+        disableDeleteButtons()
+      }
+
+      if (tableMaterials) {
+        fillTable()
+
+        tableMaterials.addEventListener('click', function(event) {
+          // Edit material
+          if (event.target && event.target.classList.contains('edit-material')) {
+            // Fill the table with the updated data
+            fillTable()
+            // Disable edit button
+            const editButtons = tableMaterials.getElementsByClassName('edit-material');
+            for (let i = 0; i < editButtons.length; i++) {
+              editButtons[i].disabled = false
+            }
+            event.target.disabled = true
+            // Show the selected form
+            const forms = document.getElementsByClassName('material-form');
+            for (let i = 0; i < forms.length; i++) {
+              forms[i].style.display = 'none'
+            }
+            editingId = event.target.id.substring(14, event.target.id.length)
+            const form = document.getElementById(`material-form-${editingId}`)
+            if (form) {
+              form.style.display = "block"
+            }
+          }
+          // Delete material
+          if (event.target && event.target.classList.contains('delete-material')) {
+            deleteId = event.target.id.substring(16, event.target.id.length)
+            const form = document.getElementById(`material-form-${deleteId}`)
+            if (form) {
+              form.remove()
+              // Recorre todos los formularios restantes y actualiza sus índices
+              const forms = materialFormsContainer.getElementsByClassName('material-form');
+              for (let i = 0; i < forms.length; i++) {
+                forms[i].id = `material-form-${i}`
+                const inputs = forms[i].querySelectorAll('[id^=id_material-]');
+                for (let j = 0; j < inputs.length; j++) {
+                  inputs[j].id = inputs[j].id.replace(/\d+/, i);
+                }
+              }
+            }
+            fillTable()
+          }
         })
       }
 
-      fillTable()
+      // FIELD VALIDATION
 
-      tableMaterials.addEventListener('click', function(event) {
-        if (event.target && event.target.classList.contains('edit-material')) {
-          // Fill the table with the updated data
-          fillTable()
-          // Disable edit button
-          const editButtons = tableMaterials.getElementsByClassName('edit-material');
-          for (let i = 0; i < editButtons.length; i++) {
-            editButtons[i].disabled = false
+      // Validacion empresa origen
+      if (empresaOrigen) {
+        empresaOrigen.addEventListener('change', () => {
+          if (empresaOrigen.value == '') {
+            errorEmpresaOrigen.style.display = 'block'
+          } else {
+            errorEmpresaOrigen.style.display = 'none'
           }
-          event.target.disabled = true
-          // Show the selected form
-          const forms = document.getElementsByClassName('material-form');
-          for (let i = 0; i < forms.length; i++) {
-            forms[i].style.display = 'none'
+          enableSaveButton()
+        })
+      }
+      
+      // Validacion empresa destino
+      if (empresaDestino) {
+        empresaDestino.addEventListener('change', () => {
+          if (empresaDestino.value == '') {
+            errorEmpresaDestino.style.display = 'block'
+          } else {
+            errorEmpresaDestino.style.display = 'none'
           }
-          editingId = event.target.id.substring(14, event.target.id.length)
-          const form = document.getElementById(`material-form-${editingId}`)
-          if (form) {
-            form.style.display = "block"
+          enableSaveButton()
+        })
+      }
+      
+      // Validacion rfc migracion
+      if (nombreProductoMigracion) {
+        nombreProductoMigracion.addEventListener('input', () => {
+          if (rfcPattern.test(nombreProductoMigracion.value)) {
+            errorNombreProductoMigracion.style.display = 'none'
+          } else {
+            errorNombreProductoMigracion.style.display = 'block'
           }
+          enableSaveButton()
+        })
+      }
+    
+      // Validacion empresa
+      if (empresa) {
+        empresa.addEventListener('change', () => {asd
+          if (empresa.value == '') {
+            errorEmpresa.style.display = 'block'
+          } else {
+            errorEmpresa.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
+      
+      // Validacion justificacion
+      if (justificacion) {
+        justificacion.addEventListener('input', () => {
+          if (justificacion.value == '') {
+            errorJustificacion.style.display = 'block'
+          } else {
+            errorJustificacion.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
+      
+      // Validacion comentarios
+      comentarios.addEventListener('input', () => {
+        if (comentarios.value == '') {
+          errorComentarios.style.display = 'block'
+        } else {
+          errorComentarios.style.display = 'none'
         }
+        enableSaveButton()
       })
-    });
-    
-    // Validacion empresa
-    empresa.addEventListener('change', () => {
-      if (empresa.value == '') {
-        errorEmpresa.style.display = 'block'
-      } else {
-        errorEmpresa.style.display = 'none'
-      }
-      enableSaveButton()
-    })
-    
-    // Validacion justificacion
-    justificacion.addEventListener('input', () => {
-      if (justificacion.value == '') {
-        errorJustificacion.style.display = 'block'
-      } else {
-        errorJustificacion.style.display = 'none'
-      }
-      enableSaveButton()
-    })
-    
-    // Validacion comentarios
-    comentarios.addEventListener('input', () => {
-      if (comentarios.value == '') {
-        errorComentarios.style.display = 'block'
-      } else {
-        errorComentarios.style.display = 'none'
-      }
-      enableSaveButton()
-    })
 
-    function enableSaveButton() {
-      if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block' || errorComentarios.style.display == 'block') {
-        if(btnSave) {
-          btnSave.disabled = true
-          btnDelete.disabled = true
+      function enableSaveButton() {
+        if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block' || errorComentarios.style.display == 'block') {
+          if(btnSave) {
+            btnSave.disabled = true
+            btnDelete.disabled = true
+          }
+          else {
+            if(btnApprove && btnDecline) {
+              btnApprove.disabled = true
+              btnDecline.disabled = true
+            }
+          }
         }
         else {
-          btnApprove.disabled = true
-          btnDecline.disabled = true
+          if (btnSave) {
+            btnSave.disabled = false
+            btnDelete.disabled = false
+          }
+          else {
+            if (btnApprove && btnDecline) {
+              btnApprove.disabled = false
+              btnDecline.disabled = false
+            }
+          }
         }
       }
-      else {
-        if(btnSave) {
-          btnSave.disabled = false
-          btnDelete.disabled = false
-        }
-        else {
-          btnApprove.disabled = false
-          btnDecline.disabled = false
-        }
-      }
-    }
+    });
   </script>
 {% endblock %}

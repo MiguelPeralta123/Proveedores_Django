@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <main class="container py-5 mt-5">
-    <div class="row d-flex justify-content-center mt-5">
-      <div class="col-md-6 align-self-center mx-auto">
+  <main class="py-5 m-5">
+    <div class="row mt-5 justify-content-center">
+      <div style="max-width: 40rem;">
         <form class="card card-body" method="POST">
           <h1 class="mb-4">Detalle del proveedor</h1>
 
@@ -24,14 +24,14 @@
             <div id="proveedor-migracion-empresas" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
               <!-- Empresa origen -->
               <div style="width: 100%;">
-                {{ form.empresa_origen.label_tag }}
+                <p class="m-0">{{ form.empresa_origen.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.empresa_origen }}
                 <p id="error-empresa-origen" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- Empresa destino -->
               <div style="width: 100%;">
-                {{ form.empresa_destino.label_tag }}
+                <p class="m-0">{{ form.empresa_destino.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.empresa_destino }}
                 <p id="error-empresa-destino" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -39,7 +39,7 @@
 
             <!-- RFC migracion field -->
             <div style="margin-bottom: 2rem;">
-              {{ form.rfc_migracion.label_tag }}
+              <p class="m-0">{{ form.rfc_migracion.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.rfc_migracion }}
               <p id="error-rfc-migracion" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
             </div>
@@ -51,77 +51,74 @@
 
             <!-- Empresa field -->
             <div style="margin-bottom:1rem;">
-              {{ form.empresa.label_tag }}
+              <p class="m-0">{{ form.empresa.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.empresa }}
               <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
-            <!-- Tipo alta field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.tipo_alta.label_tag }}
-              {{ form.tipo_alta }}
-              <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            <div style="display: flex; gap: 1rem;">
+              <!-- Tipo alta field -->
+              <div style="width: 100%; margin-bottom:1rem;">
+                <p class="m-0">{{ form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ form.tipo_alta }}
+                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
+
+              <!-- Contribuyente field -->
+              <div style="width: 100%; margin-bottom:1rem;">
+                <p class="m-0">{{ form.contribuyente.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ form.contribuyente }}
+                <p id="error-contribuyente" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
             </div>
 
-            <!-- Contribuyente field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.contribuyente.label_tag }}
-              {{ form.contribuyente }}
-              <p id="error-contribuyente" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>
+            <div style="display: flex; gap: 1rem;">
+              <!-- RFC field -->
+              <div style="width: 100%; margin-bottom:1rem;">
+                <p class="m-0">{{ form.rfc.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ form.rfc }}
+                <p id="error-rfc" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
+              </div>
 
-            <!-- Razon social field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.razon_social.label_tag }}
-              {{ form.razon_social }}
-              <p id="error-razon-social" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-            </div>
-
-            <!-- RFC field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.rfc.label_tag }}
-              {{ form.rfc }}
-              <p id="error-rfc" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
-            </div>
-
-            <!-- CURP field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.curp.label_tag }}
-              {{ form.curp }}
-              <p id="error-curp" style="color:red; margin-bottom:0; display:none;">Ingrese una CURP válida</p>
-            </div>
-
-            <!-- Regimen de capital field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.regimen_capital.label_tag }}
-              {{ form.regimen_capital }}
-              <p id="error-regimen-capital" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              <!-- CURP field -->
+              <div style="width: 100%; margin-bottom:1rem;">
+                {{ form.curp.label_tag }}
+                {{ form.curp }}
+                <p id="error-curp" style="color:red; margin-bottom:0; display:none;">Ingrese una CURP válida</p>
+              </div>
             </div>
 
             <!-- Nombre fiscal field -->
             <div style="margin-bottom:1rem;">
-              {{ form.nombre_fiscal.label_tag }}
+              <p class="m-0">{{ form.nombre_fiscal.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.nombre_fiscal }}
-              <p id="error-nombre-fiscal" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              <p id="error-nombre-fiscal" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+            </div>
+
+            <!-- Regimen de capital field -->
+            <div style="margin-bottom:1rem;">
+              <p class="m-0">{{ form.regimen_capital.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              {{ form.regimen_capital }}
+              <p id="error-regimen-capital" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <!-- Nombre comercial field -->
             <div style="margin-bottom:1rem;">
-              {{ form.nombre_comercial.label_tag }}
+              <p class="m-0">{{ form.nombre_comercial.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.nombre_comercial }}
-              <p id="error-nombre-comercial" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              <p id="error-nombre-comercial" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
 
             <!-- Regimen fiscal field -->
             <div style="margin-bottom:1rem;">
-              {{ form.regimen_fiscal.label_tag }}
+              <p class="m-0">{{ form.regimen_fiscal.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.regimen_fiscal }}
               <p id="error-regimen-fiscal" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <!-- Uso cfdi field -->
             <div style="margin-bottom:1rem;">
-              {{ form.uso_cfdi.label_tag }}
+              <p class="m-0">{{ form.uso_cfdi.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.uso_cfdi }}
               <p id="error-uso-cfdi" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
@@ -129,7 +126,7 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Telefono 1 field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.telefono_1.label_tag }}
+                <p class="m-0">{{ form.telefono_1.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.telefono_1 }}
                 <p id="error-telefono-1" style="color:red; margin-bottom:0; display:none;">Ingrese un número a 10 dígitos</p>
               </div>
@@ -161,14 +158,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Correo general field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.correo_general.label_tag }}
+                <p class="m-0">{{ form.correo_general.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.correo_general }}
                 <p id="error-correo-general" style="color:red; margin-bottom:0; display:none;">Ingrese un correo electrónico válido</p>
               </div>
 
               <!-- Correo pagos field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.correo_pagos.label_tag }}
+                <p class="m-0">{{ form.correo_pagos.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.correo_pagos }}
                 <p id="error-correo-pagos" style="color:red; margin-bottom:0; display:none;">Ingrese un correo electrónico válido</p>
               </div>
@@ -184,7 +181,7 @@
 
               <!-- Rubro field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p style="margin: 0;">Grupo / {{ form.rubro.label_tag }}</p>
+                <p class="m-0">Grupo / {{ form.rubro.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.rubro }}
                 <p id="error-rubro" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -193,14 +190,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Tipo operacion field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.tipo_operacion.label_tag }}
+                <p class="m-0">{{ form.tipo_operacion.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.tipo_operacion }}
                 <p id="error-tipo-operacion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- Tipo tercero field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.tipo_tercero.label_tag }}
+                <p class="m-0">{{ form.tipo_tercero.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.tipo_tercero }}
                 <p id="error-tipo-tipo-tercero" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -216,7 +213,7 @@
 
               <!-- Agente aduanal field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.agente_aduanal.label_tag }}
+                <p class="m-0">{{ form.agente_aduanal.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.agente_aduanal }}
                 <p id="error-agente-aduanal" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -225,14 +222,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Limite credito MN field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.limite_credito_MN.label_tag }}
+                <p class="m-0">{{ form.limite_credito_MN.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.limite_credito_MN }}
                 <p id="error-limite-credito-MN" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
               
               <!-- Limite credito ME field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.limite_credito_ME.label_tag }}
+                <p class="m-0">{{ form.limite_credito_ME.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.limite_credito_ME }}
                 <p id="error-limite-credito-ME" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -241,14 +238,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Dias credito field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.dias_credito.label_tag }}
+                <p class="m-0">{{ form.dias_credito.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.dias_credito }}
                 <p id="error-dias-credito" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
 
               <!-- Monto credito field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.monto_credito.label_tag }}
+                <p class="m-0">{{ form.monto_credito.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.monto_credito }}
                 <p id="error-monto-credito" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -257,21 +254,21 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Retencion iva field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.retencion_iva.label_tag }}
+                <p class="m-0">{{ form.retencion_iva.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.retencion_iva }}
                 <p id="error-retencion-iva" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- Retencion isr field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.retencion_isr.label_tag }}
+                <p class="m-0">{{ form.retencion_isr.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.retencion_isr }}
                 <p id="error-retencion-isr" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- Iva frontera field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.iva_frontera.label_tag }}
+                <p class="m-0">{{ form.iva_frontera.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.iva_frontera }}
                 <p id="error-iva-frontera" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -280,14 +277,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Codigo postal field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.codigo_postal.label_tag }}
+                <p class="m-0">{{ form.codigo_postal.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.codigo_postal }}
                 <p id="error-codigo-postal" style="color:red; margin-bottom:0; display:none;">Ingrese un código postal válido</p>
               </div>
 
               <!-- Pais field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.pais.label_tag }}
+                <p class="m-0">{{ form.pais.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.pais }}
                 <p id="error-pais" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -296,14 +293,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Estado field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.estado.label_tag }}
+                <p class="m-0">{{ form.estado.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.estado }}
                 <p id="error-estado" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
 
               <!-- Ciudad field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.ciudad.label_tag }}
+                <p class="m-0">{{ form.ciudad.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.ciudad }}
                 <p id="error-ciudad" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -312,14 +309,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Municipio field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.municipio.label_tag }}
+                <p class="m-0">{{ form.municipio.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.municipio }}
                 <p id="error-municipio" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
 
               <!-- Localidad field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.localidad.label_tag }}
+                <p class="m-0">{{ form.localidad.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.localidad }}
                 <p id="error-localidad" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -327,14 +324,14 @@
 
             <!-- Colonia field -->
             <div style="margin-bottom:1rem;">
-              {{ form.colonia.label_tag }}
+              <p class="m-0">{{ form.colonia.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.colonia }}
               <p id="error-colonia" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
 
             <!-- Calle field -->
             <div style="margin-bottom:1rem;">
-              {{ form.calle.label_tag }}
+              <p class="m-0">{{ form.calle.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.calle }}
               <p id="error-calle" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
@@ -342,7 +339,7 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Numero exterior field -->
               <div style="width: 50%; margin-bottom:1rem;">
-                {{ form.numero_exterior.label_tag }}
+                <p class="m-0">{{ form.numero_exterior.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.numero_exterior }}
                 <p id="error-numero-exterior" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -357,7 +354,7 @@
 
             <!-- Banco field -->
             <div style="margin-bottom:1rem;">
-              {{ form.banco.label_tag }}
+              <p class="m-0">{{ form.banco.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.banco }}
               <p id="error-banco" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
@@ -365,21 +362,21 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Cuenta field -->
               <div style="width: 40%; margin-bottom:1rem;">
-                {{ form.cuenta.label_tag }}
+                <p class="m-0">{{ form.cuenta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.cuenta }}
                 <p id="error-cuenta" style="color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 10 dígitos</p>
               </div>
 
               <!-- Clabe field -->
               <div style="width: 40%; margin-bottom:1rem;">
-                {{ form.clabe.label_tag }}
+                <p class="m-0">{{ form.clabe.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.clabe }}
                 <p id="error-clabe" style="color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 18 dígitos</p>
               </div>
 
               <!-- Moneda field -->
               <div style="width: 20%; margin-bottom:1rem;">
-                {{ form.moneda.label_tag }}
+                <p class="m-0">{{ form.moneda.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.moneda }}
                 <p id="error-moneda" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -406,7 +403,7 @@
               <hr />
               <!-- Banco 2 field -->
               <div style="margin-bottom:1rem;">
-                {{ form.banco_2.label_tag }}
+                <p class="m-0">{{ form.banco_2.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.banco_2 }}
                 <p id="error-banco-2" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -414,21 +411,21 @@
               <div style="display: flex; gap: 1rem;">
                 <!-- Cuenta 2 field -->
                 <div style="width: 40%; margin-bottom:1rem;">
-                  {{ form.cuenta_2.label_tag }}
+                  <p class="m-0">{{ form.cuenta_2.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                   {{ form.cuenta_2 }}
                   <p id="error-cuenta-2" style="color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 10 dígitos</p>
                 </div>
 
                 <!-- Clabe 2 field -->
                 <div style="width: 40%; margin-bottom:1rem;">
-                  {{ form.clabe_2.label_tag }}
+                  <p class="m-0">{{ form.clabe_2.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                   {{ form.clabe_2 }}
                   <p id="error-clabe-2" style="color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 18 dígitos</p>
                 </div>
 
                 <!-- Moneda 2 field -->
                 <div style="width: 20%; margin-bottom:1rem;">
-                  {{ form.moneda_2.label_tag }}
+                  <p class="m-0">{{ form.moneda_2.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                   {{ form.moneda_2 }}
                   <p id="error-moneda-2" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                 </div>
@@ -533,7 +530,6 @@
       const empresa = document.getElementById('id_empresa')
       const tipoAlta = document.getElementById('id_tipo_alta')
       const contribuyente = document.getElementById('id_contribuyente')
-      const razonSocial = document.getElementById('id_razon_social')
       const rfc = document.getElementById('id_rfc')
       const curp = document.getElementById('id_curp')
       const regimenCapital = document.getElementById('id_regimen_capital')
@@ -596,7 +592,6 @@
       const errorEmpresa = document.getElementById('error-empresa')
       const errorTipoAlta = document.getElementById('error-tipo-alta')
       const errorContribuyente = document.getElementById('error-contribuyente')
-      const errorRazonSocial = document.getElementById('error-razon-social')
       const errorRfc = document.getElementById('error-rfc')
       const errorCurp = document.getElementById('error-curp')
       const errorRegimenCapital = document.getElementById('error-regimen-capital')
@@ -694,510 +689,580 @@
       // FIELD VALIDATION
 
       // Validacion empresa origen
-      empresaOrigen.addEventListener('change', () => {
-        if (empresaOrigen.value == '') {
-          errorEmpresaOrigen.style.display = 'block'
-        } else {
-          errorEmpresaOrigen.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (empresaOrigen) {
+        empresaOrigen.addEventListener('change', () => {
+          if (empresaOrigen.value == '') {
+            errorEmpresaOrigen.style.display = 'block'
+          } else {
+            errorEmpresaOrigen.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion empresa destino
-      empresaDestino.addEventListener('change', () => {
-        if (empresaDestino.value == '') {
-          errorEmpresaDestino.style.display = 'block'
-        } else {
-          errorEmpresaDestino.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (empresaDestino) {
+        empresaDestino.addEventListener('change', () => {
+          if (empresaDestino.value == '') {
+            errorEmpresaDestino.style.display = 'block'
+          } else {
+            errorEmpresaDestino.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion rfc migracion
-      rfcMigracion.addEventListener('input', () => {
-        if (rfcPattern.test(rfcMigracion.value)) {
-          errorRfcMigracion.style.display = 'none'
-        } else {
-          errorRfcMigracion.style.display = 'block'
-        }
-        enableSaveButton()
-      })
+      if (rfcMigracion) {
+        rfcMigracion.addEventListener('input', () => {
+          if (rfcPattern.test(rfcMigracion.value)) {
+            errorRfcMigracion.style.display = 'none'
+          } else {
+            errorRfcMigracion.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion empresa
-      empresa.addEventListener('change', () => {
-        if (empresa.value == '') {
-          errorEmpresa.style.display = 'block'
-        } else {
-          errorEmpresa.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (empresa) {
+        empresa.addEventListener('change', () => {
+          if (empresa.value == '') {
+            errorEmpresa.style.display = 'block'
+          } else {
+            errorEmpresa.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion tipo alta
-      tipoAlta.addEventListener('change', () => {
-        if (tipoAlta.value == '') {
-          errorTipoAlta.style.display = 'block'
-        } else {
-          errorTipoAlta.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (tipoAlta) {
+        tipoAlta.addEventListener('change', () => {
+          if (tipoAlta.value == '') {
+            errorTipoAlta.style.display = 'block'
+          } else {
+            errorTipoAlta.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion contribuyente
-      contribuyente.addEventListener('change', () => {
-        if (contribuyente.value == '') {
-          errorContribuyente.style.display = 'block'
-        } else {
-          errorContribuyente.style.display = 'none'
-      
-          // Curp is mandatory only for personas físicas
-          if (contribuyente.value == 'Persona física') {
-            curp.required = true
-            curp.disabled = false
+      if (contribuyente) {
+        contribuyente.addEventListener('change', () => {
+          if (contribuyente.value == '') {
+            errorContribuyente.style.display = 'block'
           } else {
-            curp.required = false
-            curp.disabled = true
-            curp.value = ''
-            errorCurp.style.display = 'none'
+            errorContribuyente.style.display = 'none'
+            
+            // Curp is mandatory only for personas físicas
+            if (contribuyente.value == 'Persona física') {
+              curp.required = true
+              curp.disabled = false
+            } else {
+              curp.required = false
+              curp.disabled = true
+              curp.value = ''
+              errorCurp.style.display = 'none'
+            }
           }
-        }
-        enableSaveButton()
-      })
-      
-      // Validacion razon social
-      razonSocial.addEventListener('input', () => {
-        if (razonSocial.value == '') {
-          errorRazonSocial.style.display = 'block'
-        } else {
-          errorRazonSocial.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+          enableSaveButton()
+        })
+      }
       
       // Validacion rfc
-      rfc.addEventListener('input', () => {
-        if (rfcPattern.test(rfc.value)) {
-          errorRfc.style.display = 'none'
-        } else {
-          errorRfc.style.display = 'block'
-        }
-        enableSaveButton()
-      })
+      if (rfc) {
+        rfc.addEventListener('input', () => {
+          if (rfcPattern.test(rfc.value)) {
+            errorRfc.style.display = 'none'
+          } else {
+            errorRfc.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion curp
-      curp.addEventListener('input', () => {
-        if (curpPattern.test(curp.value)) {
-          errorCurp.style.display = 'none'
-        } else {
-          errorCurp.style.display = 'block'
-        }
-        enableSaveButton()
-      })
-      
+      if (curp) {
+        curp.addEventListener('input', () => {
+          if (curpPattern.test(curp.value)) {
+            errorCurp.style.display = 'none'
+          } else {
+            errorCurp.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
+        
       // Validacion regimen de capital
-      regimenCapital.addEventListener('change', () => {
-        if (regimenCapital.value == '') {
-          errorRegimenCapital.style.display = 'block'
-        } else {
-          errorRegimenCapital.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (regimenCapital) {
+        regimenCapital.addEventListener('change', () => {
+          if (regimenCapital.value == '') {
+            errorRegimenCapital.style.display = 'block'
+          } else {
+            errorRegimenCapital.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion nombre fiscal
-      nombreFiscal.addEventListener('input', () => {
-        if (nombreFiscal.value == '') {
-          errorNombreFiscal.style.display = 'block'
-        } else {
-          errorNombreFiscal.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (nombreFiscal) {
+        nombreFiscal.addEventListener('input', () => {
+          if (nombreFiscal.value == '') {
+            errorNombreFiscal.style.display = 'block'
+          } else {
+            errorNombreFiscal.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion nombre comercial
-      nombreComercial.addEventListener('input', () => {
-        if (nombreComercial.value == '') {
-          errorNombreComercial.style.display = 'block'
-        } else {
-          errorNombreComercial.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (nombreComercial) {
+        nombreComercial.addEventListener('input', () => {
+          if (nombreComercial.value == '') {
+            errorNombreComercial.style.display = 'block'
+          } else {
+            errorNombreComercial.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion regimen fiscal
-      regimenFiscal.addEventListener('change', () => {
-        if (regimenFiscal.value == '') {
-          errorRegimenFiscal.style.display = 'block'
-        } else {
-          errorRegimenFiscal.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (regimenFiscal) {
+        regimenFiscal.addEventListener('change', () => {
+          if (regimenFiscal.value == '') {
+            errorRegimenFiscal.style.display = 'block'
+          } else {
+            errorRegimenFiscal.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion uso cfdi
-      usoCfdi.addEventListener('change', () => {
-        if (usoCfdi.value == '') {
-          errorUsoCfdi.style.display = 'block'
-        } else {
-          errorUsoCfdi.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (usoCfdi) {
+        usoCfdi.addEventListener('change', () => {
+          if (usoCfdi.value == '') {
+            errorUsoCfdi.style.display = 'block'
+          } else {
+            errorUsoCfdi.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion telefono 1
-      telefono1.addEventListener('input', () => {
-        if (telefonoPattern.test(telefono1.value)) {
-          errorTelefono1.style.display = 'none'
-        } else {
-          errorTelefono1.style.display = 'block'
-        }
-        enableSaveButton()
-      })
+      if (telefono1) {
+        telefono1.addEventListener('input', () => {
+          if (telefonoPattern.test(telefono1.value)) {
+            errorTelefono1.style.display = 'none'
+          } else {
+            errorTelefono1.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion telefono 2
-      telefono2.addEventListener('input', () => {
-        if (telefono2.value == '' || telefonoPattern.test(telefono2.value)) {
-          errorTelefono2.style.display = 'none'
-        } else {
-          errorTelefono2.style.display = 'block'
-        }
-        enableSaveButton()
-      })
-      
-      // Validacion telefono 2
-      telefono2.addEventListener('input', () => {
-        if (telefono1.value.length < 10) {
-          errorTelefono1.style.display = 'block'
-        } else {
-          errorTelefono1.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (telefono2) {
+        telefono2.addEventListener('input', () => {
+          if (telefono2.value == '' || telefonoPattern.test(telefono2.value)) {
+            errorTelefono2.style.display = 'none'
+          } else {
+            errorTelefono2.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion correo general
-      correoGeneral.addEventListener('input', () => {
-        if (correoPattern.test(correoGeneral.value)) {
-          errorCorreoGeneral.style.display = 'none'
-        } else {
-          errorCorreoGeneral.style.display = 'block'
-        }
-        enableSaveButton()
-      })
+      if (correoGeneral) {
+        correoGeneral.addEventListener('input', () => {
+          if (correoPattern.test(correoGeneral.value)) {
+            errorCorreoGeneral.style.display = 'none'
+          } else {
+            errorCorreoGeneral.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion correo pagos
-      correoPagos.addEventListener('input', () => {
-        if (correoPattern.test(correoPagos.value)) {
-          errorCorreoPagos.style.display = 'none'
-        } else {
-          errorCorreoPagos.style.display = 'block'
-        }
-        enableSaveButton()
-      })
+      if (correoPagos) {
+        correoPagos.addEventListener('input', () => {
+          if (correoPattern.test(correoPagos.value)) {
+            errorCorreoPagos.style.display = 'none'
+          } else {
+            errorCorreoPagos.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion rubro
-      rubro.addEventListener('change', () => {
-        if (rubro.value == '') {
-          errorRubro.style.display = 'block'
-        } else {
-          errorRubro.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (rubro) {
+        rubro.addEventListener('change', () => {
+          if (rubro.value == '') {
+            errorRubro.style.display = 'block'
+          } else {
+            errorRubro.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion tipo operacion
-      tipoOperacion.addEventListener('change', () => {
-        if (tipoOperacion.value == '') {
-          errorTipoOperacion.style.display = 'block'
-        } else {
-          errorTipoOperacion.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (tipoOperacion) {
+        tipoOperacion.addEventListener('change', () => {
+          if (tipoOperacion.value == '') {
+            errorTipoOperacion.style.display = 'block'
+          } else {
+            errorTipoOperacion.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion agente aduanal
-      agenteAduanal.addEventListener('change', () => {
-        if (agenteAduanal.value == '') {
-          errorAgenteAduanal.style.display = 'block'
-        } else {
-          errorAgenteAduanal.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (agenteAduanal) {
+        agenteAduanal.addEventListener('change', () => {
+          if (agenteAduanal.value == '') {
+            errorAgenteAduanal.style.display = 'block'
+          } else {
+            errorAgenteAduanal.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion limite credito MN
-      limiteCreditoMN.addEventListener('input', () => {
-        if (limiteCreditoMN.value == '') {
-          errorLimiteCreditoMN.style.display = 'block'
-        } else {
-          errorLimiteCreditoMN.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (limiteCreditoMN) {
+        limiteCreditoMN.addEventListener('input', () => {
+          if (limiteCreditoMN.value == '') {
+            errorLimiteCreditoMN.style.display = 'block'
+          } else {
+            errorLimiteCreditoMN.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion limite credito ME
-      limiteCreditoME.addEventListener('input', () => {
-        if (limiteCreditoME.value == '') {
-          errorLimiteCreditoME.style.display = 'block'
-        } else {
-          errorLimiteCreditoME.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (limiteCreditoME) {
+        limiteCreditoME.addEventListener('input', () => {
+          if (limiteCreditoME.value == '') {
+            errorLimiteCreditoME.style.display = 'block'
+          } else {
+            errorLimiteCreditoME.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion dias credito
-      diasCredito.addEventListener('input', () => {
-        if (diasCredito.value == '') {
-          errorDiasCredito.style.display = 'block'
-        } else {
-          errorDiasCredito.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (diasCredito) {
+        diasCredito.addEventListener('input', () => {
+          if (diasCredito.value == '') {
+            errorDiasCredito.style.display = 'block'
+          } else {
+            errorDiasCredito.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion monto credito
-      montoCredito.addEventListener('input', () => {
-        if (montoCredito.value == '') {
-          errorMontoCredito.style.display = 'block'
-        } else {
-          errorMontoCredito.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (montoCredito) {
+        montoCredito.addEventListener('input', () => {
+          if (montoCredito.value == '') {
+            errorMontoCredito.style.display = 'block'
+          } else {
+            errorMontoCredito.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion retencion iva
-      retencionIva.addEventListener('change', () => {
-        if (retencionIva.value == '') {
-          errorRetencionIva.style.display = 'block'
-        } else {
-          errorRetencionIva.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (retencionIva) {
+        retencionIva.addEventListener('change', () => {
+          if (retencionIva.value == '') {
+            errorRetencionIva.style.display = 'block'
+          } else {
+            errorRetencionIva.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion retencion isr
-      retencionIsr.addEventListener('change', () => {
-        if (retencionIsr.value == '') {
-          errorRetencionIsr.style.display = 'block'
-        } else {
-          errorRetencionIsr.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (retencionIsr) {
+        retencionIsr.addEventListener('change', () => {
+          if (retencionIsr.value == '') {
+            errorRetencionIsr.style.display = 'block'
+          } else {
+            errorRetencionIsr.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion iva frontera
-      ivaFrontera.addEventListener('change', () => {
-        if (ivaFrontera.value == '') {
-          errorIvaFrontera.style.display = 'block'
-        } else {
-          errorIvaFrontera.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (ivaFrontera) {
+        ivaFrontera.addEventListener('change', () => {
+          if (ivaFrontera.value == '') {
+            errorIvaFrontera.style.display = 'block'
+          } else {
+            errorIvaFrontera.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion codigo postal
-      codigoPostal.addEventListener('input', () => {
-        if (codigoPostalPattern.test(codigoPostal.value)) {
-          errorCodigoPostal.style.display = 'none'
-        } else {
-          errorCodigoPostal.style.display = 'block'
-        }
-        enableSaveButton()
-      })
+      if (codigoPostal) {
+        codigoPostal.addEventListener('input', () => {
+          if (codigoPostalPattern.test(codigoPostal.value)) {
+            errorCodigoPostal.style.display = 'none'
+          } else {
+            errorCodigoPostal.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion pais
-      pais.addEventListener('input', () => {
-        if (pais.value == '') {
-          errorPais.style.display = 'block'
-        } else {
-          errorPais.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (pais) {
+        pais.addEventListener('input', () => {
+          if (pais.value == '') {
+            errorPais.style.display = 'block'
+          } else {
+            errorPais.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion estado
-      estado.addEventListener('input', () => {
-        if (estado.value == '') {
-          errorEstado.style.display = 'block'
-        } else {
-          errorEstado.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (estado) {
+        estado.addEventListener('input', () => {
+          if (estado.value == '') {
+            errorEstado.style.display = 'block'
+          } else {
+            errorEstado.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion ciudad
-      ciudad.addEventListener('input', () => {
-        if (ciudad.value == '') {
-          errorCiudad.style.display = 'block'
-        } else {
-          errorCiudad.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (ciudad) {
+        ciudad.addEventListener('input', () => {
+          if (ciudad.value == '') {
+            errorCiudad.style.display = 'block'
+          } else {
+            errorCiudad.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion municipio
-      municipio.addEventListener('input', () => {
-        if (municipio.value == '') {
-          errorMunicipio.style.display = 'block'
-        } else {
-          errorMunicipio.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (municipio) {
+        municipio.addEventListener('input', () => {
+          if (municipio.value == '') {
+            errorMunicipio.style.display = 'block'
+          } else {
+            errorMunicipio.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion localidad
-      localidad.addEventListener('input', () => {
-        if (localidad.value == '') {
-          errorLocalidad.style.display = 'block'
-        } else {
-          errorLocalidad.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (localidad) {
+        localidad.addEventListener('input', () => {
+          if (localidad.value == '') {
+            errorLocalidad.style.display = 'block'
+          } else {
+            errorLocalidad.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion colonia
-      colonia.addEventListener('input', () => {
-        if (colonia.value == '') {
-          errorColonia.style.display = 'block'
-        } else {
-          errorColonia.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (colonia) {
+        colonia.addEventListener('input', () => {
+          if (colonia.value == '') {
+            errorColonia.style.display = 'block'
+          } else {
+            errorColonia.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion calle
-      calle.addEventListener('input', () => {
-        if (calle.value == '') {
-          errorCalle.style.display = 'block'
-        } else {
-          errorCalle.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (calle) {
+        calle.addEventListener('input', () => {
+          if (calle.value == '') {
+            errorCalle.style.display = 'block'
+          } else {
+            errorCalle.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion numero exterior
-      numeroExterior.addEventListener('input', () => {
-        if (numeroExterior.value == '') {
-          errorNumeroExterior.style.display = 'block'
-        } else {
-          errorNumeroExterior.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (numeroExterior) {
+        numeroExterior.addEventListener('input', () => {
+          if (numeroExterior.value == '') {
+            errorNumeroExterior.style.display = 'block'
+          } else {
+            errorNumeroExterior.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion banco
-      banco.addEventListener('change', () => {
-        if (banco.value == '') {
-          errorBanco.style.display = 'block'
-        } else {
-          errorBanco.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (banco) {
+        banco.addEventListener('change', () => {
+          if (banco.value == '') {
+            errorBanco.style.display = 'block'
+          } else {
+            errorBanco.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion cuenta
-      cuenta.addEventListener('input', () => {
-        if (cuentaPattern.test(cuenta.value)) {
-          errorCuenta.style.display = 'none'
-        } else {
-          errorCuenta.style.display = 'block'
-        }
-        enableSaveButton()
-      })
+      if (cuenta) {
+        cuenta.addEventListener('input', () => {
+          if (cuentaPattern.test(cuenta.value)) {
+            errorCuenta.style.display = 'none'
+          } else {
+            errorCuenta.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion moneda
-      moneda.addEventListener('change', () => {
-        if (moneda.value == '') {
-          errorMoneda.style.display = 'block'
-        } else {
-          errorMoneda.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (moneda) {
+        moneda.addEventListener('change', () => {
+          if (moneda.value == '') {
+            errorMoneda.style.display = 'block'
+          } else {
+            errorMoneda.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion clabe
-      clabe.addEventListener('input', () => {
-        if (clabePattern.test(clabe.value)) {
-          errorClabe.style.display = 'none'
-        } else {
-          errorClabe.style.display = 'block'
-        }
-        enableSaveButton()
-      })
+      if (clabe) {
+        clabe.addEventListener('input', () => {
+          if (clabePattern.test(clabe.value)) {
+            errorClabe.style.display = 'none'
+          } else {
+            errorClabe.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Añadiendo un segundo banco
-      addBanco.addEventListener('click', () => {
-        banco2.selectedIndex = 0
-        cuenta2.value = ''
-        moneda2.selectedIndex = 0
-        clabe2.value = ''
-
-        if (addBanco.textContent == 'Agregar otro banco') {
-          errorBanco2.style.display = 'none'
-          errorCuenta2.style.display = 'none'
-          errorMoneda2.style.display = 'none'
-          errorClabe2.style.display = 'none'
-          banco2Container.style.display = 'block'
-      
-          banco2.required = true
-          cuenta2.required = true
-          moneda2.required = true
-          clabe2.required = true
-      
-          addBanco.textContent = 'Eliminar banco'
-        } else {
-          banco2Container.style.display = 'none'
-      
-          banco2.required = false
-          cuenta2.required = false
-          moneda2.required = false
-          clabe2.required = false
-      
-          addBanco.textContent = 'Agregar otro banco'
-        }
-      })
+      if (addBanco) {
+        addBanco.addEventListener('click', () => {
+          banco2.selectedIndex = 0
+          cuenta2.value = ''
+          moneda2.selectedIndex = 0
+          clabe2.value = ''
+          
+          if (addBanco.textContent == 'Agregar otro banco') {
+            errorBanco2.style.display = 'none'
+            errorCuenta2.style.display = 'none'
+            errorMoneda2.style.display = 'none'
+            errorClabe2.style.display = 'none'
+            banco2Container.style.display = 'block'
+            
+            banco2.required = true
+            cuenta2.required = true
+            moneda2.required = true
+            clabe2.required = true
+            
+            addBanco.textContent = 'Eliminar banco'
+          } else {
+            banco2Container.style.display = 'none'
+            
+            banco2.required = false
+            cuenta2.required = false
+            moneda2.required = false
+            clabe2.required = false
+            
+            addBanco.textContent = 'Agregar otro banco'
+          }
+        })
+      }
       
       // Validacion banco 2
-      banco2.addEventListener('change', () => {
-        if (banco2.value == '') {
-          errorBanco2.style.display = 'block'
-        } else {
-          errorBanco2.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (banco2) {
+        banco2.addEventListener('change', () => {
+          if (banco2.value == '') {
+            errorBanco2.style.display = 'block'
+          } else {
+            errorBanco2.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion cuenta 2
-      cuenta2.addEventListener('input', () => {
-        if (cuentaPattern.test(cuenta2.value)) {
-          errorCuenta2.style.display = 'none'
-        } else {
-          errorCuenta2.style.display = 'block'
-        }
-        enableSaveButton()
-      })
+      if (cuenta2) {
+        cuenta2.addEventListener('input', () => {
+          if (cuentaPattern.test(cuenta2.value)) {
+            errorCuenta2.style.display = 'none'
+          } else {
+            errorCuenta2.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion moneda 2
-      moneda2.addEventListener('change', () => {
-        if (moneda2.value == '') {
-          errorMoneda2.style.display = 'block'
-        } else {
-          errorMoneda2.style.display = 'none'
-        }
-        enableSaveButton()
-      })
+      if (moneda2) {
+        moneda2.addEventListener('change', () => {
+          if (moneda2.value == '') {
+            errorMoneda2.style.display = 'block'
+          } else {
+            errorMoneda2.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
       
       // Validacion clabe 2
-      clabe2.addEventListener('input', () => {
-        if (clabePattern.test(clabe2.value)) {
-          errorClabe2.style.display = 'none'
-        } else {
-          errorClabe2.style.display = 'block'
-        }
-        enableSaveButton()
-      })
+      if (clabe2) {
+        clabe2.addEventListener('input', () => {
+          if (clabePattern.test(clabe2.value)) {
+            errorClabe2.style.display = 'none'
+          } else {
+            errorClabe2.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
 
       function enableSaveButton() {
-        if(errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRazonSocial.style.display == 'block' || errorRfc.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
+        if(errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
           if(btnSave) {
             btnSave.disabled = true
             btnDelete.disabled = true

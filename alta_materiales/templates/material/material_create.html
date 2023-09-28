@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <main class="container py-5 mt-5">
-    <div class="row d-flex justify-content-center mt-5">
-      <div class="col-md-6 align-self-center mx-auto">
+  <main class="py-5 m-5">
+    <div class="row mt-5 justify-content-center">
+      <div style="max-width: 40rem;">
         <form class="card card-body" method="POST">
           <h1 class="mb-4">Registrar material</h1>
 
@@ -24,14 +24,14 @@
             <div id="material-migracion-empresas" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
               <!-- Empresa origen -->
               <div style="width: 100%;">
-                <p class="m-0">{{ solicitud_form.empresa_origen.label_tag }}*</p>
+                <p class="m-0">{{ solicitud_form.empresa_origen.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ solicitud_form.empresa_origen }}
                 <p id="error-empresa-origen" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- Empresa destino -->
               <div style="width: 100%;">
-                <p class="m-0">{{ solicitud_form.empresa_destino.label_tag }}*</p>
+                <p class="m-0">{{ solicitud_form.empresa_destino.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ solicitud_form.empresa_destino }}
                 <p id="error-empresa-destino" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -39,7 +39,7 @@
 
             <!-- Nombre producto migracion field -->
             <div style="margin-bottom:1rem;">
-              <p class="m-0">{{ solicitud_form.nombre_producto_migracion.label_tag }}*</p>
+              <p class="m-0">{{ solicitud_form.nombre_producto_migracion.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ solicitud_form.nombre_producto_migracion }}
               <p id="error-rfc-migracion" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
             </div>
@@ -49,14 +49,14 @@
           <div id="material-nuevo-fields" style="display: block;">
             <!-- Empresa field -->
             <div style="margin-bottom:1rem;">
-              <p class="m-0">{{ solicitud_form.empresa.label_tag }}*</p>
+              <p class="m-0">{{ solicitud_form.empresa.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ solicitud_form.empresa }}
               <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <!-- Justificación field -->
             <div style="margin-bottom:1rem;">
-              <p class="m-0">{{ solicitud_form.justificacion.label_tag }}*</p>
+              <p class="m-0">{{ solicitud_form.justificacion.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ solicitud_form.justificacion }}
               <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
@@ -493,8 +493,13 @@
         }
       }
 
-      // Si el registro ya existe en otra empresa, se envia directo a sistemas
-      btnGuardar.addEventListener('click', () => {
+      btnGuardar.addEventListener('click', (event) => {
+        // Si no se ha añadido ningún material, no se envía la solicitud
+        if (tableMaterials.style.display != 'block') {
+          window.alert('Por favor añada al menos un producto');
+          event.preventDefault();
+        }
+        // Si el registro ya existe en otra empresa, se envia directo a sistemas
         if (esMigracion.checked) {
           btnGuardar.setAttribute('name', 'finanzas');
         } else {
