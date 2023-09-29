@@ -25,6 +25,7 @@ class MaterialSolicitud(models.Model):
     rechazado_finanzas = models.BooleanField(default=False)
     rechazado_sistemas = models.BooleanField(default=False)
     eliminado = models.BooleanField(default=False)
+    borrador = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'solicitud'

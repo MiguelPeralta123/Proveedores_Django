@@ -8,8 +8,9 @@
             <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de materiales</h1>
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
-                <div id="filtrar-solicitudes-container" class="d-flex justify-content-between gap-2 mt-5">
+                <div id="filtrar-solicitudes-container" class="mt-5">
                     <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Todas</button>
+                    <button id="btn-filtrar-borradores" class="btn btn-secondary btn-filtrar">Borradores</button>
                     <button id="btn-filtrar-pendientes" class="btn btn-secondary btn-filtrar">Pendientes</button>
                     <button id="btn-filtrar-rechazadas" class="btn btn-secondary btn-filtrar">Rechazadas</button>
                     <button id="btn-filtrar-aprobadas" class="btn btn-secondary btn-filtrar">Aprobadas</button>
@@ -19,54 +20,6 @@
 
             <ul id="solicitudes-list" style="list-style-type: none;" class="list-group mt-4">
                 {% for solicitud in solicitudes %}
-                <a class="list-group-item my-2 border rounded material-card"
-                    href="{% url 'material_detail' solicitud.id %}"
-                    style="transition: 0.2s ease-in-out;">
-                    <div class="d-flex justify-content-between gap-3 my-2">
-                        <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
-                        <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
-                    </div>
-                    <div class="d-flex justify-content-between gap-3">
-                        <p><b>Empresa:</b> {{solicitud.empresa}}</p>
-                        <p><b>Fecha:</b> {{solicitud.fecha}}</p>
-                    </div>
-                    {% if solicitud.pendiente %}
-                    <p class="text-success">🕐 Pendiente aprobación</p>
-                    {% endif %}
-                    {% if solicitud.compras %}
-                    <p class="text-success">✅ Aprobado por compras</p>
-                    {% endif %}
-                    {% if solicitud.rechazado_compras %}
-                    <p class="text-danger">❌ Rechazado por compras</p>
-                    <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                    {% endif %}
-                    {% if solicitud.finanzas %}
-                    <p class="text-success">✅ Aprobado por finanzas</p>
-                    {% endif %}
-                    {% if solicitud.rechazado_finanzas %}
-                    <p class="text-danger">❌ Rechazado por finanzas</p>
-                    <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                    {% endif %}
-                    {% if solicitud.sistemas %}
-                    <p class="text-success">✅ Aprobado por sistemas</p>
-                    {% endif %}
-                    {% if solicitud.rechazado_sistemas %}
-                    <p class="text-danger">❌ Rechazado por sistemas</p>
-                    <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                    {% endif %}
-
-                    {% for cambio in historial %}
-                        {% if solicitud.id == cambio.id_solicitud %}
-                            <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
-                        {% endif %}
-                    {% endfor %}
-                </a>
-                {% endfor %}
-            </ul>
-
-            {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
-                <ul id="solicitudes-pendientes-list" style="list-style-type: none; display: none;" class="list-group mt-4">
-                    {% for solicitud in solicitudes_pendientes %}
                     <a class="list-group-item my-2 border rounded material-card"
                         href="{% url 'material_detail' solicitud.id %}"
                         style="transition: 0.2s ease-in-out;">
@@ -78,25 +31,28 @@
                             <p><b>Empresa:</b> {{solicitud.empresa}}</p>
                             <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                         </div>
+                        {% if solicitud.borrador %}
+                        <p class="text-success">✎ Guardado como borrador</p>
+                        {% endif %}
                         {% if solicitud.pendiente %}
-                        <p class="text-success">🕐 Pendiente aprobación</p>
+                        <p class="text-success">🕐 Pendiente compras</p>
                         {% endif %}
                         {% if solicitud.compras %}
-                        <p class="text-success">✅ Aprobado por compras</p>
+                        <p class="text-success">🕐 Pendiente finanzas</p>
                         {% endif %}
                         {% if solicitud.rechazado_compras %}
                         <p class="text-danger">❌ Rechazado por compras</p>
                         <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
                         {% endif %}
                         {% if solicitud.finanzas %}
-                        <p class="text-success">✅ Aprobado por finanzas</p>
+                        <p class="text-success">🕐 Pendiente sistemas</p>
                         {% endif %}
                         {% if solicitud.rechazado_finanzas %}
                         <p class="text-danger">❌ Rechazado por finanzas</p>
                         <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
                         {% endif %}
                         {% if solicitud.sistemas %}
-                        <p class="text-success">✅ Aprobado por sistemas</p>
+                        <p class="text-success">✅ Aprobado</p>
                         {% endif %}
                         {% if solicitud.rechazado_sistemas %}
                         <p class="text-danger">❌ Rechazado por sistemas</p>
@@ -109,147 +65,257 @@
                             {% endif %}
                         {% endfor %}
                     </a>
+                {% endfor %}
+            </ul>
+
+            {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
+                <ul id="solicitudes-borradores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
+                    {% for solicitud in solicitudes_borradores %}
+                        <a class="list-group-item my-2 border rounded material-card"
+                            href="{% url 'material_detail' solicitud.id %}"
+                            style="transition: 0.2s ease-in-out;">
+                            <div class="d-flex justify-content-between gap-3 my-2">
+                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
+                            </div>
+                            <div class="d-flex justify-content-between gap-3">
+                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                <p><b>Fecha:</b> {{solicitud.fecha}}</p>
+                            </div>
+                            {% if solicitud.borrador %}
+                            <p class="text-success">✎ Guardado como borrador</p>
+                            {% endif %}
+                            {% if solicitud.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
+                            {% endif %}
+                            {% if solicitud.compras %}
+                            <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_compras %}
+                            <p class="text-danger">❌ Rechazado por compras</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.finanzas %}
+                            <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_finanzas %}
+                            <p class="text-danger">❌ Rechazado por finanzas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.sistemas %}
+                            <p class="text-success">✅ Aprobado</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_sistemas %}
+                            <p class="text-danger">❌ Rechazado por sistemas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+
+                            {% for cambio in historial %}
+                                {% if solicitud.id == cambio.id_solicitud %}
+                                    <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                                {% endif %}
+                            {% endfor %}
+                        </a>
+                    {% endfor %}
+                </ul>
+
+                <ul id="solicitudes-pendientes-list" style="list-style-type: none; display: none;" class="list-group mt-4">
+                    {% for solicitud in solicitudes_pendientes %}
+                        <a class="list-group-item my-2 border rounded material-card"
+                            href="{% url 'material_detail' solicitud.id %}"
+                            style="transition: 0.2s ease-in-out;">
+                            <div class="d-flex justify-content-between gap-3 my-2">
+                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
+                            </div>
+                            <div class="d-flex justify-content-between gap-3">
+                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                <p><b>Fecha:</b> {{solicitud.fecha}}</p>
+                            </div>
+                            {% if solicitud.borrador %}
+                            <p class="text-success">✎ Guardado como borrador</p>
+                            {% endif %}
+                            {% if solicitud.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
+                            {% endif %}
+                            {% if solicitud.compras %}
+                            <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_compras %}
+                            <p class="text-danger">❌ Rechazado por compras</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.finanzas %}
+                            <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_finanzas %}
+                            <p class="text-danger">❌ Rechazado por finanzas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.sistemas %}
+                            <p class="text-success">✅ Aprobado</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_sistemas %}
+                            <p class="text-danger">❌ Rechazado por sistemas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+
+                            {% for cambio in historial %}
+                                {% if solicitud.id == cambio.id_solicitud %}
+                                    <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                                {% endif %}
+                            {% endfor %}
+                        </a>
                     {% endfor %}
                 </ul>
 
                 <ul id="solicitudes-rechazadas-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_rechazadas %}
-                    <a class="list-group-item my-2 border rounded material-card"
-                        href="{% url 'material_detail' solicitud.id %}"
-                        style="transition: 0.2s ease-in-out;">
-                        <div class="d-flex justify-content-between gap-3 my-2">
-                            <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
-                            <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
-                        </div>
-                        <div class="d-flex justify-content-between gap-3">
-                            <p><b>Empresa:</b> {{solicitud.empresa}}</p>
-                            <p><b>Fecha:</b> {{solicitud.fecha}}</p>
-                        </div>
-                        {% if solicitud.pendiente %}
-                        <p class="text-success">🕐 Pendiente aprobación</p>
-                        {% endif %}
-                        {% if solicitud.compras %}
-                        <p class="text-success">✅ Aprobado por compras</p>
-                        {% endif %}
-                        {% if solicitud.rechazado_compras %}
-                        <p class="text-danger">❌ Rechazado por compras</p>
-                        <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                        {% endif %}
-                        {% if solicitud.finanzas %}
-                        <p class="text-success">✅ Aprobado por finanzas</p>
-                        {% endif %}
-                        {% if solicitud.rechazado_finanzas %}
-                        <p class="text-danger">❌ Rechazado por finanzas</p>
-                        <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                        {% endif %}
-                        {% if solicitud.sistemas %}
-                        <p class="text-success">✅ Aprobado por sistemas</p>
-                        {% endif %}
-                        {% if solicitud.rechazado_sistemas %}
-                        <p class="text-danger">❌ Rechazado por sistemas</p>
-                        <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                        {% endif %}
-
-                        {% for cambio in historial %}
-                            {% if solicitud.id == cambio.id_solicitud %}
-                                <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                        <a class="list-group-item my-2 border rounded material-card"
+                            href="{% url 'material_detail' solicitud.id %}"
+                            style="transition: 0.2s ease-in-out;">
+                            <div class="d-flex justify-content-between gap-3 my-2">
+                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
+                            </div>
+                            <div class="d-flex justify-content-between gap-3">
+                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                <p><b>Fecha:</b> {{solicitud.fecha}}</p>
+                            </div>
+                            {% if solicitud.borrador %}
+                            <p class="text-success">✎ Guardado como borrador</p>
                             {% endif %}
-                        {% endfor %}
-                    </a>
+                            {% if solicitud.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
+                            {% endif %}
+                            {% if solicitud.compras %}
+                            <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_compras %}
+                            <p class="text-danger">❌ Rechazado por compras</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.finanzas %}
+                            <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_finanzas %}
+                            <p class="text-danger">❌ Rechazado por finanzas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.sistemas %}
+                            <p class="text-success">✅ Aprobado</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_sistemas %}
+                            <p class="text-danger">❌ Rechazado por sistemas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+
+                            {% for cambio in historial %}
+                                {% if solicitud.id == cambio.id_solicitud %}
+                                    <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                                {% endif %}
+                            {% endfor %}
+                        </a>
                     {% endfor %}
                 </ul>
 
                 <ul id="solicitudes-aprobadas-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_aprobadas %}
-                    <a class="list-group-item my-2 border rounded material-card"
-                        href="{% url 'material_detail' solicitud.id %}"
-                        style="transition: 0.2s ease-in-out;">
-                        <div class="d-flex justify-content-between gap-3 my-2">
-                            <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
-                            <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
-                        </div>
-                        <div class="d-flex justify-content-between gap-3">
-                            <p><b>Empresa:</b> {{solicitud.empresa}}</p>
-                            <p><b>Fecha:</b> {{solicitud.fecha}}</p>
-                        </div>
-                        {% if solicitud.pendiente %}
-                        <p class="text-success">🕐 Pendiente aprobación</p>
-                        {% endif %}
-                        {% if solicitud.compras %}
-                        <p class="text-success">✅ Aprobado por compras</p>
-                        {% endif %}
-                        {% if solicitud.rechazado_compras %}
-                        <p class="text-danger">❌ Rechazado por compras</p>
-                        <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                        {% endif %}
-                        {% if solicitud.finanzas %}
-                        <p class="text-success">✅ Aprobado por finanzas</p>
-                        {% endif %}
-                        {% if solicitud.rechazado_finanzas %}
-                        <p class="text-danger">❌ Rechazado por finanzas</p>
-                        <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                        {% endif %}
-                        {% if solicitud.sistemas %}
-                        <p class="text-success">✅ Aprobado por sistemas</p>
-                        {% endif %}
-                        {% if solicitud.rechazado_sistemas %}
-                        <p class="text-danger">❌ Rechazado por sistemas</p>
-                        <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                        {% endif %}
-
-                        {% for cambio in historial %}
-                            {% if solicitud.id == cambio.id_solicitud %}
-                                <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                        <a class="list-group-item my-2 border rounded material-card"
+                            href="{% url 'material_detail' solicitud.id %}"
+                            style="transition: 0.2s ease-in-out;">
+                            <div class="d-flex justify-content-between gap-3 my-2">
+                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
+                            </div>
+                            <div class="d-flex justify-content-between gap-3">
+                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                <p><b>Fecha:</b> {{solicitud.fecha}}</p>
+                            </div>
+                            {% if solicitud.borrador %}
+                            <p class="text-success">✎ Guardado como borrador</p>
                             {% endif %}
-                        {% endfor %}
-                    </a>
+                            {% if solicitud.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
+                            {% endif %}
+                            {% if solicitud.compras %}
+                            <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_compras %}
+                            <p class="text-danger">❌ Rechazado por compras</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.finanzas %}
+                            <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_finanzas %}
+                            <p class="text-danger">❌ Rechazado por finanzas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.sistemas %}
+                            <p class="text-success">✅ Aprobado</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_sistemas %}
+                            <p class="text-danger">❌ Rechazado por sistemas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+
+                            {% for cambio in historial %}
+                                {% if solicitud.id == cambio.id_solicitud %}
+                                    <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                                {% endif %}
+                            {% endfor %}
+                        </a>
                     {% endfor %}
                 </ul>
 
                 <ul id="solicitudes-eliminadas-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_eliminadas %}
-                    <a class="list-group-item my-2 border rounded material-card"
-                        href="{% url 'material_detail' solicitud.id %}"
-                        style="transition: 0.2s ease-in-out;">
-                        <div class="d-flex justify-content-between gap-3 my-2">
-                            <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
-                            <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
-                        </div>
-                        <div class="d-flex justify-content-between gap-3">
-                            <p><b>Empresa:</b> {{solicitud.empresa}}</p>
-                            <p><b>Fecha:</b> {{solicitud.fecha}}</p>
-                        </div>
-                        {% if solicitud.pendiente %}
-                        <p class="text-success">🕐 Pendiente aprobación</p>
-                        {% endif %}
-                        {% if solicitud.compras %}
-                        <p class="text-success">✅ Aprobado por compras</p>
-                        {% endif %}
-                        {% if solicitud.rechazado_compras %}
-                        <p class="text-danger">❌ Rechazado por compras</p>
-                        <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                        {% endif %}
-                        {% if solicitud.finanzas %}
-                        <p class="text-success">✅ Aprobado por finanzas</p>
-                        {% endif %}
-                        {% if solicitud.rechazado_finanzas %}
-                        <p class="text-danger">❌ Rechazado por finanzas</p>
-                        <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                        {% endif %}
-                        {% if solicitud.sistemas %}
-                        <p class="text-success">✅ Aprobado por sistemas</p>
-                        {% endif %}
-                        {% if solicitud.rechazado_sistemas %}
-                        <p class="text-danger">❌ Rechazado por sistemas</p>
-                        <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                        {% endif %}
-
-                        {% for cambio in historial %}
-                            {% if solicitud.id == cambio.id_solicitud %}
-                                <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                        <a class="list-group-item my-2 border rounded material-card"
+                            href="{% url 'material_detail' solicitud.id %}"
+                            style="transition: 0.2s ease-in-out;">
+                            <div class="d-flex justify-content-between gap-3 my-2">
+                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
+                            </div>
+                            <div class="d-flex justify-content-between gap-3">
+                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                <p><b>Fecha:</b> {{solicitud.fecha}}</p>
+                            </div>
+                            {% if solicitud.borrador %}
+                            <p class="text-success">✎ Guardado como borrador</p>
                             {% endif %}
-                        {% endfor %}
-                    </a>
+                            {% if solicitud.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
+                            {% endif %}
+                            {% if solicitud.compras %}
+                            <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_compras %}
+                            <p class="text-danger">❌ Rechazado por compras</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.finanzas %}
+                            <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_finanzas %}
+                            <p class="text-danger">❌ Rechazado por finanzas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.sistemas %}
+                            <p class="text-success">✅ Aprobado</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_sistemas %}
+                            <p class="text-danger">❌ Rechazado por sistemas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+
+                            {% for cambio in historial %}
+                                {% if solicitud.id == cambio.id_solicitud %}
+                                    <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                                {% endif %}
+                            {% endfor %}
+                        </a>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -258,6 +324,16 @@
 </main>
 
 <style>
+    #filtrar-solicitudes-container {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.5rem;
+    }
+    @media (max-width: 640px) {
+        #filtrar-solicitudes-container {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
     .btn-filtrar {
         background-color: rgb(0, 128, 0, 0.6);
         transition: 0.2s ease-in-out;
@@ -280,12 +356,14 @@
     document.addEventListener("DOMContentLoaded", function() {
         // Containers
         const solicitudesList = document.getElementById("solicitudes-list")
+        const solicitudesBorradoresList = document.getElementById("solicitudes-borradores-list")
         const solicitudesPendientesList = document.getElementById("solicitudes-pendientes-list")
         const solicitudesRechazadasList = document.getElementById("solicitudes-rechazadas-list")
         const solicitudesAprobadasList = document.getElementById("solicitudes-aprobadas-list")
         const solicitudesEliminadasList = document.getElementById("solicitudes-eliminadas-list")
         // Buttons
         const btnTodas = document.getElementById('btn-filtrar-todas')
+        const btnBorradores = document.getElementById('btn-filtrar-borradores')
         const btnPendientes = document.getElementById('btn-filtrar-pendientes')
         const btnRechazadas = document.getElementById('btn-filtrar-rechazadas')
         const btnAprobadas = document.getElementById('btn-filtrar-aprobadas')
@@ -296,6 +374,13 @@
         solicitudesList.innerHTML = ""
         solicitudesItems.forEach(item => {
             solicitudesList.appendChild(item)
+        });
+
+        // List draft requests from newest to oldest
+        const solicitudesBorradoresItems = Array.from(solicitudesBorradoresList.children).reverse()
+        solicitudesBorradoresList.innerHTML = ""
+        solicitudesBorradoresItems.forEach(item => {
+            solicitudesBorradoresList.appendChild(item)
         });
 
         // List pending requests from newest to oldest
@@ -330,46 +415,57 @@
         if (btnTodas) {
             btnTodas.addEventListener('click', () => {
                 solicitudesList.style.display = 'block'
+                solicitudesBorradoresList.style.display = 'none'
                 solicitudesPendientesList.style.display = 'none'
                 solicitudesRechazadasList.style.display = 'none'
                 solicitudesAprobadasList.style.display = 'none'
                 solicitudesEliminadasList.style.display = 'none'
             })
         }
-
+        if (btnBorradores) {
+            btnBorradores.addEventListener('click', () => {
+                solicitudesList.style.display = 'none'
+                solicitudesBorradoresList.style.display = 'block'
+                solicitudesPendientesList.style.display = 'none'
+                solicitudesRechazadasList.style.display = 'none'
+                solicitudesAprobadasList.style.display = 'none'
+                solicitudesEliminadasList.style.display = 'none'
+            })
+        }
         if (btnPendientes) {
             btnPendientes.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
+                solicitudesBorradoresList.style.display = 'none'
                 solicitudesPendientesList.style.display = 'block'
                 solicitudesRechazadasList.style.display = 'none'
                 solicitudesAprobadasList.style.display = 'none'
                 solicitudesEliminadasList.style.display = 'none'
             })
         }
-
         if (btnRechazadas) {
             btnRechazadas.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
+                solicitudesBorradoresList.style.display = 'none'
                 solicitudesPendientesList.style.display = 'none'
                 solicitudesRechazadasList.style.display = 'block'
                 solicitudesAprobadasList.style.display = 'none'
                 solicitudesEliminadasList.style.display = 'none'
             })
         }
-
         if (btnAprobadas) {
             btnAprobadas.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
+                solicitudesBorradoresList.style.display = 'none'
                 solicitudesPendientesList.style.display = 'none'
                 solicitudesRechazadasList.style.display = 'none'
                 solicitudesAprobadasList.style.display = 'block'
                 solicitudesEliminadasList.style.display = 'none'
             })
         }
-
         if (btnEliminadas) {
             btnEliminadas.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
+                solicitudesBorradoresList.style.display = 'none'
                 solicitudesPendientesList.style.display = 'none'
                 solicitudesRechazadasList.style.display = 'none'
                 solicitudesAprobadasList.style.display = 'none'

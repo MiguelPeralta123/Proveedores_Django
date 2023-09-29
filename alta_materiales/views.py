@@ -36,6 +36,7 @@ def material(request):
         solicitudes = MaterialSolicitud.objects.filter(finanzas=True)
     else:
         solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+        solicitudes_borradores = solicitudes.filter(borrador=True)
         solicitudes_pendientes = solicitudes.filter(
             Q(pendiente=True) | 
             Q(compras=True) | 
@@ -56,6 +57,7 @@ def material(request):
         return render(request, 'material/material.html', {
             'solicitudes': solicitudes,
             'historial': historial,
+            'solicitudes_borradores': solicitudes_borradores,
             'solicitudes_pendientes': solicitudes_pendientes,
             'solicitudes_rechazadas': solicitudes_rechazadas,
             'solicitudes_aprobadas': solicitudes_aprobadas,
@@ -81,7 +83,7 @@ def material_create(request):
 
         if request.method == 'GET':
             default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
 
             solicitud_form = SolicitudForm(initial=default_values)
             material_formset = MaterialFormSet(prefix='material', initial=[{}])
@@ -121,20 +123,21 @@ def material_create(request):
                     historial.save()
 
                     # Enviar correo electrónico
-                    subject = 'Nueva solicitud de material'
-                    message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
-                    from_email = 'altaproveedoresricofarms@gmail.com'
-                    if solicitud.es_migracion:
-                        recipient_list = ['l18330484@hermosillo.tecnm.mx']
-                    else:
-                        recipient_list = ['maikperalta123@gmail.com']
-                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                    if not solicitud.borrador:
+                        subject = 'Nueva solicitud de material'
+                        message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
+                        from_email = 'altaproveedoresricofarms@gmail.com'
+                        if solicitud.es_migracion:
+                            recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                        else:
+                            recipient_list = ['maikperalta123@gmail.com']
+                        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     return redirect('material')
                 
             except ValueError as e:
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
                 
                 solicitud_form = SolicitudForm(initial=default_values)
                 material_formset = MaterialFormSet(prefix='material', initial=[{}])
@@ -153,7 +156,7 @@ def material_detail(request, material_id):
 
     if request.method == 'GET':
         default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                          'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
+                          'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
         if request.user.compras:
             solicitud_form = SolicitudFormForCompras(
                 instance=solicitud, initial=default_values)

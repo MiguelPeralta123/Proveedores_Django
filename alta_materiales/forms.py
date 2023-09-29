@@ -6,7 +6,7 @@ from .options import *
 class SolicitudForm(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'es_migracion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado']
+        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'es_migracion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
@@ -27,6 +27,7 @@ class SolicitudForm(forms.ModelForm):
             'rechazado_finanzas': forms.HiddenInput(),
             'rechazado_sistemas': forms.HiddenInput(),
             'eliminado': forms.HiddenInput(),
+            'borrador': forms.HiddenInput(),
         }
 
 class MaterialForm(forms.ModelForm):
@@ -35,7 +36,7 @@ class MaterialForm(forms.ModelForm):
         fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'marca', 'parte_modelo', 'nombre_comun', 'medida', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'es_material_empaque', 'es_prod_terminado']
         widgets = {
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta select-tipo-alta', 'initial':''}),
-            'subfamilia': forms.Select(choices=SUBFAMILIA_LIST_PROVISIONAL, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
+            'subfamilia': forms.Select(choices=SUBFAMILIA_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
             'nombre_producto': forms.TextInput(attrs={'class':'form-control material-nombre'}),
             'marca': forms.TextInput(attrs={'class':'form-control material-marca'}),
             'parte_modelo': forms.TextInput(attrs={'class':'form-control material-parte-modelo'}),
@@ -45,7 +46,7 @@ class MaterialForm(forms.ModelForm):
             'ing_activo': forms.TextInput(attrs={'class':'form-control material-ing-activo'}),
             'tipo_producto': forms.TextInput(attrs={'class':'form-control material-tipo-producto'}),
             'alias': forms.TextInput(attrs={'class':'form-control material-alias'}),
-            'unidad_medida': forms.Select(choices=UNIDAD_MEDIDA_LIST_PROVISIONAL, attrs={'class':'form-control material-unidad-medida select-unidad-medida', 'initial':''}),
+            'unidad_medida': forms.Select(choices=UNIDAD_MEDIDA_LIST, attrs={'class':'form-control material-unidad-medida select-unidad-medida', 'initial':''}),
             'es_material_empaque': forms.CheckboxInput(attrs={'class':'form-checkbox material-es-material-empaque'}),
             'es_prod_terminado': forms.CheckboxInput(attrs={'class':'form-checkbox material-es-prod-terminado'}),
         }
@@ -53,7 +54,7 @@ class MaterialForm(forms.ModelForm):
 class SolicitudDetailForm(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
+        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
@@ -69,6 +70,7 @@ class SolicitudDetailForm(forms.ModelForm):
             'rechazado_finanzas': forms.HiddenInput(),
             'rechazado_sistemas': forms.HiddenInput(),
             'eliminado': forms.HiddenInput(),
+            'borrador': forms.HiddenInput(),
             'comentarios': forms.TextInput(attrs={'class':'form-control', 'readonly':'readonly'})
         }
 
@@ -78,7 +80,7 @@ class MaterialDetailForm(forms.ModelForm):
         fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'marca', 'parte_modelo', 'nombre_comun', 'medida', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'es_material_empaque', 'es_prod_terminado']
         widgets = {
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta select-tipo-alta', 'initial':''}),
-            'subfamilia': forms.Select(choices=SUBFAMILIA_LIST_PROVISIONAL, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
+            'subfamilia': forms.Select(choices=SUBFAMILIA_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
             'nombre_producto': forms.TextInput(attrs={'class':'form-control material-nombre'}),
             'marca': forms.TextInput(attrs={'class':'form-control material-marca'}),
             'parte_modelo': forms.TextInput(attrs={'class':'form-control material-parte-modelo'}),
@@ -88,7 +90,7 @@ class MaterialDetailForm(forms.ModelForm):
             'ing_activo': forms.TextInput(attrs={'class':'form-control material-ing-activo'}),
             'tipo_producto': forms.TextInput(attrs={'class':'form-control material-tipo-producto'}),
             'alias': forms.TextInput(attrs={'class':'form-control material-alias'}),
-            'unidad_medida': forms.Select(choices=UNIDAD_MEDIDA_LIST_PROVISIONAL, attrs={'class':'form-control material-unidad-medida select-unidad-medida', 'initial':''}),
+            'unidad_medida': forms.Select(choices=UNIDAD_MEDIDA_LIST, attrs={'class':'form-control material-unidad-medida select-unidad-medida', 'initial':''}),
             'es_material_empaque': forms.CheckboxInput(attrs={'class':'form-checkbox material-es-material-empaque'}),
             'es_prod_terminado': forms.CheckboxInput(attrs={'class':'form-checkbox material-es-prod-terminado'}),
         }
@@ -96,7 +98,7 @@ class MaterialDetailForm(forms.ModelForm):
 class SolicitudFormForCompras(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
+        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
@@ -112,13 +114,14 @@ class SolicitudFormForCompras(forms.ModelForm):
             'rechazado_finanzas': forms.HiddenInput(),
             'rechazado_sistemas': forms.HiddenInput(),
             'eliminado': forms.HiddenInput(),
+            'borrador': forms.HiddenInput(),
             'comentarios': forms.TextInput(attrs={'class':'form-control'})
         }
 
 class SolicitudFormForFinanzas(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
+        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
@@ -134,13 +137,14 @@ class SolicitudFormForFinanzas(forms.ModelForm):
             'rechazado_finanzas': forms.HiddenInput(),
             'rechazado_sistemas': forms.HiddenInput(),
             'eliminado': forms.HiddenInput(),
+            'borrador': forms.HiddenInput(),
             'comentarios': forms.TextInput(attrs={'class':'form-control'})
         }
 
 class SolicitudFormForSistemas(forms.ModelForm):
     class Meta:
         model = MaterialSolicitud
-        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'comentarios']
+        fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
             'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
@@ -156,6 +160,7 @@ class SolicitudFormForSistemas(forms.ModelForm):
             'rechazado_finanzas': forms.HiddenInput(),
             'rechazado_sistemas': forms.HiddenInput(),
             'eliminado': forms.HiddenInput(),
+            'borrador': forms.HiddenInput(),
             'comentarios': forms.TextInput(attrs={'class':'form-control'})
         }
 

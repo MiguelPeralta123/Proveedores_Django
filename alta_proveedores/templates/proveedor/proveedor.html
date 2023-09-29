@@ -4,7 +4,7 @@
 
 <main class="p-5 mt-5">
     <div class="row mt-5 justify-content-center">
-        <div style="max-width: 40rem;">
+        <div style="max-width: 40rem;">asd
             <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de proveedores</h1>
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
@@ -40,11 +40,11 @@
                             {% endif %}
                             <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                         </div>
-                        {% if proveedor.pendiente %}
-                        <p class="text-success">🕐 Pendiente compras</p>
-                        {% endif %}
                         {% if proveedor.borrador %}
                         <p class="text-success">✎ Guardado como borrador</p>
+                        {% endif %}
+                        {% if proveedor.pendiente %}
+                        <p class="text-success">🕐 Pendiente compras</p>
                         {% endif %}
                         {% if proveedor.compras %}
                         <p class="text-success">🕐 Pendiente finanzas</p>
@@ -100,11 +100,11 @@
                                 {% endif %}
                                 <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                             </div>
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
                             {% if proveedor.borrador %}
                             <p class="text-success">✎ Guardado como borrador</p>
+                            {% endif %}
+                            {% if proveedor.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
                             {% endif %}
                             {% if proveedor.compras %}
                             <p class="text-success">🕐 Pendiente finanzas</p>
@@ -159,11 +159,11 @@
                                 {% endif %}
                                 <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                             </div>
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
                             {% if proveedor.borrador %}
                             <p class="text-success">✎ Guardado como borrador</p>
+                            {% endif %}
+                            {% if proveedor.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
                             {% endif %}
                             {% if proveedor.compras %}
                             <p class="text-success">🕐 Pendiente finanzas</p>
@@ -218,11 +218,11 @@
                                 {% endif %}
                                 <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                             </div>
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
                             {% if proveedor.borrador %}
                             <p class="text-success">✎ Guardado como borrador</p>
+                            {% endif %}
+                            {% if proveedor.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
                             {% endif %}
                             {% if proveedor.compras %}
                             <p class="text-success">🕐 Pendiente finanzas</p>
@@ -277,11 +277,11 @@
                                 {% endif %}
                                 <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                             </div>
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
                             {% if proveedor.borrador %}
                             <p class="text-success">✎ Guardado como borrador</p>
+                            {% endif %}
+                            {% if proveedor.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
                             {% endif %}
                             {% if proveedor.compras %}
                             <p class="text-success">🕐 Pendiente finanzas</p>
@@ -336,11 +336,11 @@
                                 {% endif %}
                                 <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                             </div>
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
                             {% if proveedor.borrador %}
                             <p class="text-success">✎ Guardado como borrador</p>
+                            {% endif %}
+                            {% if proveedor.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
                             {% endif %}
                             {% if proveedor.compras %}
                             <p class="text-success">🕐 Pendiente finanzas</p>

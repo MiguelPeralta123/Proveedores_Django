@@ -107,8 +107,7 @@
           </div>
 
           <div id="buttons-container" class="d-flex justify-content-between gap-2">
-            {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and solicitud.rechazado_compras == True or current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and solicitud.rechazado_finanzas == True or current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and solicitud.rechazado_sistemas == True %}
-
+            {% if solicitud.rechazado_compras == True or solicitud.rechazado_finanzas == True or solicitud.rechazado_sistemas == True or solicitud.borrador == True %}
               {% if solicitud.es_migracion %}
                 <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Guardar cambios</button>
               {% else %}
