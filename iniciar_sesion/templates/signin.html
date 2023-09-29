@@ -1,35 +1,22 @@
 {% extends 'base.html' %}
-
 {% block content %}
+    <main class="container py-5 mt-5">
+    <div class="row d-flex justify-content-center mt-5">
+        <div class="col-md-6 align-self-center mx-auto">
+            <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
+                <h1>Inicio de sesión</h1>
+                {{error}}
+                {% csrf_token %}
 
-<main class="container py-5 mt-5">
-
-  <div class="row d-flex justify-content-center mt-5">
-
-      <div class="col-md-6 align-self-center mx-auto">
-
-          <form class="card card-body" method="POST">
-
-              <h1>Inicio de sesión</h1>
-          
-              {{error}}
-          
-              {% csrf_token %}
-
-              <div class="py-3">
-                  {{form.as_p}}
-              </div>
-          
-              <button class="btn" style="background-color: #008841; color: white; font-weight: bold;">
-                  Iniciar sesión
-              </button>
-          
-          </form>
-
-      </div>
-
-  </div>
-
-</main>
-
+                <div class="py-3">
+                    {{form.as_p}}
+                </div>
+            
+                <button class="btn" style="background-color: #008841; color: white; font-weight: bold;">
+                    Iniciar sesión
+                </button>
+            </form>
+        </div>
+    </div>
+    </main>
 {% endblock %}

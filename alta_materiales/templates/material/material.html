@@ -5,7 +5,7 @@
 <main class="py-5 m-5">
     <div class="row mt-5 justify-content-center">
         <div style="max-width: 40rem;">
-            <h1 class="text-center font-weight-bold text-green">Solicitudes de materiales</h1>
+            <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de materiales</h1>
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
                 <div id="filtrar-solicitudes-container" class="d-flex justify-content-between gap-2 mt-5">
@@ -260,6 +260,7 @@
 <style>
     .btn-filtrar,
     .material-card {
+        background-color: rgba(255, 255, 255, 0.8);
         transition: 0.2s ease-in-out;
     }
     .btn-filtrar:hover {
@@ -267,7 +268,7 @@
     }
     .material-card:hover {
       scale: 1.02;
-      background-color: #f5f5f5;
+      background-color: rgba(255, 255, 255);
     }
 </style>
 
