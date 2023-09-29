@@ -24,6 +24,7 @@ def proveedor(request):
         proveedores = Proveedor.objects.filter(finanzas=True)
     else:
         proveedores = Proveedor.objects.filter(usuario=request.user)
+        proveedores_borradores = proveedores.filter(borrador=True)
         proveedores_pendientes = proveedores.filter(
             Q(pendiente=True) | 
             Q(compras=True) | 
@@ -44,6 +45,7 @@ def proveedor(request):
         return render(request, 'proveedor/proveedor.html', {
             'proveedores': proveedores,
             'historial': historial,
+            'proveedores_borradores': proveedores_borradores,
             'proveedores_pendientes': proveedores_pendientes,
             'proveedores_rechazados': proveedores_rechazados,
             'proveedores_aprobados': proveedores_aprobados,
@@ -67,7 +69,7 @@ def proveedor_create(request):
     if request.user.puede_comprar:
         if request.method == 'GET':
             default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
 
             return render(request, 'proveedor/proveedor_create.html', {
                 'form': ProveedorForm(initial=default_values)
@@ -90,20 +92,21 @@ def proveedor_create(request):
                     historial.save()
 
                     # Enviar correo electrónico
-                    subject = 'Nueva solicitud de proveedor'
-                    message = str(request.user.get_full_name()) + ' ha solicitado un alta de proveedor, favor de revisar en http://127.0.0.1:8000/proveedores/'
-                    from_email = 'altaproveedoresricofarms@gmail.com'
-                    if proveedor.es_migracion:
-                        recipient_list = ['l18330484@hermosillo.tecnm.mx']
-                    else:
-                        recipient_list = ['maikperalta123@gmail.com']
-                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                    if not proveedor.borrador:
+                        subject = 'Nueva solicitud de proveedor'
+                        message = str(request.user.get_full_name()) + ' ha solicitado un alta de proveedor, favor de revisar en http://127.0.0.1:8000/proveedores/'
+                        from_email = 'altaproveedoresricofarms@gmail.com'
+                        if proveedor.es_migracion:
+                            recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                        else:
+                            recipient_list = ['maikperalta123@gmail.com']
+                        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     return redirect('proveedor')
                 
             except ValueError as e:
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
+                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
 
                 return render(request, 'proveedor/proveedor_create.html', {
                     'form': ProveedorForm(initial=default_values),
@@ -119,7 +122,7 @@ def proveedor_detail(request, proveedor_id):
 
     if request.method == 'GET':
         default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                          'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False}
+                          'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
         if request.user.compras:
             proveedor_form = ProveedorFormForCompras(
                 instance=proveedor, initial=default_values)

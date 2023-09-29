@@ -484,7 +484,7 @@
           </div>
 
           <div id="buttons-container" class="d-flex justify-content-between gap-2">
-            {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and proveedor.rechazado_compras == True or current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and proveedor.rechazado_finanzas == True or current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False and proveedor.rechazado_sistemas == True %}
+            {% if proveedor.rechazado_compras == True or proveedor.rechazado_finanzas == True or proveedor.rechazado_sistemas == True or proveedor.borrador == True %}
               {% if proveedor.es_migracion %}
                 <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Guardar cambios</button>
               {% else %}
@@ -496,19 +496,16 @@
 
             {% if current_user.compras == True %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="compras" value="True">Aprobar</button>
-
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
             {% endif %}
 
             {% if current_user.finanzas == True %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
-
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar</button>
             {% endif %}
 
             {% if current_user.sistemas == True %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
-
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
             {% endif %}
           </div>

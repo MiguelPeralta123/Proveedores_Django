@@ -77,6 +77,7 @@ class Proveedor(models.Model):
     no_aplica_para_rafaga = models.BooleanField(default=False)
     no_relacionar_OC = models.BooleanField(default=False)
     comentarios = models.CharField(max_length=250, blank=True)
+    borrador = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'proveedor'

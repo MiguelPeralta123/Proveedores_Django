@@ -9,11 +9,11 @@
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
                 <div id="filtrar-solicitudes-container" class="d-flex justify-content-between gap-2 mt-5">
-                    <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar" style="background-color: green;">Todas</button>
-                    <button id="btn-filtrar-pendientes" class="btn btn-secondary btn-filtrar" style="background-color: green;">Pendientes</button>
-                    <button id="btn-filtrar-rechazadas" class="btn btn-secondary btn-filtrar" style="background-color: green;">Rechazadas</button>
-                    <button id="btn-filtrar-aprobadas" class="btn btn-secondary btn-filtrar" style="background-color: green;">Aprobadas</button>
-                    <button id="btn-filtrar-eliminadas" class="btn btn-secondary btn-filtrar" style="background-color: green;">Eliminadas</button>
+                    <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Todas</button>
+                    <button id="btn-filtrar-pendientes" class="btn btn-secondary btn-filtrar">Pendientes</button>
+                    <button id="btn-filtrar-rechazadas" class="btn btn-secondary btn-filtrar">Rechazadas</button>
+                    <button id="btn-filtrar-aprobadas" class="btn btn-secondary btn-filtrar">Aprobadas</button>
+                    <button id="btn-filtrar-eliminadas" class="btn btn-secondary btn-filtrar">Eliminadas</button>
                 </div>
             {% endif %}
 
@@ -258,17 +258,21 @@
 </main>
 
 <style>
-    .btn-filtrar,
+    .btn-filtrar {
+        background-color: rgb(0, 128, 0, 0.6);
+        transition: 0.2s ease-in-out;
+    }
     .material-card {
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: rgb(255, 255, 255, 0.8);
         transition: 0.2s ease-in-out;
     }
     .btn-filtrar:hover {
         scale: 1.05;
+        background-color: rgb(0, 128, 0);
     }
     .material-card:hover {
-      scale: 1.02;
-      background-color: rgba(255, 255, 255);
+        scale: 1.02;
+        background-color: rgb(255, 255, 255);
     }
 </style>
 
