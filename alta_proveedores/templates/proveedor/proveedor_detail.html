@@ -450,25 +450,27 @@
 
             <button class="btn btn-secondary mb-3" type="button" id="add-banco-2">Agregar otro banco</button>
 
-            <!-- Usar en portal proveedores field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.usar_en_portal_proveedores.label_tag }}
-              {{ form.usar_en_portal_proveedores }}
-              <p id="error-usar-en-portal-proveedores" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>
+            <div style="display: flex; justify-content: space-between; gap: 2rem;">
+              <!-- Usar en portal proveedores field -->
+              <div style="margin-bottom:1rem;">
+                {{ form.usar_en_portal_proveedores.label_tag }}
+                {{ form.usar_en_portal_proveedores }}
+                <p id="error-usar-en-portal-proveedores" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
 
-            <!-- No aplica para rafaga field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.no_aplica_para_rafaga.label_tag }}
-              {{ form.no_aplica_para_rafaga }}
-              <p id="error-no-aplica-para-rafaga" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>
+              <!-- No aplica para rafaga field -->
+              <div style="margin-bottom:1rem;">
+                {{ form.no_aplica_para_rafaga.label_tag }}
+                {{ form.no_aplica_para_rafaga }}
+                <p id="error-no-aplica-para-rafaga" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
 
-            <!-- No relacionar OC field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.no_relacionar_OC.label_tag }}
-              {{ form.no_relacionar_OC }}
-              <p id="error-no-relacionar-OC" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              <!-- No relacionar OC field -->
+              <div style="margin-bottom:1rem;">
+                {{ form.no_relacionar_OC.label_tag }}
+                {{ form.no_relacionar_OC }}
+                <p id="error-no-relacionar-OC" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
             </div>
 
             <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block my-2" style="width:fit-content;" download="">Descargar constancia de situación fiscal</a>
@@ -486,9 +488,9 @@
           <div id="buttons-container" class="d-flex justify-content-between gap-2">
             {% if proveedor.rechazado_compras == True or proveedor.rechazado_finanzas == True or proveedor.rechazado_sistemas == True or proveedor.borrador == True %}
               {% if proveedor.es_migracion %}
-                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Guardar cambios</button>
+                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Enviar</button>
               {% else %}
-                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="pendiente" value="True">Guardar cambios</button>
+                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="pendiente" value="True">Enviar</button>
               {% endif %}
 
               <button id="btn-delete" class="btn btn-delete w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="eliminado" value="True">Eliminar solicitud</button>
@@ -683,6 +685,254 @@
         }
       }
 
+      const makeFieldsMandatory = () => {
+        if (empresaOrigen) {
+          empresaOrigen.setAttribute('required', true);
+        }
+        if (empresaDestino) {
+          empresaDestino.setAttribute('required', true);
+        }
+        if (rfcMigracion) {
+          rfcMigracion.setAttribute('required', true);
+        }
+        if (empresa) {
+          empresa.setAttribute('required', true);
+        }
+        if (tipoAlta) {
+          tipoAlta.setAttribute('required', true);
+        }
+        if (contribuyente) {
+          contribuyente.setAttribute('required', true);
+        }
+        if (rfc) {
+          rfc.setAttribute('required', true);
+        }
+        if (regimenCapital) {
+          regimenCapital.setAttribute('required', true);
+        }
+        if (nombreFiscal) {
+          nombreFiscal.setAttribute('required', true);
+        }
+        if (nombreComercial) {
+          nombreComercial.setAttribute('required', true);
+        }
+        if (regimenFiscal) {
+          regimenFiscal.setAttribute('required', true);
+        }
+        if (usoCfdi) {
+          usoCfdi.setAttribute('required', true);
+        }
+        if (telefono1) {
+          telefono1.setAttribute('required', true);
+        }
+        if (correoGeneral) {
+          correoGeneral.setAttribute('required', true);
+        }
+        if (correoPagos) {
+          correoPagos.setAttribute('required', true);
+        }
+        if (sitioWeb) {
+          sitioWeb.setAttribute('required', true);
+        }
+        if (rubro) {
+          rubro.setAttribute('required', true);
+        }
+        if (tipoOperacion) {
+          tipoOperacion.setAttribute('required', true);
+        }
+        if (idFiscal) {
+          idFiscal.setAttribute('required', true);
+        }
+        if (agenteAduanal) {
+          agenteAduanal.setAttribute('required', true);
+        }
+        if (limiteCreditoMN) {
+          limiteCreditoMN.setAttribute('required', true);
+        }
+        if (limiteCreditoME) {
+          limiteCreditoME.setAttribute('required', true);
+        }
+        if (diasCredito) {
+          diasCredito.setAttribute('required', true);
+        }
+        if (montoCredito) {
+          montoCredito.setAttribute('required', true);
+        }
+        if (retencionIva) {
+          retencionIva.setAttribute('required', true);
+        }
+        if (retencionIsr) {
+          retencionIsr.setAttribute('required', true);
+        }
+        if (ivaFrontera) {
+          ivaFrontera.setAttribute('required', true);
+        }
+        if (codigoPostal) {
+          codigoPostal.setAttribute('required', true);
+        }
+        if (pais) {
+          pais.setAttribute('required', true);
+        }
+        if (estado) {
+          estado.setAttribute('required', true);
+        }
+        if (ciudad) {
+          ciudad.setAttribute('required', true);
+        }
+        if (municipio) {
+          municipio.setAttribute('required', true);
+        }
+        if (localidad) {
+          localidad.setAttribute('required', true);
+        }
+        if (colonia) {
+          colonia.setAttribute('required', true);
+        }
+        if (calle) {
+          calle.setAttribute('required', true);
+        }
+        if (numeroExterior) {
+          numeroExterior.setAttribute('required', true);
+        }
+        if (banco) {
+          banco.setAttribute('required', true);
+        }
+        if (cuenta) {
+          cuenta.setAttribute('required', true);
+        }
+        if (moneda) {
+          moneda.setAttribute('required', true);
+        }
+        if (clabe) {
+          clabe.setAttribute('required', true);
+        }
+      }
+
+      makeFieldsMandatory()
+
+      const makeFieldsOptional = () => {
+        if (empresaOrigen) {
+          empresaOrigen.removeAttribute('required');
+        }
+        if (empresaDestino) {
+          empresaDestino.removeAttribute('required');
+        }
+        if (rfcMigracion) {
+          rfcMigracion.removeAttribute('required');
+        }
+        if (empresa) {
+          empresa.removeAttribute('required');
+        }
+        if (tipoAlta) {
+          tipoAlta.removeAttribute('required');
+        }
+        if (contribuyente) {
+          contribuyente.removeAttribute('required');
+        }
+        if (rfc) {
+          rfc.removeAttribute('required');
+        }
+        if (regimenCapital) {
+          regimenCapital.removeAttribute('required');
+        }
+        if (nombreFiscal) {
+          nombreFiscal.removeAttribute('required');
+        }
+        if (nombreComercial) {
+          nombreComercial.removeAttribute('required');
+        }
+        if (regimenFiscal) {
+          regimenFiscal.removeAttribute('required');
+        }
+        if (usoCfdi) {
+          usoCfdi.removeAttribute('required');
+        }
+        if (telefono1) {
+          telefono1.removeAttribute('required');
+        }
+        if (correoGeneral) {
+          correoGeneral.removeAttribute('required');
+        }
+        if (correoPagos) {
+          correoPagos.removeAttribute('required');
+        }
+        if (sitioWeb) {
+          sitioWeb.removeAttribute('required');
+        }
+        if (rubro) {
+          rubro.removeAttribute('required');
+        }
+        if (tipoOperacion) {
+          tipoOperacion.removeAttribute('required');
+        }
+        if (idFiscal) {
+          idFiscal.removeAttribute('required');
+        }
+        if (agenteAduanal) {
+          agenteAduanal.removeAttribute('required');
+        }
+        if (limiteCreditoMN) {
+          limiteCreditoMN.removeAttribute('required');
+        }
+        if (limiteCreditoME) {
+          limiteCreditoME.removeAttribute('required');
+        }
+        if (diasCredito) {
+          diasCredito.removeAttribute('required');
+        }
+        if (montoCredito) {
+          montoCredito.removeAttribute('required');
+        }
+        if (retencionIva) {
+          retencionIva.removeAttribute('required');
+        }
+        if (retencionIsr) {
+          retencionIsr.removeAttribute('required');
+        }
+        if (ivaFrontera) {
+          ivaFrontera.removeAttribute('required');
+        }
+        if (codigoPostal) {
+          codigoPostal.removeAttribute('required');
+        }
+        if (pais) {
+          pais.removeAttribute('required');
+        }
+        if (estado) {
+          estado.removeAttribute('required');
+        }
+        if (ciudad) {
+          ciudad.removeAttribute('required');
+        }
+        if (municipio) {
+          municipio.removeAttribute('required');
+        }
+        if (localidad) {
+          localidad.removeAttribute('required');
+        }
+        if (colonia) {
+          colonia.removeAttribute('required');
+        }
+        if (calle) {
+          calle.removeAttribute('required');
+        }
+        if (numeroExterior) {
+          numeroExterior.removeAttribute('required');
+        }
+        if (banco) {
+          banco.removeAttribute('required');
+        }
+        if (cuenta) {
+          cuenta.removeAttribute('required');
+        }
+        if (moneda) {
+          moneda.removeAttribute('required');
+        }
+        if (clabe) {
+          clabe.removeAttribute('required');
+        }
+      }
+
       // FIELD VALIDATION
 
       // Validacion empresa origen
@@ -755,10 +1005,11 @@
             
             // Curp is mandatory only for personas físicas
             if (contribuyente.value == 'Persona física') {
-              curp.required = true
+              curp.setAttribute('required', true)
               curp.disabled = false
-            } else {
-              curp.required = false
+            }
+            else {
+              curp.removeAttribute('required')
               curp.disabled = true
               curp.value = ''
               errorCurp.style.display = 'none'
@@ -1255,6 +1506,12 @@
             errorClabe2.style.display = 'block'
           }
           enableSaveButton()
+        })
+      }
+
+      if (btnDelete) {
+        btnDelete.addEventListener('click', () => {
+          makeFieldsOptional()
         })
       }
 

@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<main class="p-5 mt-5">
+<main class="py-5 m-5">
     <div class="row mt-5 justify-content-center">
-        <div style="max-width: 40rem;">asd
+        <div style="max-width: 40rem;">
             <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de proveedores</h1>
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
@@ -18,7 +18,7 @@
                 </div>
             {% endif %}
 
-            <ul id="proveedores-list" style="list-style-type: none;" class="list-group mt-4">
+            <ul id="proveedores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                 {% for proveedor in proveedores %}
                     <a class="list-group-item my-3 border rounded provider-card" 
                         href="{% url 'proveedor_detail' proveedor.id %}"
@@ -404,10 +404,18 @@
         scale: 1.02;
         background-color: rgb(255, 255, 255);
     }
+    .ningun-proveedor-text {
+        margin-top: 3rem;
+        text-align: center;
+        font-size: 1.2rem;
+        font-style: italic;
+        color: white;
+    }
 </style>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+
         // Containers
         const proveedoresList = document.getElementById("proveedores-list")
         const proveedoresBorradoresList = document.getElementById("proveedores-borradores-list")
@@ -415,6 +423,7 @@
         const proveedoresRechazadosList = document.getElementById("proveedores-rechazados-list")
         const proveedoresAprobadosList = document.getElementById("proveedores-aprobados-list")
         const proveedoresEliminadosList = document.getElementById("proveedores-eliminados-list")
+
         // Buttons
         const btnTodas = document.getElementById('btn-filtrar-todas')
         const btnBorradores = document.getElementById('btn-filtrar-borradores')
@@ -426,44 +435,69 @@
         // List all requests from newest to oldest
         const proveedoresItems = Array.from(proveedoresList.children).reverse()
         proveedoresList.innerHTML = ""
-        proveedoresItems.forEach(item => {
-            proveedoresList.appendChild(item)
-        });
+        if (proveedoresItems.length > 0) {
+            proveedoresItems.forEach(item => {
+                proveedoresList.appendChild(item)
+            });
+        } else {
+            proveedoresList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud</p>"
+        }
+        proveedoresList.style.display = 'block'
 
         // List draft requests from newest to oldest
         const proveedoresBorradoresItems = Array.from(proveedoresBorradoresList.children).reverse()
         proveedoresBorradoresList.innerHTML = ""
-        proveedoresBorradoresItems.forEach(item => {
-            proveedoresBorradoresList.appendChild(item)
-        });
+        if (proveedoresBorradoresItems.length > 0) {
+            proveedoresBorradoresItems.forEach(item => {
+                proveedoresBorradoresList.appendChild(item)
+            });
+        } else {
+            proveedoresBorradoresList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ningún borrador de solicitud</p>"
+        }
 
         // List pending requests from newest to oldest
         const proveedoresPendientesItems = Array.from(proveedoresPendientesList.children).reverse()
         proveedoresPendientesList.innerHTML = ""
-        proveedoresPendientesItems.forEach(item => {
-            proveedoresPendientesList.appendChild(item)
-        });
+        if (proveedoresPendientesItems.length > 0) {
+            proveedoresPendientesItems.forEach(item => {
+                proveedoresPendientesList.appendChild(item)
+            });
+        } else {
+            proveedoresPendientesList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud pendiente</p>"
+        }
 
         // List declined requests from newest to oldest
         const proveedoresRechazadosItems = Array.from(proveedoresRechazadosList.children).reverse()
         proveedoresRechazadosList.innerHTML = ""
-        proveedoresRechazadosItems.forEach(item => {
-            proveedoresRechazadosList.appendChild(item)
-        });
+        if (proveedoresRechazadosItems.length > 0) {
+            proveedoresRechazadosItems.forEach(item => {
+                proveedoresRechazadosList.appendChild(item)
+            });
+        } else {
+            proveedoresRechazadosList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud rechazada</p>"
+        }
 
         // List approved requests from newest to oldest
         const proveedoresAprobadosItems = Array.from(proveedoresAprobadosList.children).reverse()
         proveedoresAprobadosList.innerHTML = ""
-        proveedoresAprobadosItems.forEach(item => {
-            proveedoresAprobadosList.appendChild(item)
-        });
+        if (proveedoresAprobadosItems.length > 0) {
+            proveedoresAprobadosItems.forEach(item => {
+                proveedoresAprobadosList.appendChild(item)
+            });
+        } else {
+            proveedoresAprobadosList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud aprobada</p>"
+        }
 
         // List deleted requests from newest to oldest
         const proveedoresEliminadosItems = Array.from(proveedoresEliminadosList.children).reverse()
         proveedoresEliminadosList.innerHTML = ""
-        proveedoresEliminadosItems.forEach(item => {
-            proveedoresEliminadosList.appendChild(item)
-        });
+        if (proveedoresEliminadosItems.length > 0) {
+            proveedoresEliminadosItems.forEach(item => {
+                proveedoresEliminadosList.appendChild(item)
+            });
+        } else {
+            proveedoresEliminadosList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud eliminada</p>"
+        }
 
         // Filter items by status
         if (btnTodas) {

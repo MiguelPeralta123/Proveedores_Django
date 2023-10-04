@@ -18,9 +18,9 @@
                 </div>
             {% endif %}
 
-            <ul id="solicitudes-list" style="list-style-type: none;" class="list-group mt-4">
+            <ul id="solicitudes-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                 {% for solicitud in solicitudes %}
-                    <a class="list-group-item my-2 border rounded material-card"
+                    <a class="list-group-item my-3 border rounded material-card"
                         href="{% url 'material_detail' solicitud.id %}"
                         style="transition: 0.2s ease-in-out;">
                         <div class="d-flex justify-content-between gap-3 my-2">
@@ -71,7 +71,7 @@
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
                 <ul id="solicitudes-borradores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_borradores %}
-                        <a class="list-group-item my-2 border rounded material-card"
+                        <a class="list-group-item my-3 border rounded material-card"
                             href="{% url 'material_detail' solicitud.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
@@ -121,7 +121,7 @@
 
                 <ul id="solicitudes-pendientes-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_pendientes %}
-                        <a class="list-group-item my-2 border rounded material-card"
+                        <a class="list-group-item my-3 border rounded material-card"
                             href="{% url 'material_detail' solicitud.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
@@ -171,7 +171,7 @@
 
                 <ul id="solicitudes-rechazadas-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_rechazadas %}
-                        <a class="list-group-item my-2 border rounded material-card"
+                        <a class="list-group-item my-3 border rounded material-card"
                             href="{% url 'material_detail' solicitud.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
@@ -221,7 +221,7 @@
 
                 <ul id="solicitudes-aprobadas-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_aprobadas %}
-                        <a class="list-group-item my-2 border rounded material-card"
+                        <a class="list-group-item my-3 border rounded material-card"
                             href="{% url 'material_detail' solicitud.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
@@ -271,7 +271,7 @@
 
                 <ul id="solicitudes-eliminadas-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_eliminadas %}
-                        <a class="list-group-item my-2 border rounded material-card"
+                        <a class="list-group-item my-3 border rounded material-card"
                             href="{% url 'material_detail' solicitud.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
@@ -350,6 +350,13 @@
         scale: 1.02;
         background-color: rgb(255, 255, 255);
     }
+    .ningun-material-text {
+        margin-top: 3rem;
+        text-align: center;
+        font-size: 1.2rem;
+        font-style: italic;
+        color: white;
+    }
 </style>
 
 <script>
@@ -372,44 +379,69 @@
         // List all requests from newest to oldest
         const solicitudesItems = Array.from(solicitudesList.children).reverse()
         solicitudesList.innerHTML = ""
-        solicitudesItems.forEach(item => {
-            solicitudesList.appendChild(item)
-        });
+        if (solicitudesItems.length > 0) {
+            solicitudesItems.forEach(item => {
+                solicitudesList.appendChild(item)
+            });
+        } else {
+            solicitudesList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud</p>"
+        }
+        solicitudesList.style.display = 'block'
 
         // List draft requests from newest to oldest
         const solicitudesBorradoresItems = Array.from(solicitudesBorradoresList.children).reverse()
         solicitudesBorradoresList.innerHTML = ""
-        solicitudesBorradoresItems.forEach(item => {
-            solicitudesBorradoresList.appendChild(item)
-        });
+        if (solicitudesBorradoresItems.length > 0) {
+            solicitudesBorradoresItems.forEach(item => {
+                solicitudesBorradoresList.appendChild(item)
+            });
+        } else {
+            solicitudesBorradoresList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ningún borrador de solicitud</p>"
+        }
 
         // List pending requests from newest to oldest
         const solicitudesPendientesItems = Array.from(solicitudesPendientesList.children).reverse()
         solicitudesPendientesList.innerHTML = ""
-        solicitudesPendientesItems.forEach(item => {
-            solicitudesPendientesList.appendChild(item)
-        });
+        if (solicitudesPendientesItems.length > 0) {
+            solicitudesPendientesItems.forEach(item => {
+                solicitudesPendientesList.appendChild(item)
+            });
+        } else {
+            solicitudesPendientesList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud pendiente</p>"
+        }
 
         // List declined requests from newest to oldest
         const solicitudesRechazadasItems = Array.from(solicitudesRechazadasList.children).reverse()
         solicitudesRechazadasList.innerHTML = ""
-        solicitudesRechazadasItems.forEach(item => {
-            solicitudesRechazadasList.appendChild(item)
-        });
+        if (solicitudesRechazadasItems.length > 0) {
+            solicitudesRechazadasItems.forEach(item => {
+                solicitudesRechazadasList.appendChild(item)
+            });
+        } else {
+            solicitudesRechazadasList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud rechazada</p>"
+        }
 
         // List approved requests from newest to oldest
         const solicitudesAprobadasItems = Array.from(solicitudesAprobadasList.children).reverse()
         solicitudesAprobadasList.innerHTML = ""
-        solicitudesAprobadasItems.forEach(item => {
-            solicitudesAprobadasList.appendChild(item)
-        });
+        if (solicitudesAprobadasItems.length > 0) {
+            solicitudesAprobadasItems.forEach(item => {
+                solicitudesAprobadasList.appendChild(item)
+            });
+        } else {
+            solicitudesAprobadasList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud aprobada</p>"
+        }
 
         // List deleted requests from newest to oldest
         const solicitudesEliminadasItems = Array.from(solicitudesEliminadasList.children).reverse()
         solicitudesEliminadasList.innerHTML = ""
-        solicitudesEliminadasItems.forEach(item => {
-            solicitudesEliminadasList.appendChild(item)
-        });
+        if (solicitudesEliminadasItems.length > 0) {
+            solicitudesEliminadasItems.forEach(item => {
+                solicitudesEliminadasList.appendChild(item)
+            });
+        } else {
+            solicitudesEliminadasList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud eliminada</p>"
+        }
 
         // Filter items by status
         if (btnTodas) {

@@ -70,10 +70,15 @@
                     <th scope="col">Tipo alta</th>
                     <th scope="col">Subfamilia</th>
                     <th scope="col">Nombre</th>
+                    <th scope="col">Largo</th>
+                    <th scope="col">Ancho</th>
+                    <th scope="col">Alto</th>
+                    <th scope="col">Calibre</th>
+                    <th scope="col">Material</th>
+                    <th scope="col">Color</th>
                     <th scope="col">Marca</th>
                     <th scope="col">Parte/Modelo</th>
                     <th scope="col">Nombre común</th>
-                    <th scope="col">Medida</th>
                     <th scope="col">¿Es parte original?</th>
                     <th scope="col">Ing activo</th>
                     <th scope="col">Tipo producto</th>
@@ -91,8 +96,153 @@
             <div id="material-forms">
               {% for form in material_forms %}
                 <div id="material-form-{{ forloop.counter0 }}" class="material-form" style="display:none;">
-                  {{ form.as_p }}
-                  <hr />
+                  
+                  <!-- Tipo alta field -->
+                  <div class="tipo-alta-container" style="margin-bottom:1rem;">
+                    <p class="m-0">{{ form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    {{ form.tipo_alta }}
+                    <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>
+
+                  <!-- Subfamilia field -->
+                  <div class="subfamilia-container" style="margin-bottom:1rem;">
+                    <p class="m-0">{{ form.subfamilia.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    {{ form.subfamilia }}
+                    <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>
+
+                  <!-- Nombre producto field -->
+                  <div class="nombre-producto-container" style="margin-bottom:1rem;">
+                    <p class="m-0">{{ form.nombre_producto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    {{ form.nombre_producto }}
+                    <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                  </div>
+
+                  <p class="m-0">Medidas</p>
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Largo field -->
+                    <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
+                      <p class="m-0">{{ form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ form.largo }}
+                      <p id="error-largo" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Ancho field -->
+                    <div class="ancho-container" style="width: 25%; margin-bottom:1rem;">
+                      <p class="m-0">{{ form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ form.ancho }}
+                      <p id="error-ancho" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Alto field -->
+                    <div class="alto-container" style="width: 25%; margin-bottom:1rem;">
+                      <p class="m-0">{{ form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ form.alto }}
+                      <p id="error-alto" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Calibre field -->
+                    <div class="calibre-container" style="width: 25%; margin-bottom:1rem;">
+                      <p class="m-0">{{ form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ form.calibre }}
+                      <p id="error-calibre" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Material field -->
+                    <div class="material-container" style="width: 50%; margin-bottom:1rem;">
+                      <p class="m-0">{{ form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ form.material }}
+                      <p id="error-material" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Color field -->
+                    <div class="color-container" style="width: 50%; margin-bottom:1rem;">
+                      <p class="m-0">{{ form.color.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ form.color }}
+                      <p id="error-color" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Marca field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ form.marca.label_tag }}
+                      {{ form.marca }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Parte/Modelo field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ form.parte_modelo.label_tag }}
+                      {{ form.parte_modelo }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Nombre común field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ form.nombre_comun.label_tag }}
+                      {{ form.nombre_comun }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Ing activo field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ form.ing_activo.label_tag }}
+                      {{ form.ing_activo }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Tipo producto field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ form.tipo_producto.label_tag }}
+                      {{ form.tipo_producto }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Alias field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ form.alias.label_tag }}
+                      {{ form.alias }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
+                  <!-- Unidad de medida field -->
+                  <div class="unidad-medida-container" style="margin-bottom:1rem;">
+                    <p class="m-0">{{ form.unidad_medida.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    {{ form.unidad_medida }}
+                    <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>
+
+                  <div style="display: flex; justify-content: space-between; gap: 2rem;">
+                    <!-- Es parte original field -->
+                    <div style="margin-bottom:1rem;">
+                      {{ form.es_parte_original.label_tag }}
+                      {{ form.es_parte_original }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Es material empaque field -->
+                    <div style="margin-bottom:1rem;">
+                      {{ form.es_material_empaque.label_tag }}
+                      {{ form.es_material_empaque }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Es prod terminado field -->
+                    <div style="margin-bottom:1rem;">
+                      {{ form.es_prod_terminado.label_tag }}
+                      {{ form.es_prod_terminado }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
                 </div>
               {% endfor %}
             </div>
@@ -109,9 +259,9 @@
           <div id="buttons-container" class="d-flex justify-content-between gap-2">
             {% if solicitud.rechazado_compras == True or solicitud.rechazado_finanzas == True or solicitud.rechazado_sistemas == True or solicitud.borrador == True %}
               {% if solicitud.es_migracion %}
-                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Guardar cambios</button>
+                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Enviar</button>
               {% else %}
-                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="pendiente" value="True">Guardar cambios</button>
+                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="pendiente" value="True">Enviar</button>
               {% endif %}
 
               <button id="btn-delete" class="btn btn-delete w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="eliminado" value="True">Eliminar solicitud</button>
@@ -201,6 +351,231 @@
         }
       }
 
+      // FIELD VALIDATION
+      
+      // Validacion empresa origen
+      if (empresaOrigen) {
+        empresaOrigen.addEventListener('change', () => {
+          if (empresaOrigen.value == '') {
+            errorEmpresaOrigen.style.display = 'block'
+          } else {
+            errorEmpresaOrigen.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
+      
+      // Validacion empresa destino
+      if (empresaDestino) {
+        empresaDestino.addEventListener('change', () => {
+          if (empresaDestino.value == '') {
+            errorEmpresaDestino.style.display = 'block'
+          } else {
+            errorEmpresaDestino.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
+      
+      // Validacion rfc migracion
+      if (nombreProductoMigracion) {
+        nombreProductoMigracion.addEventListener('input', () => {
+          if (rfcPattern.test(nombreProductoMigracion.value)) {
+            errorNombreProductoMigracion.style.display = 'none'
+          } else {
+            errorNombreProductoMigracion.style.display = 'block'
+          }
+          enableSaveButton()
+        })
+      }
+    
+      // Validacion empresa
+      if (empresa) {
+        empresa.addEventListener('change', () => {asd
+          if (empresa.value == '') {
+            errorEmpresa.style.display = 'block'
+          } else {
+            errorEmpresa.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
+      
+      // Validacion justificacion
+      if (justificacion) {
+        justificacion.addEventListener('input', () => {
+          if (justificacion.value == '') {
+            errorJustificacion.style.display = 'block'
+          } else {
+            errorJustificacion.style.display = 'none'
+          }
+          enableSaveButton()
+        })
+      }
+
+      const validarCamposMaterial = () => {
+
+        // Validación tipo alta
+        var tipoAltaInputs = document.querySelectorAll('.material-tipo-alta')
+        tipoAltaInputs.forEach(function(input) {
+            input.addEventListener('change', function() {
+                var tipoAltaValue = input.value
+                var container = input.closest('.tipo-alta-container')
+                var errorTipoAlta = container.querySelector('#error-tipo-alta')
+                // Verificar si el campo está vacío
+                if (tipoAltaValue == '') {
+                  errorTipoAlta.style.display = 'block'
+                } else {
+                  errorTipoAlta.style.display = 'none'
+                }
+            })
+        })
+
+        // Validación subfamilia
+        var subfamiliaInputs = document.querySelectorAll('.material-subfamilia')
+        subfamiliaInputs.forEach(function(input) {
+            input.addEventListener('change', function() {
+                var subfamiliaValue = input.value
+                var container = input.closest('.subfamilia-container')
+                var errorSubfamilia = container.querySelector('#error-subfamilia')
+                // Verificar si el campo está vacío
+                if (subfamiliaValue == '') {
+                  errorSubfamilia.style.display = 'block'
+                } else {
+                  errorSubfamilia.style.display = 'none'
+                }
+            })
+        })
+
+        // Validación nombre producto
+        var nombreProductoInputs = document.querySelectorAll('.material-nombre')
+        nombreProductoInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var nombreProductoValue = input.value
+                var container = input.closest('.nombre-producto-container')
+                var errorNombreProducto = container.querySelector('#error-nombre-producto')
+                // Verificar si el campo está vacío
+                if (nombreProductoValue == '') {
+                  errorNombreProducto.style.display = 'block'
+                } else {
+                  errorNombreProducto.style.display = 'none'
+                }
+            })
+        })
+
+        // Validación largo
+        var largoInputs = document.querySelectorAll('.material-largo')
+        largoInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var largoValue = input.value
+                var container = input.closest('.largo-container')
+                var errorLargo = container.querySelector('#error-largo')
+                // Verificar si el valor es "N/A" o numérico
+                if (largoValue === 'N/A' || !isNaN(parseFloat(largoValue)) && isFinite(largoValue)) {
+                    errorLargo.style.display = 'none'
+                } else {
+                    errorLargo.style.display = 'block'
+                }
+            })
+        })
+
+        // Validación ancho
+        var anchoInputs = document.querySelectorAll('.material-ancho')
+        anchoInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var anchoValue = input.value
+                var container = input.closest('.ancho-container')
+                var errorAncho = container.querySelector('#error-ancho')
+                // Verificar si el valor es "N/A" o numérico
+                if (anchoValue === 'N/A' || !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue)) {
+                    errorAncho.style.display = 'none'
+                } else {
+                    errorAncho.style.display = 'block'
+                }
+            })
+        })
+
+        // Validación alto
+        var altoInputs = document.querySelectorAll('.material-alto')
+        altoInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var altoValue = input.value
+                var container = input.closest('.alto-container')
+                var errorAlto = container.querySelector('#error-alto')
+                // Verificar si el valor es "N/A" o numérico
+                if (altoValue === 'N/A' || !isNaN(parseFloat(altoValue)) && isFinite(altoValue)) {
+                    errorAlto.style.display = 'none'
+                } else {
+                    errorAlto.style.display = 'block'
+                }
+            })
+        })
+
+        // Validación calibre
+        var calibreInputs = document.querySelectorAll('.material-calibre')
+        calibreInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var calibreValue = input.value
+                var container = input.closest('.calibre-container')
+                var errorCalibre = container.querySelector('#error-calibre')
+                // Verificar si el valor es "N/A" o numérico
+                if (calibreValue === 'N/A' || !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue)) {
+                    errorCalibre.style.display = 'none'
+                } else {
+                    errorCalibre.style.display = 'block'
+                }
+            })
+        })
+
+        // Validación material
+        var materialInputs = document.querySelectorAll('.material-material')
+        materialInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var materialValue = input.value
+                var container = input.closest('.material-container')
+                var errorMaterial = container.querySelector('#error-material')
+                if (materialValue == '') {
+                    errorMaterial.style.display = 'block'
+                } else {
+                    errorMaterial.style.display = 'none'
+                }
+            })
+        })
+
+        // Validación color
+        var colorInputs = document.querySelectorAll('.material-color')
+        colorInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var colorValue = input.value
+                var container = input.closest('.color-container')
+                var errorColor = container.querySelector('#error-color')
+                if (colorValue == '') {
+                    errorColor.style.display = 'block'
+                } else {
+                    errorColor.style.display = 'none'
+                }
+            })
+        })
+
+        // Validación unidad de medida
+        var unidadMedidaInputs = document.querySelectorAll('.material-unidad-medida')
+        unidadMedidaInputs.forEach(function(input) {
+            input.addEventListener('change', function() {
+                var unidadMedidaValue = input.value
+                var container = input.closest('.unidad-medida-container')
+                var errorUnidadMedida = container.querySelector('#error-unidad-medida')
+                // Verificar si el campo está vacío
+                if (unidadMedidaValue == '') {
+                  errorUnidadMedida.style.display = 'block'
+                } else {
+                  errorUnidadMedida.style.display = 'none'
+                }
+            })
+        })
+      }
+
+      validarCamposMaterial()
+
       const fillTable = () => {
         materialCounter = 0
         bodyMaterials.innerHTML = ''
@@ -210,10 +585,15 @@
           const tipoAlta = materialForm.querySelector('.material-tipo-alta')
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
+          const largo = materialForm.querySelector('.material-largo')
+          const ancho = materialForm.querySelector('.material-ancho')
+          const alto = materialForm.querySelector('.material-alto')
+          const calibre = materialForm.querySelector('.material-calibre')
+          const material = materialForm.querySelector('.material-material')
+          const color = materialForm.querySelector('.material-color')
           const marca = materialForm.querySelector('.material-marca')
           const parteModelo = materialForm.querySelector('.material-parte-modelo')
           const nombreComun = materialForm.querySelector('.material-nombre-comun')
-          const medida = materialForm.querySelector('.material-medida')
           const esParteOriginal = materialForm.querySelector('.material-es-parte-original')
           const ingActivo = materialForm.querySelector('.material-ing-activo')
           const tipoProducto = materialForm.querySelector('.material-tipo-producto')
@@ -233,10 +613,15 @@
           <td>${tipoAlta.value}</td>
           <td>${subfamilia.value}</td>
           <td>${nombre.value}</td>
+          <td>${largo.value}</td>
+          <td>${ancho.value}</td>
+          <td>${alto.value}</td>
+          <td>${calibre.value}</td>
+          <td>${material.value}</td>
+          <td>${color.value}</td>
           <td>${marca.value}</td>
           <td>${parteModelo.value}</td>
           <td>${nombreComun.value}</td>
-          <td>${medida.value}</td>
           <td>${esParteOriginalValue}</td>
           <td>${ingActivo.value}</td>
           <td>${tipoProducto.value}</td>
@@ -301,77 +686,49 @@
         })
       }
 
-      // FIELD VALIDATION
-
-      // Validacion empresa origen
-      if (empresaOrigen) {
-        empresaOrigen.addEventListener('change', () => {
-          if (empresaOrigen.value == '') {
-            errorEmpresaOrigen.style.display = 'block'
-          } else {
-            errorEmpresaOrigen.style.display = 'none'
-          }
-          enableSaveButton()
-        })
-      }
-      
-      // Validacion empresa destino
-      if (empresaDestino) {
-        empresaDestino.addEventListener('change', () => {
-          if (empresaDestino.value == '') {
-            errorEmpresaDestino.style.display = 'block'
-          } else {
-            errorEmpresaDestino.style.display = 'none'
-          }
-          enableSaveButton()
-        })
-      }
-      
-      // Validacion rfc migracion
-      if (nombreProductoMigracion) {
-        nombreProductoMigracion.addEventListener('input', () => {
-          if (rfcPattern.test(nombreProductoMigracion.value)) {
-            errorNombreProductoMigracion.style.display = 'none'
-          } else {
-            errorNombreProductoMigracion.style.display = 'block'
-          }
-          enableSaveButton()
-        })
-      }
-    
-      // Validacion empresa
-      if (empresa) {
-        empresa.addEventListener('change', () => {asd
-          if (empresa.value == '') {
-            errorEmpresa.style.display = 'block'
-          } else {
-            errorEmpresa.style.display = 'none'
-          }
-          enableSaveButton()
-        })
-      }
-      
-      // Validacion justificacion
-      if (justificacion) {
-        justificacion.addEventListener('input', () => {
-          if (justificacion.value == '') {
-            errorJustificacion.style.display = 'block'
-          } else {
-            errorJustificacion.style.display = 'none'
-          }
-          enableSaveButton()
-        })
-      }
-      
-      // Validacion comentarios
-      comentarios.addEventListener('input', () => {
-        if (comentarios.value == '') {
-          errorComentarios.style.display = 'block'
-        } else {
-          errorComentarios.style.display = 'none'
+      const makeFieldsMandatory = () => {
+        if (empresaOrigen) {
+          empresaOrigen.setAttribute('required', true)
         }
-        enableSaveButton()
-      })
+        if (empresaDestino) {
+          empresaDestino.setAttribute('required', true);
+        }
+        if (nombreProductoMigracion) {
+          nombreProductoMigracion.setAttribute('required', true);
+        }
+        if (empresa) {
+          empresa.setAttribute('required', true);
+        }
+        if (justificacion) {
+          justificacion.setAttribute('required', true);
+        }
+      }
+
+      makeFieldsMandatory()
+
+      const makeFieldsOptional = () => {
+        if (empresaOrigen) {
+          empresaOrigen.removeAttribute('required')
+        }
+        if (empresaDestino) {
+          empresaDestino.removeAttribute('required');
+        }
+        if (nombreProductoMigracion) {
+          nombreProductoMigracion.removeAttribute('required');
+        }
+        if (empresa) {
+          empresa.removeAttribute('required');
+        }
+        if (justificacion) {
+          justificacion.removeAttribute('required');
+        }
+      }
+
+      if (btnDelete) {
+        btnDelete.addEventListener('click', () => {
+          makeFieldsOptional()
+        })
+      }
 
       function enableSaveButton() {
         if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block' || errorComentarios.style.display == 'block') {

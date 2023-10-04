@@ -28,220 +28,243 @@ def home(request):
 
 @login_required
 def material(request):
-    if request.user.compras:
-        solicitudes = MaterialSolicitud.objects.filter(pendiente=True)
-    elif request.user.finanzas:
-        solicitudes = MaterialSolicitud.objects.filter(compras=True)
-    elif request.user.sistemas:
-        solicitudes = MaterialSolicitud.objects.filter(finanzas=True)
-    else:
-        solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
-        solicitudes_borradores = solicitudes.filter(borrador=True)
-        solicitudes_pendientes = solicitudes.filter(
-            Q(pendiente=True) | 
-            Q(compras=True) | 
-            Q(finanzas=True)
-        )
-        solicitudes_rechazadas = solicitudes.filter(
-            Q(rechazado_compras=True) | 
-            Q(rechazado_finanzas=True) | 
-            Q(rechazado_sistemas=True)
-        )
-        solicitudes_aprobadas = solicitudes.filter(sistemas=True)
-        solicitudes_eliminadas = solicitudes.filter(eliminado=True)
+    try:
+        if request.user.compras:
+            solicitudes = MaterialSolicitud.objects.filter(pendiente=True)
+        elif request.user.finanzas:
+            solicitudes = MaterialSolicitud.objects.filter(compras=True)
+        elif request.user.sistemas:
+            solicitudes = MaterialSolicitud.objects.filter(finanzas=True)
+        else:
+            solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+            solicitudes_borradores = solicitudes.filter(borrador=True)
+            solicitudes_pendientes = solicitudes.filter(
+                Q(pendiente=True) | 
+                Q(compras=True) | 
+                Q(finanzas=True)
+            )
+            solicitudes_rechazadas = solicitudes.filter(
+                Q(rechazado_compras=True) | 
+                Q(rechazado_finanzas=True) | 
+                Q(rechazado_sistemas=True)
+            )
+            solicitudes_aprobadas = solicitudes.filter(sistemas=True)
+            solicitudes_eliminadas = solicitudes.filter(eliminado=True)
+
+            historial = []
+            for solicitud in solicitudes:
+                historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
+            
+            return render(request, 'material/material.html', {
+                'solicitudes': solicitudes,
+                'historial': historial,
+                'solicitudes_borradores': solicitudes_borradores,
+                'solicitudes_pendientes': solicitudes_pendientes,
+                'solicitudes_rechazadas': solicitudes_rechazadas,
+                'solicitudes_aprobadas': solicitudes_aprobadas,
+                'solicitudes_eliminadas': solicitudes_eliminadas,
+                'current_user': request.user
+            })
 
         historial = []
         for solicitud in solicitudes:
             historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
-        
+
         return render(request, 'material/material.html', {
             'solicitudes': solicitudes,
             'historial': historial,
-            'solicitudes_borradores': solicitudes_borradores,
-            'solicitudes_pendientes': solicitudes_pendientes,
-            'solicitudes_rechazadas': solicitudes_rechazadas,
-            'solicitudes_aprobadas': solicitudes_aprobadas,
-            'solicitudes_eliminadas': solicitudes_eliminadas,
             'current_user': request.user
         })
-
-    historial = []
-    for solicitud in solicitudes:
-        historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
-
-    return render(request, 'material/material.html', {
-        'solicitudes': solicitudes,
-        'historial': historial,
-        'current_user': request.user
-    })
+    
+    except Exception as e:
+        print(f"Se produjo un error al cargar los materiales: {str(e)}")
+        return redirect('home')
+        
 
 
 @login_required
 def material_create(request):
-    if request.user.puede_comprar:
-        MaterialFormSet = formset_factory(MaterialForm, extra=0)
+    try:
+        if request.user.puede_comprar:
+            MaterialFormSet = formset_factory(MaterialForm, extra=0)
 
-        if request.method == 'GET':
-            default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
-
-            solicitud_form = SolicitudForm(initial=default_values)
-            material_formset = MaterialFormSet(prefix='material', initial=[{}])
-
-            return render(request, 'material/material_create.html', {
-                'solicitud_form': solicitud_form,
-                'material_formset': material_formset
-            })
-        
-        else:
-            try:
-                solicitud_form = SolicitudForm(request.POST)
-                material_formset = MaterialFormSet(request.POST, prefix='material')
-                historial_form = HistorialForm(request.POST)
-
-                if solicitud_form.is_valid() and historial_form.is_valid():
-                    id_solicitud = generar_codigo_unico()
-                    solicitud = solicitud_form.save(commit=False)
-                    solicitud.id_solicitud = id_solicitud
-                    solicitud.usuario = request.user
-                    solicitud.save()
-
-                    if solicitud.es_migracion == False:
-                        if material_formset.is_valid():
-                            for material_form in material_formset:
-                                if not material_form.cleaned_data.get('nombre_producto'):
-                                    continue  # Saltar formularios con nombre_producto vacío
-                                material = material_form.save(commit=False)
-                                material.id_solicitud = id_solicitud
-                                material.save()
-                    
-                    # Guardar la creacion de la solicitud en el historial de cambios
-                    historial = historial_form.save(commit=False)
-                    historial.id_solicitud = solicitud.id
-                    historial.accion = 'creada'
-                    historial.usuario = request.user
-                    historial.save()
-
-                    # Enviar correo electrónico
-                    if not solicitud.borrador:
-                        subject = 'Nueva solicitud de material'
-                        message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
-                        from_email = 'altaproveedoresricofarms@gmail.com'
-                        if solicitud.es_migracion:
-                            recipient_list = ['l18330484@hermosillo.tecnm.mx']
-                        else:
-                            recipient_list = ['maikperalta123@gmail.com']
-                        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-
-                    return redirect('material')
-                
-            except ValueError as e:
+            if request.method == 'GET':
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                              'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
-                
+                                'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
+
                 solicitud_form = SolicitudForm(initial=default_values)
                 material_formset = MaterialFormSet(prefix='material', initial=[{}])
 
                 return render(request, 'material/material_create.html', {
-                    'solicitud_form': solicitud_form, 'material_formset': material_formset, 'error': str(e)
+                    'solicitud_form': solicitud_form,
+                    'material_formset': material_formset
                 })
-    else:
-        return redirect('material')
+            
+            else:
+                try:
+                    solicitud_form = SolicitudForm(request.POST)
+                    material_formset = MaterialFormSet(request.POST, prefix='material')
+                    historial_form = HistorialForm(request.POST)
+
+                    if solicitud_form.is_valid() and historial_form.is_valid():
+                        id_solicitud = generar_codigo_unico()
+                        solicitud = solicitud_form.save(commit=False)
+                        solicitud.id_solicitud = id_solicitud
+                        solicitud.usuario = request.user
+                        solicitud.save()
+
+                        if solicitud.es_migracion == False:
+                            if material_formset.is_valid():
+                                for material_form in material_formset:
+                                    if not material_form.cleaned_data.get('nombre_producto'):
+                                        continue  # Saltar formularios con nombre_producto vacío
+                                    material = material_form.save(commit=False)
+                                    material.id_solicitud = id_solicitud
+                                    material.save()
+                            else:
+                                for form in material_formset:
+                                    if form.errors:
+                                        print(form.errors)
+                        
+                        # Guardar la creacion de la solicitud en el historial de cambios
+                        historial = historial_form.save(commit=False)
+                        historial.id_solicitud = solicitud.id
+                        historial.accion = 'creada'
+                        historial.usuario = request.user
+                        historial.save()
+
+                        # Enviar correo electrónico
+                        if not solicitud.borrador:
+                            subject = 'Nueva solicitud de material'
+                            message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
+                            from_email = 'altaproveedoresricofarms@gmail.com'
+                            if solicitud.es_migracion:
+                                recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                            else:
+                                recipient_list = ['maikperalta123@gmail.com']
+                            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+                        return redirect('material')
+                    
+                except ValueError as e:
+                    default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
+                                'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
+                    
+                    solicitud_form = SolicitudForm(initial=default_values)
+                    material_formset = MaterialFormSet(prefix='material', initial=[{}])
+
+                    return render(request, 'material/material_create.html', {
+                        'solicitud_form': solicitud_form, 'material_formset': material_formset, 'error': str(e)
+                    })
+        else:
+            return redirect('material')
+    
+    except Exception as e:
+        print(f"Se produjo un error al crear el material: {str(e)}")
+        return redirect('home')
 
 
 @login_required
 def material_detail(request, material_id):
-    solicitud = get_object_or_404(MaterialSolicitud, pk=material_id)
-    materiales = Material.objects.filter(id_solicitud=solicitud.id_solicitud)
+    try:
+        solicitud = get_object_or_404(MaterialSolicitud, pk=material_id)
+        materiales = Material.objects.filter(id_solicitud=solicitud.id_solicitud)
 
-    if request.method == 'GET':
-        default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
-                          'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
-        if request.user.compras:
-            solicitud_form = SolicitudFormForCompras(
-                instance=solicitud, initial=default_values)
-        elif request.user.finanzas:
-            solicitud_form = SolicitudFormForFinanzas(
-                instance=solicitud, initial=default_values)
-        elif request.user.sistemas:
-            solicitud_form = SolicitudFormForSistemas(
-                instance=solicitud, initial=default_values)
-        else:
-            solicitud_form = SolicitudDetailForm(
-                instance=solicitud, initial=default_values)
-
-        material_forms = [MaterialDetailForm(
-            instance=material, prefix=f'material-{material.id}') for material in materiales]
-
-        return render(request, 'material/material_detail.html', {
-            'solicitud': solicitud,
-            'solicitud_form': solicitud_form,
-            'material_forms': material_forms,
-            'current_user': request.user
-        })
-    else:
-        try:
+        if request.method == 'GET':
+            default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
+                            'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
             if request.user.compras:
                 solicitud_form = SolicitudFormForCompras(
-                    request.POST, instance=solicitud)
-                destinatario_correo = [solicitud.usuario.email, 'maikperalta248@gmail.com']
+                    instance=solicitud, initial=default_values)
             elif request.user.finanzas:
                 solicitud_form = SolicitudFormForFinanzas(
-                    request.POST, instance=solicitud)
-                destinatario_correo = [solicitud.usuario.email, 'l18330484@hermosillo.tecnm.mx']
+                    instance=solicitud, initial=default_values)
             elif request.user.sistemas:
                 solicitud_form = SolicitudFormForSistemas(
-                    request.POST, instance=solicitud)
-                destinatario_correo = [solicitud.usuario.email]
+                    instance=solicitud, initial=default_values)
             else:
-                solicitud_form = SolicitudForm(
-                    request.POST, instance=solicitud)
-                destinatario_correo = ['maikperalta123@gmail.com']
+                solicitud_form = SolicitudDetailForm(
+                    instance=solicitud, initial=default_values)
 
-            material_forms = [MaterialForm(
-                request.POST, instance=material, prefix=f'material-{material.id}') for material in materiales]
-            
-            historial_form = HistorialForm(request.POST)
+            material_forms = [MaterialDetailForm(
+                instance=material, prefix=f'material-{material.id}') for material in materiales]
 
-            if solicitud_form.is_valid() and historial_form.is_valid():
-                solicitud_form.save()
-
-                if solicitud.es_migracion == False:
-                    if all(form.is_valid() for form in material_forms):
-                        for form in material_forms:
-                            form.save()
-                
-                # Guardar la modificación de la solicitud en el historial de cambios
-                historial = historial_form.save(commit=False)
-                historial.id_solicitud = solicitud.id
-                if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
-                    historial.accion = 'rechazada'
-                    action = 'rechazado'
-                elif solicitud.pendiente:
-                    historial.accion = 'modificada'
-                    action = 'modificado'
-                else:
-                    historial.accion = 'aprobada'
-                    action = 'abrobado'
-                historial.usuario = request.user
-                historial.save()
-
-                # Enviar correo electrónico
-                subject = 'Solicitud de material modificada'
-                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
-                from_email = 'altaproveedoresricofarms@gmail.com'
-                if action == 'rechazado':
-                    recipient_list = [solicitud.usuario.email]
-                else:
-                    recipient_list = destinatario_correo
-                send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-
-                return redirect('material')
-
-        except ValueError:
-            solicitud_form = SolicitudForm(instance=material)
             return render(request, 'material/material_detail.html', {
                 'solicitud': solicitud,
-                'form': solicitud_form,
-                'error': 'Se produjo un error al actualizar, intente de nuevo'
+                'solicitud_form': solicitud_form,
+                'material_forms': material_forms,
+                'current_user': request.user
             })
+        else:
+            try:
+                if request.user.compras:
+                    solicitud_form = SolicitudFormForCompras(
+                        request.POST, instance=solicitud)
+                    destinatario_correo = [solicitud.usuario.email, 'maikperalta248@gmail.com']
+                elif request.user.finanzas:
+                    solicitud_form = SolicitudFormForFinanzas(
+                        request.POST, instance=solicitud)
+                    destinatario_correo = [solicitud.usuario.email, 'l18330484@hermosillo.tecnm.mx']
+                elif request.user.sistemas:
+                    solicitud_form = SolicitudFormForSistemas(
+                        request.POST, instance=solicitud)
+                    destinatario_correo = [solicitud.usuario.email]
+                else:
+                    solicitud_form = SolicitudForm(
+                        request.POST, instance=solicitud)
+                    destinatario_correo = ['maikperalta123@gmail.com']
+
+                material_forms = [MaterialForm(
+                    request.POST, instance=material, prefix=f'material-{material.id}') for material in materiales]
+                
+                historial_form = HistorialForm(request.POST)
+
+                if solicitud_form.is_valid() and historial_form.is_valid():
+                    solicitud_form.save()
+
+                    if solicitud.es_migracion == False:
+                        if all(form.is_valid() for form in material_forms):
+                            for form in material_forms:
+                                form.save()
+                    
+                    # Guardar la modificación de la solicitud en el historial de cambios
+                    historial = historial_form.save(commit=False)
+                    historial.id_solicitud = solicitud.id
+                    if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
+                        historial.accion = 'rechazada'
+                        action = 'rechazado'
+                    elif solicitud.pendiente:
+                        historial.accion = 'modificada'
+                        action = 'modificado'
+                    else:
+                        historial.accion = 'aprobada'
+                        action = 'abrobado'
+                    historial.usuario = request.user
+                    historial.save()
+
+                    # Enviar correo electrónico
+                    subject = 'Solicitud de material modificada'
+                    if action == 'rechazado':
+                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/\nComentario: ' + solicitud.comentarios
+                    else:
+                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
+                    from_email = 'altaproveedoresricofarms@gmail.com'
+                    if action == 'rechazado':
+                        recipient_list = [solicitud.usuario.email]
+                    else:
+                        recipient_list = destinatario_correo
+                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+                    return redirect('material')
+
+            except ValueError:
+                solicitud_form = SolicitudForm(instance=material)
+                return render(request, 'material/material_detail.html', {
+                    'solicitud': solicitud,
+                    'form': solicitud_form,
+                    'error': 'Se produjo un error al actualizar, intente de nuevo'
+                })
+    
+    except Exception as e:
+        print(f"Se produjo un error al cargar el material: {str(e)}")
+        return redirect('home')

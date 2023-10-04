@@ -1,22 +1,45 @@
 {% extends 'base.html' %}
-{% block content %}
-    <main class="container py-5 mt-5">
-    <div class="row d-flex justify-content-center mt-5">
-        <div class="col-md-6 align-self-center mx-auto">
-            <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
-                <h1>Inicio de sesión</h1>
-                {{error}}
-                {% csrf_token %}
+{% load static %}
 
-                <div class="py-3">
-                    {{form.as_p}}
-                </div>
-            
-                <button class="btn" style="background-color: #008841; color: white; font-weight: bold;">
-                    Iniciar sesión
-                </button>
-            </form>
+{% block content %}
+    <main class="p-5 row justify-content-center">
+        <div class="card card-body" style="max-width: 40rem; margin-top: 6rem; background-color: rgb(255, 255, 255, 0.8);">
+            <div>
+                <form method="POST">
+                    <h1>Inicio de sesión</h1>
+                    <p style="margin: 0; color: red;">{{error}}</p>
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+                
+                    <button class="btn" style="background-color: #008841; color: white; font-weight: bold;">
+                        Iniciar sesión
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
+
+        <!--
+        <div class="position-absolute bottom-0 w-100 d-none justify-content-center align-items-center gap-4 mt-5 p-4 d-lg-flex" style="background-color: green; left: 0;">
+            <img src="{% static 'images/ricofarms-gif.gif' %}" alt="Logo" />
+            <p class="mb-0 fw-bold text-white">En Ricofarms, estamos comprometidos en brindarte una plataforma eficiente y sencilla para gestionar tus solicitudes de alta de proveedores, clientes y materiales de manera efectiva. Nuestra plataforma está diseñada pensando en tus necesidades y en simplificar tus procesos de registro y gestión.</p>
+        </div>
+        -->
     </main>
+
+    <style>
+        #id_username,
+        #id_password {
+            max-width: 20rem;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var username = document.getElementById("id_username");
+            var password = document.getElementById("id_password");
+            username.classList.add("form-control");
+            password.classList.add("form-control");
+        });
+    </script>
 {% endblock %}

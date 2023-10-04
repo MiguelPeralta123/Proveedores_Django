@@ -33,15 +33,20 @@ class SolicitudForm(forms.ModelForm):
 class MaterialForm(forms.ModelForm):
     class Meta:
         model = Material
-        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'marca', 'parte_modelo', 'nombre_comun', 'medida', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'es_material_empaque', 'es_prod_terminado']
+        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'calibre', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'es_material_empaque', 'es_prod_terminado']
         widgets = {
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta select-tipo-alta', 'initial':''}),
             'subfamilia': forms.Select(choices=SUBFAMILIA_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
             'nombre_producto': forms.TextInput(attrs={'class':'form-control material-nombre'}),
+            'largo': forms.TextInput(attrs={'class':'form-control material-largo'}),
+            'ancho': forms.TextInput(attrs={'class':'form-control material-ancho'}),
+            'alto': forms.TextInput(attrs={'class':'form-control material-alto'}),
+            'calibre': forms.TextInput(attrs={'class':'form-control material-calibre'}),
+            'material': forms.TextInput(attrs={'class':'form-control material-material'}),
+            'color': forms.TextInput(attrs={'class':'form-control material-color'}),
             'marca': forms.TextInput(attrs={'class':'form-control material-marca'}),
             'parte_modelo': forms.TextInput(attrs={'class':'form-control material-parte-modelo'}),
             'nombre_comun': forms.TextInput(attrs={'class':'form-control material-nombre-comun'}),
-            'medida': forms.TextInput(attrs={'class':'form-control material-medida'}),
             'es_parte_original': forms.CheckboxInput(attrs={'class':'form-checkbox material-es-parte-original'}),
             'ing_activo': forms.TextInput(attrs={'class':'form-control material-ing-activo'}),
             'tipo_producto': forms.TextInput(attrs={'class':'form-control material-tipo-producto'}),
@@ -77,15 +82,20 @@ class SolicitudDetailForm(forms.ModelForm):
 class MaterialDetailForm(forms.ModelForm):
     class Meta:
         model = Material
-        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'marca', 'parte_modelo', 'nombre_comun', 'medida', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'es_material_empaque', 'es_prod_terminado']
+        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'calibre', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'es_material_empaque', 'es_prod_terminado']
         widgets = {
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta select-tipo-alta', 'initial':''}),
             'subfamilia': forms.Select(choices=SUBFAMILIA_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
             'nombre_producto': forms.TextInput(attrs={'class':'form-control material-nombre'}),
+            'largo': forms.TextInput(attrs={'class':'form-control material-largo'}),
+            'ancho': forms.TextInput(attrs={'class':'form-control material-ancho'}),
+            'alto': forms.TextInput(attrs={'class':'form-control material-alto'}),
+            'calibre': forms.TextInput(attrs={'class':'form-control material-calibre'}),
+            'material': forms.TextInput(attrs={'class':'form-control material-material'}),
+            'color': forms.TextInput(attrs={'class':'form-control material-color'}),
             'marca': forms.TextInput(attrs={'class':'form-control material-marca'}),
             'parte_modelo': forms.TextInput(attrs={'class':'form-control material-parte-modelo'}),
             'nombre_comun': forms.TextInput(attrs={'class':'form-control material-nombre-comun'}),
-            'medida': forms.TextInput(attrs={'class':'form-control material-medida'}),
             'es_parte_original': forms.CheckboxInput(attrs={'class':'form-checkbox material-es-parte-original'}),
             'ing_activo': forms.TextInput(attrs={'class':'form-control material-ing-activo'}),
             'tipo_producto': forms.TextInput(attrs={'class':'form-control material-tipo-producto'}),

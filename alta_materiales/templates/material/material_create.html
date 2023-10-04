@@ -13,7 +13,7 @@
 
           <!-- Es migracion field -->
           <div style="margin-bottom:1rem;">
-            <p><b>En caso de que el proveedor ya exista en otra empresa, marque la siguiente casilla:</b></p>
+            <p><b>En caso de que el material ya exista en otra empresa, marque la siguiente casilla:</b></p>
             {{ solicitud_form.es_migracion.label_tag }}
             {{ solicitud_form.es_migracion }}
             <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
@@ -70,6 +70,12 @@
                     <th scope="col">Tipo alta</th>
                     <th scope="col">Subfamilia</th>
                     <th scope="col">Nombre</th>
+                    <th scope="col">Largo</th>
+                    <th scope="col">Ancho</th>
+                    <th scope="col">Alto</th>
+                    <th scope="col">Calibre</th>
+                    <th scope="col">Material</th>
+                    <th scope="col">Color</th>
                     <th scope="col">Marca</th>
                     <th scope="col">Parte/Modelo</th>
                     <th scope="col">Nombre común</th>
@@ -93,7 +99,153 @@
             <div id="material-forms">
               {% for material_form in material_formset %}
                 <div id="material-form-0" class="material-form material-form-0">
-                  {{ material_form.as_p }}
+
+                  <!-- Tipo alta field -->
+                  <div class="tipo-alta-container" style="margin-bottom:1rem;">
+                    <p class="m-0">{{ material_form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    {{ material_form.tipo_alta }}
+                    <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>
+
+                  <!-- Subfamilia field -->
+                  <div class="subfamilia-container" style="margin-bottom:1rem;">
+                    <p class="m-0">{{ material_form.subfamilia.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    {{ material_form.subfamilia }}
+                    <p id="error-subfamilia" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>
+
+                  <!-- Nombre producto field -->
+                  <div class="nombre-producto-container" style="margin-bottom:1rem;">
+                    <p class="m-0">{{ material_form.nombre_producto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    {{ material_form.nombre_producto }}
+                    <p id="error-nombre-producto" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                  </div>
+
+                  <p class="m-0">Medidas</p>
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Largo field -->
+                    <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
+                      <p class="m-0">{{ material_form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ material_form.largo }}
+                      <p id="error-largo" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                    </div>
+
+                    <!-- Ancho field -->
+                    <div class="ancho-container" style="width: 25%; margin-bottom:1rem;">
+                      <p class="m-0">{{ material_form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ material_form.ancho }}
+                      <p id="error-ancho" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                    </div>
+
+                    <!-- Alto field -->
+                    <div class="alto-container" style="width: 25%; margin-bottom:1rem;">
+                      <p class="m-0">{{ material_form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ material_form.alto }}
+                      <p id="error-alto" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                    </div>
+
+                    <!-- Calibre field -->
+                    <div class="calibre-container" style="width: 25%; margin-bottom:1rem;">
+                      <p class="m-0">{{ material_form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ material_form.calibre }}
+                      <p id="error-calibre" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Material field -->
+                    <div class="material-container" style="width: 50%; margin-bottom:1rem;">
+                      <p class="m-0">{{ material_form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ material_form.material }}
+                      <p id="error-material" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Color field -->
+                    <div class="color-container" style="width: 50%; margin-bottom:1rem;">
+                      <p class="m-0">{{ material_form.color.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ material_form.color }}
+                      <p id="error-color" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Marca field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ material_form.marca.label_tag }}
+                      {{ material_form.marca }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Parte/Modelo field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ material_form.parte_modelo.label_tag }}
+                      {{ material_form.parte_modelo }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Nombre común field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ material_form.nombre_comun.label_tag }}
+                      {{ material_form.nombre_comun }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Ing activo field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ material_form.ing_activo.label_tag }}
+                      {{ material_form.ing_activo }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Tipo producto field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ material_form.tipo_producto.label_tag }}
+                      {{ material_form.tipo_producto }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Alias field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      {{ material_form.alias.label_tag }}
+                      {{ material_form.alias }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
+                  <!-- Unidad de medida field -->
+                  <div class="unidad-medida-container" style="margin-bottom:1rem;">
+                    <p class="m-0">{{ material_form.unidad_medida.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    {{ material_form.unidad_medida }}
+                    <p id="error-unidad-medida" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>
+
+                  <div style="display: flex; justify-content: space-between; gap: 2rem;">
+                    <!-- Es parte original field -->
+                    <div style="margin-bottom:1rem;">
+                      {{ material_form.es_parte_original.label_tag }}
+                      {{ material_form.es_parte_original }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Es material empaque field -->
+                    <div style="margin-bottom:1rem;">
+                      {{ material_form.es_material_empaque.label_tag }}
+                      {{ material_form.es_material_empaque }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Es prod terminado field -->
+                    <div style="margin-bottom:1rem;">
+                      {{ material_form.es_prod_terminado.label_tag }}
+                      {{ material_form.es_prod_terminado }}
+                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                  </div>
+
                 </div>
               {% endfor %}
             </div>
@@ -103,7 +255,7 @@
 
           <div class="d-flex gap-3">
             <button id="btn-borrador" class="btn w-100" type="submit" name="borrador" value="True" style="background-color: #3498DB; color: white; font-weight: bold;">Guardar como borrador</button>
-            <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;" disabled>Guardar</button>
+            <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;" disabled>Enviar</button>
           </div>
         </form>
       </div>
@@ -127,6 +279,7 @@
 
       // Buttons
       const btnAddMaterial = document.getElementById('add-material');
+      const btnBorrador = document.getElementById('btn-borrador')
       const btnGuardar = document.getElementById('btn-guardar')
 
       // Error messages
@@ -170,6 +323,8 @@
         handleEsMigracion(esMigracion.checked)
         enableSaveButton()
       })
+      
+      handleEsMigracion(esMigracion.checked)
     
       // Validacion empresa origen
       empresaOrigen.addEventListener('change', () => {
@@ -201,6 +356,189 @@
         enableSaveButton()
       })
 
+      // Validacion empresa
+      empresa.addEventListener('change', () => {
+        if (empresa.value == '') {
+          errorEmpresa.style.display = 'block'
+        } else {
+          errorEmpresa.style.display = 'none'
+        }
+        enableSaveButton()
+      })
+      
+      // Validacion justificacion
+      justificacion.addEventListener('input', () => {
+        if (justificacion.value == '') {
+          errorJustificacion.style.display = 'block'
+        } else {
+          errorJustificacion.style.display = 'none'
+        }
+        enableSaveButton()
+      })
+      
+      const validarCamposMaterial = () => {
+
+        // Validación tipo alta
+        var tipoAltaInputs = document.querySelectorAll('.material-tipo-alta')
+        tipoAltaInputs.forEach(function(input) {
+            input.addEventListener('change', function() {
+                var tipoAltaValue = input.value
+                var container = input.closest('.tipo-alta-container')
+                var errorTipoAlta = container.querySelector('#error-tipo-alta')
+                // Verificar si el campo está vacío
+                if (tipoAltaValue == '') {
+                  errorTipoAlta.style.display = 'block'
+                } else {
+                  errorTipoAlta.style.display = 'none'
+                }
+            })
+        })
+
+        // Validación subfamilia
+        var subfamiliaInputs = document.querySelectorAll('.material-subfamilia')
+        subfamiliaInputs.forEach(function(input) {
+            input.addEventListener('change', function() {
+                var subfamiliaValue = input.value
+                var container = input.closest('.subfamilia-container')
+                var errorSubfamilia = container.querySelector('#error-subfamilia')
+                // Verificar si el campo está vacío
+                if (subfamiliaValue == '') {
+                  errorSubfamilia.style.display = 'block'
+                } else {
+                  errorSubfamilia.style.display = 'none'
+                }
+            })
+        })
+
+        // Validación nombre producto
+        var nombreProductoInputs = document.querySelectorAll('.material-nombre')
+        nombreProductoInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var nombreProductoValue = input.value
+                var container = input.closest('.nombre-producto-container')
+                var errorNombreProducto = container.querySelector('#error-nombre-producto')
+                // Verificar si el campo está vacío
+                if (nombreProductoValue == '') {
+                  errorNombreProducto.style.display = 'block'
+                } else {
+                  errorNombreProducto.style.display = 'none'
+                }
+            })
+        })
+
+        // Validación largo
+        var largoInputs = document.querySelectorAll('.material-largo')
+        largoInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var largoValue = input.value
+                var container = input.closest('.largo-container')
+                var errorLargo = container.querySelector('#error-largo')
+                // Verificar si el valor es "N/A" o numérico
+                if (largoValue === 'N/A' || !isNaN(parseFloat(largoValue)) && isFinite(largoValue)) {
+                    errorLargo.style.display = 'none'
+                } else {
+                    errorLargo.style.display = 'block'
+                }
+            })
+        })
+
+        // Validación ancho
+        var anchoInputs = document.querySelectorAll('.material-ancho')
+        anchoInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var anchoValue = input.value
+                var container = input.closest('.ancho-container')
+                var errorAncho = container.querySelector('#error-ancho')
+                // Verificar si el valor es "N/A" o numérico
+                if (anchoValue === 'N/A' || !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue)) {
+                    errorAncho.style.display = 'none'
+                } else {
+                    errorAncho.style.display = 'block'
+                }
+            })
+        })
+
+        // Validación alto
+        var altoInputs = document.querySelectorAll('.material-alto')
+        altoInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var altoValue = input.value
+                var container = input.closest('.alto-container')
+                var errorAlto = container.querySelector('#error-alto')
+                // Verificar si el valor es "N/A" o numérico
+                if (altoValue === 'N/A' || !isNaN(parseFloat(altoValue)) && isFinite(altoValue)) {
+                    errorAlto.style.display = 'none'
+                } else {
+                    errorAlto.style.display = 'block'
+                }
+            })
+        })
+
+        // Validación calibre
+        var calibreInputs = document.querySelectorAll('.material-calibre')
+        calibreInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var calibreValue = input.value
+                var container = input.closest('.calibre-container')
+                var errorCalibre = container.querySelector('#error-calibre')
+                // Verificar si el valor es "N/A" o numérico
+                if (calibreValue === 'N/A' || !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue)) {
+                    errorCalibre.style.display = 'none'
+                } else {
+                    errorCalibre.style.display = 'block'
+                }
+            })
+        })
+
+        // Validación material
+        var materialInputs = document.querySelectorAll('.material-material')
+        materialInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var materialValue = input.value
+                var container = input.closest('.material-container')
+                var errorMaterial = container.querySelector('#error-material')
+                if (materialValue == '') {
+                    errorMaterial.style.display = 'block'
+                } else {
+                    errorMaterial.style.display = 'none'
+                }
+            })
+        })
+
+        // Validación color
+        var colorInputs = document.querySelectorAll('.material-color')
+        colorInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                var colorValue = input.value
+                var container = input.closest('.color-container')
+                var errorColor = container.querySelector('#error-color')
+                if (colorValue == '') {
+                    errorColor.style.display = 'block'
+                } else {
+                    errorColor.style.display = 'none'
+                }
+            })
+        })
+
+        // Validación unidad de medida
+        var unidadMedidaInputs = document.querySelectorAll('.material-unidad-medida')
+        unidadMedidaInputs.forEach(function(input) {
+            input.addEventListener('change', function() {
+                var unidadMedidaValue = input.value
+                var container = input.closest('.unidad-medida-container')
+                var errorUnidadMedida = container.querySelector('#error-unidad-medida')
+                // Verificar si el campo está vacío
+                if (unidadMedidaValue == '') {
+                  errorUnidadMedida.style.display = 'block'
+                } else {
+                  errorUnidadMedida.style.display = 'none'
+                }
+            })
+        })
+      }
+
+      validarCamposMaterial()
+
       const fillTable = () => {
         const materialForms = document.querySelectorAll('.material-form')
         tableMaterials.style.display = 'block'
@@ -210,10 +548,15 @@
           const tipoAlta = materialForm.querySelector('.material-tipo-alta')
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
+          const largo = materialForm.querySelector('.material-largo')
+          const ancho = materialForm.querySelector('.material-ancho')
+          const alto = materialForm.querySelector('.material-alto')
+          const calibre = materialForm.querySelector('.material-calibre')
+          const material = materialForm.querySelector('.material-material')
+          const color = materialForm.querySelector('.material-color')
           const marca = materialForm.querySelector('.material-marca')
           const parteModelo = materialForm.querySelector('.material-parte-modelo')
           const nombreComun = materialForm.querySelector('.material-nombre-comun')
-          const medida = materialForm.querySelector('.material-medida')
           const esParteOriginal = materialForm.querySelector('.material-es-parte-original')
           const ingActivo = materialForm.querySelector('.material-ing-activo')
           const tipoProducto = materialForm.querySelector('.material-tipo-producto')
@@ -233,10 +576,15 @@
           <td>${tipoAlta.value}</td>
           <td>${subfamilia.value}</td>
           <td>${nombre.value}</td>
+          <td>${largo.value}</td>
+          <td>${ancho.value}</td>
+          <td>${alto.value}</td>
+          <td>${calibre.value}</td>
+          <td>${material.value}</td>
+          <td>${color.value}</td>
           <td>${marca.value}</td>
           <td>${parteModelo.value}</td>
           <td>${nombreComun.value}</td>
-          <td>${medida.value}</td>
           <td>${esParteOriginalValue}</td>
           <td>${ingActivo.value}</td>
           <td>${tipoProducto.value}</td>
@@ -273,7 +621,151 @@
         })
         
         const formHtml = `
-            {{ material_formset.empty_form.as_p }}
+            <!-- Tipo alta field -->
+            <div class="tipo-alta-container" style="margin-bottom:1rem;">
+              <p class="m-0">{{ material_formset.empty_form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              {{ material_formset.empty_form.tipo_alta }}
+              <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+
+            <!-- Subfamilia field -->
+            <div class="subfamilia-container" style="margin-bottom:1rem;">
+              <p class="m-0">{{ material_formset.empty_form.subfamilia.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              {{ material_formset.empty_form.subfamilia }}
+              <p id="error-subfamilia" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+
+            <!-- Nombre producto field -->
+            <div class="nombre-producto-container" style="margin-bottom:1rem;">
+              <p class="m-0">{{ material_formset.empty_form.nombre_producto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              {{ material_formset.empty_form.nombre_producto }}
+              <p id="error-nombre-producto" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+
+            <p class="m-0">Medidas</p>
+            <div style="display: flex; gap: 1rem;">
+              <!-- Largo field -->
+              <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
+                <p class="m-0">{{ material_formset.empty_form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ material_formset.empty_form.largo }}
+                <p id="error-largo" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+              </div>
+
+              <!-- Ancho field -->
+              <div class="ancho-container" style="width: 25%; margin-bottom:1rem;">
+                <p class="m-0">{{ material_formset.empty_form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ material_formset.empty_form.ancho }}
+                <p id="error-ancho" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+              </div>
+
+              <!-- Alto field -->
+              <div class="alto-container" style="width: 25%; margin-bottom:1rem;">
+                <p class="m-0">{{ material_formset.empty_form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ material_formset.empty_form.alto }}
+                <p id="error-alto" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+              </div>
+
+              <!-- Calibre field -->
+              <div class="calibre-container" style="width: 25%; margin-bottom:1rem;">
+                <p class="m-0">{{ material_formset.empty_form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ material_formset.empty_form.calibre }}
+                <p id="error-calibre" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+              <!-- Material field -->
+              <div class="material-container" style="width: 50%; margin-bottom:1rem;">
+                <p class="m-0">{{ material_formset.empty_form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ material_formset.empty_form.material }}
+                <p id="error-material" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+
+              <!-- Color field -->
+              <div class="color-container" style="width: 50%; margin-bottom:1rem;">
+                <p class="m-0">{{ material_formset.empty_form.color.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ material_formset.empty_form.color }}
+                <p id="error-color" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+              <!-- Marca field -->
+              <div style="width: 50%; margin-bottom:1rem;">
+                {{ material_formset.empty_form.marca.label_tag }}
+                {{ material_formset.empty_form.marca }}
+                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+
+              <!-- Parte/Modelo field -->
+              <div style="width: 50%; margin-bottom:1rem;">
+                {{ material_formset.empty_form.parte_modelo.label_tag }}
+                {{ material_formset.empty_form.parte_modelo }}
+                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+              <!-- Nombre común field -->
+              <div style="width: 50%; margin-bottom:1rem;">
+                {{ material_formset.empty_form.nombre_comun.label_tag }}
+                {{ material_formset.empty_form.nombre_comun }}
+                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+
+              <!-- Ing activo field -->
+              <div style="width: 50%; margin-bottom:1rem;">
+                {{ material_formset.empty_form.ing_activo.label_tag }}
+                {{ material_formset.empty_form.ing_activo }}
+                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+              <!-- Tipo producto field -->
+              <div style="width: 50%; margin-bottom:1rem;">
+                {{ material_formset.empty_form.tipo_producto.label_tag }}
+                {{ material_formset.empty_form.tipo_producto }}
+                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+
+              <!-- Alias field -->
+              <div style="width: 50%; margin-bottom:1rem;">
+                {{ material_formset.empty_form.alias.label_tag }}
+                {{ material_formset.empty_form.alias }}
+                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+            </div>
+
+            <!-- Unidad de medida field -->
+            <div class="unidad-medida-container" style="margin-bottom:1rem;">
+              <p class="m-0">{{ material_formset.empty_form.unidad_medida.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              {{ material_formset.empty_form.unidad_medida }}
+              <p id="error-unidad-medida" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; gap: 2rem;">
+              <!-- Es parte original field -->
+              <div style="margin-bottom:1rem;">
+                {{ material_formset.empty_form.es_parte_original.label_tag }}
+                {{ material_formset.empty_form.es_parte_original }}
+                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+
+              <!-- Es material empaque field -->
+              <div style="margin-bottom:1rem;">
+                {{ material_formset.empty_form.es_material_empaque.label_tag }}
+                {{ material_formset.empty_form.es_material_empaque }}
+                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+
+              <!-- Es prod terminado field -->
+              <div style="margin-bottom:1rem;">
+                {{ material_formset.empty_form.es_prod_terminado.label_tag }}
+                {{ material_formset.empty_form.es_prod_terminado }}
+                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
+            </div>
           `;
         const form = document.createElement('div');
         form.id = `material-form-${formCount}`
@@ -285,28 +777,49 @@
         formCount++;
         document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
         materialCounter++
+
+        // Todos los formularios deben validar las medidas
+        validarCamposMaterial()
       }
     
       btnAddMaterial.addEventListener('click', function() {
         var tipoAlta
         var subfamilia
         var nombreProducto
+        var largo
+        var ancho
+        var alto
+        var calibre
+        var material
+        var color
         var unidadMedida
 
         if (!editingBand) {
           tipoAlta = document.getElementById(`id_material-${materialCounter}-tipo_alta`).value
           subfamilia = document.getElementById(`id_material-${materialCounter}-subfamilia`).value
           nombreProducto = document.getElementById(`id_material-${materialCounter}-nombre_producto`).value
+          largo = document.getElementById(`id_material-${materialCounter}-largo`).value
+          ancho = document.getElementById(`id_material-${materialCounter}-ancho`).value
+          alto = document.getElementById(`id_material-${materialCounter}-alto`).value
+          calibre = document.getElementById(`id_material-${materialCounter}-calibre`).value
+          material = document.getElementById(`id_material-${materialCounter}-material`).value
+          color = document.getElementById(`id_material-${materialCounter}-color`).value
           unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`).value
         }
         else {
           tipoAlta = document.getElementById(`id_material-${editingId}-tipo_alta`).value
           subfamilia = document.getElementById(`id_material-${editingId}-subfamilia`).value
           nombreProducto = document.getElementById(`id_material-${editingId}-nombre_producto`).value
+          largo = document.getElementById(`id_material-${editingId}-largo`).value
+          ancho = document.getElementById(`id_material-${editingId}-ancho`).value
+          alto = document.getElementById(`id_material-${editingId}-alto`).value
+          calibre = document.getElementById(`id_material-${editingId}-calibre`).value
+          material = document.getElementById(`id_material-${editingId}-material`).value
+          color = document.getElementById(`id_material-${editingId}-color`).value
           unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`).value
         }
 
-        if(tipoAlta !== '' && subfamilia !== '' && nombreProducto !== '' && unidadMedida !== '') {
+        if(tipoAlta !== '' && subfamilia !== '' && nombreProducto !== '' && largo !== '' && ancho !== '' && alto !== '' && calibre !== '' && material !== '' && color !== '' && unidadMedida !== '') {
           fillTable()
           createMaterialForm()
           btnAddMaterial.innerHTML = 'Agregar Material'
@@ -466,26 +979,6 @@
           createMaterialForm()
         }
       });
-    
-      // Validacion empresa
-      empresa.addEventListener('change', () => {
-        if (empresa.value == '') {
-          errorEmpresa.style.display = 'block'
-        } else {
-          errorEmpresa.style.display = 'none'
-        }
-        enableSaveButton()
-      })
-      
-      // Validacion justificacion
-      justificacion.addEventListener('input', () => {
-        if (justificacion.value == '') {
-          errorJustificacion.style.display = 'block'
-        } else {
-          errorJustificacion.style.display = 'none'
-        }
-        enableSaveButton()
-      })
 
       function enableSaveButton() {
         if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block') {
@@ -496,9 +989,25 @@
         }
       }
 
+      const handleBorradorSubmit = () => {
+        empresaOrigen.removeAttribute('required')
+        empresaDestino.removeAttribute('required')
+        nombreProductoMigracion.removeAttribute('required')
+        empresa.removeAttribute('required')
+        justificacion.removeAttribute('required')
+      }
+
+      btnBorrador.addEventListener('click', () => {// Si no se ha añadido ningún material, no se envía la solicitud
+        if (!esMigracion.checked && tableMaterials.style.display != 'block') {
+          window.alert('Por favor añada al menos un producto');
+          event.preventDefault();
+        }
+        handleBorradorSubmit()
+      })
+
       btnGuardar.addEventListener('click', (event) => {
         // Si no se ha añadido ningún material, no se envía la solicitud
-        if (tableMaterials.style.display != 'block') {
+        if (!esMigracion.checked && tableMaterials.style.display != 'block') {
           window.alert('Por favor añada al menos un producto');
           event.preventDefault();
         }

@@ -449,25 +449,27 @@
 
             <button class="btn btn-secondary mb-3" type="button" id="add-banco-2">Agregar otro banco</button>
 
-            <!-- Usar en portal proveedores field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.usar_en_portal_proveedores.label_tag }}
-              {{ form.usar_en_portal_proveedores }}
-              <p id="error-usar-en-portal-proveedores" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>
+            <div style="display: flex; justify-content: space-between; gap: 2rem;">
+              <!-- Usar en portal proveedores field -->
+              <div style="margin-bottom:1rem;">
+                {{ form.usar_en_portal_proveedores.label_tag }}
+                {{ form.usar_en_portal_proveedores }}
+                <p id="error-usar-en-portal-proveedores" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
 
-            <!-- No aplica para rafaga field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.no_aplica_para_rafaga.label_tag }}
-              {{ form.no_aplica_para_rafaga }}
-              <p id="error-no-aplica-para-rafaga" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>
+              <!-- No aplica para rafaga field -->
+              <div style="margin-bottom:1rem;">
+                {{ form.no_aplica_para_rafaga.label_tag }}
+                {{ form.no_aplica_para_rafaga }}
+                <p id="error-no-aplica-para-rafaga" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
 
-            <!-- No relacionar OC field -->
-            <div style="margin-bottom:1rem;">
-              {{ form.no_relacionar_OC.label_tag }}
-              {{ form.no_relacionar_OC }}
-              <p id="error-no-relacionar-OC" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              <!-- No relacionar OC field -->
+              <div style="margin-bottom:1rem;">
+                {{ form.no_relacionar_OC.label_tag }}
+                {{ form.no_relacionar_OC }}
+                <p id="error-no-relacionar-OC" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
             </div>
 
             <!-- Constancia situacion fiscal field -->
@@ -487,7 +489,7 @@
 
           <div class="d-flex gap-3">
             <button id="btn-borrador" class="btn w-100" type="submit" name="borrador" value="True" style="background-color: #3498DB; color: white; font-weight: bold;">Guardar como borrador</button>
-            <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
+            <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Enviar</button>
           </div>
         </form>
       </div>
@@ -561,6 +563,7 @@
 
       // Buttons
       const addBanco = document.getElementById('add-banco-2')
+      const btnBorrador = document.getElementById('btn-borrador')
       const btnGuardar = document.getElementById('btn-guardar')
       
       // Error messages
@@ -686,6 +689,8 @@
         handleEsMigracion(esMigracion.checked)
         enableSaveButton()
       })
+
+      handleEsMigracion(esMigracion.checked)
     
       // Validacion empresa origen
       empresaOrigen.addEventListener('change', () => {
@@ -1203,6 +1208,61 @@
         }
       }
 
+      const handleBorradorSubmit = () => {
+        empresaOrigen.removeAttribute('required')
+        empresaDestino.removeAttribute('required')
+        rfcMigracion.removeAttribute('required')
+        empresa.removeAttribute('required')
+        tipoAlta.removeAttribute('required')
+        contribuyente.removeAttribute('required')
+        rfc.removeAttribute('required')
+        curp.removeAttribute('required')
+        regimenCapital.removeAttribute('required')
+        nombreFiscal.removeAttribute('required')
+        nombreComercial.removeAttribute('required')
+        regimenFiscal.removeAttribute('required')
+        usoCfdi.removeAttribute('required')
+        telefono1.removeAttribute('required')
+        correoGeneral.removeAttribute('required')
+        correoPagos.removeAttribute('required')
+        sitioWeb.removeAttribute('required')
+        rubro.removeAttribute('required')
+        tipoOperacion.removeAttribute('required')
+        tipoTercero.removeAttribute('required')
+        idFiscal.removeAttribute('required')
+        agenteAduanal.removeAttribute('required')
+        limiteCreditoMN.removeAttribute('required')
+        limiteCreditoME.removeAttribute('required')
+        diasCredito.removeAttribute('required')
+        montoCredito.removeAttribute('required')
+        retencionIva.removeAttribute('required')
+        retencionIsr.removeAttribute('required')
+        ivaFrontera.removeAttribute('required')
+        codigoPostal.removeAttribute('required')
+        pais.removeAttribute('required')
+        estado.removeAttribute('required')
+        ciudad.removeAttribute('required')
+        municipio.removeAttribute('required')
+        localidad.removeAttribute('required')
+        colonia.removeAttribute('required')
+        calle.removeAttribute('required')
+        numeroExterior.removeAttribute('required')
+        banco.removeAttribute('required')
+        cuenta.removeAttribute('required')
+        moneda.removeAttribute('required')
+        clabe.removeAttribute('required')
+        banco2.removeAttribute('required')
+        cuenta2.removeAttribute('required')
+        moneda2.removeAttribute('required')
+        clabe2.removeAttribute('required')
+        constanciaSituacionFiscal.removeAttribute('required')
+        estadoCuentaBancario.removeAttribute('required')
+      }
+
+      btnBorrador.addEventListener('click', () => {
+        handleBorradorSubmit()
+      })
+
       // Si el registro ya existe en otra empresa, se envia directo a sistemas
       btnGuardar.addEventListener('click', () => {
         if (esMigracion.checked) {
@@ -1211,8 +1271,6 @@
           btnGuardar.setAttribute('name', 'pendiente');
         }
       })
-
-      handleEsMigracion(esMigracion.checked)
     })
   </script>
 {% endblock %}
