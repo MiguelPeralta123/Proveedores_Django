@@ -99,3 +99,17 @@ class ProveedorHistorial(models.Model):
 
     def __str__(self):
         return "Solicitud " + self.accion + " por " + self.usuario.get_full_name()
+
+
+# CATÁLOGOS
+class CatalogoProveedor(models.Model):
+    nombre = models.CharField(max_length=50)
+    nombre_comercial = models.CharField(max_length=50)
+    rfc = models.CharField(max_length=20)
+
+    class Meta:
+        verbose_name = 'Proveedor catálogo'
+        verbose_name_plural = "Proveedores catálogo"
+
+    def __str__(self):
+        return self.rfc + " - " + self.nombre_comercial

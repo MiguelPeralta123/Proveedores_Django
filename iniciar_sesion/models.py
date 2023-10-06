@@ -21,12 +21,13 @@ class CustomUserManager(UserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
-    puede_comprar = models.BooleanField(default=False)
+    puede_crear = models.BooleanField(default=False)
     compras = models.BooleanField(default=False)
     finanzas = models.BooleanField(default=False)
     sistemas = models.BooleanField(default=False)

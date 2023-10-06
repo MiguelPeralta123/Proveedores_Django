@@ -85,7 +85,7 @@ def material(request):
 @login_required
 def material_create(request):
     try:
-        if request.user.puede_comprar:
+        if request.user.puede_crear:
             MaterialFormSet = formset_factory(MaterialForm, extra=0)
 
             if request.method == 'GET':
@@ -116,8 +116,9 @@ def material_create(request):
                         if solicitud.es_migracion == False:
                             if material_formset.is_valid():
                                 for material_form in material_formset:
-                                    if not material_form.cleaned_data.get('nombre_producto'):
-                                        continue  # Saltar formularios con nombre_producto vacío
+
+                                    if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('largo') or not material_form.cleaned_data.get('ancho') or not material_form.cleaned_data.get('alto') or not material_form.cleaned_data.get('calibre') or not material_form.cleaned_data.get('unidad_medida'):
+                                        continue  # Saltar formularios con campos requeridos vacíos
                                     material = material_form.save(commit=False)
                                     material.id_solicitud = id_solicitud
                                     material.save()

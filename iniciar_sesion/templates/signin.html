@@ -10,7 +10,19 @@
                     <p style="margin: 0; color: red;">{{error}}</p>
                     {% csrf_token %}
 
-                    {{ form.as_p }}
+                    <!-- Username field -->
+                    <div style="width: 100%; margin-bottom:1rem;">
+                        <label>Usuario<span style="color: rgb(192, 0, 0);">*</span></label>
+                        {{ form.username }}
+                        <p id="error-username" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+                    </div>
+
+                    <!-- Password field -->
+                    <div style="width: 100%; margin-bottom:1rem;">
+                        <label>Contraseña<span style="color: rgb(192, 0, 0);">*</span></label>
+                        {{ form.password }}
+                        <p id="error-password" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+                    </div>
                 
                     <button class="btn" style="background-color: #008841; color: white; font-weight: bold;">
                         Iniciar sesión

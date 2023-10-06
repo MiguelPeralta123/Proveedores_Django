@@ -3,7 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Q
 from .forms import *
-from .models import Proveedor
+from .models import Proveedor, CatalogoProveedor
+
+import json
+from django.http import JsonResponse
 
 # VISTA DE INICIO
 # Decorator to force login. The return route is defined in proveedores/settings.py
@@ -72,13 +75,16 @@ def proveedor(request):
 @login_required
 def proveedor_create(request):
     try:
-        if request.user.puede_comprar:
+        if request.user.puede_crear:
             if request.method == 'GET':
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
                                 'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
 
+                catalogo_proveedor = list(CatalogoProveedor.objects.values())
+                catalogo_proveedor_json = json.dumps(catalogo_proveedor)
                 return render(request, 'proveedor/proveedor_create.html', {
-                    'form': ProveedorForm(initial=default_values)
+                    'form': ProveedorForm(initial=default_values),
+                    'catalogo_proveedor': catalogo_proveedor_json,
                 })
             else:
                 try:

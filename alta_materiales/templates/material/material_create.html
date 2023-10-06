@@ -14,7 +14,7 @@
           <!-- Es migracion field -->
           <div style="margin-bottom:1rem;">
             <p><b>En caso de que el material ya exista en otra empresa, marque la siguiente casilla:</b></p>
-            {{ solicitud_form.es_migracion.label_tag }}
+            <label for="id_es_migracion">Es migración:</label>
             {{ solicitud_form.es_migracion }}
             <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
           </div>
@@ -39,7 +39,7 @@
 
             <!-- Nombre producto migracion field -->
             <div style="margin-bottom:1rem;">
-              <p class="m-0">{{ solicitud_form.nombre_producto_migracion.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              <label for="id_nombre_producto_migracion">Nombre producto:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ solicitud_form.nombre_producto_migracion }}
               <p id="error-rfc-migracion" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
             </div>
@@ -56,7 +56,7 @@
 
             <!-- Justificación field -->
             <div style="margin-bottom:1rem;">
-              <p class="m-0">{{ solicitud_form.justificacion.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              <label for="id_justificacion">Justificación:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ solicitud_form.justificacion }}
               <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
@@ -77,16 +77,16 @@
                     <th scope="col">Material</th>
                     <th scope="col">Color</th>
                     <th scope="col">Marca</th>
-                    <th scope="col">Parte/Modelo</th>
+                    <th scope="col">Parte / Modelo</th>
                     <th scope="col">Nombre común</th>
                     <th scope="col">Medida</th>
                     <th scope="col">¿Es parte original?</th>
-                    <th scope="col">Ing activo</th>
+                    <th scope="col">Ing. activo</th>
                     <th scope="col">Tipo producto</th>
                     <th scope="col">Alias</th>
                     <th scope="col">UM</th>
                     <th scope="col">¿Es material empaque?</th>
-                    <th scope="col">¿Es prod terminado?</th>
+                    <th scope="col">¿Es prod. terminado?</th>
                     <th scope="col"></th>
                     <th scope="col"></th>
                   </tr>
@@ -121,7 +121,7 @@
                     <p id="error-nombre-producto" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                   </div>
 
-                  <p class="m-0">Medidas</p>
+                  <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico o N/A)</span></p>
                   <div style="display: flex; gap: 1rem;">
                     <!-- Largo field -->
                     <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
@@ -178,7 +178,7 @@
 
                     <!-- Parte/Modelo field -->
                     <div style="width: 50%; margin-bottom:1rem;">
-                      {{ material_form.parte_modelo.label_tag }}
+                      <label for="id_parte_modelo">Parte / Modelo:</label>
                       {{ material_form.parte_modelo }}
                       <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
@@ -187,14 +187,14 @@
                   <div style="display: flex; gap: 1rem;">
                     <!-- Nombre común field -->
                     <div style="width: 50%; margin-bottom:1rem;">
-                      {{ material_form.nombre_comun.label_tag }}
+                      <label for="id_nombre_comun">Nombre común:</label>
                       {{ material_form.nombre_comun }}
                       <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Ing activo field -->
                     <div style="width: 50%; margin-bottom:1rem;">
-                      {{ material_form.ing_activo.label_tag }}
+                      <label for="id_ing_activo">Ingrediente activo:</label>
                       {{ material_form.ing_activo }}
                       <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
@@ -218,7 +218,7 @@
 
                   <!-- Unidad de medida field -->
                   <div class="unidad-medida-container" style="margin-bottom:1rem;">
-                    <p class="m-0">{{ material_form.unidad_medida.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    <label for="id_unidad_medida">Unidad de medida:<span style="color: rgb(192, 0, 0);">*</span></label>
                     {{ material_form.unidad_medida }}
                     <p id="error-unidad-medida" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                   </div>
@@ -240,7 +240,7 @@
 
                     <!-- Es prod terminado field -->
                     <div style="margin-bottom:1rem;">
-                      {{ material_form.es_prod_terminado.label_tag }}
+                      <label for="id_es_prod_terminado">Es prod. terminado:</label>
                       {{ material_form.es_prod_terminado }}
                       <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
@@ -642,7 +642,7 @@
               <p id="error-nombre-producto" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
             </div>
 
-            <p class="m-0">Medidas</p>
+            <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico o N/A)</span></p>
             <div style="display: flex; gap: 1rem;">
               <!-- Largo field -->
               <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
@@ -699,7 +699,7 @@
 
               <!-- Parte/Modelo field -->
               <div style="width: 50%; margin-bottom:1rem;">
-                {{ material_formset.empty_form.parte_modelo.label_tag }}
+                <label for="id_parte_modelo">Parte / Modelo:</label>
                 {{ material_formset.empty_form.parte_modelo }}
                 <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
@@ -708,14 +708,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Nombre común field -->
               <div style="width: 50%; margin-bottom:1rem;">
-                {{ material_formset.empty_form.nombre_comun.label_tag }}
+                <label for="id_nombre_comun">Nombre común:</label>
                 {{ material_formset.empty_form.nombre_comun }}
                 <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
 
               <!-- Ing activo field -->
               <div style="width: 50%; margin-bottom:1rem;">
-                {{ material_formset.empty_form.ing_activo.label_tag }}
+                <label for="id_ing_activo">Ingrediente activo:</label>
                 {{ material_formset.empty_form.ing_activo }}
                 <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
@@ -739,7 +739,7 @@
 
             <!-- Unidad de medida field -->
             <div class="unidad-medida-container" style="margin-bottom:1rem;">
-              <p class="m-0">{{ material_formset.empty_form.unidad_medida.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              <label for="id_unidad_medida">Unidad de medida:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ material_formset.empty_form.unidad_medida }}
               <p id="error-unidad-medida" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
@@ -761,7 +761,7 @@
 
               <!-- Es prod terminado field -->
               <div style="margin-bottom:1rem;">
-                {{ material_formset.empty_form.es_prod_terminado.label_tag }}
+                <label for="id_es_prod_terminado">Es prod. terminado:</label>
                 {{ material_formset.empty_form.es_prod_terminado }}
                 <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>

@@ -6,7 +6,7 @@
     <section class="card card-body" style="max-width: 70rem; margin-top: 6rem; background-color: rgb(255, 255, 255, 0.8);">
       <h1 class="text-center display-5 py-3">Alta de proveedores, clientes y materiales</h1>
 
-      {% if user.puede_comprar %}
+      {% if user.puede_crear %}
         <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 50rem;">
           <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para crear una solicitud de alta de proveedor</p>
           <a class="btn" href="proveedores/crear" style="width: 10rem; background-color: #008841; color: white; font-weight: bold;">Crear proveedor</a>

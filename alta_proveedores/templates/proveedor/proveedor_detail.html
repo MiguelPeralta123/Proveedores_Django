@@ -39,7 +39,7 @@
 
             <!-- RFC migracion field -->
             <div style="margin-bottom: 2rem;">
-              <p class="m-0">{{ form.rfc_migracion.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              <label for="id_rfc_migracion">RFC migración:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ form.rfc_migracion }}
               <p id="error-rfc-migracion" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
             </div>
@@ -75,14 +75,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- RFC field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.rfc.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_rfc">RFC:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.rfc }}
                 <p id="error-rfc" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
               </div>
 
               <!-- CURP field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.curp.label_tag }}
+                <label for="id_curp">CURP:</label>
                 {{ form.curp }}
                 <p id="error-curp" style="color:red; margin-bottom:0; display:none;">Ingrese una CURP válida</p>
               </div>
@@ -97,7 +97,7 @@
 
             <!-- Regimen de capital field -->
             <div style="margin-bottom:1rem;">
-              <p class="m-0">{{ form.regimen_capital.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              <label for="id_regimen_capital">Régimen de capital:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ form.regimen_capital }}
               <p id="error-regimen-capital" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
@@ -111,14 +111,14 @@
 
             <!-- Regimen fiscal field -->
             <div style="margin-bottom:1rem;">
-              <p class="m-0">{{ form.regimen_fiscal.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              <label for="id_regimen_fiscal">Régimen fiscal:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ form.regimen_fiscal }}
               <p id="error-regimen-fiscal" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <!-- Uso cfdi field -->
             <div style="margin-bottom:1rem;">
-              <p class="m-0">{{ form.uso_cfdi.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              <label for="id_uso_cfdi">Uso CFDI:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ form.uso_cfdi }}
               <p id="error-uso-cfdi" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
@@ -126,14 +126,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Telefono 1 field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.telefono_1.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_telefono_1">Teléfono 1:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.telefono_1 }}
                 <p id="error-telefono-1" style="color:red; margin-bottom:0; display:none;">Ingrese un número a 10 dígitos</p>
               </div>
 
               <!-- Telefono 2 field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.telefono_2.label_tag }}
+                <label for="id_telefono_2">Teléfono 2:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.telefono_2 }}
                 <p id="error-telefono-2" style="color:red; margin-bottom:0; display:none;">Ingrese un número a 10 dígitos</p>
               </div>
@@ -181,7 +181,7 @@
 
               <!-- Rubro field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">Grupo / {{ form.rubro.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_rubro">Grupo / Rubro:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.rubro }}
                 <p id="error-rubro" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -190,7 +190,7 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Tipo operacion field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.tipo_operacion.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_tipo_operacion">Tipo operación:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.tipo_operacion }}
                 <p id="error-tipo-operacion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -206,7 +206,7 @@
             <div style="display: flex; gap: 1rem;">
               <!-- id fiscal field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                {{ form.id_fiscal.label_tag }}
+                <label for="id_id_fiscal">ID fiscal:</label>
                 {{ form.id_fiscal }}
                 <p id="error-id-fiscal" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -222,14 +222,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Limite credito MN field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.limite_credito_MN.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_limite_credito_MN">Límite crédito (MN):<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.limite_credito_MN }}
                 <p id="error-limite-credito-MN" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
               
               <!-- Limite credito ME field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.limite_credito_ME.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_limite_credito_ME">Límite crédito (ME):<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.limite_credito_ME }}
                 <p id="error-limite-credito-ME" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -238,14 +238,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Dias credito field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.dias_credito.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_dias_credito">Días crédito:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.dias_credito }}
                 <p id="error-dias-credito" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
 
               <!-- Monto credito field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.monto_credito.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_monto_credito">Monto crédito:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.monto_credito }}
                 <p id="error-monto-credito" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -254,21 +254,21 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Retencion iva field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.retencion_iva.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_retencion_iva">Retención IVA:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.retencion_iva }}
                 <p id="error-retencion-iva" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- Retencion isr field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.retencion_isr.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_retencion_isr">Retención ISR:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.retencion_isr }}
                 <p id="error-retencion-isr" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- Iva frontera field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.iva_frontera.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_iva_frontera">IVA frontera:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.iva_frontera }}
                 <p id="error-iva-frontera" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -277,14 +277,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Codigo postal field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.codigo_postal.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_codigo_postal">Código postal:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.codigo_postal }}
                 <p id="error-codigo-postal" style="color:red; margin-bottom:0; display:none;">Ingrese un código postal válido</p>
               </div>
 
               <!-- Pais field -->
               <div style="width: 100%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.pais.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_pais">País:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.pais }}
                 <p id="error-pais" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -339,14 +339,14 @@
             <div style="display: flex; gap: 1rem;">
               <!-- Numero exterior field -->
               <div style="width: 50%; margin-bottom:1rem;">
-                <p class="m-0">{{ form.numero_exterior.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_numero_exterior">Número exterior:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.numero_exterior }}
                 <p id="error-numero-exterior" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
 
               <!-- Numero interior field -->
               <div style="width: 50%; margin-bottom:1rem;">
-                {{ form.numero_interior.label_tag }}
+                <label for="id_numero_interior">Número interior:</label>
                 {{ form.numero_interior }}
                 <p id="error-numero-interior" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -392,7 +392,7 @@
 
               <!-- Otro codigo bancario field -->
               <div style="width: 50%; margin-bottom:1rem;">
-                {{ form.otro_codigo_bancario.label_tag }}
+                <label for="id_otro_codigo_bancario">Otro código bancario:</label>
                 {{ form.otro_codigo_bancario }}
                 <p id="error-otro-codigo-bancario" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
@@ -403,7 +403,7 @@
               <hr />
               <!-- Banco 2 field -->
               <div style="margin-bottom:1rem;">
-                <p class="m-0">{{ form.banco_2.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                <label for="id_banco_2">Banco:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.banco_2 }}
                 <p id="error-banco-2" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -411,21 +411,21 @@
               <div style="display: flex; gap: 1rem;">
                 <!-- Cuenta 2 field -->
                 <div style="width: 40%; margin-bottom:1rem;">
-                  <p class="m-0">{{ form.cuenta_2.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                  <label for="id_cuenta_2">Cuenta:<span style="color: rgb(192, 0, 0);">*</span></label>
                   {{ form.cuenta_2 }}
                   <p id="error-cuenta-2" style="color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 10 dígitos</p>
                 </div>
 
                 <!-- Clabe 2 field -->
                 <div style="width: 40%; margin-bottom:1rem;">
-                  <p class="m-0">{{ form.clabe_2.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                  <label for="id_clabe_2">Clabe:<span style="color: rgb(192, 0, 0);">*</span></label>
                   {{ form.clabe_2 }}
                   <p id="error-clabe-2" style="color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 18 dígitos</p>
                 </div>
 
                 <!-- Moneda 2 field -->
                 <div style="width: 20%; margin-bottom:1rem;">
-                  <p class="m-0">{{ form.moneda_2.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                  <label for="id_moneda_2">Moneda:<span style="color: rgb(192, 0, 0);">*</span></label>
                   {{ form.moneda_2 }}
                   <p id="error-moneda-2" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                 </div>
@@ -434,14 +434,14 @@
               <div style="display: flex; gap: 1rem;">
                 <!-- Swift 2 field -->
                 <div style="width: 50%; margin-bottom:1rem;">
-                  {{ form.swift_2.label_tag }}
+                  <label for="id_swift_2">Swift:</label>
                   {{ form.swift_2 }}
                   <p id="error-swift_2" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
                 </div>
   
                 <!-- Otro codigo bancario 2 field -->
                 <div style="width: 50%; margin-bottom:1rem;">
-                  {{ form.otro_codigo_bancario_2.label_tag }}
+                  <label for="id_otro_codigo_bancario_2">Otro código bancario:</label>
                   {{ form.otro_codigo_bancario_2 }}
                   <p id="error-otro-codigo-bancario_2" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
                 </div>
@@ -460,7 +460,7 @@
 
               <!-- No aplica para rafaga field -->
               <div style="margin-bottom:1rem;">
-                {{ form.no_aplica_para_rafaga.label_tag }}
+                <label for="id_no_aplica_para_rafaga">No aplica para ráfaga:</label>
                 {{ form.no_aplica_para_rafaga }}
                 <p id="error-no-aplica-para-rafaga" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
