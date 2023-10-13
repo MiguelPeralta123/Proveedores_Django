@@ -23,6 +23,9 @@ from alta_proveedores import views as views_proveedores
 # Creamos los endpoints para las vistas de materiales
 from alta_materiales import views as views_materiales
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     # URL para admin
     path('admin/', admin.site.urls),
@@ -44,3 +47,6 @@ urlpatterns = [
     path('materiales/crear/', views_materiales.material_create, name='material_create'),
     path('materiales/<int:material_id>/', views_materiales.material_detail, name='material_detail'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

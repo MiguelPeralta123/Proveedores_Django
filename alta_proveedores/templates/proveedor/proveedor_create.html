@@ -20,8 +20,8 @@
           </div>
 
           <!-- Proveedor migración fields -->
-          <div id="proveedor-migracion-fields" style="display: none; margin-bottom:1rem;">
-            <div id="proveedor-migracion-empresas" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+          <div id="proveedor-migracion-fields" style="margin-bottom: 1rem; display: none;">
+            <div id="proveedor-migracion-empresas" style="display: flex; gap: 1rem;">
               <!-- Empresa origen -->
               <div style="width: 100%;">
                 <p class="m-0">{{ form.empresa_origen.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
@@ -37,11 +37,14 @@
               </div>
             </div>
 
+            <p id="error-empresas-migracion" class="mt-0 mb-2" style="color:red; display:none;">Empresa origen y Empresa destino deben tener valores distintos</p>
+
             <!-- RFC migracion field -->
-            <div style="margin-bottom:1rem;">
+            <div class="mt-3 mb-3">
               <label for="id_rfc_migracion">RFC migración:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ form.rfc_migracion }}
               <p id="error-rfc-migracion" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
+              <p id="error-rfc-migracion-2" style="color:red; margin-bottom:0; display:none;">No existe ningún proveedor con ese RFC</p>
             </div>
           </div>
 
@@ -79,7 +82,7 @@
                 <datalist id="opciones_proveedor">
                 </datalist>
                 <p id="error-rfc" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
-                <p id="error-rfc-2" style="color:red; margin-bottom:0; display:none;">El proveedor con ese RFC ya existe</p>
+                <p id="error-rfc-2" style="color:red; margin-bottom:0; display:none;">Ya existe un proveedor con ese RFC</p>
               </div>
 
               <!-- CURP field -->
@@ -573,7 +576,9 @@
       // Error messages
       const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
       const errorEmpresaDestino = document.getElementById('error-empresa-destino')
+      const errorEmpresasMigracion = document.getElementById('error-empresas-migracion')
       const errorRfcMigracion = document.getElementById('error-rfc-migracion')
+      const errorRfcMigracion2 = document.getElementById('error-rfc-migracion-2')
       const errorEmpresa = document.getElementById('error-empresa')
       const errorTipoAlta = document.getElementById('error-tipo-alta')
       const errorContribuyente = document.getElementById('error-contribuyente')
@@ -709,6 +714,12 @@
         } else {
           errorEmpresaOrigen.style.display = 'none'
         }
+        // No se puede seleccionar la misma opción que en "Empresa destino"
+        if (empresaOrigen.value == empresaDestino.value) {
+          errorEmpresasMigracion.style.display = 'block'
+        } else {
+          errorEmpresasMigracion.style.display = 'none'
+        }
         enableSaveButton()
       })
       
@@ -718,6 +729,12 @@
           errorEmpresaDestino.style.display = 'block'
         } else {
           errorEmpresaDestino.style.display = 'none'
+        }
+        // No se puede seleccionar la misma opción que en "Empresa origen"
+        if (empresaOrigen.value == empresaDestino.value) {
+          errorEmpresasMigracion.style.display = 'block'
+        } else {
+          errorEmpresasMigracion.style.display = 'none'
         }
         enableSaveButton()
       })
@@ -729,7 +746,6 @@
         } else {
           errorRfcMigracion.style.display = 'block'
         }
-        enableSaveButton()
 
         // Filtrando solo las opciones que empiecen con el valor de rfc_migracion
         datalist.innerHTML = ''
@@ -737,9 +753,16 @@
           if (catalogoProveedor[i].rfc.startsWith(rfcMigracion.value.toUpperCase())) {
             const option = document.createElement('option')
             option.value = catalogoProveedor[i].rfc
+            option.innerText = catalogoProveedor[i].rfc + ' - ' + catalogoProveedor[i].nombre_comercial
             datalist.appendChild(option)
           }
+          if (datalist.childElementCount == 0) {
+            errorRfcMigracion2.style.display = 'block'
+          } else {
+            errorRfcMigracion2.style.display = 'none'
+          }
         }
+        enableSaveButton()
       })
       
       // Validacion empresa
@@ -798,9 +821,10 @@
           if (catalogoProveedor[i].rfc.startsWith(rfc.value.toUpperCase())) {
             const option = document.createElement('option')
             option.value = catalogoProveedor[i].rfc
+            option.innerText = catalogoProveedor[i].rfc + ' - ' + catalogoProveedor[i].nombre_comercial
             datalist.appendChild(option)
           }
-          if (catalogoProveedor[i].rfc == rfc.value.toUpperCase()) {
+          if (catalogoProveedor[i].rfc == rfc.value.toUpperCase() && rfc.value != '') {
             errorRfc2.style.display = 'block'
             return
           }
@@ -1229,7 +1253,7 @@
 
       function enableSaveButton() {
         if(esMigracion.checked) {
-          if(errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorRfcMigracion.style.display == 'block') {
+          if(errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorEmpresasMigracion.style.display == 'block' || errorRfcMigracion.style.display == 'block' || errorRfcMigracion2.style.display == 'block') {
             btnGuardar.disabled = true
           }
           else {

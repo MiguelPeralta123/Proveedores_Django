@@ -4,8 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Q
 from .forms import *
-from .models import MaterialSolicitud, Material, MaterialHistorial
+from .models import *
 from .options import *
+
+import json
+from django.http import JsonResponse
 
 # Creating a unique id for each request
 import random
@@ -95,9 +98,12 @@ def material_create(request):
                 solicitud_form = SolicitudForm(initial=default_values)
                 material_formset = MaterialFormSet(prefix='material', initial=[{}])
 
+                catalogo_material = list(CatalogoMaterial.objects.values())
+                catalogo_material_json = json.dumps(catalogo_material)
                 return render(request, 'material/material_create.html', {
                     'solicitud_form': solicitud_form,
-                    'material_formset': material_formset
+                    'material_formset': material_formset,
+                    'catalogo_material': catalogo_material_json,
                 })
             
             else:
@@ -140,9 +146,9 @@ def material_create(request):
                             message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
                             from_email = 'altaproveedoresricofarms@gmail.com'
                             if solicitud.es_migracion:
-                                recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                                recipient_list = ['edurazo@ricofarms.com']
                             else:
-                                recipient_list = ['maikperalta123@gmail.com']
+                                recipient_list = ['compras@ricofarms.com']
                             send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                         return redirect('material')
@@ -201,11 +207,11 @@ def material_detail(request, material_id):
                 if request.user.compras:
                     solicitud_form = SolicitudFormForCompras(
                         request.POST, instance=solicitud)
-                    destinatario_correo = [solicitud.usuario.email, 'maikperalta248@gmail.com']
+                    destinatario_correo = [solicitud.usuario.email, 'fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
                 elif request.user.finanzas:
                     solicitud_form = SolicitudFormForFinanzas(
                         request.POST, instance=solicitud)
-                    destinatario_correo = [solicitud.usuario.email, 'l18330484@hermosillo.tecnm.mx']
+                    destinatario_correo = [solicitud.usuario.email, 'edurazo@ricofarms.com']
                 elif request.user.sistemas:
                     solicitud_form = SolicitudFormForSistemas(
                         request.POST, instance=solicitud)
@@ -213,7 +219,7 @@ def material_detail(request, material_id):
                 else:
                     solicitud_form = SolicitudForm(
                         request.POST, instance=solicitud)
-                    destinatario_correo = ['maikperalta123@gmail.com']
+                    destinatario_correo = ['compras@ricofarms.com']
 
                 material_forms = [MaterialForm(
                     request.POST, instance=material, prefix=f'material-{material.id}') for material in materiales]

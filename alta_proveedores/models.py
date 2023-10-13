@@ -84,7 +84,10 @@ class Proveedor(models.Model):
         verbose_name_plural = "proveedores"
 
     def __str__(self):
-        return str(self.id) + ".- " + self.razon_social + " - " + self.usuario.first_name + " " + self.usuario.last_name
+        if self.rfc != '':
+            return str(self.id) + ".- " + self.rfc + " - " + self.usuario.first_name + " " + self.usuario.last_name
+        else:
+            return str(self.id) + ".- Migración " + self.rfc_migracion + " - " + self.usuario.first_name + " " + self.usuario.last_name
 
 
 class ProveedorHistorial(models.Model):

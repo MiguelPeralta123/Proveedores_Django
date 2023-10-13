@@ -77,3 +77,18 @@ class MaterialHistorial(models.Model):
 
     def __str__(self):
         return "Solicitud " + self.accion + " por " + self.usuario.get_full_name()
+
+
+# CATÁLOGOS
+class CatalogoMaterial(models.Model):
+    codigo = models.CharField(max_length=20)
+    nombre_producto = models.CharField(max_length=150)
+    subfamilia = models.CharField(max_length=100)
+    familia = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = 'Producto catálogo'
+        verbose_name_plural = "Productos catálogo"
+
+    def __str__(self):
+        return self.codigo + " - " + self.nombre_producto

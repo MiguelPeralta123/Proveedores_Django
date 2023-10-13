@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Q
 from .forms import *
-from .models import Proveedor, CatalogoProveedor
+from .models import *
 
 import json
 from django.http import JsonResponse
@@ -109,9 +109,9 @@ def proveedor_create(request):
                             message = str(request.user.get_full_name()) + ' ha solicitado un alta de proveedor, favor de revisar en http://127.0.0.1:8000/proveedores/'
                             from_email = 'altaproveedoresricofarms@gmail.com'
                             if proveedor.es_migracion:
-                                recipient_list = ['l18330484@hermosillo.tecnm.mx']
+                                recipient_list = ['edurazo@ricofarms.com']
                             else:
-                                recipient_list = ['maikperalta123@gmail.com']
+                                recipient_list = ['compras@ricofarms.com']
                             send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                         return redirect('proveedor')
@@ -163,11 +163,11 @@ def proveedor_detail(request, proveedor_id):
                 if request.user.compras:
                     proveedor_form = ProveedorFormForCompras(
                         request.POST, instance=proveedor)
-                    destinatario_correo = [proveedor.usuario.email, 'maikperalta248@gmail.com']
+                    destinatario_correo = [proveedor.usuario.email, 'fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
                 elif request.user.finanzas:
                     proveedor_form = ProveedorFormForFinanzas(
                         request.POST, instance=proveedor)
-                    destinatario_correo = [proveedor.usuario.email, 'l18330484@hermosillo.tecnm.mx']
+                    destinatario_correo = [proveedor.usuario.email, 'edurazo@ricofarms.com']
                 elif request.user.sistemas:
                     proveedor_form = ProveedorFormForSistemas(
                         request.POST, instance=proveedor)
@@ -175,7 +175,7 @@ def proveedor_detail(request, proveedor_id):
                 else:
                     proveedor_form = ProveedorDetailForm(
                         request.POST, instance=proveedor)
-                    destinatario_correo = ['maikperalta123@gmail.com']
+                    destinatario_correo = ['compras@ricofarms.com']
                 
                 historial_form = HistorialForm(request.POST)
                             

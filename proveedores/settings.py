@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-z0*##4xay-48agvw#f(5old!0=jpsbu8oev@!x@sm#o@_%wj=5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -80,16 +80,16 @@ WSGI_APPLICATION = 'proveedores.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Development database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'db_proveedores',
-        'USER': 'root',
-        'PASSWORD': '123',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'db_proveedores',
+#        'USER': 'root',
+#        'PASSWORD': '123',
+#        'HOST': 'localhost',
+#        'PORT': '3306',
+#    }
+#}
 
 # Docker container database
 #DATABASES = {
@@ -97,19 +97,19 @@ DATABASES = {
 #        'ENGINE': 'django.db.backends.mysql',
 #        'NAME': 'proveedores',
 #        'USER': 'root',
-#        'PASSWORD': 'Maik99*docker',
+#        'PASSWORD': 'Ric0.farm$.db',
 #        'HOST': 'db',
 #        'PORT': '3306',
 #    }
 #}
 
 # Default database
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-#}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -145,9 +145,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
+#STATIC_URL = '/static/'
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# Static files for Docker
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# Static files for IIS
+#STATIC_URL = '/static/'
+#STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # RETURN ROUTE TO FORCE LOGIN
 LOGIN_URL = '/signin'
