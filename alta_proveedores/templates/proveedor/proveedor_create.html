@@ -98,6 +98,7 @@
               <p class="m-0">{{ form.nombre_fiscal.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.nombre_fiscal }}
               <p id="error-nombre-fiscal" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+              <p id="error-nombre-fiscal-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Nombre fiscal no puede contener "ñ", acentos ni carácteres especiales</p>
             </div>
 
             <!-- Regimen de capital field -->
@@ -112,6 +113,7 @@
               <p class="m-0">{{ form.nombre_comercial.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ form.nombre_comercial }}
               <p id="error-nombre-comercial" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+              <p id="error-nombre-comercial-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Nombre comercial no puede contener "ñ", acentos ni carácteres especiales</p>
             </div>
 
             <!-- Regimen fiscal field -->
@@ -587,7 +589,9 @@
       const errorCurp = document.getElementById('error-curp')
       const errorRegimenCapital = document.getElementById('error-regimen-capital')
       const errorNombreFiscal = document.getElementById('error-nombre-fiscal')
+      const errorNombreFiscal2 = document.getElementById('error-nombre-fiscal-2')
       const errorNombreComercial = document.getElementById('error-nombre-comercial')
+      const errorNombreComercial2 = document.getElementById('error-nombre-comercial-2')
       const errorRegimenFiscal = document.getElementById('error-regimen-fiscal')
       const errorUsoCfdi = document.getElementById('error-uso-cfdi')
       const errorRepresentanteLegal = document.getElementById('error-representante-legal')
@@ -639,6 +643,7 @@
       const codigoPostalPattern = /^\d{5}$/
       const cuentaPattern = /^\d{10,20}$/
       const clabePattern = /^\d{18}$/
+      const nonAccentPattern = /^[A-Za-z\d\s]*$/
 
       // Catalogo de proveedores existentes
       var catalogoProveedor = JSON.parse('{{ catalogo_proveedor|safe }}');
@@ -848,6 +853,23 @@
         enableSaveButton()
       })
       
+      // Validacion nombre fiscal
+      nombreFiscal.addEventListener('input', () => {
+        if (nombreFiscal.value == '') {
+          errorNombreFiscal.style.display = 'block'
+          errorNombreFiscal2.style.display = 'none'
+        } else {
+          errorNombreFiscal.style.display = 'none'
+          if (nonAccentPattern.test(nombreFiscal.value)) {
+            errorNombreFiscal2.style.display = 'none'
+          }
+          else {
+            errorNombreFiscal2.style.display = 'block'
+          }
+        }
+        enableSaveButton()
+      })
+      
       // Validacion regimen de capital
       regimenCapital.addEventListener('change', () => {
         if (regimenCapital.value == '') {
@@ -858,22 +880,19 @@
         enableSaveButton()
       })
       
-      // Validacion nombre fiscal
-      nombreFiscal.addEventListener('input', () => {
-        if (nombreFiscal.value == '') {
-          errorNombreFiscal.style.display = 'block'
-        } else {
-          errorNombreFiscal.style.display = 'none'
-        }
-        enableSaveButton()
-      })
-      
       // Validacion nombre comercial
       nombreComercial.addEventListener('input', () => {
         if (nombreComercial.value == '') {
           errorNombreComercial.style.display = 'block'
+          errorNombreComercial2.style.display = 'none'
         } else {
           errorNombreComercial.style.display = 'none'
+          if (nonAccentPattern.test(nombreComercial.value)) {
+            errorNombreComercial2.style.display = 'none'
+          }
+          else {
+            errorNombreComercial2.style.display = 'block'
+          }
         }
         enableSaveButton()
       })
@@ -1263,7 +1282,7 @@
           }
         }
         else {
-          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
+          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
             btnGuardar.disabled = true
           }
           else {
