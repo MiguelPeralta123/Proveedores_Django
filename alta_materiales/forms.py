@@ -33,7 +33,7 @@ class SolicitudForm(forms.ModelForm):
 class MaterialForm(forms.ModelForm):
     class Meta:
         model = Material
-        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'calibre', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'codigo_sat', 'es_material_empaque', 'es_prod_terminado']
+        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'calibre', 'um_largo', 'um_ancho', 'um_alto', 'um_calibre', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'codigo_sat', 'es_material_empaque', 'es_prod_terminado']
         widgets = {
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta select-tipo-alta', 'initial':''}),
             'subfamilia': forms.Select(choices=SUBFAMILIA_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
@@ -42,6 +42,10 @@ class MaterialForm(forms.ModelForm):
             'ancho': forms.TextInput(attrs={'class':'form-control material-ancho'}),
             'alto': forms.TextInput(attrs={'class':'form-control material-alto'}),
             'calibre': forms.TextInput(attrs={'class':'form-control material-calibre'}),
+            'um_largo': forms.Select(choices=MEDIDA_UM_LIST, attrs={'class':'form-control material-um-largo select-um-largo', 'initial':''}),
+            'um_ancho': forms.Select(choices=MEDIDA_UM_LIST, attrs={'class':'form-control material-um-ancho select-um-ancho', 'initial':''}),
+            'um_alto': forms.Select(choices=MEDIDA_UM_LIST, attrs={'class':'form-control material-um-alto select-um-alto', 'initial':''}),
+            'um_calibre': forms.Select(choices=MEDIDA_UM_LIST, attrs={'class':'form-control material-um-calibre select-um-calibre', 'initial':''}),
             'material': forms.TextInput(attrs={'class':'form-control material-material'}),
             'color': forms.TextInput(attrs={'class':'form-control material-color'}),
             'marca': forms.TextInput(attrs={'class':'form-control material-marca'}),
@@ -83,7 +87,7 @@ class SolicitudDetailForm(forms.ModelForm):
 class MaterialDetailForm(forms.ModelForm):
     class Meta:
         model = Material
-        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'calibre', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'codigo_sat', 'es_material_empaque', 'es_prod_terminado']
+        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'calibre', 'um_largo', 'um_ancho', 'um_alto', 'um_calibre', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'codigo_sat', 'es_material_empaque', 'es_prod_terminado']
         widgets = {
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta select-tipo-alta', 'initial':''}),
             'subfamilia': forms.Select(choices=SUBFAMILIA_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
@@ -92,6 +96,10 @@ class MaterialDetailForm(forms.ModelForm):
             'ancho': forms.TextInput(attrs={'class':'form-control material-ancho'}),
             'alto': forms.TextInput(attrs={'class':'form-control material-alto'}),
             'calibre': forms.TextInput(attrs={'class':'form-control material-calibre'}),
+            'um_largo': forms.Select(choices=MEDIDA_UM_LIST, attrs={'class':'form-control material-um-largo select-um-largo', 'initial':''}),
+            'um_ancho': forms.Select(choices=MEDIDA_UM_LIST, attrs={'class':'form-control material-um-ancho select-um-ancho', 'initial':''}),
+            'um_alto': forms.Select(choices=MEDIDA_UM_LIST, attrs={'class':'form-control material-um-alto select-um-alto', 'initial':''}),
+            'um_calibre': forms.Select(choices=MEDIDA_UM_LIST, attrs={'class':'form-control material-um-calibre select-um-calibre', 'initial':''}),
             'material': forms.TextInput(attrs={'class':'form-control material-material'}),
             'color': forms.TextInput(attrs={'class':'form-control material-color'}),
             'marca': forms.TextInput(attrs={'class':'form-control material-marca'}),

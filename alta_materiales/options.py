@@ -115,6 +115,15 @@ SUBFAMILIA_LIST = [
     ('9006 - Proyectos / Construcciones en proceso', '9006 - Proyectos / Construcciones en proceso')
 ]
 
+MEDIDA_UM_LIST = [
+    ('', 'Seleccione una opción'),
+    ('Cm', 'Cm'),
+    ('Metro', 'Metro'),
+    ('Mm', 'Mm'),
+    ('Pie', 'Pie'),
+    ('Pulgada', 'Pulgada'),
+]
+
 UNIDAD_MEDIDA_LIST = [
     ('', 'Seleccione una opción'),
     ('Kilogramo', 'Kilogramo'),
