@@ -350,14 +350,15 @@
       empresaOrigen.addEventListener('change', () => {
         if (empresaOrigen.value == '') {
           errorEmpresaOrigen.style.display = 'block'
+          errorEmpresasMigracion.style.display = 'none'
         } else {
           errorEmpresaOrigen.style.display = 'none'
-        }
-        // No se puede seleccionar la misma opción que en "Empresa destino"
-        if (empresaOrigen.value == empresaDestino.value) {
-          errorEmpresasMigracion.style.display = 'block'
-        } else {
-          errorEmpresasMigracion.style.display = 'none'
+          // No se puede seleccionar la misma opción que en "Empresa destino"
+          if (empresaOrigen.value == empresaDestino.value) {
+            errorEmpresasMigracion.style.display = 'block'
+          } else {
+            errorEmpresasMigracion.style.display = 'none'
+          }
         }
         enableSaveButton()
       })
@@ -366,19 +367,20 @@
       empresaDestino.addEventListener('change', () => {
         if (empresaDestino.value == '') {
           errorEmpresaDestino.style.display = 'block'
+          errorEmpresasMigracion.style.display = 'none'
         } else {
           errorEmpresaDestino.style.display = 'none'
-        }
-        // No se puede seleccionar la misma opción que en "Empresa origen"
-        if (empresaOrigen.value == empresaDestino.value) {
-          errorEmpresasMigracion.style.display = 'block'
-        } else {
-          errorEmpresasMigracion.style.display = 'none'
+          // No se puede seleccionar la misma opción que en "Empresa origen"
+          if (empresaOrigen.value == empresaDestino.value) {
+            errorEmpresasMigracion.style.display = 'block'
+          } else {
+            errorEmpresasMigracion.style.display = 'none'
+          }
         }
         enableSaveButton()
       })
       
-      // Validacion rfc migracion
+      // Validacion nombre producto migracion
       nombreProductoMigracion.addEventListener('input', () => {
         if (nombreProductoMigracion.value != '') {
           errorNombreProductoMigracion.style.display = 'none'

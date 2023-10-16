@@ -711,6 +711,7 @@
       empresaOrigen.addEventListener('change', () => {
         if (empresaOrigen.value == '') {
           errorEmpresaOrigen.style.display = 'block'
+          errorEmpresasMigracion.style.display = 'none'
         } else {
           errorEmpresaOrigen.style.display = 'none'
         }
@@ -727,6 +728,7 @@
       empresaDestino.addEventListener('change', () => {
         if (empresaDestino.value == '') {
           errorEmpresaDestino.style.display = 'block'
+          errorEmpresasMigracion.style.display = 'none'
         } else {
           errorEmpresaDestino.style.display = 'none'
         }

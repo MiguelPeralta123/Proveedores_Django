@@ -21,7 +21,7 @@
             <!-- Proveedor migración fields -->
             <h2 style="margin-bottom: 2rem;">Migración - {{ proveedor.rfc_migracion }}</h2>
 
-            <div id="proveedor-migracion-empresas" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+            <div id="proveedor-migracion-empresas" style="display: flex; gap: 1rem;">
               <!-- Empresa origen -->
               <div style="width: 100%;">
                 <p class="m-0">{{ form.empresa_origen.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
@@ -37,8 +37,10 @@
               </div>
             </div>
 
+            <p id="error-empresas-migracion" class="mt-0 mb-2" style="color:red; display:none;">Empresa origen y Empresa destino deben tener valores distintos</p>
+
             <!-- RFC migracion field -->
-            <div style="margin-bottom: 2rem;">
+            <div class="mt-3 mb-3">
               <label for="id_rfc_migracion">RFC migración:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ form.rfc_migracion }}
               <p id="error-rfc-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
@@ -587,6 +589,7 @@
       // Error messages
       const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
       const errorEmpresaDestino = document.getElementById('error-empresa-destino')
+      const errorEmpresasMigracion = document.getElementById('error-empresas-migracion')
       const errorRfcMigracion = document.getElementById('error-rfc-migracion')
       const errorEmpresa = document.getElementById('error-empresa')
       const errorTipoAlta = document.getElementById('error-tipo-alta')
@@ -940,8 +943,16 @@
         empresaOrigen.addEventListener('change', () => {
           if (empresaOrigen.value == '') {
             errorEmpresaOrigen.style.display = 'block'
+            errorEmpresasMigracion.style.display = 'none'
           } else {
             errorEmpresaOrigen.style.display = 'none'
+            // No se puede seleccionar la misma opción que en "Empresa destino"
+            if (empresaOrigen.value == empresaDestino.value) {
+              errorEmpresasMigracion.style.display = 'block'
+            }
+            else {
+              errorEmpresasMigracion.style.display = 'none'
+            }
           }
           enableSaveButton()
         })
@@ -952,8 +963,16 @@
         empresaDestino.addEventListener('change', () => {
           if (empresaDestino.value == '') {
             errorEmpresaDestino.style.display = 'block'
+            errorEmpresasMigracion.style.display = 'none'
           } else {
             errorEmpresaDestino.style.display = 'none'
+            // No se puede seleccionar la misma opción que en "Empresa destino"
+            if (empresaOrigen.value == empresaDestino.value) {
+              errorEmpresasMigracion.style.display = 'block'
+            }
+            else {
+              errorEmpresasMigracion.style.display = 'none'
+            }
           }
           enableSaveButton()
         })
@@ -1516,24 +1535,48 @@
       }
 
       function enableSaveButton() {
-        if(errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
-          if(btnSave) {
-            btnSave.disabled = true
-            btnDelete.disabled = true
+        if(errorEmpresaOrigen) {
+          if (errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorEmpresasMigracion.style.display == 'block' || errorRfcMigracion.style.display == 'block') {
+            if(btnSave) {
+              btnSave.disabled = true
+              btnDelete.disabled = true
+            }
+            else {
+              btnApprove.disabled = true
+              btnDecline.disabled = true
+            }
           }
           else {
-            btnApprove.disabled = true
-            btnDecline.disabled = true
+            if(btnSave) {
+              btnSave.disabled = false
+              btnDelete.disabled = false
+            }
+            else {
+              btnApprove.disabled = false
+              btnDecline.disabled = false
+            }
           }
         }
         else {
-          if(btnSave) {
-            btnSave.disabled = false
-            btnDelete.disabled = false
+          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
+            if(btnSave) {
+              btnSave.disabled = true
+              btnDelete.disabled = true
+            }
+            else {
+              btnApprove.disabled = true
+              btnDecline.disabled = true
+            }
           }
           else {
-            btnApprove.disabled = false
-            btnDecline.disabled = false
+            if(btnSave) {
+              btnSave.disabled = false
+              btnDelete.disabled = false
+            }
+            else {
+              btnApprove.disabled = false
+              btnDecline.disabled = false
+            }
           }
         }
       }
