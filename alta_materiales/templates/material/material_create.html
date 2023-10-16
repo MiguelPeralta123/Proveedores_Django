@@ -16,7 +16,7 @@
             <p><b>En caso de que el material ya exista en otra empresa, marque la siguiente casilla:</b></p>
             <label for="id_es_migracion">Es migración:</label>
             {{ solicitud_form.es_migracion }}
-            <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            <p id="error-es-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
           </div>
 
           <!-- Material migración fields -->
@@ -26,14 +26,14 @@
               <div style="width: 100%;">
                 <p class="m-0">{{ solicitud_form.empresa_origen.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ solicitud_form.empresa_origen }}
-                <p id="error-empresa-origen" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                <p id="error-empresa-origen" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- Empresa destino -->
               <div style="width: 100%;">
                 <p class="m-0">{{ solicitud_form.empresa_destino.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ solicitud_form.empresa_destino }}
-                <p id="error-empresa-destino" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                <p id="error-empresa-destino" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
             </div>
 
@@ -43,7 +43,7 @@
             <div class="mt-3 mb-3">
               <label for="id_nombre_producto_migracion">Nombre producto:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ solicitud_form.nombre_producto_migracion }}
-              <p id="error-rfc-migracion" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
+              <p id="error-nombre-producto-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un nombre de producto válido</p>
             </div>
           </div>
 
@@ -54,14 +54,14 @@
             <div style="margin-bottom:1rem;">
               <p class="m-0">{{ solicitud_form.empresa.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ solicitud_form.empresa }}
-              <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              <p id="error-empresa" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <!-- Justificación field -->
             <div style="margin-bottom:1rem;">
               <label for="id_justificacion">Justificación:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ solicitud_form.justificacion }}
-              <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+              <p id="error-justificacion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
 
             <h3>Materiales</h3>
@@ -82,12 +82,12 @@
                     <th scope="col">Marca</th>
                     <th scope="col">Parte / Modelo</th>
                     <th scope="col">Nombre común</th>
-                    <th scope="col">Medida</th>
-                    <th scope="col">¿Es parte original?</th>
                     <th scope="col">Ing. activo</th>
                     <th scope="col">Tipo producto</th>
                     <th scope="col">Alias</th>
-                    <th scope="col">UM</th>
+                    <th scope="col">Unidad de medida</th>
+                    <th scope="col">Código SAT</th>
+                    <th scope="col">¿Es parte original?</th>
                     <th scope="col">¿Es material empaque?</th>
                     <th scope="col">¿Es prod. terminado?</th>
                     <th scope="col"></th>
@@ -107,14 +107,14 @@
                   <div class="tipo-alta-container" style="margin-bottom:1rem;">
                     <p class="m-0">{{ material_form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                     {{ material_form.tipo_alta }}
-                    <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                    <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                   </div>
 
                   <!-- Subfamilia field -->
                   <div class="subfamilia-container" style="margin-bottom:1rem;">
                     <p class="m-0">{{ material_form.subfamilia.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                     {{ material_form.subfamilia }}
-                    <p id="error-subfamilia" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                    <p id="error-subfamilia" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                   </div>
 
                   <!-- Nombre producto field -->
@@ -123,38 +123,38 @@
                     {{ material_form.nombre_producto }}
                     <datalist id="opciones_material">
                     </datalist>
-                    <p id="error-nombre-producto" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-                    <p id="error-nombre-producto-2" style="color:red; margin-bottom:0; display:none;">El producto con ese nombre ya existe</p>
+                    <p id="error-nombre-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El producto con ese nombre ya existe</p>
                   </div>
 
-                  <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico o N/A)</span></p>
+                  <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico, fracción o N/A)</span></p>
                   <div style="display: flex; gap: 1rem;">
                     <!-- Largo field -->
                     <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
                       <p class="m-0">{{ material_form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ material_form.largo }}
-                      <p id="error-largo" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                      <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
                     </div>
 
                     <!-- Ancho field -->
                     <div class="ancho-container" style="width: 25%; margin-bottom:1rem;">
                       <p class="m-0">{{ material_form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ material_form.ancho }}
-                      <p id="error-ancho" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                      <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
                     </div>
 
                     <!-- Alto field -->
                     <div class="alto-container" style="width: 25%; margin-bottom:1rem;">
                       <p class="m-0">{{ material_form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ material_form.alto }}
-                      <p id="error-alto" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                      <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
                     </div>
 
                     <!-- Calibre field -->
                     <div class="calibre-container" style="width: 25%; margin-bottom:1rem;">
                       <p class="m-0">{{ material_form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ material_form.calibre }}
-                      <p id="error-calibre" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                      <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
                     </div>
                   </div>
 
@@ -163,14 +163,14 @@
                     <div class="material-container" style="width: 50%; margin-bottom:1rem;">
                       <p class="m-0">{{ material_form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ material_form.material }}
-                      <p id="error-material" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-material" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Color field -->
                     <div class="color-container" style="width: 50%; margin-bottom:1rem;">
                       <p class="m-0">{{ material_form.color.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ material_form.color }}
-                      <p id="error-color" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-color" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
                   </div>
 
@@ -179,14 +179,14 @@
                     <div style="width: 50%; margin-bottom:1rem;">
                       {{ material_form.marca.label_tag }}
                       {{ material_form.marca }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Parte/Modelo field -->
                     <div style="width: 50%; margin-bottom:1rem;">
                       <label for="id_parte_modelo">Parte / Modelo:</label>
                       {{ material_form.parte_modelo }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
                   </div>
 
@@ -195,14 +195,14 @@
                     <div style="width: 50%; margin-bottom:1rem;">
                       <label for="id_nombre_comun">Nombre común:</label>
                       {{ material_form.nombre_comun }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Ing activo field -->
                     <div style="width: 50%; margin-bottom:1rem;">
                       <label for="id_ing_activo">Ingrediente activo:</label>
                       {{ material_form.ing_activo }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
                   </div>
 
@@ -211,22 +211,31 @@
                     <div style="width: 50%; margin-bottom:1rem;">
                       {{ material_form.tipo_producto.label_tag }}
                       {{ material_form.tipo_producto }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Alias field -->
                     <div style="width: 50%; margin-bottom:1rem;">
                       {{ material_form.alias.label_tag }}
                       {{ material_form.alias }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
                   </div>
 
-                  <!-- Unidad de medida field -->
-                  <div class="unidad-medida-container" style="margin-bottom:1rem;">
-                    <label for="id_unidad_medida">Unidad de medida:<span style="color: rgb(192, 0, 0);">*</span></label>
-                    {{ material_form.unidad_medida }}
-                    <p id="error-unidad-medida" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Unidad de medida field -->
+                    <div class="unidad-medida-container" style="width: 50%; margin-bottom:1rem;">
+                      <label for="id_unidad_medida">Unidad de medida:<span style="color: rgb(192, 0, 0);">*</span></label>
+                      {{ material_form.unidad_medida }}
+                      <p id="error-unidad-medida" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                    </div>
+
+                    <!-- Código SAT field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      <label for="id_codigo_sat">Código SAT:</label>
+                      {{ material_form.codigo_sat }}
+                      <p id="error-codigo-sat" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
                   </div>
 
                   <div style="display: flex; justify-content: space-between; gap: 2rem;">
@@ -234,21 +243,21 @@
                     <div style="margin-bottom:1rem;">
                       {{ material_form.es_parte_original.label_tag }}
                       {{ material_form.es_parte_original }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Es material empaque field -->
                     <div style="margin-bottom:1rem;">
                       {{ material_form.es_material_empaque.label_tag }}
                       {{ material_form.es_material_empaque }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Es prod terminado field -->
                     <div style="margin-bottom:1rem;">
                       <label for="id_es_prod_terminado">Es prod. terminado:</label>
                       {{ material_form.es_prod_terminado }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
                   </div>
 
@@ -256,12 +265,12 @@
               {% endfor %}
             </div>
 
-            <button class="btn btn-secondary mb-3" type="button" id="add-material">Agregar Material</button>
+            <button id="add-material" class="btn btn-secondary mb-3" type="button">Agregar Material</button>
           </div>
 
           <div class="d-flex gap-3">
             <button id="btn-borrador" class="btn w-100" type="submit" name="borrador" value="True" style="background-color: #3498DB; color: white; font-weight: bold;">Guardar como borrador</button>
-            <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;" disabled>Enviar</button>
+            <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Enviar</button>
           </div>
         </form>
       </div>
@@ -275,6 +284,10 @@
       const materialMigracionFields = document.getElementById('material-migracion-fields')
       const materialFormsContainer = document.getElementById('material-forms');
       const datalist = document.getElementById("opciones_material");
+
+      // Table
+      const tableMaterials = document.getElementById('table-materials')
+      const bodyMaterials = document.getElementById('tbody-materials')
 
       // Inputs
       const esMigracion = document.getElementById('id_es_migracion')
@@ -292,13 +305,13 @@
       // Error messages
       const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
       const errorEmpresaDestino = document.getElementById('error-empresa-destino')
+      const errorEmpresasMigracion = document.getElementById('error-empresas-migracion')
       const errorNombreProductoMigracion = document.getElementById('error-nombre-producto-migracion')
       const errorEmpresa = document.getElementById('error-empresa')
       const errorJustificacion = document.getElementById('error-justificacion')
-
-      // Table
-      const tableMaterials = document.getElementById('table-materials')
-      const bodyMaterials = document.getElementById('tbody-materials')
+      
+      // Regular expressions
+      const fraccionPattern = /^(\d+(\.\d+)?\/\d+(\.\d+)?)$/;
 
       // Counters and bands
       let formCount = {{ material_formset.total_form_count }};
@@ -340,6 +353,12 @@
         } else {
           errorEmpresaOrigen.style.display = 'none'
         }
+        // No se puede seleccionar la misma opción que en "Empresa destino"
+        if (empresaOrigen.value == empresaDestino.value) {
+          errorEmpresasMigracion.style.display = 'block'
+        } else {
+          errorEmpresasMigracion.style.display = 'none'
+        }
         enableSaveButton()
       })
       
@@ -349,6 +368,12 @@
           errorEmpresaDestino.style.display = 'block'
         } else {
           errorEmpresaDestino.style.display = 'none'
+        }
+        // No se puede seleccionar la misma opción que en "Empresa origen"
+        if (empresaOrigen.value == empresaDestino.value) {
+          errorEmpresasMigracion.style.display = 'block'
+        } else {
+          errorEmpresasMigracion.style.display = 'none'
         }
         enableSaveButton()
       })
@@ -440,8 +465,10 @@
                 var largoValue = input.value
                 var container = input.closest('.largo-container')
                 var errorLargo = container.querySelector('#error-largo')
-                // Verificar si el valor es "N/A" o numérico
-                if (largoValue === 'N/A' || !isNaN(parseFloat(largoValue)) && isFinite(largoValue)) {
+                // Verificar si el valor es "N/A", numérico o fracción
+                if (largoValue === 'N/A' || 
+                  !isNaN(parseFloat(largoValue)) && isFinite(largoValue) || 
+                  fraccionPattern.test(largoValue)) {
                     errorLargo.style.display = 'none'
                 } else {
                     errorLargo.style.display = 'block'
@@ -456,8 +483,10 @@
                 var anchoValue = input.value
                 var container = input.closest('.ancho-container')
                 var errorAncho = container.querySelector('#error-ancho')
-                // Verificar si el valor es "N/A" o numérico
-                if (anchoValue === 'N/A' || !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue)) {
+                // Verificar si el valor es "N/A", numérico o fracción
+                if (anchoValue === 'N/A' || 
+                  !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue) || 
+                  fraccionPattern.test(anchoValue)) {
                     errorAncho.style.display = 'none'
                 } else {
                     errorAncho.style.display = 'block'
@@ -472,8 +501,10 @@
                 var altoValue = input.value
                 var container = input.closest('.alto-container')
                 var errorAlto = container.querySelector('#error-alto')
-                // Verificar si el valor es "N/A" o numérico
-                if (altoValue === 'N/A' || !isNaN(parseFloat(altoValue)) && isFinite(altoValue)) {
+                // Verificar si el valor es "N/A", numérico o fracción
+                if (altoValue === 'N/A' || 
+                  !isNaN(parseFloat(altoValue)) && isFinite(altoValue) || 
+                  fraccionPattern.test(altoValue)) {
                     errorAlto.style.display = 'none'
                 } else {
                     errorAlto.style.display = 'block'
@@ -488,8 +519,10 @@
                 var calibreValue = input.value
                 var container = input.closest('.calibre-container')
                 var errorCalibre = container.querySelector('#error-calibre')
-                // Verificar si el valor es "N/A" o numérico
-                if (calibreValue === 'N/A' || !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue)) {
+                // Verificar si el valor es "N/A", numérico o fracción
+                if (calibreValue === 'N/A' || 
+                  !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue) || 
+                  fraccionPattern.test(calibreValue)) {
                     errorCalibre.style.display = 'none'
                 } else {
                     errorCalibre.style.display = 'block'
@@ -549,7 +582,6 @@
       const fillTable = () => {
         const materialForms = document.querySelectorAll('.material-form')
         tableMaterials.style.display = 'block'
-        btnGuardar.disabled = false
         bodyMaterials.innerHTML = ''
         materialForms.forEach((materialForm, index) => {
           const tipoAlta = materialForm.querySelector('.material-tipo-alta')
@@ -569,6 +601,7 @@
           const tipoProducto = materialForm.querySelector('.material-tipo-producto')
           const alias = materialForm.querySelector('.material-alias')
           const unidadMedida = materialForm.querySelector('.material-unidad-medida')
+          const codigoSat = materialForm.querySelector('.material-codigo-sat')
           const esMaterialEmpaque = materialForm.querySelector('.material-es-material-empaque')
           const esProdTerminado = materialForm.querySelector('.material-es-prod-terminado')
 
@@ -592,11 +625,12 @@
           <td>${marca.value}</td>
           <td>${parteModelo.value}</td>
           <td>${nombreComun.value}</td>
-          <td>${esParteOriginalValue}</td>
           <td>${ingActivo.value}</td>
           <td>${tipoProducto.value}</td>
           <td>${alias.value}</td>
           <td>${unidadMedida.value}</td>
+          <td>${codigoSat.value}</td>
+          <td>${esParteOriginalValue}</td>
           <td>${esMaterialEmpaqueValue}</td>
           <td>${esProdTerminadoValue}</td>
           <td>
@@ -632,51 +666,51 @@
             <div class="tipo-alta-container" style="margin-bottom:1rem;">
               <p class="m-0">{{ material_formset.empty_form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ material_formset.empty_form.tipo_alta }}
-              <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <!-- Subfamilia field -->
             <div class="subfamilia-container" style="margin-bottom:1rem;">
               <p class="m-0">{{ material_formset.empty_form.subfamilia.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ material_formset.empty_form.subfamilia }}
-              <p id="error-subfamilia" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              <p id="error-subfamilia" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <!-- Nombre producto field -->
             <div class="nombre-producto-container" style="margin-bottom:1rem;">
               <p class="m-0">{{ material_formset.empty_form.nombre_producto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ material_formset.empty_form.nombre_producto }}
-              <p id="error-nombre-producto" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              <p id="error-nombre-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
             </div>
 
-            <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico o N/A)</span></p>
+            <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico, fracción o N/A)</span></p>
             <div style="display: flex; gap: 1rem;">
               <!-- Largo field -->
               <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
                 <p class="m-0">{{ material_formset.empty_form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ material_formset.empty_form.largo }}
-                <p id="error-largo" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
               </div>
 
               <!-- Ancho field -->
               <div class="ancho-container" style="width: 25%; margin-bottom:1rem;">
                 <p class="m-0">{{ material_formset.empty_form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ material_formset.empty_form.ancho }}
-                <p id="error-ancho" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
               </div>
 
               <!-- Alto field -->
               <div class="alto-container" style="width: 25%; margin-bottom:1rem;">
                 <p class="m-0">{{ material_formset.empty_form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ material_formset.empty_form.alto }}
-                <p id="error-alto" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
               </div>
 
               <!-- Calibre field -->
               <div class="calibre-container" style="width: 25%; margin-bottom:1rem;">
                 <p class="m-0">{{ material_formset.empty_form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ material_formset.empty_form.calibre }}
-                <p id="error-calibre" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
               </div>
             </div>
 
@@ -685,14 +719,14 @@
               <div class="material-container" style="width: 50%; margin-bottom:1rem;">
                 <p class="m-0">{{ material_formset.empty_form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ material_formset.empty_form.material }}
-                <p id="error-material" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-material" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
 
               <!-- Color field -->
               <div class="color-container" style="width: 50%; margin-bottom:1rem;">
                 <p class="m-0">{{ material_formset.empty_form.color.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ material_formset.empty_form.color }}
-                <p id="error-color" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-color" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
             </div>
 
@@ -701,14 +735,14 @@
               <div style="width: 50%; margin-bottom:1rem;">
                 {{ material_formset.empty_form.marca.label_tag }}
                 {{ material_formset.empty_form.marca }}
-                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
 
               <!-- Parte/Modelo field -->
               <div style="width: 50%; margin-bottom:1rem;">
                 <label for="id_parte_modelo">Parte / Modelo:</label>
                 {{ material_formset.empty_form.parte_modelo }}
-                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
             </div>
 
@@ -717,14 +751,14 @@
               <div style="width: 50%; margin-bottom:1rem;">
                 <label for="id_nombre_comun">Nombre común:</label>
                 {{ material_formset.empty_form.nombre_comun }}
-                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
 
               <!-- Ing activo field -->
               <div style="width: 50%; margin-bottom:1rem;">
                 <label for="id_ing_activo">Ingrediente activo:</label>
                 {{ material_formset.empty_form.ing_activo }}
-                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
             </div>
 
@@ -733,22 +767,31 @@
               <div style="width: 50%; margin-bottom:1rem;">
                 {{ material_formset.empty_form.tipo_producto.label_tag }}
                 {{ material_formset.empty_form.tipo_producto }}
-                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
 
               <!-- Alias field -->
               <div style="width: 50%; margin-bottom:1rem;">
                 {{ material_formset.empty_form.alias.label_tag }}
                 {{ material_formset.empty_form.alias }}
-                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
             </div>
 
-            <!-- Unidad de medida field -->
-            <div class="unidad-medida-container" style="margin-bottom:1rem;">
-              <label for="id_unidad_medida">Unidad de medida:<span style="color: rgb(192, 0, 0);">*</span></label>
-              {{ material_formset.empty_form.unidad_medida }}
-              <p id="error-unidad-medida" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            <div style="display: flex; gap: 1rem;">
+              <!-- Unidad de medida field -->
+              <div class="unidad-medida-container" style="width: 50%; margin-bottom:1rem;">
+                <label for="id_unidad_medida">Unidad de medida:<span style="color: rgb(192, 0, 0);">*</span></label>
+                {{ material_formset.empty_form.unidad_medida }}
+                <p id="error-unidad-medida" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
+
+              <!-- Código SAT field -->
+              <div style="width: 50%; margin-bottom:1rem;">
+                <label for="id_codigo_sat">Código SAT:</label>
+                {{ material_formset.empty_form.codigo_sat }}
+                <p id="error-codigo-sat" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+              </div>
             </div>
 
             <div style="display: flex; justify-content: space-between; gap: 2rem;">
@@ -756,21 +799,21 @@
               <div style="margin-bottom:1rem;">
                 {{ material_formset.empty_form.es_parte_original.label_tag }}
                 {{ material_formset.empty_form.es_parte_original }}
-                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
 
               <!-- Es material empaque field -->
               <div style="margin-bottom:1rem;">
                 {{ material_formset.empty_form.es_material_empaque.label_tag }}
                 {{ material_formset.empty_form.es_material_empaque }}
-                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
 
               <!-- Es prod terminado field -->
               <div style="margin-bottom:1rem;">
                 <label for="id_es_prod_terminado">Es prod. terminado:</label>
                 {{ material_formset.empty_form.es_prod_terminado }}
-                <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
             </div>
           `;
@@ -789,7 +832,8 @@
         validarCamposMaterial()
       }
     
-      btnAddMaterial.addEventListener('click', function() {
+      btnAddMaterial.addEventListener('click', () => {
+        // Inputs
         var tipoAlta
         var subfamilia
         var nombreProducto
@@ -800,39 +844,52 @@
         var material
         var color
         var unidadMedida
+        var codigoSat
 
         if (!editingBand) {
-          tipoAlta = document.getElementById(`id_material-${materialCounter}-tipo_alta`).value
-          subfamilia = document.getElementById(`id_material-${materialCounter}-subfamilia`).value
-          nombreProducto = document.getElementById(`id_material-${materialCounter}-nombre_producto`).value
-          largo = document.getElementById(`id_material-${materialCounter}-largo`).value
-          ancho = document.getElementById(`id_material-${materialCounter}-ancho`).value
-          alto = document.getElementById(`id_material-${materialCounter}-alto`).value
-          calibre = document.getElementById(`id_material-${materialCounter}-calibre`).value
-          material = document.getElementById(`id_material-${materialCounter}-material`).value
-          color = document.getElementById(`id_material-${materialCounter}-color`).value
-          unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`).value
+          tipoAlta = document.getElementById(`id_material-${materialCounter}-tipo_alta`)
+          subfamilia = document.getElementById(`id_material-${materialCounter}-subfamilia`)
+          nombreProducto = document.getElementById(`id_material-${materialCounter}-nombre_producto`)
+          largo = document.getElementById(`id_material-${materialCounter}-largo`)
+          ancho = document.getElementById(`id_material-${materialCounter}-ancho`)
+          alto = document.getElementById(`id_material-${materialCounter}-alto`)
+          calibre = document.getElementById(`id_material-${materialCounter}-calibre`)
+          material = document.getElementById(`id_material-${materialCounter}-material`)
+          color = document.getElementById(`id_material-${materialCounter}-color`)
+          unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`)
+          codigoSat = document.getElementById(`id_material-${materialCounter}-codigo_sat`)
         }
         else {
-          tipoAlta = document.getElementById(`id_material-${editingId}-tipo_alta`).value
-          subfamilia = document.getElementById(`id_material-${editingId}-subfamilia`).value
-          nombreProducto = document.getElementById(`id_material-${editingId}-nombre_producto`).value
-          largo = document.getElementById(`id_material-${editingId}-largo`).value
-          ancho = document.getElementById(`id_material-${editingId}-ancho`).value
-          alto = document.getElementById(`id_material-${editingId}-alto`).value
-          calibre = document.getElementById(`id_material-${editingId}-calibre`).value
-          material = document.getElementById(`id_material-${editingId}-material`).value
-          color = document.getElementById(`id_material-${editingId}-color`).value
-          unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`).value
+          tipoAlta = document.getElementById(`id_material-${editingId}-tipo_alta`)
+          subfamilia = document.getElementById(`id_material-${editingId}-subfamilia`)
+          nombreProducto = document.getElementById(`id_material-${editingId}-nombre_producto`)
+          largo = document.getElementById(`id_material-${editingId}-largo`)
+          ancho = document.getElementById(`id_material-${editingId}-ancho`)
+          alto = document.getElementById(`id_material-${editingId}-alto`)
+          calibre = document.getElementById(`id_material-${editingId}-calibre`)
+          material = document.getElementById(`id_material-${editingId}-material`)
+          color = document.getElementById(`id_material-${editingId}-color`)
+          unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`)
+          codigoSat = document.getElementById(`id_material-${editingId}-codigo_sat`)
         }
 
-        if(tipoAlta !== '' && subfamilia !== '' && nombreProducto !== '' && largo !== '' && ancho !== '' && alto !== '' && calibre !== '' && material !== '' && color !== '' && unidadMedida !== '') {
+        const errorTipoAlta = tipoAlta.closest('.tipo-alta-container').querySelector('#error-tipo-alta')
+        const errorNombreProducto = nombreProducto.closest('.nombre-producto-container').querySelector('#error-nombre-producto')
+        const errorLargo = largo.closest('.largo-container').querySelector('#error-largo')
+        const errorAncho = ancho.closest('.ancho-container').querySelector('#error-ancho')
+        const errorAlto = alto.closest('.alto-container').querySelector('#error-alto')
+        const errorCalibre = calibre.closest('.calibre-container').querySelector('#error-calibre')
+        const errorMaterial = material.closest('.material-container').querySelector('#error-material')
+        const errorColor = color.closest('.color-container').querySelector('#error-color')
+        const errorUnidadMedida = unidadMedida.closest('.unidad-medida-container').querySelector('#error-unidad-medida')
+
+        if(tipoAlta.value == '' || subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || calibre.value == '' || material.value == '' || color.value == '' || unidadMedida.value == '' || errorTipoAlta.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
+          window.alert('Algún campo está vacío o es incorrecto')
+        }
+        else {
           fillTable()
           createMaterialForm()
           btnAddMaterial.innerHTML = 'Agregar Material'
-        }
-        else {
-          window.alert('Algún campo está vacío')
         }
       });
 
@@ -988,11 +1045,21 @@
       });
 
       function enableSaveButton() {
-        if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block') {
-          btnGuardar.disabled = true
+        if(esMigracion.checked) {
+          if(errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorEmpresasMigracion.style.display == 'block' || errorNombreProductoMigracion.style.display == 'block') {
+            btnGuardar.disabled = true
+          }
+          else {
+            btnGuardar.disabled = false
+          }
         }
         else {
-          btnGuardar.disabled = false
+          if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block') {
+            btnGuardar.disabled = true
+          }
+          else {
+            btnGuardar.disabled = false
+          }
         }
       }
 

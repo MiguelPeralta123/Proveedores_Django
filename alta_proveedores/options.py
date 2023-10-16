@@ -191,6 +191,8 @@ REGIMEN_CAPITAL_LIST = [
     ('UNION DE SOCIEDADES DE PRODUCCION RURAL DE RESPONSABILIDAD SUPLEMENTADA - U. de S. de P.R. de R.S.', 'UNION DE SOCIEDADES DE PRODUCCION RURAL DE RESPONSABILIDAD SUPLEMENTADA - U. de S. de P.R. de R.S.'),
     ('UNIDAD ECONOMICA - U.E', 'UNIDAD ECONOMICA - U.E'),
 ]
+# Ordenar la lista alfabéticamente en función de las etiquetas
+REGIMEN_CAPITAL_LIST = sorted(REGIMEN_CAPITAL_LIST, key=lambda item: item[1])
 
 REGIMEN_FISCAL_LIST = [
     ('', 'Seleccione una opción'),
@@ -281,6 +283,8 @@ RUBRO_LIST = [
     ('Transporte y distribución', 'Transporte y distribución'),
     ('Turismo', 'Turismo'),
 ]
+# Ordenar la lista alfabéticamente en función de las etiquetas
+RUBRO_LIST = sorted(RUBRO_LIST, key=lambda item: item[1])
 
 TIPO_OPERACION_LIST = [
     ('', 'Seleccione una opción'),
@@ -427,6 +431,8 @@ BANCO_LIST = [
     ('Zurich Companía de Seguros S.A. de C.V.', 'Zurich Companía de Seguros S.A. de C.V.'),
     ('Zurich Vida Companía de Seguros S.A. de C.V.', 'Zurich Vida Companía de Seguros S.A. de C.V.'),
 ]
+# Ordenar la lista alfabéticamente en función de las etiquetas
+BANCO_LIST = sorted(BANCO_LIST, key=lambda item: item[1])
 
 MONEDA_LIST = [
     ('', 'Seleccione una opción'),

@@ -18,6 +18,13 @@
                 </div>
             {% endif %}
 
+            {% if current_user.compras == True or current_user.finanzas == True or current_user.sistemas == True %}
+                <div id="filtrar-solicitudes-container_aprobador" class="mt-5">
+                    <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Pendietes</button>
+                    <button id="btn-filtrar-mis-proveedores" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
+                </div>
+            {% endif %}
+
             <ul id="proveedores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                 {% for proveedor in proveedores %}
                     <a class="list-group-item my-3 border rounded provider-card" 
@@ -76,6 +83,67 @@
                     </a>
                 {% endfor %}
             </ul>
+
+            {% if current_user.compras == True or current_user.finanzas == True or current_user.sistemas == True %}
+                <ul id="mis-proveedores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
+                    {% for proveedor in mis_proveedores %}
+                        <a class="list-group-item my-3 border rounded provider-card" 
+                            href="{% url 'proveedor_detail' proveedor.id %}"
+                            style="transition: 0.2s ease-in-out;">
+                            <div class="d-flex justify-content-between gap-3 my-2">
+                                {% if proveedor.nombre_comercial != '' %}
+                                    <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
+                                {% else %}
+                                    <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                                {% endif %}
+                                <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
+                            </div>
+                            <p><b>Solicitante:</b> {{proveedor.usuario.get_full_name}}</p>
+                            <div class="d-flex justify-content-between gap-3">
+                                {% if proveedor.empresa != '' %}
+                                    <p><b>Empresa:</b> {{proveedor.empresa}}</p>
+                                {% else %}
+                                    <p><b>Empresa:</b> {{proveedor.empresa_destino}}</p>
+                                {% endif %}
+                                <p><b>Fecha:</b> {{proveedor.fecha}}</p>
+                            </div>
+                            {% if proveedor.borrador %}
+                            <p class="text-success">✎ Guardado como borrador</p>
+                            {% endif %}
+                            {% if proveedor.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
+                            {% endif %}
+                            {% if proveedor.compras %}
+                            <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% endif %}
+                            {% if proveedor.rechazado_compras %}
+                            <p class="text-success">❌ Rechazado por compras</p>
+                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% endif %}
+                            {% if proveedor.finanzas %}
+                            <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% endif %}
+                            {% if proveedor.rechazado_finanzas %}
+                            <p class="text-success">❌ Rechazado por finanzas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% endif %}
+                            {% if proveedor.sistemas %}
+                            <p class="text-success">✅ Aprobado</p>
+                            {% endif %}
+                            {% if proveedor.rechazado_sistemas %}
+                            <p class="text-success">❌ Rechazado por sistemas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% endif %}
+
+                            {% for cambio in historial %}
+                                {% if proveedor.id == cambio.id_proveedor %}
+                                    <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                                {% endif %}
+                            {% endfor %}
+                        </a>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
                 <ul id="proveedores-borradores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
@@ -388,6 +456,11 @@
             grid-template-columns: repeat(3, 1fr);
         }
     }
+    #filtrar-solicitudes-container_aprobador {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
     .btn-filtrar {
         background-color: rgb(0, 128, 0, 0.6);
         transition: 0.2s ease-in-out;
@@ -418,6 +491,7 @@
         
         // Containers
         const proveedoresList = document.getElementById("proveedores-list")
+        const misProveedoresList = document.getElementById("mis-proveedores-list")
         const proveedoresBorradoresList = document.getElementById("proveedores-borradores-list")
         const proveedoresPendientesList = document.getElementById("proveedores-pendientes-list")
         const proveedoresRechazadosList = document.getElementById("proveedores-rechazados-list")
@@ -426,6 +500,7 @@
 
         // Buttons
         const btnTodas = document.getElementById('btn-filtrar-todas')
+        const btnMisProveedores = document.getElementById('btn-filtrar-mis-proveedores')
         const btnBorradores = document.getElementById('btn-filtrar-borradores')
         const btnPendientes = document.getElementById('btn-filtrar-pendientes')
         const btnRechazadas = document.getElementById('btn-filtrar-rechazadas')
@@ -433,131 +508,201 @@
         const btnEliminadas = document.getElementById('btn-filtrar-eliminadas')
 
         // List all requests from newest to oldest
-        const proveedoresItems = Array.from(proveedoresList.children).reverse()
-        proveedoresList.innerHTML = ""
-        if (proveedoresItems.length > 0) {
-            proveedoresItems.forEach(item => {
-                proveedoresList.appendChild(item)
-            });
-        } else {
-            proveedoresList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud</p>"
+        if (proveedoresList) {
+            const proveedoresItems = Array.from(proveedoresList.children).reverse()
+            proveedoresList.innerHTML = ""
+            if (proveedoresItems.length > 0) {
+                proveedoresItems.forEach(item => {
+                    proveedoresList.appendChild(item)
+                });
+            } else {
+                proveedoresList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud</p>"
+            }
+            proveedoresList.style.display = 'block'
         }
-        proveedoresList.style.display = 'block'
+
+        // List my requests from newest to oldest
+        if (misProveedoresList) {
+            const misProveedoresItems = Array.from(misProveedoresList.children).reverse()
+            misProveedoresList.innerHTML = ""
+            if (misProveedoresItems.length > 0) {
+                misProveedoresItems.forEach(item => {
+                    misProveedoresList.appendChild(item)
+                });
+            } else {
+                misProveedoresList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud</p>"
+            }
+        }
 
         // List draft requests from newest to oldest
-        const proveedoresBorradoresItems = Array.from(proveedoresBorradoresList.children).reverse()
-        proveedoresBorradoresList.innerHTML = ""
-        if (proveedoresBorradoresItems.length > 0) {
-            proveedoresBorradoresItems.forEach(item => {
-                proveedoresBorradoresList.appendChild(item)
-            });
-        } else {
-            proveedoresBorradoresList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ningún borrador de solicitud</p>"
+        if (proveedoresBorradoresList) {
+            const proveedoresBorradoresItems = Array.from(proveedoresBorradoresList.children).reverse()
+            proveedoresBorradoresList.innerHTML = ""
+            if (proveedoresBorradoresItems.length > 0) {
+                proveedoresBorradoresItems.forEach(item => {
+                    proveedoresBorradoresList.appendChild(item)
+                });
+            } else {
+                proveedoresBorradoresList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ningún borrador de solicitud</p>"
+            }
         }
 
         // List pending requests from newest to oldest
-        const proveedoresPendientesItems = Array.from(proveedoresPendientesList.children).reverse()
-        proveedoresPendientesList.innerHTML = ""
-        if (proveedoresPendientesItems.length > 0) {
-            proveedoresPendientesItems.forEach(item => {
-                proveedoresPendientesList.appendChild(item)
-            });
-        } else {
-            proveedoresPendientesList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud pendiente</p>"
+        if (proveedoresPendientesList) {
+            const proveedoresPendientesItems = Array.from(proveedoresPendientesList.children).reverse()
+            proveedoresPendientesList.innerHTML = ""
+            if (proveedoresPendientesItems.length > 0) {
+                proveedoresPendientesItems.forEach(item => {
+                    proveedoresPendientesList.appendChild(item)
+                });
+            } else {
+                proveedoresPendientesList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud pendiente</p>"
+            }
         }
 
         // List declined requests from newest to oldest
-        const proveedoresRechazadosItems = Array.from(proveedoresRechazadosList.children).reverse()
-        proveedoresRechazadosList.innerHTML = ""
-        if (proveedoresRechazadosItems.length > 0) {
-            proveedoresRechazadosItems.forEach(item => {
-                proveedoresRechazadosList.appendChild(item)
-            });
-        } else {
-            proveedoresRechazadosList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud rechazada</p>"
+        if (proveedoresRechazadosList) {
+            const proveedoresRechazadosItems = Array.from(proveedoresRechazadosList.children).reverse()
+            proveedoresRechazadosList.innerHTML = ""
+            if (proveedoresRechazadosItems.length > 0) {
+                proveedoresRechazadosItems.forEach(item => {
+                    proveedoresRechazadosList.appendChild(item)
+                });
+            } else {
+                proveedoresRechazadosList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud rechazada</p>"
+            }
         }
 
         // List approved requests from newest to oldest
-        const proveedoresAprobadosItems = Array.from(proveedoresAprobadosList.children).reverse()
-        proveedoresAprobadosList.innerHTML = ""
-        if (proveedoresAprobadosItems.length > 0) {
-            proveedoresAprobadosItems.forEach(item => {
-                proveedoresAprobadosList.appendChild(item)
-            });
-        } else {
-            proveedoresAprobadosList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud aprobada</p>"
+        if (proveedoresAprobadosList) {
+            const proveedoresAprobadosItems = Array.from(proveedoresAprobadosList.children).reverse()
+            proveedoresAprobadosList.innerHTML = ""
+            if (proveedoresAprobadosItems.length > 0) {
+                proveedoresAprobadosItems.forEach(item => {
+                    proveedoresAprobadosList.appendChild(item)
+                });
+            } else {
+                proveedoresAprobadosList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud aprobada</p>"
+            }
         }
 
         // List deleted requests from newest to oldest
-        const proveedoresEliminadosItems = Array.from(proveedoresEliminadosList.children).reverse()
-        proveedoresEliminadosList.innerHTML = ""
-        if (proveedoresEliminadosItems.length > 0) {
-            proveedoresEliminadosItems.forEach(item => {
-                proveedoresEliminadosList.appendChild(item)
-            });
-        } else {
-            proveedoresEliminadosList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud eliminada</p>"
+        if (proveedoresEliminadosList) {
+            const proveedoresEliminadosItems = Array.from(proveedoresEliminadosList.children).reverse()
+            proveedoresEliminadosList.innerHTML = ""
+            if (proveedoresEliminadosItems.length > 0) {
+                proveedoresEliminadosItems.forEach(item => {
+                    proveedoresEliminadosList.appendChild(item)
+                });
+            } else {
+                proveedoresEliminadosList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud eliminada</p>"
+            }
         }
 
         // Filter items by status
         if (btnTodas) {
             btnTodas.addEventListener('click', () => {
                 proveedoresList.style.display = 'block'
-                proveedoresBorradoresList.style.display = 'none'
-                proveedoresPendientesList.style.display = 'none'
-                proveedoresRechazadosList.style.display = 'none'
-                proveedoresAprobadosList.style.display = 'none'
-                proveedoresEliminadosList.style.display = 'none'
+                if (misProveedoresList) {
+                    misProveedoresList.style.display = 'none'
+                }
+                else {
+                    proveedoresBorradoresList.style.display = 'none'
+                    proveedoresPendientesList.style.display = 'none'
+                    proveedoresRechazadosList.style.display = 'none'
+                    proveedoresAprobadosList.style.display = 'none'
+                    proveedoresEliminadosList.style.display = 'none'
+                }
+            })
+        }
+        if (btnMisProveedores) {
+            btnMisProveedores.addEventListener('click', () => {
+                proveedoresList.style.display = 'none'
+                if (misProveedoresList) {
+                    misProveedoresList.style.display = 'block'
+                }
+                else {
+                    proveedoresBorradoresList.style.display = 'none'
+                    proveedoresPendientesList.style.display = 'none'
+                    proveedoresRechazadosList.style.display = 'none'
+                    proveedoresAprobadosList.style.display = 'none'
+                    proveedoresEliminadosList.style.display = 'none'
+                }
             })
         }
         if (btnBorradores) {
             btnBorradores.addEventListener('click', () => {
                 proveedoresList.style.display = 'none'
-                proveedoresBorradoresList.style.display = 'block'
-                proveedoresPendientesList.style.display = 'none'
-                proveedoresRechazadosList.style.display = 'none'
-                proveedoresAprobadosList.style.display = 'none'
-                proveedoresEliminadosList.style.display = 'none'
+                if (misProveedoresList) {
+                    misProveedoresList.style.display = 'none'
+                }
+                else {
+                    proveedoresBorradoresList.style.display = 'block'
+                    proveedoresPendientesList.style.display = 'none'
+                    proveedoresRechazadosList.style.display = 'none'
+                    proveedoresAprobadosList.style.display = 'none'
+                    proveedoresEliminadosList.style.display = 'none'
+                }
             })
         }
         if (btnPendientes) {
             btnPendientes.addEventListener('click', () => {
                 proveedoresList.style.display = 'none'
-                proveedoresBorradoresList.style.display = 'none'
-                proveedoresPendientesList.style.display = 'block'
-                proveedoresRechazadosList.style.display = 'none'
-                proveedoresAprobadosList.style.display = 'none'
-                proveedoresEliminadosList.style.display = 'none'
+                if (misProveedoresList) {
+                    misProveedoresList.style.display = 'none'
+                }
+                else {
+                    proveedoresBorradoresList.style.display = 'none'
+                    proveedoresPendientesList.style.display = 'block'
+                    proveedoresRechazadosList.style.display = 'none'
+                    proveedoresAprobadosList.style.display = 'none'
+                    proveedoresEliminadosList.style.display = 'none'
+                }
             })
         }
         if (btnRechazadas) {
             btnRechazadas.addEventListener('click', () => {
                 proveedoresList.style.display = 'none'
-                proveedoresBorradoresList.style.display = 'none'
-                proveedoresPendientesList.style.display = 'none'
-                proveedoresRechazadosList.style.display = 'block'
-                proveedoresAprobadosList.style.display = 'none'
-                proveedoresEliminadosList.style.display = 'none'
+                if (misProveedoresList) {
+                    misProveedoresList.style.display = 'none'
+                }
+                else {
+                    proveedoresBorradoresList.style.display = 'none'
+                    proveedoresPendientesList.style.display = 'none'
+                    proveedoresRechazadosList.style.display = 'block'
+                    proveedoresAprobadosList.style.display = 'none'
+                    proveedoresEliminadosList.style.display = 'none'
+                }
             })
         }
         if (btnAprobadas) {
             btnAprobadas.addEventListener('click', () => {
                 proveedoresList.style.display = 'none'
-                proveedoresBorradoresList.style.display = 'none'
-                proveedoresPendientesList.style.display = 'none'
-                proveedoresRechazadosList.style.display = 'none'
-                proveedoresAprobadosList.style.display = 'block'
-                proveedoresEliminadosList.style.display = 'none'
+                if (misProveedoresList) {
+                    misProveedoresList.style.display = 'none'
+                }
+                else {
+                    proveedoresBorradoresList.style.display = 'none'
+                    proveedoresPendientesList.style.display = 'none'
+                    proveedoresRechazadosList.style.display = 'none'
+                    proveedoresAprobadosList.style.display = 'block'
+                    proveedoresEliminadosList.style.display = 'none'
+                }
             })
         }
         if (btnEliminadas) {
             btnEliminadas.addEventListener('click', () => {
                 proveedoresList.style.display = 'none'
-                proveedoresBorradoresList.style.display = 'none'
-                proveedoresPendientesList.style.display = 'none'
-                proveedoresRechazadosList.style.display = 'none'
-                proveedoresAprobadosList.style.display = 'none'
-                proveedoresEliminadosList.style.display = 'block'
+                if (misProveedoresList) {
+                    misProveedoresList.style.display = 'none'
+                }
+                else {
+                    proveedoresBorradoresList.style.display = 'none'
+                    proveedoresPendientesList.style.display = 'none'
+                    proveedoresRechazadosList.style.display = 'none'
+                    proveedoresAprobadosList.style.display = 'none'
+                    proveedoresEliminadosList.style.display = 'block'
+                }
             })
         }
     });

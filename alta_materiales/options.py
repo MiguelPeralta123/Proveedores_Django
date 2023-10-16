@@ -144,3 +144,5 @@ UNIDAD_MEDIDA_LIST = [
     ('Kit', 'Kit'),
     ('Porron', 'Porron'),
 ]
+# Ordenar la lista alfabéticamente en función de las etiquetas
+UNIDAD_MEDIDA_LIST = sorted(UNIDAD_MEDIDA_LIST, key=lambda item: item[1])

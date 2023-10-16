@@ -33,7 +33,7 @@ class SolicitudForm(forms.ModelForm):
 class MaterialForm(forms.ModelForm):
     class Meta:
         model = Material
-        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'calibre', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'es_material_empaque', 'es_prod_terminado']
+        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'calibre', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'codigo_sat', 'es_material_empaque', 'es_prod_terminado']
         widgets = {
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta select-tipo-alta', 'initial':''}),
             'subfamilia': forms.Select(choices=SUBFAMILIA_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
@@ -52,6 +52,7 @@ class MaterialForm(forms.ModelForm):
             'tipo_producto': forms.TextInput(attrs={'class':'form-control material-tipo-producto'}),
             'alias': forms.TextInput(attrs={'class':'form-control material-alias'}),
             'unidad_medida': forms.Select(choices=UNIDAD_MEDIDA_LIST, attrs={'class':'form-control material-unidad-medida select-unidad-medida', 'initial':''}),
+            'codigo_sat': forms.TextInput(attrs={'class':'form-control material-codigo-sat'}),
             'es_material_empaque': forms.CheckboxInput(attrs={'class':'form-checkbox material-es-material-empaque'}),
             'es_prod_terminado': forms.CheckboxInput(attrs={'class':'form-checkbox material-es-prod-terminado'}),
         }
@@ -82,7 +83,7 @@ class SolicitudDetailForm(forms.ModelForm):
 class MaterialDetailForm(forms.ModelForm):
     class Meta:
         model = Material
-        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'calibre', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'es_material_empaque', 'es_prod_terminado']
+        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'calibre', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_parte_original', 'ing_activo', 'tipo_producto', 'alias', 'unidad_medida', 'codigo_sat', 'es_material_empaque', 'es_prod_terminado']
         widgets = {
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta select-tipo-alta', 'initial':''}),
             'subfamilia': forms.Select(choices=SUBFAMILIA_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
@@ -101,6 +102,7 @@ class MaterialDetailForm(forms.ModelForm):
             'tipo_producto': forms.TextInput(attrs={'class':'form-control material-tipo-producto'}),
             'alias': forms.TextInput(attrs={'class':'form-control material-alias'}),
             'unidad_medida': forms.Select(choices=UNIDAD_MEDIDA_LIST, attrs={'class':'form-control material-unidad-medida select-unidad-medida', 'initial':''}),
+            'codigo_sat': forms.TextInput(attrs={'class':'form-control material-codigo-sat'}),
             'es_material_empaque': forms.CheckboxInput(attrs={'class':'form-checkbox material-es-material-empaque'}),
             'es_prod_terminado': forms.CheckboxInput(attrs={'class':'form-checkbox material-es-prod-terminado'}),
         }

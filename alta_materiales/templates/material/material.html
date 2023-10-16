@@ -18,6 +18,13 @@
                 </div>
             {% endif %}
 
+            {% if current_user.compras == True or current_user.finanzas == True or current_user.sistemas == True %}
+                <div id="filtrar-solicitudes-container_aprobador" class="mt-5">
+                    <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Pendietes</button>
+                    <button id="btn-filtrar-mis-solicitudes" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
+                </div>
+            {% endif %}
+
             <ul id="solicitudes-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                 {% for solicitud in solicitudes %}
                     <a class="list-group-item my-3 border rounded material-card"
@@ -67,6 +74,58 @@
                     </a>
                 {% endfor %}
             </ul>
+
+            {% if current_user.compras == True or current_user.finanzas == True or current_user.sistemas == True %}
+                <ul id="mis-solicitudes-list" style="list-style-type: none; display: none;" class="list-group mt-4">
+                    {% for solicitud in mis_solicitudes %}
+                        <a class="list-group-item my-3 border rounded material-card"
+                            href="{% url 'material_detail' solicitud.id %}"
+                            style="transition: 0.2s ease-in-out;">
+                            <div class="d-flex justify-content-between gap-3 my-2">
+                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
+                            </div>
+                            <div class="d-flex justify-content-between gap-3">
+                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                <p><b>Fecha:</b> {{solicitud.fecha}}</p>
+                            </div>
+                            {% if solicitud.borrador %}
+                            <p class="text-success">✎ Guardado como borrador</p>
+                            {% endif %}
+                            {% if solicitud.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
+                            {% endif %}
+                            {% if solicitud.compras %}
+                            <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_compras %}
+                            <p class="text-danger">❌ Rechazado por compras</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.finanzas %}
+                            <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_finanzas %}
+                            <p class="text-danger">❌ Rechazado por finanzas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+                            {% if solicitud.sistemas %}
+                            <p class="text-success">✅ Aprobado</p>
+                            {% endif %}
+                            {% if solicitud.rechazado_sistemas %}
+                            <p class="text-danger">❌ Rechazado por sistemas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% endif %}
+
+                            {% for cambio in historial %}
+                                {% if solicitud.id == cambio.id_solicitud %}
+                                    <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                                {% endif %}
+                            {% endfor %}
+                        </a>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
                 <ul id="solicitudes-borradores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
@@ -334,6 +393,11 @@
             grid-template-columns: repeat(3, 1fr);
         }
     }
+    #filtrar-solicitudes-container_aprobador {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
     .btn-filtrar {
         background-color: rgb(0, 128, 0, 0.6);
         transition: 0.2s ease-in-out;
@@ -363,6 +427,7 @@
     document.addEventListener("DOMContentLoaded", function() {
         // Containers
         const solicitudesList = document.getElementById("solicitudes-list")
+        const misSolicitudesList = document.getElementById("mis-solicitudes-list")
         const solicitudesBorradoresList = document.getElementById("solicitudes-borradores-list")
         const solicitudesPendientesList = document.getElementById("solicitudes-pendientes-list")
         const solicitudesRechazadasList = document.getElementById("solicitudes-rechazadas-list")
@@ -370,6 +435,7 @@
         const solicitudesEliminadasList = document.getElementById("solicitudes-eliminadas-list")
         // Buttons
         const btnTodas = document.getElementById('btn-filtrar-todas')
+        const btnMisSolicitudes = document.getElementById('btn-filtrar-mis-solicitudes')
         const btnBorradores = document.getElementById('btn-filtrar-borradores')
         const btnPendientes = document.getElementById('btn-filtrar-pendientes')
         const btnRechazadas = document.getElementById('btn-filtrar-rechazadas')
@@ -377,131 +443,201 @@
         const btnEliminadas = document.getElementById('btn-filtrar-eliminadas')
 
         // List all requests from newest to oldest
-        const solicitudesItems = Array.from(solicitudesList.children).reverse()
-        solicitudesList.innerHTML = ""
-        if (solicitudesItems.length > 0) {
-            solicitudesItems.forEach(item => {
-                solicitudesList.appendChild(item)
-            });
-        } else {
-            solicitudesList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud</p>"
+        if (solicitudesList) {
+            const solicitudesItems = Array.from(solicitudesList.children).reverse()
+            solicitudesList.innerHTML = ""
+            if (solicitudesItems.length > 0) {
+                solicitudesItems.forEach(item => {
+                    solicitudesList.appendChild(item)
+                });
+            } else {
+                solicitudesList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud</p>"
+            }
+            solicitudesList.style.display = 'block'
         }
-        solicitudesList.style.display = 'block'
+
+        // List my requests from newest to oldest
+        if (misSolicitudesList) {
+            const misSolicitudesItems = Array.from(misSolicitudesList.children).reverse()
+            misSolicitudesList.innerHTML = ""
+            if (misSolicitudesItems.length > 0) {
+                misSolicitudesItems.forEach(item => {
+                    misSolicitudesList.appendChild(item)
+                });
+            } else {
+                misSolicitudesList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ningún borrador de solicitud</p>"
+            }
+        }
 
         // List draft requests from newest to oldest
-        const solicitudesBorradoresItems = Array.from(solicitudesBorradoresList.children).reverse()
-        solicitudesBorradoresList.innerHTML = ""
-        if (solicitudesBorradoresItems.length > 0) {
-            solicitudesBorradoresItems.forEach(item => {
-                solicitudesBorradoresList.appendChild(item)
-            });
-        } else {
-            solicitudesBorradoresList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ningún borrador de solicitud</p>"
+        if (solicitudesBorradoresList) {
+            const solicitudesBorradoresItems = Array.from(solicitudesBorradoresList.children).reverse()
+            solicitudesBorradoresList.innerHTML = ""
+            if (solicitudesBorradoresItems.length > 0) {
+                solicitudesBorradoresItems.forEach(item => {
+                    solicitudesBorradoresList.appendChild(item)
+                });
+            } else {
+                solicitudesBorradoresList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ningún borrador de solicitud</p>"
+            }
         }
 
         // List pending requests from newest to oldest
-        const solicitudesPendientesItems = Array.from(solicitudesPendientesList.children).reverse()
-        solicitudesPendientesList.innerHTML = ""
-        if (solicitudesPendientesItems.length > 0) {
-            solicitudesPendientesItems.forEach(item => {
-                solicitudesPendientesList.appendChild(item)
-            });
-        } else {
-            solicitudesPendientesList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud pendiente</p>"
+        if (solicitudesPendientesList) {
+            const solicitudesPendientesItems = Array.from(solicitudesPendientesList.children).reverse()
+            solicitudesPendientesList.innerHTML = ""
+            if (solicitudesPendientesItems.length > 0) {
+                solicitudesPendientesItems.forEach(item => {
+                    solicitudesPendientesList.appendChild(item)
+                });
+            } else {
+                solicitudesPendientesList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud pendiente</p>"
+            }
         }
 
         // List declined requests from newest to oldest
-        const solicitudesRechazadasItems = Array.from(solicitudesRechazadasList.children).reverse()
-        solicitudesRechazadasList.innerHTML = ""
-        if (solicitudesRechazadasItems.length > 0) {
-            solicitudesRechazadasItems.forEach(item => {
-                solicitudesRechazadasList.appendChild(item)
-            });
-        } else {
-            solicitudesRechazadasList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud rechazada</p>"
+        if (solicitudesRechazadasList) {
+            const solicitudesRechazadasItems = Array.from(solicitudesRechazadasList.children).reverse()
+            solicitudesRechazadasList.innerHTML = ""
+            if (solicitudesRechazadasItems.length > 0) {
+                solicitudesRechazadasItems.forEach(item => {
+                    solicitudesRechazadasList.appendChild(item)
+                });
+            } else {
+                solicitudesRechazadasList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud rechazada</p>"
+            }
         }
 
         // List approved requests from newest to oldest
-        const solicitudesAprobadasItems = Array.from(solicitudesAprobadasList.children).reverse()
-        solicitudesAprobadasList.innerHTML = ""
-        if (solicitudesAprobadasItems.length > 0) {
-            solicitudesAprobadasItems.forEach(item => {
-                solicitudesAprobadasList.appendChild(item)
-            });
-        } else {
-            solicitudesAprobadasList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud aprobada</p>"
+        if (solicitudesAprobadasList) {
+            const solicitudesAprobadasItems = Array.from(solicitudesAprobadasList.children).reverse()
+            solicitudesAprobadasList.innerHTML = ""
+            if (solicitudesAprobadasItems.length > 0) {
+                solicitudesAprobadasItems.forEach(item => {
+                    solicitudesAprobadasList.appendChild(item)
+                });
+            } else {
+                solicitudesAprobadasList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud aprobada</p>"
+            }
         }
 
         // List deleted requests from newest to oldest
-        const solicitudesEliminadasItems = Array.from(solicitudesEliminadasList.children).reverse()
-        solicitudesEliminadasList.innerHTML = ""
-        if (solicitudesEliminadasItems.length > 0) {
-            solicitudesEliminadasItems.forEach(item => {
-                solicitudesEliminadasList.appendChild(item)
-            });
-        } else {
-            solicitudesEliminadasList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud eliminada</p>"
+        if (solicitudesEliminadasList) {
+            const solicitudesEliminadasItems = Array.from(solicitudesEliminadasList.children).reverse()
+            solicitudesEliminadasList.innerHTML = ""
+            if (solicitudesEliminadasItems.length > 0) {
+                solicitudesEliminadasItems.forEach(item => {
+                    solicitudesEliminadasList.appendChild(item)
+                });
+            } else {
+                solicitudesEliminadasList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud eliminada</p>"
+            }
         }
 
         // Filter items by status
         if (btnTodas) {
             btnTodas.addEventListener('click', () => {
                 solicitudesList.style.display = 'block'
-                solicitudesBorradoresList.style.display = 'none'
-                solicitudesPendientesList.style.display = 'none'
-                solicitudesRechazadasList.style.display = 'none'
-                solicitudesAprobadasList.style.display = 'none'
-                solicitudesEliminadasList.style.display = 'none'
+                if (misSolicitudesList) {
+                    misSolicitudesList.style.display = 'none'
+                }
+                else {
+                    solicitudesBorradoresList.style.display = 'none'
+                    solicitudesPendientesList.style.display = 'none'
+                    solicitudesRechazadasList.style.display = 'none'
+                    solicitudesAprobadasList.style.display = 'none'
+                    solicitudesEliminadasList.style.display = 'none'
+                }
+            })
+        }
+        if (btnMisSolicitudes) {
+            btnMisSolicitudes.addEventListener('click', () => {
+                solicitudesList.style.display = 'none'
+                if (misSolicitudesList) {
+                    misSolicitudesList.style.display = 'block'
+                }
+                else {
+                    solicitudesBorradoresList.style.display = 'none'
+                    solicitudesPendientesList.style.display = 'none'
+                    solicitudesRechazadasList.style.display = 'none'
+                    solicitudesAprobadasList.style.display = 'none'
+                    solicitudesEliminadasList.style.display = 'none'
+                }
             })
         }
         if (btnBorradores) {
             btnBorradores.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
-                solicitudesBorradoresList.style.display = 'block'
-                solicitudesPendientesList.style.display = 'none'
-                solicitudesRechazadasList.style.display = 'none'
-                solicitudesAprobadasList.style.display = 'none'
-                solicitudesEliminadasList.style.display = 'none'
+                if (misSolicitudesList) {
+                    misSolicitudesList.style.display = 'none'
+                }
+                else {
+                    solicitudesBorradoresList.style.display = 'block'
+                    solicitudesPendientesList.style.display = 'none'
+                    solicitudesRechazadasList.style.display = 'none'
+                    solicitudesAprobadasList.style.display = 'none'
+                    solicitudesEliminadasList.style.display = 'none'
+                }
             })
         }
         if (btnPendientes) {
             btnPendientes.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
-                solicitudesBorradoresList.style.display = 'none'
-                solicitudesPendientesList.style.display = 'block'
-                solicitudesRechazadasList.style.display = 'none'
-                solicitudesAprobadasList.style.display = 'none'
-                solicitudesEliminadasList.style.display = 'none'
+                if (misSolicitudesList) {
+                    misSolicitudesList.style.display = 'none'
+                }
+                else {
+                    solicitudesBorradoresList.style.display = 'none'
+                    solicitudesPendientesList.style.display = 'block'
+                    solicitudesRechazadasList.style.display = 'none'
+                    solicitudesAprobadasList.style.display = 'none'
+                    solicitudesEliminadasList.style.display = 'none'
+                }
             })
         }
         if (btnRechazadas) {
             btnRechazadas.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
-                solicitudesBorradoresList.style.display = 'none'
-                solicitudesPendientesList.style.display = 'none'
-                solicitudesRechazadasList.style.display = 'block'
-                solicitudesAprobadasList.style.display = 'none'
-                solicitudesEliminadasList.style.display = 'none'
+                if (misSolicitudesList) {
+                    misSolicitudesList.style.display = 'none'
+                }
+                else {
+                    solicitudesBorradoresList.style.display = 'none'
+                    solicitudesPendientesList.style.display = 'none'
+                    solicitudesRechazadasList.style.display = 'block'
+                    solicitudesAprobadasList.style.display = 'none'
+                    solicitudesEliminadasList.style.display = 'none'
+                }
             })
         }
         if (btnAprobadas) {
             btnAprobadas.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
-                solicitudesBorradoresList.style.display = 'none'
-                solicitudesPendientesList.style.display = 'none'
-                solicitudesRechazadasList.style.display = 'none'
-                solicitudesAprobadasList.style.display = 'block'
-                solicitudesEliminadasList.style.display = 'none'
+                if (misSolicitudesList) {
+                    misSolicitudesList.style.display = 'none'
+                }
+                else {
+                    solicitudesBorradoresList.style.display = 'none'
+                    solicitudesPendientesList.style.display = 'none'
+                    solicitudesRechazadasList.style.display = 'none'
+                    solicitudesAprobadasList.style.display = 'block'
+                    solicitudesEliminadasList.style.display = 'none'
+                }
             })
         }
         if (btnEliminadas) {
             btnEliminadas.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
-                solicitudesBorradoresList.style.display = 'none'
-                solicitudesPendientesList.style.display = 'none'
-                solicitudesRechazadasList.style.display = 'none'
-                solicitudesAprobadasList.style.display = 'none'
-                solicitudesEliminadasList.style.display = 'block'
+                if (misSolicitudesList) {
+                    misSolicitudesList.style.display = 'none'
+                }
+                else {
+                    solicitudesBorradoresList.style.display = 'none'
+                    solicitudesPendientesList.style.display = 'none'
+                    solicitudesRechazadasList.style.display = 'none'
+                    solicitudesAprobadasList.style.display = 'none'
+                    solicitudesEliminadasList.style.display = 'block'
+                }
             })
         }
     });

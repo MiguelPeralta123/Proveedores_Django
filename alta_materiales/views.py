@@ -34,10 +34,16 @@ def material(request):
     try:
         if request.user.compras:
             solicitudes = MaterialSolicitud.objects.filter(pendiente=True)
+            if request.user.puede_crear:
+                mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
         elif request.user.finanzas:
             solicitudes = MaterialSolicitud.objects.filter(compras=True)
+            if request.user.puede_crear:
+                mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
         elif request.user.sistemas:
             solicitudes = MaterialSolicitud.objects.filter(finanzas=True)
+            if request.user.puede_crear:
+                mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
         else:
             solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
             solicitudes_borradores = solicitudes.filter(borrador=True)
@@ -75,6 +81,7 @@ def material(request):
 
         return render(request, 'material/material.html', {
             'solicitudes': solicitudes,
+            'mis_solicitudes': mis_solicitudes,
             'historial': historial,
             'current_user': request.user
         })
@@ -143,7 +150,7 @@ def material_create(request):
                         # Enviar correo electrónico
                         if not solicitud.borrador:
                             subject = 'Nueva solicitud de material'
-                            message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
+                            message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/'
                             from_email = 'altaproveedoresricofarms@gmail.com'
                             if solicitud.es_migracion:
                                 recipient_list = ['edurazo@ricofarms.com']
@@ -252,9 +259,9 @@ def material_detail(request, material_id):
                     # Enviar correo electrónico
                     subject = 'Solicitud de material modificada'
                     if action == 'rechazado':
-                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/\nComentario: ' + solicitud.comentarios
+                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
                     else:
-                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://127.0.0.1:8000/materiales/'
+                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/'
                     from_email = 'altaproveedoresricofarms@gmail.com'
                     if action == 'rechazado':
                         recipient_list = [solicitud.usuario.email]

@@ -14,10 +14,11 @@
           <div style="display: none;">
             {{ solicitud_form.es_migracion.label_tag }}
             {{ solicitud_form.es_migracion }}
-            <p id="error-es-migracion" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            <p id="error-es-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
           </div>
 
           {% if solicitud.es_migracion %}
+
             <!-- Material migración fields -->
             <h2 style="margin-bottom: 2rem;">Migración - {{ solicitud.nombre_producto_migracion }}</h2>
 
@@ -26,14 +27,14 @@
               <div style="width: 100%;">
                 <p class="m-0">{{ solicitud_form.empresa_origen.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ solicitud_form.empresa_origen }}
-                <p id="error-empresa-origen" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                <p id="error-empresa-origen" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- Empresa destino -->
               <div style="width: 100%;">
                 <p class="m-0">{{ solicitud_form.empresa_destino.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ solicitud_form.empresa_destino }}
-                <p id="error-empresa-destino" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                <p id="error-empresa-destino" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
             </div>
 
@@ -41,7 +42,7 @@
             <div style="margin-bottom:1rem;">
               <label for="id_nombre_producto_migracion">Nombre producto:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ solicitud_form.nombre_producto_migracion }}
-              <p id="error-rfc-migracion" style="color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
+              <p id="error-rfc-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un nombre de producto válido</p>
             </div>
 
           {% else %}
@@ -51,14 +52,14 @@
             <div style="margin-bottom:1rem;">
               <p class="m-0">{{ solicitud_form.empresa.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
               {{ solicitud_form.empresa }}
-              <p id="error-empresa" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              <p id="error-empresa" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <!-- Justificación field -->
             <div style="margin-bottom:1rem;">
               <label for="id_justificacion">Justificación:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ solicitud_form.justificacion }}
-              <p id="error-justificacion" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+              <p id="error-justificacion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
 
             <h3>Materiales</h3>
@@ -79,13 +80,15 @@
                     <th scope="col">Marca</th>
                     <th scope="col">Parte / Modelo</th>
                     <th scope="col">Nombre común</th>
-                    <th scope="col">¿Es parte original?</th>
                     <th scope="col">Ing. activo</th>
                     <th scope="col">Tipo producto</th>
                     <th scope="col">Alias</th>
-                    <th scope="col">UM</th>
+                    <th scope="col">Unidad de medida</th>
+                    <th scope="col">Código SAT</th>
+                    <th scope="col">¿Es parte original?</th>
                     <th scope="col">¿Es material empaque?</th>
                     <th scope="col">¿Es prod. terminado?</th>
+                    <th scope="col"></th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
@@ -101,51 +104,51 @@
                   <div class="tipo-alta-container" style="margin-bottom:1rem;">
                     <p class="m-0">{{ form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                     {{ form.tipo_alta }}
-                    <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                    <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                   </div>
 
                   <!-- Subfamilia field -->
                   <div class="subfamilia-container" style="margin-bottom:1rem;">
                     <p class="m-0">{{ form.subfamilia.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                     {{ form.subfamilia }}
-                    <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                    <p id="error-subfamilia" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                   </div>
 
                   <!-- Nombre producto field -->
                   <div class="nombre-producto-container" style="margin-bottom:1rem;">
                     <p class="m-0">{{ form.nombre_producto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                     {{ form.nombre_producto }}
-                    <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    <p id="error-nombre-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                   </div>
 
-                  <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico o N/A)</span></p>
+                  <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico, fracción o N/A)</span></p>
                   <div style="display: flex; gap: 1rem;">
                     <!-- Largo field -->
                     <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
                       <p class="m-0">{{ form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ form.largo }}
-                      <p id="error-largo" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                      <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
                     </div>
 
                     <!-- Ancho field -->
                     <div class="ancho-container" style="width: 25%; margin-bottom:1rem;">
                       <p class="m-0">{{ form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ form.ancho }}
-                      <p id="error-ancho" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                      <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
                     </div>
 
                     <!-- Alto field -->
                     <div class="alto-container" style="width: 25%; margin-bottom:1rem;">
                       <p class="m-0">{{ form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ form.alto }}
-                      <p id="error-alto" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                      <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
                     </div>
 
                     <!-- Calibre field -->
                     <div class="calibre-container" style="width: 25%; margin-bottom:1rem;">
                       <p class="m-0">{{ form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ form.calibre }}
-                      <p id="error-calibre" style="color:red; margin-bottom:0; display:none;">El valor debe ser numérico o N/A</p>
+                      <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
                     </div>
                   </div>
 
@@ -154,14 +157,14 @@
                     <div class="material-container" style="width: 50%; margin-bottom:1rem;">
                       <p class="m-0">{{ form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ form.material }}
-                      <p id="error-material" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-material" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Color field -->
                     <div class="color-container" style="width: 50%; margin-bottom:1rem;">
                       <p class="m-0">{{ form.color.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                       {{ form.color }}
-                      <p id="error-color" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-color" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
                   </div>
 
@@ -170,14 +173,14 @@
                     <div style="width: 50%; margin-bottom:1rem;">
                       {{ form.marca.label_tag }}
                       {{ form.marca }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-marca" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Parte / Modelo field -->
                     <div style="width: 50%; margin-bottom:1rem;">
                       <label for="id_parte_modelo">Parte / Modelo:</label>
                       {{ form.parte_modelo }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-parte-modelo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
                   </div>
 
@@ -186,14 +189,14 @@
                     <div style="width: 50%; margin-bottom:1rem;">
                       <label for="id_nombre_comun">Nombre común:</label>
                       {{ form.nombre_comun }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-nombre-comun" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Ing activo field -->
                     <div style="width: 50%; margin-bottom:1rem;">
                       <label for="id_ing_activo">Ingrediente activo:</label>
                       {{ form.ing_activo }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-ing-activo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
                   </div>
 
@@ -202,22 +205,31 @@
                     <div style="width: 50%; margin-bottom:1rem;">
                       {{ form.tipo_producto.label_tag }}
                       {{ form.tipo_producto }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-tipo-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Alias field -->
                     <div style="width: 50%; margin-bottom:1rem;">
                       {{ form.alias.label_tag }}
                       {{ form.alias }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-alias" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
                   </div>
 
-                  <!-- Unidad de medida field -->
-                  <div class="unidad-medida-container" style="margin-bottom:1rem;">
-                    <label for="id_unidad_medida">Unidad de medida:<span style="color: rgb(192, 0, 0);">*</span></label>
-                    {{ form.unidad_medida }}
-                    <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  <div style="display: flex; gap: 1rem;">
+                    <!-- Unidad de medida field -->
+                    <div class="unidad-medida-container" style="width: 50%; margin-bottom:1rem;">
+                      <label for="id_unidad_medida">Unidad de medida:<span style="color: rgb(192, 0, 0);">*</span></label>
+                      {{ form.unidad_medida }}
+                      <p id="error-unidad-medida" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                    </div>
+
+                    <!-- Código sat field -->
+                    <div style="width: 50%; margin-bottom:1rem;">
+                      <label for="id_codigo_sat">Código SAT:</label>
+                      {{ form.codigo_sat }}
+                      <p id="error-codigo-sat" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
                   </div>
 
                   <div style="display: flex; justify-content: space-between; gap: 2rem;">
@@ -225,24 +237,25 @@
                     <div style="margin-bottom:1rem;">
                       {{ form.es_parte_original.label_tag }}
                       {{ form.es_parte_original }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-es-parte-original" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Es material empaque field -->
                     <div style="margin-bottom:1rem;">
                       {{ form.es_material_empaque.label_tag }}
                       {{ form.es_material_empaque }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-es-material-empaque" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Es prod terminado field -->
                     <div style="margin-bottom:1rem;">
                       <label for="id_es_prod_terminado">Es prod. terminado:</label>
                       {{ form.es_prod_terminado }}
-                      <p id="error-tipo-alta" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-es-prod-terminado" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
                   </div>
 
+                  <button class="btn btn-secondary mb-3 btn-save-changes" type="button">Guardar cambios</button>
                 </div>
               {% endfor %}
             </div>
@@ -253,7 +266,7 @@
           <div style="margin-bottom:1rem;">
             {{ solicitud_form.comentarios.label_tag }}
             {{ solicitud_form.comentarios }}
-            <p id="error-comentarios" style="color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+            <p id="error-comentarios" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
           </div>
 
           <div id="buttons-container" class="d-flex justify-content-between gap-2">
@@ -267,19 +280,19 @@
               <button id="btn-delete" class="btn btn-delete w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="eliminado" value="True">Eliminar solicitud</button>
             {% endif %}
 
-            {% if current_user.compras == True %}
+            {% if solicitud.pendiente == True and current_user.compras == True %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="compras" value="True">Aprobar</button>
 
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
             {% endif %}
 
-            {% if current_user.finanzas == True %}
+            {% if solicitud.compras == True and current_user.finanzas == True %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
 
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar</button>
             {% endif %}
 
-            {% if current_user.sistemas == True %}
+            {% if solicitud.finanzas == True and current_user.sistemas == True %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
 
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
@@ -315,11 +328,47 @@
       const errorJustificacion = document.getElementById('error-justificacion')
       const errorComentarios = document.getElementById('error-comentarios')
       
+      // Regular expressions
+      const fraccionPattern = /^(\d+(\.\d+)?\/\d+(\.\d+)?)$/;
+      
       // Buttons
       const btnSave = document.getElementById('btn-save')
       const btnDelete = document.getElementById('btn-delete')
       const btnApprove = document.getElementById('btn-approve')
       const btnDecline = document.getElementById('btn-decline')
+      const btnSaveChanges = document.getElementById('btn-save-changes')
+
+      materialFormsContainer.addEventListener('click', (event) => {
+        // If the "Save changes" button is clicked, hide the forms and refresh the table
+        if (event.target && event.target.classList.contains('btn-save-changes')) {
+          const form = event.target.closest('.material-form')
+          errorTipoAlta = form.querySelector('#error-tipo-alta')
+          errorSubfamilia = form.querySelector('#error-subfamilia')
+          errorNombreProducto = form.querySelector('#error-nombre-producto')
+          errorLargo = form.querySelector('#error-largo')
+          errorAncho = form.querySelector('#error-ancho')
+          errorAlto = form.querySelector('#error-alto')
+          errorCalibre = form.querySelector('#error-calibre')
+          errorMaterial = form.querySelector('#error-material')
+          errorColor = form.querySelector('#error-color')
+          errorUnidadMedida = form.querySelector('#error-unidad-medida')
+
+          if (errorTipoAlta.style.display == 'block' || errorSubfamilia.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
+            window.alert('Algún campo está vacío o es incorrecto')
+          }
+          else {
+            const forms = materialFormsContainer.querySelectorAll('.material-form');
+            forms.forEach(form => {
+              form.style.display = 'none'
+            })
+            const editButtons = tableMaterials.querySelectorAll('.edit-material');
+            editButtons.forEach(editButton => {
+              editButton.removeAttribute('disabled')
+            })
+            fillTable()
+          }
+        }
+      });
       
       buttonsContainer.addEventListener('click', function(event) {  
         if (event.target && event.target.classList.contains('btn-save')) {
@@ -391,7 +440,7 @@
     
       // Validacion empresa
       if (empresa) {
-        empresa.addEventListener('change', () => {asd
+        empresa.addEventListener('change', () => {
           if (empresa.value == '') {
             errorEmpresa.style.display = 'block'
           } else {
@@ -471,7 +520,9 @@
                 var container = input.closest('.largo-container')
                 var errorLargo = container.querySelector('#error-largo')
                 // Verificar si el valor es "N/A" o numérico
-                if (largoValue === 'N/A' || !isNaN(parseFloat(largoValue)) && isFinite(largoValue)) {
+                if (largoValue === 'N/A' || 
+                  !isNaN(parseFloat(largoValue)) && isFinite(largoValue) || 
+                  fraccionPattern.test(largoValue)) {
                     errorLargo.style.display = 'none'
                 } else {
                     errorLargo.style.display = 'block'
@@ -487,7 +538,9 @@
                 var container = input.closest('.ancho-container')
                 var errorAncho = container.querySelector('#error-ancho')
                 // Verificar si el valor es "N/A" o numérico
-                if (anchoValue === 'N/A' || !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue)) {
+                if (anchoValue === 'N/A' || 
+                  !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue) || 
+                  fraccionPattern.test(anchoValue)) {
                     errorAncho.style.display = 'none'
                 } else {
                     errorAncho.style.display = 'block'
@@ -503,7 +556,9 @@
                 var container = input.closest('.alto-container')
                 var errorAlto = container.querySelector('#error-alto')
                 // Verificar si el valor es "N/A" o numérico
-                if (altoValue === 'N/A' || !isNaN(parseFloat(altoValue)) && isFinite(altoValue)) {
+                if (altoValue === 'N/A' || 
+                  !isNaN(parseFloat(altoValue)) && isFinite(altoValue) || 
+                  fraccionPattern.test(altoValue)) {
                     errorAlto.style.display = 'none'
                 } else {
                     errorAlto.style.display = 'block'
@@ -519,7 +574,9 @@
                 var container = input.closest('.calibre-container')
                 var errorCalibre = container.querySelector('#error-calibre')
                 // Verificar si el valor es "N/A" o numérico
-                if (calibreValue === 'N/A' || !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue)) {
+                if (calibreValue === 'N/A' || 
+                  !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue) || 
+                  fraccionPattern.test(calibreValue)) {
                     errorCalibre.style.display = 'none'
                 } else {
                     errorCalibre.style.display = 'block'
@@ -594,11 +651,12 @@
           const marca = materialForm.querySelector('.material-marca')
           const parteModelo = materialForm.querySelector('.material-parte-modelo')
           const nombreComun = materialForm.querySelector('.material-nombre-comun')
-          const esParteOriginal = materialForm.querySelector('.material-es-parte-original')
           const ingActivo = materialForm.querySelector('.material-ing-activo')
           const tipoProducto = materialForm.querySelector('.material-tipo-producto')
           const alias = materialForm.querySelector('.material-alias')
           const unidadMedida = materialForm.querySelector('.material-unidad-medida')
+          const codigoSat = materialForm.querySelector('.material-codigo-sat')
+          const esParteOriginal = materialForm.querySelector('.material-es-parte-original')
           const esMaterialEmpaque = materialForm.querySelector('.material-es-material-empaque')
           const esProdTerminado = materialForm.querySelector('.material-es-prod-terminado')
   
@@ -622,11 +680,12 @@
           <td>${marca.value}</td>
           <td>${parteModelo.value}</td>
           <td>${nombreComun.value}</td>
-          <td>${esParteOriginalValue}</td>
           <td>${ingActivo.value}</td>
           <td>${tipoProducto.value}</td>
           <td>${alias.value}</td>
           <td>${unidadMedida.value}</td>
+          <td>${codigoSat.value}</td>
+          <td>${esParteOriginalValue}</td>
           <td>${esMaterialEmpaqueValue}</td>
           <td>${esProdTerminadoValue}</td>
           <td>
@@ -649,10 +708,10 @@
             // Fill the table with the updated data
             fillTable()
             // Disable edit button
-            const editButtons = tableMaterials.getElementsByClassName('edit-material');
-            for (let i = 0; i < editButtons.length; i++) {
-              editButtons[i].disabled = false
-            }
+            const editButtons = tableMaterials.querySelectorAll('.edit-material');
+            editButtons.forEach(editButton => {
+              editButton.setAttribute('disabled', true)
+            })
             event.target.disabled = true
             // Show the selected form
             const forms = document.getElementsByClassName('material-form');
@@ -672,14 +731,17 @@
             if (form) {
               form.remove()
               // Recorre todos los formularios restantes y actualiza sus índices
-              const forms = materialFormsContainer.getElementsByClassName('material-form');
-              for (let i = 0; i < forms.length; i++) {
-                forms[i].id = `material-form-${i}`
-                const inputs = forms[i].querySelectorAll('[id^=id_material-]');
+              const forms = materialFormsContainer.querySelectorAll('.material-form');
+              var counter = 0
+              forms.forEach(form => {
+                form.id = `material-form-${counter}`
+                const inputs = form.querySelectorAll('[id^=id_material-]');
                 for (let j = 0; j < inputs.length; j++) {
                   inputs[j].id = inputs[j].id.replace(/\d+/, i);
                 }
-              }
+                form.style.display = 'none'
+                counter++
+              })
             }
             fillTable()
           }

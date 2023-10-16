@@ -54,6 +54,7 @@ class Material(models.Model):
     tipo_producto = models.CharField(max_length=50, blank=True)
     alias = models.CharField(max_length=50, blank=True)
     unidad_medida = models.CharField(max_length=50, blank=True)
+    codigo_sat = models.CharField(max_length=50, blank=True)
     es_material_empaque = models.BooleanField(default=False)
     es_prod_terminado = models.BooleanField(default=False)
 
