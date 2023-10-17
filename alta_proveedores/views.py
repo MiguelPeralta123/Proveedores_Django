@@ -23,15 +23,19 @@ def proveedor(request):
         if request.user.compras:
             proveedores = Proveedor.objects.filter(pendiente=True)
             if request.user.puede_crear:
-                mis_solicitudes = Proveedor.objects.filter(usuario=request.user)
+                mis_proveedores = Proveedor.objects.filter(usuario=request.user)
         elif request.user.finanzas:
             proveedores = Proveedor.objects.filter(compras=True)
             if request.user.puede_crear:
-                mis_solicitudes = Proveedor.objects.filter(usuario=request.user)
+                mis_proveedores = Proveedor.objects.filter(usuario=request.user)
         elif request.user.sistemas:
             proveedores = Proveedor.objects.filter(finanzas=True)
+            print("Solicitudes de proveedor")
+            print(proveedores)
             if request.user.puede_crear:
-                mis_solicitudes = Proveedor.objects.filter(usuario=request.user)
+                mis_proveedores = Proveedor.objects.filter(usuario=request.user)
+                print("Mis solicitudes")
+                print(mis_proveedores)
         else:
             proveedores = Proveedor.objects.filter(usuario=request.user)
             proveedores_borradores = proveedores.filter(borrador=True)
@@ -69,7 +73,7 @@ def proveedor(request):
 
         return render(request, 'proveedor/proveedor.html', {
             'proveedores': proveedores,
-            'mis_solicitudes': mis_solicitudes,
+            'mis_proveedores': mis_proveedores,
             'historial': historial,
             'current_user': request.user
         })

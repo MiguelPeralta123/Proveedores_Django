@@ -231,14 +231,14 @@
               <div style="width: 100%; margin-bottom:1rem;">
                 <label for="id_limite_credito_MN">Límite crédito (MN):<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.limite_credito_MN }}
-                <p id="error-limite-credito-MN" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+                <p id="error-limite-credito-MN" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Debe ingresar un valor numérico</p>
               </div>
               
               <!-- Limite credito ME field -->
               <div style="width: 100%; margin-bottom:1rem;">
                 <label for="id_limite_credito_ME">Límite crédito (ME):<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.limite_credito_ME }}
-                <p id="error-limite-credito-ME" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+                <p id="error-limite-credito-ME" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Debe ingresar un valor numérico</p>
               </div>
             </div>
 
@@ -247,14 +247,14 @@
               <div style="width: 100%; margin-bottom:1rem;">
                 <label for="id_dias_credito">Días crédito:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.dias_credito }}
-                <p id="error-dias-credito" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+                <p id="error-dias-credito" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Debe ingresar un valor numérico</p>
               </div>
 
               <!-- Monto credito field -->
               <div style="width: 100%; margin-bottom:1rem;">
                 <label for="id_monto_credito">Monto crédito:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.monto_credito }}
-                <p id="error-monto-credito" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
+                <p id="error-monto-credito" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Debe ingresar un valor numérico</p>
               </div>
             </div>
 
@@ -644,6 +644,8 @@
       const cuentaPattern = /^\d{10,20}$/
       const clabePattern = /^\d{18}$/
       const nonAccentPattern = /^[A-Za-z\d\s]*$/
+      const numberPattern = /^[\d,]*$/
+      
 
       // Catalogo de proveedores existentes
       var catalogoProveedor = JSON.parse('{{ catalogo_proveedor|safe }}');
@@ -996,43 +998,67 @@
         }
         enableSaveButton()
       })
+
+      const numberWithCommas = (x) => {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      }
       
       // Validacion limite credito MN
       limiteCreditoMN.addEventListener('input', () => {
-        if (limiteCreditoMN.value == '') {
-          errorLimiteCreditoMN.style.display = 'block'
-        } else {
+        if (limiteCreditoMN.value != '' && numberPattern.test(limiteCreditoMN.value)) {
           errorLimiteCreditoMN.style.display = 'none'
+          // Eliminar carácteres no numéricos
+          const numericValue = limiteCreditoMN.value.replace(/[^0-9]/g, '');
+          // Formatear el valor con números y comas
+          const formattedValue = numberWithCommas(numericValue)
+          limiteCreditoMN.value = formattedValue;
+        } else {
+          errorLimiteCreditoMN.style.display = 'block'
         }
         enableSaveButton()
       })
       
       // Validacion limite credito ME
       limiteCreditoME.addEventListener('input', () => {
-        if (limiteCreditoME.value == '') {
-          errorLimiteCreditoME.style.display = 'block'
-        } else {
+        if (limiteCreditoME.value != '' && numberPattern.test(limiteCreditoME.value)) {
           errorLimiteCreditoME.style.display = 'none'
+          // Eliminar carácteres no numéricos
+          const numericValue = limiteCreditoME.value.replace(/[^0-9]/g, '');
+          // Formatear el valor con números y comas
+          const formattedValue = numberWithCommas(numericValue)
+          limiteCreditoME.value = formattedValue;
+        } else {
+          errorLimiteCreditoME.style.display = 'block'
         }
         enableSaveButton()
       })
       
       // Validacion dias credito
       diasCredito.addEventListener('input', () => {
-        if (diasCredito.value == '') {
-          errorDiasCredito.style.display = 'block'
-        } else {
+        if (diasCredito.value != '' && numberPattern.test(diasCredito.value)) {
           errorDiasCredito.style.display = 'none'
+          // Eliminar carácteres no numéricos
+          const numericValue = diasCredito.value.replace(/[^0-9]/g, '');
+          // Formatear el valor con números y comas
+          const formattedValue = numberWithCommas(numericValue)
+          diasCredito.value = formattedValue;
+        } else {
+          errorDiasCredito.style.display = 'block'
         }
         enableSaveButton()
       })
       
       // Validacion monto credito
       montoCredito.addEventListener('input', () => {
-        if (montoCredito.value == '') {
-          errorMontoCredito.style.display = 'block'
-        } else {
+        if (montoCredito.value != '' && numberPattern.test(montoCredito.value)) {
           errorMontoCredito.style.display = 'none'
+          // Eliminar carácteres no numéricos
+          const numericValue = montoCredito.value.replace(/[^0-9]/g, '')
+          // Formatear el valor con números y comas
+          const formattedValue = numberWithCommas(numericValue)
+          montoCredito.value = formattedValue
+        } else {
+          errorMontoCredito.style.display = 'block'
         }
         enableSaveButton()
       })
