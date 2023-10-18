@@ -95,7 +95,7 @@
 
             <!-- Nombre fiscal field -->
             <div style="margin-bottom:1rem;">
-              <p class="m-0">{{ form.nombre_fiscal.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              <p class="m-0">{{ form.nombre_fiscal.label_tag }}<span style="color: rgb(192, 0, 0);">*</span> <span style="font-size: 0.8rem; font-style: italic;">(No se permiten acentos ni ñ)</span></p>
               {{ form.nombre_fiscal }}
               <p id="error-nombre-fiscal" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               <p id="error-nombre-fiscal-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Nombre fiscal no puede contener "ñ", acentos ni carácteres especiales</p>
@@ -110,7 +110,7 @@
 
             <!-- Nombre comercial field -->
             <div style="margin-bottom:1rem;">
-              <p class="m-0">{{ form.nombre_comercial.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              <p class="m-0">{{ form.nombre_comercial.label_tag }}<span style="color: rgb(192, 0, 0);">*</span> <span style="font-size: 0.8rem; font-style: italic;">(No se permiten acentos ni ñ)</span></p>
               {{ form.nombre_comercial }}
               <p id="error-nombre-comercial" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               <p id="error-nombre-comercial-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Nombre comercial no puede contener "ñ", acentos ni carácteres especiales</p>
@@ -715,7 +715,7 @@
       handleEsMigracion(esMigracion.checked)
     
       // Validacion empresa origen
-      empresaOrigen.addEventListener('change', () => {
+      const validateEmpresaOrigen = () => {
         if (empresaOrigen.value == '') {
           errorEmpresaOrigen.style.display = 'block'
           errorEmpresasMigracion.style.display = 'none'
@@ -729,10 +729,16 @@
           errorEmpresasMigracion.style.display = 'none'
         }
         enableSaveButton()
+      }
+      empresaOrigen.addEventListener('focus', () => {
+        validateEmpresaOrigen()
+      })
+      empresaOrigen.addEventListener('change', () => {
+        validateEmpresaOrigen()
       })
       
       // Validacion empresa destino
-      empresaDestino.addEventListener('change', () => {
+      const validateEmpresaDestino = () => {
         if (empresaDestino.value == '') {
           errorEmpresaDestino.style.display = 'block'
           errorEmpresasMigracion.style.display = 'none'
@@ -746,10 +752,16 @@
           errorEmpresasMigracion.style.display = 'none'
         }
         enableSaveButton()
+      }
+      empresaDestino.addEventListener('focus', () => {
+        validateEmpresaDestino()
+      })
+      empresaDestino.addEventListener('change', () => {
+        validateEmpresaDestino()
       })
       
       // Validacion rfc migracion
-      rfcMigracion.addEventListener('input', () => {
+      const validateRfcMigracion = () => {
         if (rfcPattern.test(rfcMigracion.value)) {
           errorRfcMigracion.style.display = 'none'
         } else {
@@ -772,30 +784,48 @@
           }
         }
         enableSaveButton()
+      }
+      rfcMigracion.addEventListener('focus', () => {
+        validateRfcMigracion()
+      })
+      rfcMigracion.addEventListener('input', () => {
+        validateRfcMigracion()
       })
       
       // Validacion empresa
-      empresa.addEventListener('change', () => {
+      const validateEmpresa = () => {
         if (empresa.value == '') {
           errorEmpresa.style.display = 'block'
         } else {
           errorEmpresa.style.display = 'none'
         }
         enableSaveButton()
+      }
+      empresa.addEventListener('focus', () => {
+        validateEmpresa()
+      })
+      empresa.addEventListener('change', () => {
+        validateEmpresa()
       })
       
       // Validacion tipo alta
-      tipoAlta.addEventListener('change', () => {
+      const validateTipoAlta = () => {
         if (tipoAlta.value == '') {
           errorTipoAlta.style.display = 'block'
         } else {
           errorTipoAlta.style.display = 'none'
         }
         enableSaveButton()
+      }
+      tipoAlta.addEventListener('focus', () => {
+        validateTipoAlta()
+      })
+      tipoAlta.addEventListener('change', () => {
+        validateTipoAlta()
       })
       
       // Validacion contribuyente
-      contribuyente.addEventListener('change', () => {
+      const validateContribuyente = () => {
         if (contribuyente.value == '') {
           errorContribuyente.style.display = 'block'
         } else {
@@ -814,10 +844,16 @@
           }
         }
         enableSaveButton()
+      }
+      contribuyente.addEventListener('focus', () => {
+        validateContribuyente()
+      })
+      contribuyente.addEventListener('change', () => {
+        validateContribuyente()
       })
 
       // Validacion rfc
-      rfc.addEventListener('input', () => {
+      const validateRfc = () => {
         if (rfcPattern.test(rfc.value)) {
           errorRfc.style.display = 'none'
         } else {
@@ -841,22 +877,33 @@
             errorRfc2.style.display = 'none'
           }
         }
-        
         enableSaveButton()
+      }
+      rfc.addEventListener('focus', () => {
+        validateRfc()
+      })
+      rfc.addEventListener('input', () => {
+        validateRfc()
       })
       
       // Validacion curp
-      curp.addEventListener('input', () => {
+      const validateCurp = () => {
         if (curpPattern.test(curp.value)) {
           errorCurp.style.display = 'none'
         } else {
           errorCurp.style.display = 'block'
         }
         enableSaveButton()
+      }
+      curp.addEventListener('focus', () => {
+        validateCurp()
+      })
+      curp.addEventListener('input', () => {
+        validateCurp()
       })
       
       // Validacion nombre fiscal
-      nombreFiscal.addEventListener('input', () => {
+      const validateNombreFiscal = () => {
         if (nombreFiscal.value == '') {
           errorNombreFiscal.style.display = 'block'
           errorNombreFiscal2.style.display = 'none'
@@ -870,20 +917,32 @@
           }
         }
         enableSaveButton()
+      }
+      nombreFiscal.addEventListener('focus', () => {
+        validateNombreFiscal()
+      })
+      nombreFiscal.addEventListener('input', () => {
+        validateNombreFiscal()
       })
       
       // Validacion regimen de capital
-      regimenCapital.addEventListener('change', () => {
+      const validateRegimenCapital = () => {
         if (regimenCapital.value == '') {
           errorRegimenCapital.style.display = 'block'
         } else {
           errorRegimenCapital.style.display = 'none'
         }
         enableSaveButton()
+      }
+      regimenCapital.addEventListener('focus', () => {
+        validateRegimenCapital()
+      })
+      regimenCapital.addEventListener('change', () => {
+        validateRegimenCapital()
       })
       
       // Validacion nombre comercial
-      nombreComercial.addEventListener('input', () => {
+      const validateNombreComercial = () => {
         if (nombreComercial.value == '') {
           errorNombreComercial.style.display = 'block'
           errorNombreComercial2.style.display = 'none'
@@ -897,106 +956,156 @@
           }
         }
         enableSaveButton()
+      }
+      nombreComercial.addEventListener('focus', () => {
+        validateNombreComercial()
+      })
+      nombreComercial.addEventListener('input', () => {
+        validateNombreComercial()
       })
       
       // Validacion regimen fiscal
-      regimenFiscal.addEventListener('change', () => {
+      const validateRegimenFiscal = () => {
         if (regimenFiscal.value == '') {
           errorRegimenFiscal.style.display = 'block'
         } else {
           errorRegimenFiscal.style.display = 'none'
         }
         enableSaveButton()
+      }
+      regimenFiscal.addEventListener('focus', () => {
+        validateRegimenFiscal()
+      })
+      regimenFiscal.addEventListener('change', () => {
+        validateRegimenFiscal()
       })
       
       // Validacion uso cfdi
-      usoCfdi.addEventListener('change', () => {
+      const validateUsoCfdi = () => {
         if (usoCfdi.value == '') {
           errorUsoCfdi.style.display = 'block'
         } else {
           errorUsoCfdi.style.display = 'none'
         }
         enableSaveButton()
+      }
+      usoCfdi.addEventListener('focus', () => {
+        validateUsoCfdi()
+      })
+      usoCfdi.addEventListener('change', () => {
+        validateUsoCfdi()
       })
       
       // Validacion telefono 1
-      telefono1.addEventListener('input', () => {
+      const validateTelefono1 = () => {
         if (telefonoPattern.test(telefono1.value)) {
           errorTelefono1.style.display = 'none'
         } else {
           errorTelefono1.style.display = 'block'
         }
         enableSaveButton()
+      }
+      telefono1.addEventListener('focus', () => {
+        validateTelefono1()
+      })
+      telefono1.addEventListener('input', () => {
+        validateTelefono1()
       })
       
       // Validacion telefono 2
-      telefono2.addEventListener('input', () => {
+      const validateTelefono2 = () => {
         if (telefono2.value == '' || telefonoPattern.test(telefono2.value)) {
           errorTelefono2.style.display = 'none'
         } else {
           errorTelefono2.style.display = 'block'
         }
         enableSaveButton()
+      }
+      telefono2.addEventListener('focus', () => {
+        validateTelefono2()
       })
-      
-      // Validacion telefono 2
       telefono2.addEventListener('input', () => {
-        if (telefono1.value.length < 10) {
-          errorTelefono1.style.display = 'block'
-        } else {
-          errorTelefono1.style.display = 'none'
-        }
-        enableSaveButton()
+        validateTelefono2()
       })
       
       // Validacion correo general
-      correoGeneral.addEventListener('input', () => {
+      const validateCorreoGeneral = () => {
         if (correoPattern.test(correoGeneral.value)) {
           errorCorreoGeneral.style.display = 'none'
         } else {
           errorCorreoGeneral.style.display = 'block'
         }
         enableSaveButton()
+      }
+      correoGeneral.addEventListener('focus', () => {
+        validateCorreoGeneral()
+      })
+      correoGeneral.addEventListener('input', () => {
+        validateCorreoGeneral()
       })
       
       // Validacion correo pagos
-      correoPagos.addEventListener('input', () => {
+      const validateCorreoPagos = () => {
         if (correoPattern.test(correoPagos.value)) {
           errorCorreoPagos.style.display = 'none'
         } else {
           errorCorreoPagos.style.display = 'block'
         }
         enableSaveButton()
+      }
+      correoPagos.addEventListener('focus', () => {
+        validateCorreoPagos()
+      })
+      correoPagos.addEventListener('input', () => {
+        validateCorreoPagos()
       })
       
       // Validacion rubro
-      rubro.addEventListener('change', () => {
+      const validateRubro = () => {
         if (rubro.value == '') {
           errorRubro.style.display = 'block'
         } else {
           errorRubro.style.display = 'none'
         }
         enableSaveButton()
+      }
+      rubro.addEventListener('focus', () => {
+        validateRubro()
+      })
+      rubro.addEventListener('change', () => {
+        validateRubro()
       })
       
       // Validacion tipo operacion
-      tipoOperacion.addEventListener('change', () => {
+      const validateTipoOperacion = () => {
         if (tipoOperacion.value == '') {
           errorTipoOperacion.style.display = 'block'
         } else {
           errorTipoOperacion.style.display = 'none'
         }
         enableSaveButton()
+      }
+      tipoOperacion.addEventListener('focus', () => {
+        validateTipoOperacion()
+      })
+      tipoOperacion.addEventListener('change', () => {
+        validateTipoOperacion()
       })
       
       // Validacion agente aduanal
-      agenteAduanal.addEventListener('change', () => {
+      const validateAgenteAduanal = () => {
         if (agenteAduanal.value == '') {
           errorAgenteAduanal.style.display = 'block'
         } else {
           errorAgenteAduanal.style.display = 'none'
         }
         enableSaveButton()
+      }
+      agenteAduanal.addEventListener('focus', () => {
+        validateAgenteAduanal()
+      })
+      agenteAduanal.addEventListener('change', () => {
+        validateAgenteAduanal()
       })
 
       const numberWithCommas = (x) => {
@@ -1004,7 +1113,7 @@
       }
       
       // Validacion limite credito MN
-      limiteCreditoMN.addEventListener('input', () => {
+      const validateLimiteCreditoMN = () => {
         if (limiteCreditoMN.value != '' && numberPattern.test(limiteCreditoMN.value)) {
           errorLimiteCreditoMN.style.display = 'none'
           // Eliminar carácteres no numéricos
@@ -1016,10 +1125,16 @@
           errorLimiteCreditoMN.style.display = 'block'
         }
         enableSaveButton()
+      }
+      limiteCreditoMN.addEventListener('focus', () => {
+        validateLimiteCreditoMN()
+      })
+      limiteCreditoMN.addEventListener('input', () => {
+        validateLimiteCreditoMN()
       })
       
       // Validacion limite credito ME
-      limiteCreditoME.addEventListener('input', () => {
+      const validateLimiteCreditoME = () => {
         if (limiteCreditoME.value != '' && numberPattern.test(limiteCreditoME.value)) {
           errorLimiteCreditoME.style.display = 'none'
           // Eliminar carácteres no numéricos
@@ -1031,10 +1146,16 @@
           errorLimiteCreditoME.style.display = 'block'
         }
         enableSaveButton()
+      }
+      limiteCreditoME.addEventListener('focus', () => {
+        validateLimiteCreditoME()
+      })
+      limiteCreditoME.addEventListener('input', () => {
+        validateLimiteCreditoME()
       })
       
       // Validacion dias credito
-      diasCredito.addEventListener('input', () => {
+      const validateDiasCredito = () => {
         if (diasCredito.value != '' && numberPattern.test(diasCredito.value)) {
           errorDiasCredito.style.display = 'none'
           // Eliminar carácteres no numéricos
@@ -1046,10 +1167,16 @@
           errorDiasCredito.style.display = 'block'
         }
         enableSaveButton()
+      }
+      diasCredito.addEventListener('focus', () => {
+        validateDiasCredito()
+      })
+      diasCredito.addEventListener('input', () => {
+        validateDiasCredito()
       })
       
       // Validacion monto credito
-      montoCredito.addEventListener('input', () => {
+      const validateMontoCredito = () => {
         if (montoCredito.value != '' && numberPattern.test(montoCredito.value)) {
           errorMontoCredito.style.display = 'none'
           // Eliminar carácteres no numéricos
@@ -1061,166 +1188,268 @@
           errorMontoCredito.style.display = 'block'
         }
         enableSaveButton()
+      }
+      montoCredito.addEventListener('focus', () => {
+        validateMontoCredito()
+      })
+      montoCredito.addEventListener('input', () => {
+        validateMontoCredito()
       })
       
       // Validacion retencion iva
-      retencionIva.addEventListener('change', () => {
+      const validateRetencionIva = () => {
         if (retencionIva.value == '') {
           errorRetencionIva.style.display = 'block'
         } else {
           errorRetencionIva.style.display = 'none'
         }
         enableSaveButton()
+      }
+      retencionIva.addEventListener('focus', () => {
+        validateRetencionIva()
+      })
+      retencionIva.addEventListener('change', () => {
+        validateRetencionIva()
       })
       
       // Validacion retencion isr
-      retencionIsr.addEventListener('change', () => {
+      const validateRetencionIsr = () => {
         if (retencionIsr.value == '') {
           errorRetencionIsr.style.display = 'block'
         } else {
           errorRetencionIsr.style.display = 'none'
         }
         enableSaveButton()
+      }
+      retencionIsr.addEventListener('focus', () => {
+        validateRetencionIsr()
+      })
+      retencionIsr.addEventListener('change', () => {
+        validateRetencionIsr()
       })
       
       // Validacion iva frontera
-      ivaFrontera.addEventListener('change', () => {
+      const validateIvaFrontera = () => {
         if (ivaFrontera.value == '') {
           errorIvaFrontera.style.display = 'block'
         } else {
           errorIvaFrontera.style.display = 'none'
         }
         enableSaveButton()
+      }
+      ivaFrontera.addEventListener('focus', () => {
+        validateIvaFrontera()
+      })
+      ivaFrontera.addEventListener('change', () => {
+        validateIvaFrontera()
       })
       
       // Validacion codigo postal
-      codigoPostal.addEventListener('input', () => {
+      const validateCodigoPostal = () => {
         if (codigoPostalPattern.test(codigoPostal.value)) {
           errorCodigoPostal.style.display = 'none'
         } else {
           errorCodigoPostal.style.display = 'block'
         }
         enableSaveButton()
+      }
+      codigoPostal.addEventListener('focus', () => {
+        validateCodigoPostal()
+      })
+      codigoPostal.addEventListener('input', () => {
+        validateCodigoPostal()
       })
       
       // Validacion pais
-      pais.addEventListener('input', () => {
+      const validatePais = () => {
         if (pais.value == '') {
           errorPais.style.display = 'block'
         } else {
           errorPais.style.display = 'none'
         }
         enableSaveButton()
+      }
+      pais.addEventListener('focus', () => {
+        validatePais()
+      })
+      pais.addEventListener('input', () => {
+        validatePais()
       })
       
       // Validacion estado
-      estado.addEventListener('input', () => {
+      const validateEstado = () => {
         if (estado.value == '') {
           errorEstado.style.display = 'block'
         } else {
           errorEstado.style.display = 'none'
         }
         enableSaveButton()
+      }
+      estado.addEventListener('focus', () => {
+        validateEstado()
+      })
+      estado.addEventListener('input', () => {
+        validateEstado()
       })
       
       // Validacion ciudad
-      ciudad.addEventListener('input', () => {
+      const validateCiudad = () => {
         if (ciudad.value == '') {
           errorCiudad.style.display = 'block'
         } else {
           errorCiudad.style.display = 'none'
         }
         enableSaveButton()
+      }
+      ciudad.addEventListener('focus', () => {
+        validateCiudad()
+      })
+      ciudad.addEventListener('input', () => {
+        validateCiudad()
       })
       
       // Validacion municipio
-      municipio.addEventListener('input', () => {
+      const validateMunicipio = () => {
         if (municipio.value == '') {
           errorMunicipio.style.display = 'block'
         } else {
           errorMunicipio.style.display = 'none'
         }
         enableSaveButton()
+      }
+      municipio.addEventListener('focus', () => {
+        validateMunicipio()
+      })
+      municipio.addEventListener('input', () => {
+        validateMunicipio()
       })
       
       // Validacion localidad
-      localidad.addEventListener('input', () => {
+      const validateLocalidad = () => {
         if (localidad.value == '') {
           errorLocalidad.style.display = 'block'
         } else {
           errorLocalidad.style.display = 'none'
         }
         enableSaveButton()
+      }
+      localidad.addEventListener('focus', () => {
+        validateLocalidad()
+      })
+      localidad.addEventListener('input', () => {
+        validateLocalidad()
       })
       
       // Validacion colonia
-      colonia.addEventListener('input', () => {
+      const validateColonia = () => {
         if (colonia.value == '') {
           errorColonia.style.display = 'block'
         } else {
           errorColonia.style.display = 'none'
         }
         enableSaveButton()
+      }
+      colonia.addEventListener('focus', () => {
+        validateColonia()
+      })
+      colonia.addEventListener('input', () => {
+        validateColonia()
       })
       
       // Validacion calle
-      calle.addEventListener('input', () => {
+      const validateCalle = () => {
         if (calle.value == '') {
           errorCalle.style.display = 'block'
         } else {
           errorCalle.style.display = 'none'
         }
         enableSaveButton()
+      }
+      calle.addEventListener('focus', () => {
+        validateCalle()
+      })
+      calle.addEventListener('input', () => {
+        validateCalle()
       })
       
       // Validacion numero exterior
-      numeroExterior.addEventListener('input', () => {
+      const validateNumeroExterior = () => {
         if (numeroExterior.value == '') {
           errorNumeroExterior.style.display = 'block'
         } else {
           errorNumeroExterior.style.display = 'none'
         }
         enableSaveButton()
+      }
+      numeroExterior.addEventListener('focus', () => {
+        validateNumeroExterior()
+      })
+      numeroExterior.addEventListener('input', () => {
+        validateNumeroExterior()
       })
       
       // Validacion banco
-      banco.addEventListener('change', () => {
+      const validateBanco = () => {
         if (banco.value == '') {
           errorBanco.style.display = 'block'
         } else {
           errorBanco.style.display = 'none'
         }
         enableSaveButton()
+      }
+      banco.addEventListener('focus', () => {
+        validateBanco()
+      })
+      banco.addEventListener('change', () => {
+        validateBanco()
       })
       
       // Validacion cuenta
-      cuenta.addEventListener('input', () => {
+      const validateCuenta = () => {
         if (cuentaPattern.test(cuenta.value)) {
           errorCuenta.style.display = 'none'
         } else {
           errorCuenta.style.display = 'block'
         }
         enableSaveButton()
+      }
+      cuenta.addEventListener('focus', () => {
+        validateCuenta()
+      })
+      cuenta.addEventListener('input', () => {
+        validateCuenta()
       })
       
       // Validacion moneda
-      moneda.addEventListener('change', () => {
+      const validateMoneda = () => {
         if (moneda.value == '') {
           errorMoneda.style.display = 'block'
         } else {
           errorMoneda.style.display = 'none'
         }
         enableSaveButton()
+      }
+      moneda.addEventListener('focus', () => {
+        validateMoneda()
+      })
+      moneda.addEventListener('change', () => {
+        validateMoneda()
       })
       
       // Validacion clabe
-      clabe.addEventListener('input', () => {
+      const validateClabe = () => {
         if (clabePattern.test(clabe.value)) {
           errorClabe.style.display = 'none'
         } else {
           errorClabe.style.display = 'block'
         }
         enableSaveButton()
+      }
+      clabe.addEventListener('focus', () => {
+        validateClabe()
+      })
+      clabe.addEventListener('input', () => {
+        validateClabe()
       })
 
       // Añadiendo un segundo banco
@@ -1259,43 +1488,67 @@
       })
       
       // Validacion banco 2
-      banco2.addEventListener('change', () => {
+      const validateBanco2 = () => {
         if (banco2.value == '') {
           errorBanco2.style.display = 'block'
         } else {
           errorBanco2.style.display = 'none'
         }
         enableSaveButton()
+      }
+      banco2.addEventListener('focus', () => {
+        validateBanco2()
+      })
+      banco2.addEventListener('change', () => {
+        validateBanco2()
       })
       
       // Validacion cuenta 2
-      cuenta2.addEventListener('input', () => {
+      const validateCuenta2 = () => {
         if (cuentaPattern.test(cuenta2.value)) {
           errorCuenta2.style.display = 'none'
         } else {
           errorCuenta2.style.display = 'block'
         }
         enableSaveButton()
+      }
+      cuenta2.addEventListener('focus', () => {
+        validateCuenta2()
+      })
+      cuenta2.addEventListener('input', () => {
+        validateCuenta2()
       })
       
       // Validacion moneda 2
-      moneda2.addEventListener('change', () => {
+      const validateMoneda2 = () => {
         if (moneda2.value == '') {
           errorMoneda2.style.display = 'block'
         } else {
           errorMoneda2.style.display = 'none'
         }
         enableSaveButton()
+      }
+      moneda2.addEventListener('focus', () => {
+        validateMoneda2()
+      })
+      moneda2.addEventListener('change', () => {
+        validateMoneda2()
       })
       
       // Validacion clabe 2
-      clabe2.addEventListener('input', () => {
+      const validateClabe2 = () => {
         if (clabePattern.test(clabe2.value)) {
           errorClabe2.style.display = 'none'
         } else {
           errorClabe2.style.display = 'block'
         }
         enableSaveButton()
+      }
+      clabe2.addEventListener('focus', () => {
+        validateClabe2()
+      })
+      clabe2.addEventListener('input', () => {
+        validateClabe2()
       })
 
       function enableSaveButton() {

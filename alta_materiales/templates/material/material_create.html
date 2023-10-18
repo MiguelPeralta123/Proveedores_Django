@@ -128,33 +128,8 @@
                   </div>
 
                   <div id="medidas-container">
-                    <div class="d-flex justify-content-between gap-3">
-                      <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico, fracción o N/A)</span></p>
-  
-                      <div class="mb-1">
-                        <!-- UM Largo field -->
-                        <div id="select-largo">
-                          {{ material_form.um_largo }}
-                          <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                        </div>
-                        <!-- UM Ancho field -->
-                        <div id="select-ancho" style="display: none;">
-                          {{ material_form.um_ancho }}
-                          <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                        </div>
-                        <!-- UM Alto field -->
-                        <div id="select-alto" style="display: none;">
-                          {{ material_form.um_alto }}
-                          <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                        </div>
-                        <!-- UM Calibre field -->
-                        <div id="select-calibre" style="display: none;">
-                          {{ material_form.um_calibre }}
-                          <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                        </div>
-                      </div>
-                    </div>
-  
+                    <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico, fracción o N/A)</span></p>
+                    
                     <div style="display: flex; gap: 1rem;">
                       <!-- Largo field -->
                       <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
@@ -182,6 +157,38 @@
                         <p class="m-0">{{ material_form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                         {{ material_form.calibre }}
                         <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                      </div>
+                    </div>
+
+                    <div id="id-unidades-medida" class="d-flex justify-content-between gap-3">
+                      <div>
+                        <label for="id-medidas-iguales">Todas las medidas tienen la misma unidad:</label>
+                        <input type="checkbox" id="id-medidas-iguales" class="medidas-iguales">
+                      </div>
+  
+                      <div class="mb-1" style="width: 12rem;">
+                        <!-- UM Largo field -->
+                        <div id="select-largo">
+                          {{ material_form.um_largo }}
+                          <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                        </div>
+                        <!-- UM Ancho field -->
+                        <div id="select-ancho" style="display: none;">
+                          {{ material_form.um_ancho }}
+                          <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                        </div>
+                        <!-- UM Alto field -->
+                        <div id="select-alto" style="display: none;">
+                          {{ material_form.um_alto }}
+                          <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                        </div>
+                        <!-- UM Calibre field -->
+                        <div id="select-calibre" style="display: none;">
+                          {{ material_form.um_calibre }}
+                          <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                        </div>
+
+                        <p id="error-unidades-medida" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una unidad para cada medida</p>
                       </div>
                     </div>
                   </div>
@@ -347,6 +354,7 @@
       let addMaterialBand = true
       let editingBand = false
       let editingId = 0
+      let medidasIguales = false
 
       const handleEsMigracion = (esMigracionValue) => {
         if(esMigracionValue) {
@@ -375,7 +383,7 @@
       handleEsMigracion(esMigracion.checked)
     
       // Validacion empresa origen
-      empresaOrigen.addEventListener('change', () => {
+      const validateEmpresaOrigen = () => {
         if (empresaOrigen.value == '') {
           errorEmpresaOrigen.style.display = 'block'
           errorEmpresasMigracion.style.display = 'none'
@@ -389,10 +397,12 @@
           }
         }
         enableSaveButton()
-      })
+      }
+      empresaOrigen.addEventListener('focus', validateEmpresaOrigen)
+      empresaOrigen.addEventListener('change', validateEmpresaOrigen)
       
       // Validacion empresa destino
-      empresaDestino.addEventListener('change', () => {
+      const validateEmpresaDestino = () => {
         if (empresaDestino.value == '') {
           errorEmpresaDestino.style.display = 'block'
           errorEmpresasMigracion.style.display = 'none'
@@ -406,44 +416,63 @@
           }
         }
         enableSaveButton()
-      })
+      }
+      empresaDestino.addEventListener('focus', validateEmpresaDestino)
+      empresaDestino.addEventListener('change', validateEmpresaDestino)
       
       // Validacion nombre producto migracion
-      nombreProductoMigracion.addEventListener('input', () => {
+      const validateNombreProductoMigracion = () => {
         if (nombreProductoMigracion.value != '') {
           errorNombreProductoMigracion.style.display = 'none'
         } else {
           errorNombreProductoMigracion.style.display = 'block'
         }
         enableSaveButton()
-      })
+      }
+      nombreProductoMigracion.addEventListener('focus', validateNombreProductoMigracion)
+      nombreProductoMigracion.addEventListener('input', validateNombreProductoMigracion)
 
       // Validacion empresa
-      empresa.addEventListener('change', () => {
+      const validateEmpresa = () => {
         if (empresa.value == '') {
           errorEmpresa.style.display = 'block'
         } else {
           errorEmpresa.style.display = 'none'
         }
         enableSaveButton()
-      })
+      }
+      empresa.addEventListener('focus', validateEmpresa)
+      empresa.addEventListener('change', validateEmpresa)
       
       // Validacion justificacion
-      justificacion.addEventListener('input', () => {
+      const validateJustificacion = () => {
         if (justificacion.value == '') {
           errorJustificacion.style.display = 'block'
         } else {
           errorJustificacion.style.display = 'none'
         }
         enableSaveButton()
-      })
+      }
+      justificacion.addEventListener('focus', validateJustificacion)
+      justificacion.addEventListener('input', validateJustificacion)
       
       const validarCamposMaterial = () => {
 
         // Validación tipo alta
         var tipoAltaInputs = document.querySelectorAll('.material-tipo-alta')
-        tipoAltaInputs.forEach(function(input) {
-            input.addEventListener('change', function() {
+        tipoAltaInputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                var tipoAltaValue = input.value
+                var container = input.closest('.tipo-alta-container')
+                var errorTipoAlta = container.querySelector('#error-tipo-alta')
+                // Verificar si el campo está vacío
+                if (tipoAltaValue == '') {
+                  errorTipoAlta.style.display = 'block'
+                } else {
+                  errorTipoAlta.style.display = 'none'
+                }
+            })
+            input.addEventListener('change', () => {
                 var tipoAltaValue = input.value
                 var container = input.closest('.tipo-alta-container')
                 var errorTipoAlta = container.querySelector('#error-tipo-alta')
@@ -459,6 +488,17 @@
         // Validación subfamilia
         var subfamiliaInputs = document.querySelectorAll('.material-subfamilia')
         subfamiliaInputs.forEach(function(input) {
+            input.addEventListener('focus', function() {
+                var subfamiliaValue = input.value
+                var container = input.closest('.subfamilia-container')
+                var errorSubfamilia = container.querySelector('#error-subfamilia')
+                // Verificar si el campo está vacío
+                if (subfamiliaValue == '') {
+                  errorSubfamilia.style.display = 'block'
+                } else {
+                  errorSubfamilia.style.display = 'none'
+                }
+            })
             input.addEventListener('change', function() {
                 var subfamiliaValue = input.value
                 var container = input.closest('.subfamilia-container')
@@ -475,6 +515,17 @@
         // Validación nombre producto
         var nombreProductoInputs = document.querySelectorAll('.material-nombre')
         nombreProductoInputs.forEach(function(input) {
+            input.addEventListener('focus', function() {
+                var nombreProductoValue = input.value
+                var container = input.closest('.nombre-producto-container')
+                var errorNombreProducto = container.querySelector('#error-nombre-producto')
+                // Verificar si el campo está vacío
+                if (nombreProductoValue == '') {
+                  errorNombreProducto.style.display = 'block'
+                } else {
+                  errorNombreProducto.style.display = 'none'
+                }
+            })
             input.addEventListener('input', function() {
                 var nombreProductoValue = input.value
                 var container = input.closest('.nombre-producto-container')
@@ -514,6 +565,18 @@
               selectAncho.style.display = 'none'
               selectAlto.style.display = 'none'
               selectCalibre.style.display = 'none'
+              
+              var largoValue = input.value
+              var container = input.closest('.largo-container')
+              var errorLargo = container.querySelector('#error-largo')
+              // Verificar si el valor es "N/A", numérico o fracción
+              if (largoValue === 'N/A' || 
+                !isNaN(parseFloat(largoValue)) && isFinite(largoValue) || 
+                fraccionPattern.test(largoValue)) {
+                  errorLargo.style.display = 'none'
+              } else {
+                  errorLargo.style.display = 'block'
+              }
             })
         })
 
@@ -534,15 +597,29 @@
                 }
             })
             input.addEventListener('focus', () => {
-              var medidasContainer = input.closest('#medidas-container')
-              var selectLargo = medidasContainer.querySelector('#select-largo')
-              var selectAncho = medidasContainer.querySelector('#select-ancho')
-              var selectAlto = medidasContainer.querySelector('#select-alto')
-              var selectCalibre = medidasContainer.querySelector('#select-calibre')
-              selectLargo.style.display = 'none'
-              selectAncho.style.display = 'block'
-              selectAlto.style.display = 'none'
-              selectCalibre.style.display = 'none'
+              if (!medidasIguales) {
+                var medidasContainer = input.closest('#medidas-container')
+                var selectLargo = medidasContainer.querySelector('#select-largo')
+                var selectAncho = medidasContainer.querySelector('#select-ancho')
+                var selectAlto = medidasContainer.querySelector('#select-alto')
+                var selectCalibre = medidasContainer.querySelector('#select-calibre')
+                selectLargo.style.display = 'none'
+                selectAncho.style.display = 'block'
+                selectAlto.style.display = 'none'
+                selectCalibre.style.display = 'none'
+                
+                var anchoValue = input.value
+                var container = input.closest('.ancho-container')
+                var errorAncho = container.querySelector('#error-ancho')
+                // Verificar si el valor es "N/A", numérico o fracción
+                if (anchoValue === 'N/A' || 
+                  !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue) || 
+                  fraccionPattern.test(anchoValue)) {
+                    errorAncho.style.display = 'none'
+                } else {
+                    errorAncho.style.display = 'block'
+                }
+              }
             })
         })
 
@@ -563,15 +640,29 @@
                 }
             })
             input.addEventListener('focus', () => {
-              var medidasContainer = input.closest('#medidas-container')
-              var selectLargo = medidasContainer.querySelector('#select-largo')
-              var selectAncho = medidasContainer.querySelector('#select-ancho')
-              var selectAlto = medidasContainer.querySelector('#select-alto')
-              var selectCalibre = medidasContainer.querySelector('#select-calibre')
-              selectLargo.style.display = 'none'
-              selectAncho.style.display = 'none'
-              selectAlto.style.display = 'block'
-              selectCalibre.style.display = 'none'
+              if (!medidasIguales) {
+                var medidasContainer = input.closest('#medidas-container')
+                var selectLargo = medidasContainer.querySelector('#select-largo')
+                var selectAncho = medidasContainer.querySelector('#select-ancho')
+                var selectAlto = medidasContainer.querySelector('#select-alto')
+                var selectCalibre = medidasContainer.querySelector('#select-calibre')
+                selectLargo.style.display = 'none'
+                selectAncho.style.display = 'none'
+                selectAlto.style.display = 'block'
+                selectCalibre.style.display = 'none'
+
+                var altoValue = input.value
+                var container = input.closest('.alto-container')
+                var errorAlto = container.querySelector('#error-alto')
+                // Verificar si el valor es "N/A", numérico o fracción
+                if (altoValue === 'N/A' || 
+                  !isNaN(parseFloat(altoValue)) && isFinite(altoValue) || 
+                  fraccionPattern.test(altoValue)) {
+                    errorAlto.style.display = 'none'
+                } else {
+                    errorAlto.style.display = 'block'
+                }
+              }
             })
         })
 
@@ -592,21 +683,86 @@
                 }
             })
             input.addEventListener('focus', () => {
-              var medidasContainer = input.closest('#medidas-container')
-              var selectLargo = medidasContainer.querySelector('#select-largo')
-              var selectAncho = medidasContainer.querySelector('#select-ancho')
-              var selectAlto = medidasContainer.querySelector('#select-alto')
-              var selectCalibre = medidasContainer.querySelector('#select-calibre')
-              selectLargo.style.display = 'none'
-              selectAncho.style.display = 'none'
-              selectAlto.style.display = 'none'
-              selectCalibre.style.display = 'block'
+              if (!medidasIguales) {
+                var medidasContainer = input.closest('#medidas-container')
+                var selectLargo = medidasContainer.querySelector('#select-largo')
+                var selectAncho = medidasContainer.querySelector('#select-ancho')
+                var selectAlto = medidasContainer.querySelector('#select-alto')
+                var selectCalibre = medidasContainer.querySelector('#select-calibre')
+                selectLargo.style.display = 'none'
+                selectAncho.style.display = 'none'
+                selectAlto.style.display = 'none'
+                selectCalibre.style.display = 'block'
+
+                var calibreValue = input.value
+                var container = input.closest('.calibre-container')
+                var errorCalibre = container.querySelector('#error-calibre')
+                // Verificar si el valor es "N/A", numérico o fracción
+                if (calibreValue === 'N/A' || 
+                  !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue) || 
+                  fraccionPattern.test(calibreValue)) {
+                    errorCalibre.style.display = 'none'
+                } else {
+                    errorCalibre.style.display = 'block'
+                }
+              }
             })
+        })
+
+        // Validación medidas iguales
+        var mismaMedidaInputs = document.querySelectorAll('.medidas-iguales')
+        mismaMedidaInputs.forEach(input => {
+          input.addEventListener('change', () => {
+            if (input.checked) {
+              var unidadesMedidaContainer = input.closest('#id-unidades-medida')
+              var largo = unidadesMedidaContainer.querySelector('.select-um-largo')
+              var ancho = unidadesMedidaContainer.querySelector('.select-um-ancho')
+              var alto = unidadesMedidaContainer.querySelector('.select-um-alto')
+              var calibre = unidadesMedidaContainer.querySelector('.select-um-calibre')
+              ancho.value = largo.value
+              alto.value = largo.value
+              calibre.value = largo.value
+              unidadesMedidaContainer.querySelector('#select-largo').style.display = 'block'
+              unidadesMedidaContainer.querySelector('#select-ancho').style.display = 'none'
+              unidadesMedidaContainer.querySelector('#select-alto').style.display = 'none'
+              unidadesMedidaContainer.querySelector('#select-calibre').style.display = 'none'
+              medidasIguales = true
+            }
+            else {
+              medidasIguales = false
+            }
+          })
+        })
+
+        // Validación unidad de medida para largo
+        var umLargoInputs = document.querySelectorAll('.select-um-largo')
+        umLargoInputs.forEach(input => {
+          input.addEventListener('change', () => {
+            if (medidasIguales) {
+              var medidasContainer = input.closest('#medidas-container')
+              var ancho = medidasContainer.querySelector('.select-um-ancho')
+              var alto = medidasContainer.querySelector('.select-um-alto')
+              var calibre = medidasContainer.querySelector('.select-um-calibre')
+              ancho.value = input.value
+              alto.value = input.value
+              calibre.value = input.value
+            }
+          })
         })
 
         // Validación material
         var materialInputs = document.querySelectorAll('.material-material')
         materialInputs.forEach(function(input) {
+            input.addEventListener('focus', function() {
+                var materialValue = input.value
+                var container = input.closest('.material-container')
+                var errorMaterial = container.querySelector('#error-material')
+                if (materialValue == '') {
+                    errorMaterial.style.display = 'block'
+                } else {
+                    errorMaterial.style.display = 'none'
+                }
+            })
             input.addEventListener('input', function() {
                 var materialValue = input.value
                 var container = input.closest('.material-container')
@@ -622,7 +778,7 @@
         // Validación color
         var colorInputs = document.querySelectorAll('.material-color')
         colorInputs.forEach(function(input) {
-            input.addEventListener('input', function() {
+            input.addEventListener('focus', function() {
                 var colorValue = input.value
                 var container = input.closest('.color-container')
                 var errorColor = container.querySelector('#error-color')
@@ -632,11 +788,32 @@
                     errorColor.style.display = 'none'
                 }
             })
+            input.addEventListener('input', function() {
+              var colorValue = input.value
+              var container = input.closest('.color-container')
+              var errorColor = container.querySelector('#error-color')
+              if (colorValue == '') {
+                  errorColor.style.display = 'block'
+              } else {
+                  errorColor.style.display = 'none'
+              }
+          })
         })
 
         // Validación unidad de medida
         var unidadMedidaInputs = document.querySelectorAll('.material-unidad-medida')
         unidadMedidaInputs.forEach(function(input) {
+            input.addEventListener('focus', function() {
+                var unidadMedidaValue = input.value
+                var container = input.closest('.unidad-medida-container')
+                var errorUnidadMedida = container.querySelector('#error-unidad-medida')
+                // Verificar si el campo está vacío
+                if (unidadMedidaValue == '') {
+                  errorUnidadMedida.style.display = 'block'
+                } else {
+                  errorUnidadMedida.style.display = 'none'
+                }
+            })
             input.addEventListener('change', function() {
                 var unidadMedidaValue = input.value
                 var container = input.closest('.unidad-medida-container')
@@ -762,33 +939,8 @@
             </div>
 
             <div id="medidas-container">
-              <div class="d-flex justify-content-between gap-3">
-                <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico, fracción o N/A)</span></p>
-
-                <div class="mb-1">
-                  <!-- UM Largo field -->
-                  <div id="select-largo">
-                    {{ material_formset.empty_form.um_largo }}
-                    <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                  </div>
-                  <!-- UM Ancho field -->
-                  <div id="select-ancho" style="display: none;">
-                    {{ material_formset.empty_form.um_ancho }}
-                    <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                  </div>
-                  <!-- UM Alto field -->
-                  <div id="select-alto" style="display: none;">
-                    {{ material_formset.empty_form.um_alto }}
-                    <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                  </div>
-                  <!-- UM Calibre field -->
-                  <div id="select-calibre" style="display: none;">
-                    {{ material_formset.empty_form.um_calibre }}
-                    <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                  </div>
-                </div>
-              </div>
-
+              <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico, fracción o N/A)</span></p>
+              
               <div style="display: flex; gap: 1rem;">
                 <!-- Largo field -->
                 <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
@@ -816,6 +968,38 @@
                   <p class="m-0">{{ material_formset.empty_form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                   {{ material_formset.empty_form.calibre }}
                   <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                </div>
+              </div>
+
+              <div id="id-unidades-medida" class="d-flex justify-content-between gap-3">
+                <div>
+                  <label for="id-medidas-iguales">Todas las medidas tienen la misma unidad:</label>
+                  <input type="checkbox" id="id-medidas-iguales" class="medidas-iguales">
+                </div>
+
+                <div class="mb-1" style="width: 12rem;">
+                  <!-- UM Largo field -->
+                  <div id="select-largo">
+                    {{ material_formset.empty_form.um_largo }}
+                    <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>
+                  <!-- UM Ancho field -->
+                  <div id="select-ancho" style="display: none;">
+                    {{ material_formset.empty_form.um_ancho }}
+                    <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>
+                  <!-- UM Alto field -->
+                  <div id="select-alto" style="display: none;">
+                    {{ material_formset.empty_form.um_alto }}
+                    <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>
+                  <!-- UM Calibre field -->
+                  <div id="select-calibre" style="display: none;">
+                    {{ material_formset.empty_form.um_calibre }}
+                    <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>
+
+                  <p id="error-unidades-medida" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una unidad para cada medida</p>
                 </div>
               </div>
             </div>
@@ -947,6 +1131,10 @@
         var ancho
         var alto
         var calibre
+        var umLargo
+        var umAncho
+        var umAlto
+        var umCalibre
         var material
         var color
         var unidadMedida
@@ -960,6 +1148,10 @@
           ancho = document.getElementById(`id_material-${materialCounter}-ancho`)
           alto = document.getElementById(`id_material-${materialCounter}-alto`)
           calibre = document.getElementById(`id_material-${materialCounter}-calibre`)
+          umLargo = document.getElementById(`id_material-${materialCounter}-um_largo`)
+          umAncho = document.getElementById(`id_material-${materialCounter}-um_ancho`)
+          umAlto = document.getElementById(`id_material-${materialCounter}-um_alto`)
+          umCalibre = document.getElementById(`id_material-${materialCounter}-um_calibre`)
           material = document.getElementById(`id_material-${materialCounter}-material`)
           color = document.getElementById(`id_material-${materialCounter}-color`)
           unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`)
@@ -973,6 +1165,10 @@
           ancho = document.getElementById(`id_material-${editingId}-ancho`)
           alto = document.getElementById(`id_material-${editingId}-alto`)
           calibre = document.getElementById(`id_material-${editingId}-calibre`)
+          umLargo = document.getElementById(`id_material-${editingId}-um_largo`)
+          umAncho = document.getElementById(`id_material-${editingId}-um_ancho`)
+          umAlto = document.getElementById(`id_material-${editingId}-um_alto`)
+          umCalibre = document.getElementById(`id_material-${editingId}-um_calibre`)
           material = document.getElementById(`id_material-${editingId}-material`)
           color = document.getElementById(`id_material-${editingId}-color`)
           unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`)
@@ -985,17 +1181,27 @@
         const errorAncho = ancho.closest('.ancho-container').querySelector('#error-ancho')
         const errorAlto = alto.closest('.alto-container').querySelector('#error-alto')
         const errorCalibre = calibre.closest('.calibre-container').querySelector('#error-calibre')
+        const errorUnidadesMedida = largo.closest('#medidas-container').querySelector('#error-unidades-medida')
         const errorMaterial = material.closest('.material-container').querySelector('#error-material')
         const errorColor = color.closest('.color-container').querySelector('#error-color')
         const errorUnidadMedida = unidadMedida.closest('.unidad-medida-container').querySelector('#error-unidad-medida')
 
-        if(tipoAlta.value == '' || subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || calibre.value == '' || material.value == '' || color.value == '' || unidadMedida.value == '' || errorTipoAlta.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
+        if (umLargo.value == '' || umAncho.value == '' || umAlto.value == '' || umCalibre.value == '') {
+          errorUnidadesMedida.style.display = 'block'
+          window.alert('Debe seleccionar una unidad para cada medida')
+          return
+        } else {
+          errorUnidadesMedida.style.display = 'none'
+        }
+
+        if (tipoAlta.value == '' || subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || calibre.value == '' || umLargo.value == '' || umAncho.value == '' || umAlto.value == '' || umCalibre.value == '' || material.value == '' || color.value == '' || unidadMedida.value == '' || errorTipoAlta.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
           window.alert('Algún campo está vacío o es incorrecto')
         }
         else {
           fillTable()
           createMaterialForm()
           btnAddMaterial.innerHTML = 'Agregar Material'
+          medidasIguales = false
         }
       });
 
@@ -1013,25 +1219,25 @@
           const form = document.getElementById(`material-form-${editingId}`)
           if (form) {
             form.style.display = "block"
-          }
-          // Then, the last form created is removed
-          const lastForm = document.getElementById(`material-form-${formCount - 1}`);
-          if (lastForm) {
-            lastForm.remove();
-            // Recorre todos los formularios restantes y actualiza sus índices
-            const forms = materialFormsContainer.getElementsByClassName('material-form');
-            for (let i = 0; i < forms.length; i++) {
-              const inputs = forms[i].querySelectorAll('[name^=material-]');
-              for (let j = 0; j < inputs.length; j++) {
-                inputs[j].name = inputs[j].name.replace(/\d+/, i);
+            // Then, the last form created is removed
+            const lastForm = document.getElementById(`material-form-${formCount - 1}`);
+            if (lastForm) {
+              lastForm.remove();
+              // Recorre todos los formularios restantes y actualiza sus índices
+              const forms = materialFormsContainer.getElementsByClassName('material-form');
+              for (let i = 0; i < forms.length; i++) {
+                const inputs = forms[i].querySelectorAll('[name^=material-]');
+                for (let j = 0; j < inputs.length; j++) {
+                  inputs[j].name = inputs[j].name.replace(/\d+/, i);
+                }
               }
+              materialCounter--
+              formCount--;
+              document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
             }
-            materialCounter--
-            formCount--;
-            document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
+            btnAddMaterial.innerHTML = 'Guardar Cambios'
+            medidasIguales = false
           }
-
-          btnAddMaterial.innerHTML = 'Guardar Cambios'
         }
 
         // If the delete button is clicked, remove the row and the form
