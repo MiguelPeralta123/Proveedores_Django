@@ -34,15 +34,15 @@ def material(request):
     try:
         if request.user.compras:
             solicitudes = MaterialSolicitud.objects.filter(pendiente=True)
-            if request.user.puede_crear:
+            if request.user.puede_crear_material:
                 mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
         elif request.user.finanzas:
             solicitudes = MaterialSolicitud.objects.filter(compras=True)
-            if request.user.puede_crear:
+            if request.user.puede_crear_material:
                 mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
         elif request.user.sistemas:
             solicitudes = MaterialSolicitud.objects.filter(finanzas=True)
-            if request.user.puede_crear:
+            if request.user.puede_crear_material:
                 mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
         else:
             solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
@@ -79,12 +79,19 @@ def material(request):
         for solicitud in solicitudes:
             historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
 
-        return render(request, 'material/material.html', {
-            'solicitudes': solicitudes,
-            'mis_solicitudes': mis_solicitudes,
-            'historial': historial,
-            'current_user': request.user
-        })
+        if request.user.puede_crear_material:
+            return render(request, 'material/material.html', {
+                'solicitudes': solicitudes,
+                'mis_solicitudes': mis_solicitudes,
+                'historial': historial,
+                'current_user': request.user
+            })
+        else:
+            return render(request, 'material/material.html', {
+                'solicitudes': solicitudes,
+                'historial': historial,
+                'current_user': request.user
+            })
     
     except Exception as e:
         print(f"Se produjo un error al cargar los materiales: {str(e)}")
@@ -95,7 +102,7 @@ def material(request):
 @login_required
 def material_create(request):
     try:
-        if request.user.puede_crear:
+        if request.user.puede_crear_material:
             MaterialFormSet = formset_factory(MaterialForm, extra=0)
 
             if request.method == 'GET':
@@ -214,7 +221,7 @@ def material_detail(request, material_id):
                 if request.user.compras:
                     solicitud_form = SolicitudFormForCompras(
                         request.POST, instance=solicitud)
-                    destinatario_correo = [solicitud.usuario.email, 'fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
+                    destinatario_correo = [solicitud.usuario.email, 'edurazo@ricofarms.com']
                 elif request.user.finanzas:
                     solicitud_form = SolicitudFormForFinanzas(
                         request.POST, instance=solicitud)

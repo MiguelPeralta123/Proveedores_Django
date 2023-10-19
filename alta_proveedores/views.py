@@ -22,20 +22,16 @@ def proveedor(request):
     try:
         if request.user.compras:
             proveedores = Proveedor.objects.filter(pendiente=True)
-            if request.user.puede_crear:
+            if request.user.puede_crear_proveedor:
                 mis_proveedores = Proveedor.objects.filter(usuario=request.user)
         elif request.user.finanzas:
             proveedores = Proveedor.objects.filter(compras=True)
-            if request.user.puede_crear:
+            if request.user.puede_crear_proveedor:
                 mis_proveedores = Proveedor.objects.filter(usuario=request.user)
         elif request.user.sistemas:
             proveedores = Proveedor.objects.filter(finanzas=True)
-            print("Solicitudes de proveedor")
-            print(proveedores)
-            if request.user.puede_crear:
+            if request.user.puede_crear_proveedor:
                 mis_proveedores = Proveedor.objects.filter(usuario=request.user)
-                print("Mis solicitudes")
-                print(mis_proveedores)
         else:
             proveedores = Proveedor.objects.filter(usuario=request.user)
             proveedores_borradores = proveedores.filter(borrador=True)
@@ -71,12 +67,19 @@ def proveedor(request):
         for proveedor in proveedores:
             historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
 
-        return render(request, 'proveedor/proveedor.html', {
-            'proveedores': proveedores,
-            'mis_proveedores': mis_proveedores,
-            'historial': historial,
-            'current_user': request.user
-        })
+        if request.user.puede_crear_proveedor:
+            return render(request, 'proveedor/proveedor.html', {
+                'proveedores': proveedores,
+                'mis_proveedores': mis_proveedores,
+                'historial': historial,
+                'current_user': request.user
+            })
+        else:
+            return render(request, 'proveedor/proveedor.html', {
+                'proveedores': proveedores,
+                'historial': historial,
+                'current_user': request.user
+            })
 
     except Exception as e:
         print(f"Se produjo un error al cargar los proveedores: {str(e)}")
@@ -86,7 +89,7 @@ def proveedor(request):
 @login_required
 def proveedor_create(request):
     try:
-        if request.user.puede_crear:
+        if request.user.puede_crear_proveedor:
             if request.method == 'GET':
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
                                 'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}

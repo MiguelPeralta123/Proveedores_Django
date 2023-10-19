@@ -20,7 +20,7 @@
           </div>
 
           <!-- Proveedor migración fields -->
-          <div id="proveedor-migracion-fields" style="margin-bottom: 1rem; display: none;">
+          <div id="proveedor-migracion-fields" style="display: none;">
             <div id="proveedor-migracion-empresas" style="display: flex; gap: 1rem;">
               <!-- Empresa origen -->
               <div style="width: 100%;">
@@ -41,7 +41,7 @@
 
             <!-- RFC migracion field -->
             <div class="mt-3 mb-3">
-              <label for="id_rfc_migracion">RFC migración:<span style="color: rgb(192, 0, 0);">*</span></label>
+              <label for="id_rfc_migracion">RFC:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ form.rfc_migracion }}
               <p id="error-rfc-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
               <p id="error-rfc-migracion-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">No existe ningún proveedor con ese RFC</p>
@@ -479,20 +479,22 @@
                 <p id="error-no-relacionar-OC" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
             </div>
+            
+          </div> <!-- Proveedor nuevo -->
 
-            <!-- Constancia situacion fiscal field -->
-            <div style="margin-bottom:1rem;">
-              <label for="id_constancia_situacion_fiscal" style="display: block;">Constancia situación fiscal:<span style="color: rgb(192, 0, 0);">*</span></label>
-              {{ form.constancia_situacion_fiscal }}
-              <p id="error-constancia-situacion-fiscal" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>
+          <!-- Documentos -->
+          <!-- Constancia situacion fiscal field -->
+          <div style="margin-bottom:1rem;">
+            <label for="id_constancia_situacion_fiscal" style="display: block;"><span id="constancia-situacion-fiscal-label">Constancia de situación fiscal:</span><span style="color: rgb(192, 0, 0);">*</span></label>
+            {{ form.constancia_situacion_fiscal }}
+            <p id="error-constancia-situacion-fiscal" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
 
-            <!-- Estado cuenta bancario field -->
-            <div style="margin-bottom:2rem;">
-              <p class="m-0">{{ form.estado_cuenta_bancario.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-              {{ form.estado_cuenta_bancario }}
-              <p id="error-estado-cuenta-bancario" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>
+          <!-- Estado cuenta bancario field -->
+          <div style="margin-bottom:2rem;">
+            <label for="id_estado_cuenta_bancario" style="display: block;"><span id="estado-cuenta-bancario-label">Estado de cuenta bancario:</span><span style="color: rgb(192, 0, 0);">*</span></label>
+            {{ form.estado_cuenta_bancario }}
+            <p id="error-estado-cuenta-bancario" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
           </div>
 
           <div class="d-flex gap-3">
@@ -653,13 +655,20 @@
       rfcMigracion.setAttribute('list', 'opciones_proveedor')
 
       const handleEsMigracion = (esMigracionValue) => {
+        const constanciaSituacionFiscalLabel = document.querySelector('#constancia-situacion-fiscal-label')
+        const estadoCuentaBancarioLabel = document.querySelector('#estado-cuenta-bancario-label')
+
         if(esMigracionValue) {
           proveedorNuevoFields.style.display = 'none'
           proveedorMigracionFields.style.display = 'block'
+          constanciaSituacionFiscalLabel.innerText = 'Constancia de situación fiscal actualizada'
+          estadoCuentaBancarioLabel.innerText = 'Estado de cuenta bancario actualizado'
         }
         else {
           proveedorMigracionFields.style.display = 'none'
           proveedorNuevoFields.style.display = 'block'
+          constanciaSituacionFiscalLabel.innerText = 'Constancia de situación fiscal'
+          estadoCuentaBancarioLabel.innerText = 'Estado de cuenta bancario'
         }
 
         empresaOrigen.required = esMigracionValue
@@ -702,8 +711,8 @@
         cuenta.required = !esMigracionValue
         moneda.required = !esMigracionValue
         clabe.required = !esMigracionValue
-        constanciaSituacionFiscal.required = !esMigracionValue
-        estadoCuentaBancario.required = !esMigracionValue
+        constanciaSituacionFiscal.required = true
+        estadoCuentaBancario.required = true
       }
 
       // Handling EsMigracion state change

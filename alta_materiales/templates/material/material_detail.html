@@ -318,20 +318,20 @@
             {% endif %}
 
             {% if solicitud.pendiente == True and current_user.compras == True %}
-              <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="compras" value="True">Aprobar</button>
-
+              <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
             {% endif %}
 
+            <!--
             {% if solicitud.compras == True and current_user.finanzas == True %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
 
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar</button>
             {% endif %}
+            -->
 
             {% if solicitud.finanzas == True and current_user.sistemas == True %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
-
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
             {% endif %}
           </div>

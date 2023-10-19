@@ -14,9 +14,9 @@ class Proveedor(models.Model):
     contribuyente = models.CharField(max_length=20, blank=True)
     rfc = models.CharField(max_length=14, blank=True)
     curp = models.CharField(max_length=18, blank=True)
-    regimen_capital = models.CharField(max_length=100, blank=True)
+    regimen_capital = models.CharField(max_length=200, blank=True)
     nombre_fiscal = models.CharField(max_length=100, blank=True)
-    nombre_comercial = models.CharField(max_length=50, blank=True)
+    nombre_comercial = models.CharField(max_length=100, blank=True)
     regimen_fiscal = models.CharField(max_length=100, blank=True)
     uso_cfdi = models.CharField(max_length=100, blank=True)
     representante_legal = models.CharField(max_length=50, blank=True)
@@ -60,7 +60,7 @@ class Proveedor(models.Model):
     clabe_2 = models.CharField(max_length=18, blank=True)
     swift_2 = models.CharField(max_length=20, blank=True)
     otro_codigo_bancario_2 = models.CharField(max_length=20, blank=True)
-    constancia_situacion_fiscal = models.FileField(upload_to='static/documentos/constancias/', blank=True)
+    constancia_situacion_fiscal = models.FileField(upload_to='static/documentos/constancias', blank=True)
     estado_cuenta_bancario = models.FileField(upload_to='static/documentos/estados_cuenta', blank=True)
     pendiente = models.BooleanField(default=False)
     compras = models.BooleanField(default=False)
@@ -106,8 +106,8 @@ class ProveedorHistorial(models.Model):
 
 # CATÁLOGOS
 class CatalogoProveedor(models.Model):
-    nombre = models.CharField(max_length=50)
-    nombre_comercial = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=100)
+    nombre_comercial = models.CharField(max_length=100)
     rfc = models.CharField(max_length=20)
 
     class Meta:

@@ -41,7 +41,7 @@
 
             <!-- RFC migracion field -->
             <div class="mt-3 mb-3">
-              <label for="id_rfc_migracion">RFC migración:<span style="color: rgb(192, 0, 0);">*</span></label>
+              <label for="id_rfc_migracion">RFC:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ form.rfc_migracion }}
               <p id="error-rfc-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
             </div>
@@ -477,9 +477,15 @@
               </div>
             </div>
 
+          {% endif %}
+
+          <!-- Documentos -->
+          {% if proveedor.es_migracion %}
+            <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block my-2" style="width:fit-content;" download="">Descargar constancia de situación fiscal actualizada</a>
+            <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block mt-2 mb-3" style="width:fit-content;" download="">Descargar estado de cuenta bancario actualizado</a>
+          {% else %}
             <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block my-2" style="width:fit-content;" download="">Descargar constancia de situación fiscal</a>
             <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block mt-2 mb-3" style="width:fit-content;" download="">Descargar estado de cuenta bancario</a>
-
           {% endif %}
 
           <!-- Comentarios field -->

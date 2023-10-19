@@ -85,64 +85,66 @@
             </ul>
 
             {% if current_user.compras == True or current_user.finanzas == True or current_user.sistemas == True %}
-                <ul id="mis-proveedores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
-                    {% for proveedor in mis_proveedores %}
-                        <a class="list-group-item my-3 border rounded provider-card" 
-                            href="{% url 'proveedor_detail' proveedor.id %}"
-                            style="transition: 0.2s ease-in-out;">
-                            <div class="d-flex justify-content-between gap-3 my-2">
-                                {% if proveedor.nombre_comercial != '' %}
-                                    <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
-                                {% else %}
-                                    <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                {% if current_user.puede_crear_proveedor %}
+                    <ul id="mis-proveedores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
+                        {% for proveedor in mis_proveedores %}
+                            <a class="list-group-item my-3 border rounded provider-card" 
+                                href="{% url 'proveedor_detail' proveedor.id %}"
+                                style="transition: 0.2s ease-in-out;">
+                                <div class="d-flex justify-content-between gap-3 my-2">
+                                    {% if proveedor.nombre_comercial != '' %}
+                                        <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
+                                    {% else %}
+                                        <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                                    {% endif %}
+                                    <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
+                                </div>
+                                <p><b>Solicitante:</b> {{proveedor.usuario.get_full_name}}</p>
+                                <div class="d-flex justify-content-between gap-3">
+                                    {% if proveedor.empresa != '' %}
+                                        <p><b>Empresa:</b> {{proveedor.empresa}}</p>
+                                    {% else %}
+                                        <p><b>Empresa:</b> {{proveedor.empresa_destino}}</p>
+                                    {% endif %}
+                                    <p><b>Fecha:</b> {{proveedor.fecha}}</p>
+                                </div>
+                                {% if proveedor.borrador %}
+                                <p class="text-success">✎ Guardado como borrador</p>
                                 {% endif %}
-                                <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
-                            </div>
-                            <p><b>Solicitante:</b> {{proveedor.usuario.get_full_name}}</p>
-                            <div class="d-flex justify-content-between gap-3">
-                                {% if proveedor.empresa != '' %}
-                                    <p><b>Empresa:</b> {{proveedor.empresa}}</p>
-                                {% else %}
-                                    <p><b>Empresa:</b> {{proveedor.empresa_destino}}</p>
+                                {% if proveedor.pendiente %}
+                                <p class="text-success">🕐 Pendiente compras</p>
                                 {% endif %}
-                                <p><b>Fecha:</b> {{proveedor.fecha}}</p>
-                            </div>
-                            {% if proveedor.borrador %}
-                            <p class="text-success">✎ Guardado como borrador</p>
-                            {% endif %}
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
-                            {% if proveedor.compras %}
-                            <p class="text-success">🕐 Pendiente finanzas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_compras %}
-                            <p class="text-success">❌ Rechazado por compras</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.finanzas %}
-                            <p class="text-success">🕐 Pendiente sistemas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_finanzas %}
-                            <p class="text-success">❌ Rechazado por finanzas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.sistemas %}
-                            <p class="text-success">✅ Aprobado</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_sistemas %}
-                            <p class="text-success">❌ Rechazado por sistemas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
+                                {% if proveedor.compras %}
+                                <p class="text-success">🕐 Pendiente finanzas</p>
+                                {% endif %}
+                                {% if proveedor.rechazado_compras %}
+                                <p class="text-success">❌ Rechazado por compras</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                {% endif %}
+                                {% if proveedor.finanzas %}
+                                <p class="text-success">🕐 Pendiente sistemas</p>
+                                {% endif %}
+                                {% if proveedor.rechazado_finanzas %}
+                                <p class="text-success">❌ Rechazado por finanzas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                {% endif %}
+                                {% if proveedor.sistemas %}
+                                <p class="text-success">✅ Aprobado</p>
+                                {% endif %}
+                                {% if proveedor.rechazado_sistemas %}
+                                <p class="text-success">❌ Rechazado por sistemas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                {% endif %}
 
-                            {% for cambio in historial %}
-                                {% if proveedor.id == cambio.id_proveedor %}
-                                    <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
-                                {% endif %}
-                            {% endfor %}
-                        </a>
-                    {% endfor %}
-                </ul>
+                                {% for cambio in historial %}
+                                    {% if proveedor.id == cambio.id_proveedor %}
+                                        <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                                    {% endif %}
+                                {% endfor %}
+                            </a>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             {% endif %}
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
