@@ -10,7 +10,7 @@ from alta_materiales.models import CatalogoMaterial
 def load_proveedores():
     with open('csv_files/catalogo_proveedores.csv', 'r') as csvfile:
         csv_reader = csv.reader(csvfile)
-        next(csv_reader)
+        next(csv_reader) # Skipping headers
         for row in csv_reader:
             CatalogoProveedor.objects.create(
                 nombre=row[0],
@@ -31,5 +31,5 @@ def load_materiales():
             )
 
 if __name__ == "__main__":
-    load_proveedores()
+    #load_proveedores()
     load_materiales()

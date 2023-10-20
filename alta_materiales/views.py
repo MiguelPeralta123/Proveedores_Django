@@ -7,6 +7,9 @@ from .forms import *
 from .models import *
 from .options import *
 
+import csv
+import os
+
 import json
 from django.http import JsonResponse
 
@@ -112,14 +115,35 @@ def material_create(request):
                 solicitud_form = SolicitudForm(initial=default_values)
                 material_formset = MaterialFormSet(prefix='material', initial=[{}])
 
-                catalogo_material = list(CatalogoMaterial.objects.values())
-                catalogo_material_json = json.dumps(catalogo_material)
+                #catalogo_material = list(CatalogoMaterial.objects.values('codigo', 'nombre_producto'))
+                #catalogo_material_json = json.dumps(catalogo_material)
+
+                ruta_csv = os.path.join('csv_files', 'catalogo_productos.csv')
+                with open(ruta_csv, 'r') as archivo_csv:
+                    # Lee el archivo CSV
+                    lector_csv = csv.reader(archivo_csv)
+                    next(lector_csv) # Skipping headers
+                    
+                    # Inicializa la lista que contendrá las tuplas
+                    CATALOGO_MATERIAL_LIST = []
+                    
+                    # Itera sobre cada fila del archivo CSV
+                    for fila in lector_csv:
+                        # Extrae la información necesaria de las columnas
+                        codigo = fila[0]
+                        nombre_producto = fila[1]
+                        
+                        # Crea la cadena de texto con el formato deseado
+                        formato = f'{codigo} - {nombre_producto}'
+                        
+                        # Agrega la tupla a la lista
+                        CATALOGO_MATERIAL_LIST.append({'value': nombre_producto, 'text': formato})
+
                 return render(request, 'material/material_create.html', {
                     'solicitud_form': solicitud_form,
                     'material_formset': material_formset,
-                    'catalogo_material': catalogo_material_json,
+                    'catalogo_material': CATALOGO_MATERIAL_LIST,
                 })
-            
             else:
                 try:
                     solicitud_form = SolicitudForm(request.POST)

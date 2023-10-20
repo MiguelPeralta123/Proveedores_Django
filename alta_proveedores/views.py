@@ -96,6 +96,7 @@ def proveedor_create(request):
 
                 catalogo_proveedor = list(CatalogoProveedor.objects.values())
                 catalogo_proveedor_json = json.dumps(catalogo_proveedor)
+                
                 return render(request, 'proveedor/proveedor_create.html', {
                     'form': ProveedorForm(initial=default_values),
                     'catalogo_proveedor': catalogo_proveedor_json,

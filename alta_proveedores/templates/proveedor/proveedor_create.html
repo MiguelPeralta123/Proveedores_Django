@@ -43,6 +43,8 @@
             <div class="mt-3 mb-3">
               <label for="id_rfc_migracion">RFC:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ form.rfc_migracion }}
+              <datalist id="opciones_proveedor">
+              </datalist>
               <p id="error-rfc-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
               <p id="error-rfc-migracion-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">No existe ningún proveedor con ese RFC</p>
             </div>
@@ -512,7 +514,7 @@
       const banco2Container = document.getElementById('banco-2-container')
       const proveedorNuevoFields = document.getElementById('proveedor-nuevo-fields')
       const proveedorMigracionFields = document.getElementById('proveedor-migracion-fields')
-      const datalist = document.getElementById("opciones_proveedor");
+      const datalist = document.getElementById("opciones_proveedor")
 
       // Inputs
       const esMigracion = document.getElementById('id_es_migracion')
@@ -647,10 +649,9 @@
       const clabePattern = /^\d{18}$/
       const nonAccentPattern = /^[A-Za-z\d\s]*$/
       const numberPattern = /^[\d,]*$/
-      
 
       // Catalogo de proveedores existentes
-      var catalogoProveedor = JSON.parse('{{ catalogo_proveedor|safe }}');
+      var catalogoProveedor = JSON.parse('{{ catalogo_proveedor|safe }}')
       rfc.setAttribute('list', 'opciones_proveedor')
       rfcMigracion.setAttribute('list', 'opciones_proveedor')
 
@@ -723,7 +724,7 @@
 
       handleEsMigracion(esMigracion.checked)
     
-      // Validacion empresa origen
+      // Validación empresa origen
       const validateEmpresaOrigen = () => {
         if (empresaOrigen.value == '') {
           errorEmpresaOrigen.style.display = 'block'
@@ -746,7 +747,7 @@
         validateEmpresaOrigen()
       })
       
-      // Validacion empresa destino
+      // Validación empresa destino
       const validateEmpresaDestino = () => {
         if (empresaDestino.value == '') {
           errorEmpresaDestino.style.display = 'block'
@@ -769,7 +770,7 @@
         validateEmpresaDestino()
       })
       
-      // Validacion rfc migracion
+      // Validación rfc migracion
       const validateRfcMigracion = () => {
         if (rfcPattern.test(rfcMigracion.value)) {
           errorRfcMigracion.style.display = 'none'
@@ -777,7 +778,7 @@
           errorRfcMigracion.style.display = 'block'
         }
 
-        // Filtrando solo las opciones que empiecen con el valor de rfc_migracion
+        // Filtrando las opciones del catálogo que empiecen con el valor de rfc migracion
         datalist.innerHTML = ''
         for (var i = 0; i < catalogoProveedor.length; i++) {
           if (catalogoProveedor[i].rfc.startsWith(rfcMigracion.value.toUpperCase())) {
@@ -801,7 +802,7 @@
         validateRfcMigracion()
       })
       
-      // Validacion empresa
+      // Validación empresa
       const validateEmpresa = () => {
         if (empresa.value == '') {
           errorEmpresa.style.display = 'block'
@@ -817,7 +818,7 @@
         validateEmpresa()
       })
       
-      // Validacion tipo alta
+      // Validación tipo alta
       const validateTipoAlta = () => {
         if (tipoAlta.value == '') {
           errorTipoAlta.style.display = 'block'
@@ -833,7 +834,7 @@
         validateTipoAlta()
       })
       
-      // Validacion contribuyente
+      // Validación contribuyente
       const validateContribuyente = () => {
         if (contribuyente.value == '') {
           errorContribuyente.style.display = 'block'
@@ -861,7 +862,7 @@
         validateContribuyente()
       })
 
-      // Validacion rfc
+      // Validación rfc
       const validateRfc = () => {
         if (rfcPattern.test(rfc.value)) {
           errorRfc.style.display = 'none'
@@ -869,7 +870,7 @@
           errorRfc.style.display = 'block'
         }
 
-        // Filtrando solo las opciones que empiecen con el valor de rfc
+        // Filtrando las opciones del catálogo que empiecen con el valor de rfc
         datalist.innerHTML = ''
         for (var i = 0; i < catalogoProveedor.length; i++) {
           if (catalogoProveedor[i].rfc.startsWith(rfc.value.toUpperCase())) {
@@ -895,7 +896,7 @@
         validateRfc()
       })
       
-      // Validacion curp
+      // Validación curp
       const validateCurp = () => {
         if (curpPattern.test(curp.value)) {
           errorCurp.style.display = 'none'
@@ -911,7 +912,7 @@
         validateCurp()
       })
       
-      // Validacion nombre fiscal
+      // Validación nombre fiscal
       const validateNombreFiscal = () => {
         if (nombreFiscal.value == '') {
           errorNombreFiscal.style.display = 'block'
@@ -934,7 +935,7 @@
         validateNombreFiscal()
       })
       
-      // Validacion regimen de capital
+      // Validación regimen de capital
       const validateRegimenCapital = () => {
         if (regimenCapital.value == '') {
           errorRegimenCapital.style.display = 'block'
@@ -950,7 +951,7 @@
         validateRegimenCapital()
       })
       
-      // Validacion nombre comercial
+      // Validación nombre comercial
       const validateNombreComercial = () => {
         if (nombreComercial.value == '') {
           errorNombreComercial.style.display = 'block'
@@ -973,7 +974,7 @@
         validateNombreComercial()
       })
       
-      // Validacion regimen fiscal
+      // Validación regimen fiscal
       const validateRegimenFiscal = () => {
         if (regimenFiscal.value == '') {
           errorRegimenFiscal.style.display = 'block'
@@ -989,7 +990,7 @@
         validateRegimenFiscal()
       })
       
-      // Validacion uso cfdi
+      // Validación uso cfdi
       const validateUsoCfdi = () => {
         if (usoCfdi.value == '') {
           errorUsoCfdi.style.display = 'block'
@@ -1005,7 +1006,7 @@
         validateUsoCfdi()
       })
       
-      // Validacion telefono 1
+      // Validación telefono 1
       const validateTelefono1 = () => {
         if (telefonoPattern.test(telefono1.value)) {
           errorTelefono1.style.display = 'none'
@@ -1021,7 +1022,7 @@
         validateTelefono1()
       })
       
-      // Validacion telefono 2
+      // Validación telefono 2
       const validateTelefono2 = () => {
         if (telefono2.value == '' || telefonoPattern.test(telefono2.value)) {
           errorTelefono2.style.display = 'none'
@@ -1037,7 +1038,7 @@
         validateTelefono2()
       })
       
-      // Validacion correo general
+      // Validación correo general
       const validateCorreoGeneral = () => {
         if (correoPattern.test(correoGeneral.value)) {
           errorCorreoGeneral.style.display = 'none'
@@ -1053,7 +1054,7 @@
         validateCorreoGeneral()
       })
       
-      // Validacion correo pagos
+      // Validación correo pagos
       const validateCorreoPagos = () => {
         if (correoPattern.test(correoPagos.value)) {
           errorCorreoPagos.style.display = 'none'
@@ -1069,7 +1070,7 @@
         validateCorreoPagos()
       })
       
-      // Validacion rubro
+      // Validación rubro
       const validateRubro = () => {
         if (rubro.value == '') {
           errorRubro.style.display = 'block'
@@ -1085,7 +1086,7 @@
         validateRubro()
       })
       
-      // Validacion tipo operacion
+      // Validación tipo operacion
       const validateTipoOperacion = () => {
         if (tipoOperacion.value == '') {
           errorTipoOperacion.style.display = 'block'
@@ -1101,7 +1102,7 @@
         validateTipoOperacion()
       })
       
-      // Validacion agente aduanal
+      // Validación agente aduanal
       const validateAgenteAduanal = () => {
         if (agenteAduanal.value == '') {
           errorAgenteAduanal.style.display = 'block'
@@ -1121,7 +1122,7 @@
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
       
-      // Validacion limite credito MN
+      // Validación limite credito MN
       const validateLimiteCreditoMN = () => {
         if (limiteCreditoMN.value != '' && numberPattern.test(limiteCreditoMN.value)) {
           errorLimiteCreditoMN.style.display = 'none'
@@ -1142,7 +1143,7 @@
         validateLimiteCreditoMN()
       })
       
-      // Validacion limite credito ME
+      // Validación limite credito ME
       const validateLimiteCreditoME = () => {
         if (limiteCreditoME.value != '' && numberPattern.test(limiteCreditoME.value)) {
           errorLimiteCreditoME.style.display = 'none'
@@ -1163,7 +1164,7 @@
         validateLimiteCreditoME()
       })
       
-      // Validacion dias credito
+      // Validación dias credito
       const validateDiasCredito = () => {
         if (diasCredito.value != '' && numberPattern.test(diasCredito.value)) {
           errorDiasCredito.style.display = 'none'
@@ -1184,7 +1185,7 @@
         validateDiasCredito()
       })
       
-      // Validacion monto credito
+      // Validación monto credito
       const validateMontoCredito = () => {
         if (montoCredito.value != '' && numberPattern.test(montoCredito.value)) {
           errorMontoCredito.style.display = 'none'
@@ -1205,7 +1206,7 @@
         validateMontoCredito()
       })
       
-      // Validacion retencion iva
+      // Validación retencion iva
       const validateRetencionIva = () => {
         if (retencionIva.value == '') {
           errorRetencionIva.style.display = 'block'
@@ -1221,7 +1222,7 @@
         validateRetencionIva()
       })
       
-      // Validacion retencion isr
+      // Validación retencion isr
       const validateRetencionIsr = () => {
         if (retencionIsr.value == '') {
           errorRetencionIsr.style.display = 'block'
@@ -1237,7 +1238,7 @@
         validateRetencionIsr()
       })
       
-      // Validacion iva frontera
+      // Validación iva frontera
       const validateIvaFrontera = () => {
         if (ivaFrontera.value == '') {
           errorIvaFrontera.style.display = 'block'
@@ -1253,7 +1254,7 @@
         validateIvaFrontera()
       })
       
-      // Validacion codigo postal
+      // Validación codigo postal
       const validateCodigoPostal = () => {
         if (codigoPostalPattern.test(codigoPostal.value)) {
           errorCodigoPostal.style.display = 'none'
@@ -1269,7 +1270,7 @@
         validateCodigoPostal()
       })
       
-      // Validacion pais
+      // Validación pais
       const validatePais = () => {
         if (pais.value == '') {
           errorPais.style.display = 'block'
@@ -1285,7 +1286,7 @@
         validatePais()
       })
       
-      // Validacion estado
+      // Validación estado
       const validateEstado = () => {
         if (estado.value == '') {
           errorEstado.style.display = 'block'
@@ -1301,7 +1302,7 @@
         validateEstado()
       })
       
-      // Validacion ciudad
+      // Validación ciudad
       const validateCiudad = () => {
         if (ciudad.value == '') {
           errorCiudad.style.display = 'block'
@@ -1317,7 +1318,7 @@
         validateCiudad()
       })
       
-      // Validacion municipio
+      // Validación municipio
       const validateMunicipio = () => {
         if (municipio.value == '') {
           errorMunicipio.style.display = 'block'
@@ -1333,7 +1334,7 @@
         validateMunicipio()
       })
       
-      // Validacion localidad
+      // Validación localidad
       const validateLocalidad = () => {
         if (localidad.value == '') {
           errorLocalidad.style.display = 'block'
@@ -1349,7 +1350,7 @@
         validateLocalidad()
       })
       
-      // Validacion colonia
+      // Validación colonia
       const validateColonia = () => {
         if (colonia.value == '') {
           errorColonia.style.display = 'block'
@@ -1365,7 +1366,7 @@
         validateColonia()
       })
       
-      // Validacion calle
+      // Validación calle
       const validateCalle = () => {
         if (calle.value == '') {
           errorCalle.style.display = 'block'
@@ -1381,7 +1382,7 @@
         validateCalle()
       })
       
-      // Validacion numero exterior
+      // Validación numero exterior
       const validateNumeroExterior = () => {
         if (numeroExterior.value == '') {
           errorNumeroExterior.style.display = 'block'
@@ -1397,7 +1398,7 @@
         validateNumeroExterior()
       })
       
-      // Validacion banco
+      // Validación banco
       const validateBanco = () => {
         if (banco.value == '') {
           errorBanco.style.display = 'block'
@@ -1413,7 +1414,7 @@
         validateBanco()
       })
       
-      // Validacion cuenta
+      // Validación cuenta
       const validateCuenta = () => {
         if (cuentaPattern.test(cuenta.value)) {
           errorCuenta.style.display = 'none'
@@ -1429,7 +1430,7 @@
         validateCuenta()
       })
       
-      // Validacion moneda
+      // Validación moneda
       const validateMoneda = () => {
         if (moneda.value == '') {
           errorMoneda.style.display = 'block'
@@ -1445,7 +1446,7 @@
         validateMoneda()
       })
       
-      // Validacion clabe
+      // Validación clabe
       const validateClabe = () => {
         if (clabePattern.test(clabe.value)) {
           errorClabe.style.display = 'none'
@@ -1496,7 +1497,7 @@
         enableSaveButton()
       })
       
-      // Validacion banco 2
+      // Validación banco 2
       const validateBanco2 = () => {
         if (banco2.value == '') {
           errorBanco2.style.display = 'block'
@@ -1512,7 +1513,7 @@
         validateBanco2()
       })
       
-      // Validacion cuenta 2
+      // Validación cuenta 2
       const validateCuenta2 = () => {
         if (cuentaPattern.test(cuenta2.value)) {
           errorCuenta2.style.display = 'none'
@@ -1528,7 +1529,7 @@
         validateCuenta2()
       })
       
-      // Validacion moneda 2
+      // Validación moneda 2
       const validateMoneda2 = () => {
         if (moneda2.value == '') {
           errorMoneda2.style.display = 'block'
@@ -1544,7 +1545,7 @@
         validateMoneda2()
       })
       
-      // Validacion clabe 2
+      // Validación clabe 2
       const validateClabe2 = () => {
         if (clabePattern.test(clabe2.value)) {
           errorClabe2.style.display = 'none'
