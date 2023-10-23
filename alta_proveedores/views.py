@@ -20,66 +20,69 @@ def home(request):
 @login_required
 def proveedor(request):
     try:
-        if request.user.compras:
-            proveedores = Proveedor.objects.filter(pendiente=True)
-            if request.user.puede_crear_proveedor:
-                mis_proveedores = Proveedor.objects.filter(usuario=request.user)
-        elif request.user.finanzas:
-            proveedores = Proveedor.objects.filter(compras=True)
-            if request.user.puede_crear_proveedor:
-                mis_proveedores = Proveedor.objects.filter(usuario=request.user)
-        elif request.user.sistemas:
-            proveedores = Proveedor.objects.filter(finanzas=True)
-            if request.user.puede_crear_proveedor:
-                mis_proveedores = Proveedor.objects.filter(usuario=request.user)
-        else:
-            proveedores = Proveedor.objects.filter(usuario=request.user)
-            proveedores_borradores = proveedores.filter(borrador=True)
-            proveedores_pendientes = proveedores.filter(
-                Q(pendiente=True) | 
-                Q(compras=True) | 
-                Q(finanzas=True)
-            )
-            proveedores_rechazados = proveedores.filter(
-                Q(rechazado_compras=True) | 
-                Q(rechazado_finanzas=True) | 
-                Q(rechazado_sistemas=True)
-            )
-            proveedores_aprobados = proveedores.filter(sistemas=True)
-            proveedores_eliminados = proveedores.filter(eliminado=True)
+        if request.user.puede_crear_proveedor or request.user.compras or request.user.finanzas or request.user.sistemas:
+            if request.user.compras:
+                proveedores = Proveedor.objects.filter(pendiente=True)
+                if request.user.puede_crear_proveedor:
+                    mis_proveedores = Proveedor.objects.filter(usuario=request.user)
+            elif request.user.finanzas:
+                proveedores = Proveedor.objects.filter(compras=True)
+                if request.user.puede_crear_proveedor:
+                    mis_proveedores = Proveedor.objects.filter(usuario=request.user)
+            elif request.user.sistemas:
+                proveedores = Proveedor.objects.filter(finanzas=True)
+                if request.user.puede_crear_proveedor:
+                    mis_proveedores = Proveedor.objects.filter(usuario=request.user)
+            else:
+                proveedores = Proveedor.objects.filter(usuario=request.user)
+                proveedores_borradores = proveedores.filter(borrador=True)
+                proveedores_pendientes = proveedores.filter(
+                    Q(pendiente=True) | 
+                    Q(compras=True) | 
+                    Q(finanzas=True)
+                )
+                proveedores_rechazados = proveedores.filter(
+                    Q(rechazado_compras=True) | 
+                    Q(rechazado_finanzas=True) | 
+                    Q(rechazado_sistemas=True)
+                )
+                proveedores_aprobados = proveedores.filter(sistemas=True)
+                proveedores_eliminados = proveedores.filter(eliminado=True)
+
+                historial = []
+                for proveedor in proveedores:
+                    historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
+                
+                return render(request, 'proveedor/proveedor.html', {
+                    'proveedores': proveedores,
+                    'historial': historial,
+                    'proveedores_borradores': proveedores_borradores,
+                    'proveedores_pendientes': proveedores_pendientes,
+                    'proveedores_rechazados': proveedores_rechazados,
+                    'proveedores_aprobados': proveedores_aprobados,
+                    'proveedores_eliminados': proveedores_eliminados,
+                    'current_user': request.user
+                })
 
             historial = []
             for proveedor in proveedores:
                 historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
-            
-            return render(request, 'proveedor/proveedor.html', {
-                'proveedores': proveedores,
-                'historial': historial,
-                'proveedores_borradores': proveedores_borradores,
-                'proveedores_pendientes': proveedores_pendientes,
-                'proveedores_rechazados': proveedores_rechazados,
-                'proveedores_aprobados': proveedores_aprobados,
-                'proveedores_eliminados': proveedores_eliminados,
-                'current_user': request.user
-            })
 
-        historial = []
-        for proveedor in proveedores:
-            historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
-
-        if request.user.puede_crear_proveedor:
-            return render(request, 'proveedor/proveedor.html', {
-                'proveedores': proveedores,
-                'mis_proveedores': mis_proveedores,
-                'historial': historial,
-                'current_user': request.user
-            })
+            if request.user.puede_crear_proveedor:
+                return render(request, 'proveedor/proveedor.html', {
+                    'proveedores': proveedores,
+                    'mis_proveedores': mis_proveedores,
+                    'historial': historial,
+                    'current_user': request.user
+                })
+            else:
+                return render(request, 'proveedor/proveedor.html', {
+                    'proveedores': proveedores,
+                    'historial': historial,
+                    'current_user': request.user
+                })
         else:
-            return render(request, 'proveedor/proveedor.html', {
-                'proveedores': proveedores,
-                'historial': historial,
-                'current_user': request.user
-            })
+            return redirect('home')
 
     except Exception as e:
         print(f"Se produjo un error al cargar los proveedores: {str(e)}")
@@ -94,6 +97,7 @@ def proveedor_create(request):
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
                                 'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
 
+                # Cargando los registros de proveedores desde la base de datos
                 catalogo_proveedor = list(CatalogoProveedor.objects.values())
                 catalogo_proveedor_json = json.dumps(catalogo_proveedor)
                 
@@ -167,11 +171,16 @@ def proveedor_detail(request, proveedor_id):
             else:
                 proveedor_form = ProveedorDetailForm(
                     instance=proveedor, initial=default_values)
+            
+            # Cargando los registros de proveedores desde la base de datos
+            catalogo_proveedor = list(CatalogoProveedor.objects.values())
+            catalogo_proveedor_json = json.dumps(catalogo_proveedor)
                 
             return render(request, 'proveedor/proveedor_detail.html', {
                 'proveedor': proveedor,
                 'form': proveedor_form,
-                'current_user': request.user
+                'catalogo_proveedor': catalogo_proveedor_json,
+                'current_user': request.user,
             })
         else:
             try:

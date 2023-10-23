@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <main class="py-5 m-5">
+  <main class="pt-5 m-5">
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
@@ -127,7 +127,7 @@
                     <datalist id="opciones_material">
                     </datalist>
                     <p id="error-nombre-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-                    <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El producto con ese nombre ya existe</p>
+                    <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un producto con ese nombre</p>
                   </div>
 
                   <div id="medidas-container">
@@ -311,9 +311,25 @@
             <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Enviar</button>
           </div>
         </form>
+
+        <button id="btn-back" class="btn btn-secondary">Volver</button>
       </div>
     </div>
   </main>
+
+  <style>
+      #btn-back {
+          width: 10rem;
+          margin-top: 2rem;
+          font-weight: bold;
+          background-color: rgb(0, 128, 0, 0.6);
+          transition: 0.2s ease-in-out;
+      }
+      #btn-back:hover {
+          scale: 1.05;
+          background-color: rgb(0, 128, 0);
+      }
+  </style>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -339,6 +355,7 @@
       const btnAddMaterial = document.getElementById('add-material');
       const btnBorrador = document.getElementById('btn-borrador')
       const btnGuardar = document.getElementById('btn-guardar')
+      const btnBack = document.getElementById('btn-back')
 
       // Error messages
       const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
@@ -363,6 +380,10 @@
       // Catalogo de materiales existentes
       var catalogoMaterial = {{ catalogo_material|safe }}
       nombreProductoMigracion.setAttribute('list', 'opciones_material')
+
+      btnBack.addEventListener('click', () => {
+        window.history.back()
+      })
 
       const handleEsMigracion = (esMigracionValue) => {
         if(esMigracionValue) {
@@ -557,7 +578,7 @@
         var nombreProductoInputs = document.querySelectorAll('.material-nombre')
         nombreProductoInputs.forEach(function(input) {
             input.setAttribute('list', 'opciones_material')
-            input.addEventListener('focus', function() {
+            const validateNombreProducto = () => {
                 var nombreProductoValue = input.value
                 var container = input.closest('.nombre-producto-container')
                 var errorNombreProducto = container.querySelector('#error-nombre-producto')
@@ -567,18 +588,10 @@
                 } else {
                   errorNombreProducto.style.display = 'none'
                 }
-            })
-            input.addEventListener('input', function() {
-                var nombreProductoValue = input.value
-                var container = input.closest('.nombre-producto-container')
-                var errorNombreProducto = container.querySelector('#error-nombre-producto')
-                // Verificar si el campo está vacío
-                if (nombreProductoValue == '') {
-                  errorNombreProducto.style.display = 'block'
-                } else {
-                  errorNombreProducto.style.display = 'none'
-                }
-
+            }
+            input.addEventListener('focus', validateNombreProducto)
+            input.addEventListener('input', () => {
+                validateNombreProducto()
                 // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
                 const nombreProductoContainer = input.closest('.nombre-producto-container')
                 const errorNombreProducto2 = nombreProductoContainer.querySelector('#error-nombre-producto-2')
@@ -597,7 +610,8 @@
                   }
                 }
             })
-            input.addEventListener('change', () => {
+
+            const validateNombreProductoOnChange = () => {
                 const nombreProductoContainer = input.closest('.nombre-producto-container')
                 const errorNombreProducto2 = nombreProductoContainer.querySelector('#error-nombre-producto-2')
                 let showError = false
@@ -612,7 +626,8 @@
                 } else {
                   errorNombreProducto2.style.display = 'none'
                 }
-            })
+            }
+            input.addEventListener('change', validateNombreProductoOnChange)
         })
 
         // Validación largo
@@ -1014,7 +1029,7 @@
               <datalist id="opciones_material">
               </datalist>
               <p id="error-nombre-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El producto con ese nombre ya existe</p>
+              <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un producto con ese nombre</p>
             </div>
 
             <div id="medidas-container">
@@ -1266,7 +1281,7 @@
         const errorColor = color.closest('.color-container').querySelector('#error-color')
         const errorUnidadMedida = unidadMedida.closest('.unidad-medida-container').querySelector('#error-unidad-medida')
 
-        if (umLargo.value == '' || umAncho.value == '' || umAlto.value == '' || umCalibre.value == '') {
+        if (largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || calibre.value != 'N/A' && umCalibre.value == '') {
           errorUnidadesMedida.style.display = 'block'
           window.alert('Debe seleccionar una unidad para cada medida')
           return
@@ -1274,7 +1289,7 @@
           errorUnidadesMedida.style.display = 'none'
         }
 
-        if (tipoAlta.value == '' || subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || calibre.value == '' || umLargo.value == '' || umAncho.value == '' || umAlto.value == '' || umCalibre.value == '' || material.value == '' || color.value == '' || unidadMedida.value == '' || errorTipoAlta.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
+        if (tipoAlta.value == '' || subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || calibre.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || calibre.value != 'N/A' && umCalibre.value == '' || material.value == '' || color.value == '' || unidadMedida.value == '' || errorTipoAlta.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
           window.alert('Algún campo está vacío o es incorrecto')
         }
         else {

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <main class="py-5 m-5">
+  <main class="pt-5 m-5">
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
@@ -43,7 +43,10 @@
             <div class="mt-3 mb-3">
               <label for="id_rfc_migracion">RFC:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ form.rfc_migracion }}
+              <datalist id="opciones_proveedor">
+              </datalist>
               <p id="error-rfc-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
+              <p id="error-rfc-migracion-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">No existe ningún proveedor con ese RFC</p>
             </div>
 
           {% else %}
@@ -79,7 +82,10 @@
               <div style="width: 100%; margin-bottom:1rem;">
                 <label for="id_rfc">RFC:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.rfc }}
+                <datalist id="opciones_proveedor">
+                </datalist>
                 <p id="error-rfc" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
+                <p id="error-rfc-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un proveedor con ese RFC</p>
               </div>
 
               <!-- CURP field -->
@@ -489,14 +495,16 @@
           {% endif %}
 
           <!-- Comentarios field -->
-          <div style="margin-bottom:1rem;">
-            {{ form.comentarios.label_tag }}
-            {{ form.comentarios }}
-            <p id="error-comentarios" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-          </div>
+          {% if proveedor.pendiente and current_user.compras or proveedor.compras and current_user.finanzas or proveedor.finanzas and current_user.sistemas or proveedor.comentarios != '' %}
+            <div style="margin-bottom:1rem;">
+              {{ form.comentarios.label_tag }}
+              {{ form.comentarios }}
+              <p id="error-comentarios" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+          {% endif %}
 
           <div id="buttons-container" class="d-flex justify-content-between gap-2">
-            {% if proveedor.rechazado_compras == True or proveedor.rechazado_finanzas == True or proveedor.rechazado_sistemas == True or proveedor.borrador == True %}
+            {% if proveedor.rechazado_compras or proveedor.rechazado_finanzas or proveedor.rechazado_sistemas or proveedor.borrador %}
               {% if proveedor.es_migracion %}
                 <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Enviar</button>
               {% else %}
@@ -506,31 +514,48 @@
               <button id="btn-delete" class="btn btn-delete w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="eliminado" value="True">Eliminar solicitud</button>
             {% endif %}
 
-            {% if current_user.compras == True %}
+            {% if proveedor.pendiente and current_user.compras and proveedor.borrador == False %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="compras" value="True">Aprobar</button>
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
             {% endif %}
 
-            {% if current_user.finanzas == True %}
+            {% if proveedor.compras and current_user.finanzas and proveedor.borrador == False %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar</button>
             {% endif %}
 
-            {% if current_user.sistemas == True %}
+            {% if proveedor.finanzas and current_user.sistemas and proveedor.borrador == False %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
               <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
             {% endif %}
           </div>
         </form>
+
+        <button id="btn-back" class="btn btn-secondary">Volver</button>
       </div>
     </div>
   </main>
+
+  <style>
+      #btn-back {
+          width: 10rem;
+          margin-top: 2rem;
+          font-weight: bold;
+          background-color: rgb(0, 128, 0, 0.6);
+          transition: 0.2s ease-in-out;
+      }
+      #btn-back:hover {
+          scale: 1.05;
+          background-color: rgb(0, 128, 0);
+      }
+  </style>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       // Containers
       const banco2Container = document.getElementById('banco-2-container')
       const buttonsContainer = document.getElementById('buttons-container')
+      const datalist = document.getElementById("opciones_proveedor")
       
       // Inputs
       const empresaOrigen = document.getElementById('id_empresa_origen')
@@ -593,16 +618,19 @@
       const btnDelete = document.getElementById('btn-delete')
       const btnApprove = document.getElementById('btn-approve')
       const btnDecline = document.getElementById('btn-decline')
+      const btnBack = document.getElementById('btn-back')
       
       // Error messages
       const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
       const errorEmpresaDestino = document.getElementById('error-empresa-destino')
       const errorEmpresasMigracion = document.getElementById('error-empresas-migracion')
       const errorRfcMigracion = document.getElementById('error-rfc-migracion')
+      const errorRfcMigracion2 = document.getElementById('error-rfc-migracion-2')
       const errorEmpresa = document.getElementById('error-empresa')
       const errorTipoAlta = document.getElementById('error-tipo-alta')
       const errorContribuyente = document.getElementById('error-contribuyente')
       const errorRfc = document.getElementById('error-rfc')
+      const errorRfc2 = document.getElementById('error-rfc-2')
       const errorCurp = document.getElementById('error-curp')
       const errorRegimenCapital = document.getElementById('error-regimen-capital')
       const errorNombreFiscal = document.getElementById('error-nombre-fiscal')
@@ -662,6 +690,19 @@
       const clabePattern = /^\d{18}$/
       const nonAccentPattern = /^[A-Za-z\d\s]*$/
       const numberPattern = /^[\d,]*$/
+
+      // Catalogo de proveedores existentes
+      var catalogoProveedor = JSON.parse('{{ catalogo_proveedor|safe }}')
+      if (rfcMigracion) {
+        rfcMigracion.setAttribute('list', 'opciones_proveedor')
+      }
+      else {
+        rfc.setAttribute('list', 'opciones_proveedor')
+      }
+
+      btnBack.addEventListener('click', () => {
+        window.history.back()
+      })
     
       buttonsContainer.addEventListener('click', function (event) {
         if (event.target && event.target.classList.contains('btn-save')) {
@@ -679,7 +720,7 @@
         }
       })
     
-      // Curp is mandatory only for personas físicas
+      // La curp es obligatoria solo para personas físicas
       if (contribuyente) {
         if (contribuyente.value == 'Persona moral') {
           curp.required = false
@@ -687,7 +728,7 @@
         }
       }
     
-      // If a second bank was added, display the "banco-2-container" element
+      // Si se añadió un segundo banco, mostrar el elemento "banco-2-container"
       if (banco2) {
         if (banco2.value != '') {
           console.log(banco2.value)
@@ -754,9 +795,6 @@
         }
         if (tipoOperacion) {
           tipoOperacion.setAttribute('required', true);
-        }
-        if (idFiscal) {
-          idFiscal.setAttribute('required', true);
         }
         if (agenteAduanal) {
           agenteAduanal.setAttribute('required', true);
@@ -952,7 +990,7 @@
 
       // Validacion empresa origen
       if (empresaOrigen) {
-        empresaOrigen.addEventListener('change', () => {
+        const validateEmpresaOrigen = () => {
           if (empresaOrigen.value == '') {
             errorEmpresaOrigen.style.display = 'block'
             errorEmpresasMigracion.style.display = 'none'
@@ -967,12 +1005,14 @@
             }
           }
           enableSaveButton()
-        })
+        }
+        empresaOrigen.addEventListener('focus', validateEmpresaOrigen)
+        empresaOrigen.addEventListener('change', validateEmpresaOrigen)
       }
       
       // Validacion empresa destino
       if (empresaDestino) {
-        empresaDestino.addEventListener('change', () => {
+        const validateEmpresaDestino = () => {
           if (empresaDestino.value == '') {
             errorEmpresaDestino.style.display = 'block'
             errorEmpresasMigracion.style.display = 'none'
@@ -987,48 +1027,72 @@
             }
           }
           enableSaveButton()
-        })
+        }
+        empresaDestino.addEventListener('focus', validateEmpresaDestino)
+        empresaDestino.addEventListener('change', validateEmpresaDestino)
       }
       
       // Validacion rfc migracion
       if (rfcMigracion) {
-        rfcMigracion.addEventListener('input', () => {
+        const validateRfcMigracion = () => {
           if (rfcPattern.test(rfcMigracion.value)) {
             errorRfcMigracion.style.display = 'none'
           } else {
             errorRfcMigracion.style.display = 'block'
           }
+
+          // Filtrando las opciones del catálogo que empiecen con el valor de rfc migracion
+          datalist.innerHTML = ''
+          for (var i = 0; i < catalogoProveedor.length; i++) {
+            if (catalogoProveedor[i].rfc.toUpperCase().startsWith(rfcMigracion.value.toUpperCase())) {
+              const option = document.createElement('option')
+              option.value = catalogoProveedor[i].rfc
+              option.innerText = catalogoProveedor[i].rfc + ' - ' + catalogoProveedor[i].nombre_comercial
+              datalist.appendChild(option)
+            }
+            if (datalist.childElementCount == 0) {
+              errorRfcMigracion2.style.display = 'block'
+            } else {
+              errorRfcMigracion2.style.display = 'none'
+            }
+          }
           enableSaveButton()
-        })
+        }
+        rfcMigracion.addEventListener('focus', validateRfcMigracion)
+        rfcMigracion.addEventListener('input', validateRfcMigracion)
       }
       
       // Validacion empresa
       if (empresa) {
-        empresa.addEventListener('change', () => {
+        const validateEmpresa = () => {
           if (empresa.value == '') {
             errorEmpresa.style.display = 'block'
           } else {
             errorEmpresa.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        empresa.addEventListener('focus', validateEmpresa)
+        empresa.addEventListener('change', validateEmpresa)
       }
       
       // Validacion tipo alta
       if (tipoAlta) {
-        tipoAlta.addEventListener('change', () => {
+        const validateTipoAlta = () => {
           if (tipoAlta.value == '') {
             errorTipoAlta.style.display = 'block'
           } else {
             errorTipoAlta.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        tipoAlta.addEventListener('focus', validateTipoAlta)
+        tipoAlta.addEventListener('change', validateTipoAlta)
       }
       
       // Validacion contribuyente
       if (contribuyente) {
-        contribuyente.addEventListener('change', () => {
+        const validateContribuyente = () => {
           if (contribuyente.value == '') {
             errorContribuyente.style.display = 'block'
           } else {
@@ -1047,48 +1111,74 @@
             }
           }
           enableSaveButton()
-        })
+        }
+        contribuyente.addEventListener('focus', validateContribuyente)
+        contribuyente.addEventListener('change', validateContribuyente)
       }
       
       // Validacion rfc
       if (rfc) {
-        rfc.addEventListener('input', () => {
+        const validateRfc = () => {
           if (rfcPattern.test(rfc.value)) {
             errorRfc.style.display = 'none'
           } else {
             errorRfc.style.display = 'block'
           }
+
+          // Filtrando las opciones del catálogo que empiecen con el valor de rfc
+          datalist.innerHTML = ''
+          for (var i = 0; i < catalogoProveedor.length; i++) {
+            if (catalogoProveedor[i].rfc.toUpperCase().startsWith(rfc.value.toUpperCase())) {
+              const option = document.createElement('option')
+              option.value = catalogoProveedor[i].rfc
+              option.innerText = catalogoProveedor[i].rfc + ' - ' + catalogoProveedor[i].nombre_comercial
+              datalist.appendChild(option)
+            }
+            if (catalogoProveedor[i].rfc == rfc.value.toUpperCase() && rfc.value != '') {
+              errorRfc2.style.display = 'block'
+              return
+            }
+            else {
+              errorRfc2.style.display = 'none'
+            }
+          }
           enableSaveButton()
-        })
+        }
+        rfc.addEventListener('focus', validateRfc)
+        rfc.addEventListener('input', validateRfc)
       }
       
       // Validacion curp
       if (curp) {
-        curp.addEventListener('input', () => {
+        const validateCurp = () => {
           if (curpPattern.test(curp.value)) {
             errorCurp.style.display = 'none'
           } else {
             errorCurp.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        curp.addEventListener('focus', validateCurp)
+        curp.addEventListener('input', validateCurp)
       }
         
       // Validacion regimen de capital
       if (regimenCapital) {
-        regimenCapital.addEventListener('change', () => {
+        const validateRegimenCapital = () => {
           if (regimenCapital.value == '') {
             errorRegimenCapital.style.display = 'block'
           } else {
             errorRegimenCapital.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        regimenCapital.addEventListener('focus', validateRegimenCapital)
+        regimenCapital.addEventListener('change', validateRegimenCapital)
       }
       
       // Validacion nombre fiscal
       if (nombreFiscal) {
-        nombreFiscal.addEventListener('input', () => {
+        const validateNombreFiscal = () => {
           if (nombreFiscal.value == '') {
             errorNombreFiscal.style.display = 'block'
             errorNombreFiscal2.style.display = 'none'
@@ -1102,12 +1192,14 @@
             }
           }
           enableSaveButton()
-        })
+        }
+        nombreFiscal.addEventListener('focus', validateNombreFiscal)
+        nombreFiscal.addEventListener('input', validateNombreFiscal)
       }
       
       // Validacion nombre comercial
       if (nombreComercial) {
-        nombreComercial.addEventListener('input', () => {
+        const validateNombreComercial = () => {
           if (nombreComercial.value == '') {
             errorNombreComercial.style.display = 'block'
             errorNombreComercial2.style.display = 'none'
@@ -1121,115 +1213,135 @@
             }
           }
           enableSaveButton()
-        })
+        }
+        nombreComercial.addEventListener('focus', validateNombreComercial)
+        nombreComercial.addEventListener('input', validateNombreComercial)
       }
       
       // Validacion regimen fiscal
       if (regimenFiscal) {
-        regimenFiscal.addEventListener('change', () => {
+        const validateRegimenFiscal = () => {
           if (regimenFiscal.value == '') {
             errorRegimenFiscal.style.display = 'block'
           } else {
             errorRegimenFiscal.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        regimenFiscal.addEventListener('focus', validateRegimenFiscal)
+        regimenFiscal.addEventListener('change', validateRegimenFiscal)
       }
       
       // Validacion uso cfdi
       if (usoCfdi) {
-        usoCfdi.addEventListener('change', () => {
+        const validateUsoCfdi = () => {
           if (usoCfdi.value == '') {
             errorUsoCfdi.style.display = 'block'
           } else {
             errorUsoCfdi.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        usoCfdi.addEventListener('focus', validateUsoCfdi)
+        usoCfdi.addEventListener('change', validateUsoCfdi)
       }
       
       // Validacion telefono 1
       if (telefono1) {
-        telefono1.addEventListener('input', () => {
+        const validateTelefono1 = () => {
           if (telefonoPattern.test(telefono1.value)) {
             errorTelefono1.style.display = 'none'
           } else {
             errorTelefono1.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        telefono1.addEventListener('focus', validateTelefono1)
+        telefono1.addEventListener('input', validateTelefono1)
       }
       
       // Validacion telefono 2
       if (telefono2) {
-        telefono2.addEventListener('input', () => {
+        const validateTelefono2 = () => {
           if (telefono2.value == '' || telefonoPattern.test(telefono2.value)) {
             errorTelefono2.style.display = 'none'
           } else {
             errorTelefono2.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        telefono2.addEventListener('focus', validateTelefono2)
+        telefono2.addEventListener('input', validateTelefono2)
       }
       
       // Validacion correo general
       if (correoGeneral) {
-        correoGeneral.addEventListener('input', () => {
+        const validateCorreoGeneral = () => {
           if (correoPattern.test(correoGeneral.value)) {
             errorCorreoGeneral.style.display = 'none'
           } else {
             errorCorreoGeneral.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        correoGeneral.addEventListener('focus', validateCorreoGeneral)
+        correoGeneral.addEventListener('input', validateCorreoGeneral)
       }
       
       // Validacion correo pagos
       if (correoPagos) {
-        correoPagos.addEventListener('input', () => {
+        const validateCorreoPagos = () => {
           if (correoPattern.test(correoPagos.value)) {
             errorCorreoPagos.style.display = 'none'
           } else {
             errorCorreoPagos.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        correoPagos.addEventListener('focus', validateCorreoPagos)
+        correoPagos.addEventListener('input', validateCorreoPagos)
       }
       
       // Validacion rubro
       if (rubro) {
-        rubro.addEventListener('change', () => {
+        const validateRubro = () => {
           if (rubro.value == '') {
             errorRubro.style.display = 'block'
           } else {
             errorRubro.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        rubro.addEventListener('focus', validateRubro)
+        rubro.addEventListener('change', validateRubro)
       }
       
       // Validacion tipo operacion
       if (tipoOperacion) {
-        tipoOperacion.addEventListener('change', () => {
+        const validateTipoOperacion = () => {
           if (tipoOperacion.value == '') {
             errorTipoOperacion.style.display = 'block'
           } else {
             errorTipoOperacion.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        tipoOperacion.addEventListener('focus', validateTipoOperacion)
+        tipoOperacion.addEventListener('change', validateTipoOperacion)
       }
       
       // Validacion agente aduanal
       if (agenteAduanal) {
-        agenteAduanal.addEventListener('change', () => {
+        const validateAgenteAduanal = () => {
           if (agenteAduanal.value == '') {
             errorAgenteAduanal.style.display = 'block'
           } else {
             errorAgenteAduanal.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        agenteAduanal.addEventListener('focus', validateAgenteAduanal)
+        agenteAduanal.addEventListener('change', validateAgenteAduanal)
       }
 
       const numberWithCommas = (x) => {
@@ -1238,7 +1350,7 @@
       
       // Validacion limite credito MN
       if (limiteCreditoMN) {
-        limiteCreditoMN.addEventListener('input', () => {
+        const validateLimiteCreditoMN = () => {
           if (limiteCreditoMN.value != '' && numberPattern.test(limiteCreditoMN.value)) {
             errorLimiteCreditoMN.style.display = 'none'
             // Eliminar carácteres no numéricos
@@ -1250,12 +1362,14 @@
             errorLimiteCreditoMN.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        limiteCreditoMN.addEventListener('focus', validateLimiteCreditoMN)
+        limiteCreditoMN.addEventListener('input', validateLimiteCreditoMN)
       }
       
       // Validacion limite credito ME
       if (limiteCreditoME) {
-        limiteCreditoME.addEventListener('input', () => {
+        const validateLimiteCreditoME = () => {
           if (limiteCreditoME.value != '' && numberPattern.test(limiteCreditoME.value)) {
             errorLimiteCreditoME.style.display = 'none'
             // Eliminar carácteres no numéricos
@@ -1267,12 +1381,14 @@
             errorLimiteCreditoME.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        limiteCreditoME.addEventListener('focus', validateLimiteCreditoME)
+        limiteCreditoME.addEventListener('input', validateLimiteCreditoME)
       }
       
       // Validacion dias credito
       if (diasCredito) {
-        diasCredito.addEventListener('input', () => {
+        const validateDiasCredito = () => {
           if (diasCredito.value != '' && numberPattern.test(diasCredito.value)) {
             errorDiasCredito.style.display = 'none'
             // Eliminar carácteres no numéricos
@@ -1284,12 +1400,14 @@
             errorDiasCredito.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        diasCredito.addEventListener('focus', validateDiasCredito)
+        diasCredito.addEventListener('input', validateDiasCredito)
       }
       
       // Validacion monto credito
       if (montoCredito) {
-        montoCredito.addEventListener('input', () => {
+        const validateMontoCredito = () => {
           if (montoCredito.value != '' && numberPattern.test(montoCredito.value)) {
             errorMontoCredito.style.display = 'none'
             // Eliminar carácteres no numéricos
@@ -1301,207 +1419,241 @@
             errorMontoCredito.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        montoCredito.addEventListener('focus', validateMontoCredito)
+        montoCredito.addEventListener('input', validateMontoCredito)
       }
       
       // Validacion retencion iva
       if (retencionIva) {
-        retencionIva.addEventListener('change', () => {
+        const validateRetencionIva = () => {
           if (retencionIva.value == '') {
             errorRetencionIva.style.display = 'block'
           } else {
             errorRetencionIva.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        retencionIva.addEventListener('focus', validateRetencionIva)
+        retencionIva.addEventListener('change', validateRetencionIva)
       }
       
       // Validacion retencion isr
       if (retencionIsr) {
-        retencionIsr.addEventListener('change', () => {
+        const validateRetencionIsr = () => {
           if (retencionIsr.value == '') {
             errorRetencionIsr.style.display = 'block'
           } else {
             errorRetencionIsr.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        retencionIsr.addEventListener('focus', validateRetencionIsr)
+        retencionIsr.addEventListener('change', validateRetencionIsr)
       }
       
       // Validacion iva frontera
       if (ivaFrontera) {
-        ivaFrontera.addEventListener('change', () => {
+        const validateIvaFrontera = () => {
           if (ivaFrontera.value == '') {
             errorIvaFrontera.style.display = 'block'
           } else {
             errorIvaFrontera.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        ivaFrontera.addEventListener('focus', validateIvaFrontera)
+        ivaFrontera.addEventListener('change', validateIvaFrontera)
       }
       
       // Validacion codigo postal
       if (codigoPostal) {
-        codigoPostal.addEventListener('input', () => {
+        const validateCodigoPostal = () => {
           if (codigoPostalPattern.test(codigoPostal.value)) {
             errorCodigoPostal.style.display = 'none'
           } else {
             errorCodigoPostal.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        codigoPostal.addEventListener('focus', validateCodigoPostal)
+        codigoPostal.addEventListener('input', validateCodigoPostal)
       }
       
       // Validacion pais
       if (pais) {
-        pais.addEventListener('input', () => {
+        const validatePais = () => {
           if (pais.value == '') {
             errorPais.style.display = 'block'
           } else {
             errorPais.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        pais.addEventListener('focus', validatePais)
+        pais.addEventListener('input', validatePais)
       }
       
       // Validacion estado
       if (estado) {
-        estado.addEventListener('input', () => {
+        const validateEstado = () => {
           if (estado.value == '') {
             errorEstado.style.display = 'block'
           } else {
             errorEstado.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        estado.addEventListener('focus', validateEstado)
+        estado.addEventListener('input', validateEstado)
       }
       
       // Validacion ciudad
       if (ciudad) {
-        ciudad.addEventListener('input', () => {
+        const validateCiudad = () => {
           if (ciudad.value == '') {
             errorCiudad.style.display = 'block'
           } else {
             errorCiudad.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        ciudad.addEventListener('focus', validateCiudad)
+        ciudad.addEventListener('input', validateCiudad)
       }
       
       // Validacion municipio
       if (municipio) {
-        municipio.addEventListener('input', () => {
+        const validateMunicipio = () => {
           if (municipio.value == '') {
             errorMunicipio.style.display = 'block'
           } else {
             errorMunicipio.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        municipio.addEventListener('focus', validateMunicipio)
+        municipio.addEventListener('input', validateMunicipio)
       }
       
       // Validacion localidad
       if (localidad) {
-        localidad.addEventListener('input', () => {
+        const validateLocalidad = () => {
           if (localidad.value == '') {
             errorLocalidad.style.display = 'block'
           } else {
             errorLocalidad.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        localidad.addEventListener('focus', validateLocalidad)
+        localidad.addEventListener('input', validateLocalidad)
       }
       
       // Validacion colonia
       if (colonia) {
-        colonia.addEventListener('input', () => {
+        const validateColonia = () => {
           if (colonia.value == '') {
             errorColonia.style.display = 'block'
           } else {
             errorColonia.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        colonia.addEventListener('focus', validateColonia)
+        colonia.addEventListener('input', validateColonia)
       }
       
       // Validacion calle
       if (calle) {
-        calle.addEventListener('input', () => {
+        const validateCalle = () => {
           if (calle.value == '') {
             errorCalle.style.display = 'block'
           } else {
             errorCalle.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        calle.addEventListener('focus', validateCalle)
+        calle.addEventListener('input', validateCalle)
       }
       
       // Validacion numero exterior
       if (numeroExterior) {
-        numeroExterior.addEventListener('input', () => {
+        const validateNumeroExterior = () => {
           if (numeroExterior.value == '') {
             errorNumeroExterior.style.display = 'block'
           } else {
             errorNumeroExterior.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        numeroExterior.addEventListener('focus', validateNumeroExterior)
+        numeroExterior.addEventListener('input', validateNumeroExterior)
       }
       
       // Validacion banco
       if (banco) {
-        banco.addEventListener('change', () => {
+        const validateBanco = () => {
           if (banco.value == '') {
             errorBanco.style.display = 'block'
           } else {
             errorBanco.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        banco.addEventListener('focus', validateBanco)
+        banco.addEventListener('change', validateBanco)
       }
       
       // Validacion cuenta
       if (cuenta) {
-        cuenta.addEventListener('input', () => {
+        const validateCuenta = () => {
           if (cuentaPattern.test(cuenta.value)) {
             errorCuenta.style.display = 'none'
           } else {
             errorCuenta.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        cuenta.addEventListener('focus', validateCuenta)
+        cuenta.addEventListener('input', validateCuenta)
       }
       
       // Validacion moneda
       if (moneda) {
-        moneda.addEventListener('change', () => {
+        const validateMoneda = () => {
           if (moneda.value == '') {
             errorMoneda.style.display = 'block'
           } else {
             errorMoneda.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        moneda.addEventListener('focus', validateMoneda)
+        moneda.addEventListener('change', validateMoneda)
       }
       
       // Validacion clabe
       if (clabe) {
-        clabe.addEventListener('input', () => {
+        const validateClabe = () => {
           if (clabePattern.test(clabe.value)) {
             errorClabe.style.display = 'none'
           } else {
             errorClabe.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        clabe.addEventListener('focus', validateClabe)
+        clabe.addEventListener('input', validateClabe)
       }
       
       // Añadiendo un segundo banco
       if (addBanco) {
         addBanco.addEventListener('click', () => {
-          banco2.selectedIndex = 0
+          banco2.value = ''
           cuenta2.value = ''
-          moneda2.selectedIndex = 0
+          moneda2.value = ''
           clabe2.value = ''
           
           if (addBanco.textContent == 'Agregar otro banco') {
@@ -1517,7 +1669,8 @@
             clabe2.required = true
             
             addBanco.textContent = 'Eliminar banco'
-          } else {
+          }
+          else {
             banco2Container.style.display = 'none'
             
             banco2.required = false
@@ -1532,50 +1685,58 @@
       
       // Validacion banco 2
       if (banco2) {
-        banco2.addEventListener('change', () => {
+        const validateBanco2 = () => {
           if (banco2.value == '') {
             errorBanco2.style.display = 'block'
           } else {
             errorBanco2.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        banco2.addEventListener('focus', validateBanco2)
+        banco2.addEventListener('change', validateBanco2)
       }
       
       // Validacion cuenta 2
       if (cuenta2) {
-        cuenta2.addEventListener('input', () => {
+        const validateCuenta2 = () => {
           if (cuentaPattern.test(cuenta2.value)) {
             errorCuenta2.style.display = 'none'
           } else {
             errorCuenta2.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        cuenta2.addEventListener('focus', validateCuenta2)
+        cuenta2.addEventListener('input', validateCuenta2)
       }
       
       // Validacion moneda 2
       if (moneda2) {
-        moneda2.addEventListener('change', () => {
+        const validateMoneda2 = () => {
           if (moneda2.value == '') {
             errorMoneda2.style.display = 'block'
           } else {
             errorMoneda2.style.display = 'none'
           }
           enableSaveButton()
-        })
+        }
+        moneda2.addEventListener('focus', validateMoneda2)
+        moneda2.addEventListener('change', validateMoneda2)
       }
       
       // Validacion clabe 2
       if (clabe2) {
-        clabe2.addEventListener('input', () => {
+        const validateClabe2 = () => {
           if (clabePattern.test(clabe2.value)) {
             errorClabe2.style.display = 'none'
           } else {
             errorClabe2.style.display = 'block'
           }
           enableSaveButton()
-        })
+        }
+        clabe2.addEventListener('focus', validateClabe2)
+        clabe2.addEventListener('input', validateClabe2)
       }
 
       if (btnDelete) {
@@ -1586,7 +1747,7 @@
 
       function enableSaveButton() {
         if(errorEmpresaOrigen) {
-          if (errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorEmpresasMigracion.style.display == 'block' || errorRfcMigracion.style.display == 'block') {
+          if (errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorEmpresasMigracion.style.display == 'block' || errorRfcMigracion.style.display == 'block' || errorRfcMigracion2.style.display == 'block') {
             if(btnSave) {
               btnSave.disabled = true
               btnDelete.disabled = true
@@ -1608,7 +1769,7 @@
           }
         }
         else {
-          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
+          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
             if(btnSave) {
               btnSave.disabled = true
               btnDelete.disabled = true

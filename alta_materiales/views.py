@@ -35,66 +35,69 @@ def home(request):
 @login_required
 def material(request):
     try:
-        if request.user.compras:
-            solicitudes = MaterialSolicitud.objects.filter(pendiente=True)
-            if request.user.puede_crear_material:
-                mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
-        elif request.user.finanzas:
-            solicitudes = MaterialSolicitud.objects.filter(compras=True)
-            if request.user.puede_crear_material:
-                mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
-        elif request.user.sistemas:
-            solicitudes = MaterialSolicitud.objects.filter(finanzas=True)
-            if request.user.puede_crear_material:
-                mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
-        else:
-            solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
-            solicitudes_borradores = solicitudes.filter(borrador=True)
-            solicitudes_pendientes = solicitudes.filter(
-                Q(pendiente=True) | 
-                Q(compras=True) | 
-                Q(finanzas=True)
-            )
-            solicitudes_rechazadas = solicitudes.filter(
-                Q(rechazado_compras=True) | 
-                Q(rechazado_finanzas=True) | 
-                Q(rechazado_sistemas=True)
-            )
-            solicitudes_aprobadas = solicitudes.filter(sistemas=True)
-            solicitudes_eliminadas = solicitudes.filter(eliminado=True)
+        if request.user.puede_crear_material or request.user.compras or request.user.finanzas or request.user.sistemas:
+            if request.user.compras:
+                solicitudes = MaterialSolicitud.objects.filter(pendiente=True)
+                if request.user.puede_crear_material:
+                    mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+            elif request.user.finanzas:
+                solicitudes = MaterialSolicitud.objects.filter(compras=True)
+                if request.user.puede_crear_material:
+                    mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+            elif request.user.sistemas:
+                solicitudes = MaterialSolicitud.objects.filter(finanzas=True)
+                if request.user.puede_crear_material:
+                    mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+            else:
+                solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+                solicitudes_borradores = solicitudes.filter(borrador=True)
+                solicitudes_pendientes = solicitudes.filter(
+                    Q(pendiente=True) | 
+                    Q(compras=True) | 
+                    Q(finanzas=True)
+                )
+                solicitudes_rechazadas = solicitudes.filter(
+                    Q(rechazado_compras=True) | 
+                    Q(rechazado_finanzas=True) | 
+                    Q(rechazado_sistemas=True)
+                )
+                solicitudes_aprobadas = solicitudes.filter(sistemas=True)
+                solicitudes_eliminadas = solicitudes.filter(eliminado=True)
+
+                historial = []
+                for solicitud in solicitudes:
+                    historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
+                
+                return render(request, 'material/material.html', {
+                    'solicitudes': solicitudes,
+                    'historial': historial,
+                    'solicitudes_borradores': solicitudes_borradores,
+                    'solicitudes_pendientes': solicitudes_pendientes,
+                    'solicitudes_rechazadas': solicitudes_rechazadas,
+                    'solicitudes_aprobadas': solicitudes_aprobadas,
+                    'solicitudes_eliminadas': solicitudes_eliminadas,
+                    'current_user': request.user
+                })
 
             historial = []
             for solicitud in solicitudes:
                 historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
-            
-            return render(request, 'material/material.html', {
-                'solicitudes': solicitudes,
-                'historial': historial,
-                'solicitudes_borradores': solicitudes_borradores,
-                'solicitudes_pendientes': solicitudes_pendientes,
-                'solicitudes_rechazadas': solicitudes_rechazadas,
-                'solicitudes_aprobadas': solicitudes_aprobadas,
-                'solicitudes_eliminadas': solicitudes_eliminadas,
-                'current_user': request.user
-            })
 
-        historial = []
-        for solicitud in solicitudes:
-            historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
-
-        if request.user.puede_crear_material:
-            return render(request, 'material/material.html', {
-                'solicitudes': solicitudes,
-                'mis_solicitudes': mis_solicitudes,
-                'historial': historial,
-                'current_user': request.user
-            })
+            if request.user.puede_crear_material:
+                return render(request, 'material/material.html', {
+                    'solicitudes': solicitudes,
+                    'mis_solicitudes': mis_solicitudes,
+                    'historial': historial,
+                    'current_user': request.user
+                })
+            else:
+                return render(request, 'material/material.html', {
+                    'solicitudes': solicitudes,
+                    'historial': historial,
+                    'current_user': request.user
+                })
         else:
-            return render(request, 'material/material.html', {
-                'solicitudes': solicitudes,
-                'historial': historial,
-                'current_user': request.user
-            })
+            return redirect('home')
     
     except Exception as e:
         print(f"Se produjo un error al cargar los materiales: {str(e)}")
@@ -115,9 +118,7 @@ def material_create(request):
                 solicitud_form = SolicitudForm(initial=default_values)
                 material_formset = MaterialFormSet(prefix='material', initial=[{}])
 
-                #catalogo_material = list(CatalogoMaterial.objects.values('codigo', 'nombre_producto'))
-                #catalogo_material_json = json.dumps(catalogo_material)
-
+                # Cargando los registros de materiales desde el archivo catalogo_productos.csv
                 ruta_csv = os.path.join('csv_files', 'catalogo_productos.csv')
                 with open(ruta_csv, 'r') as archivo_csv:
                     # Lee el archivo CSV
@@ -125,7 +126,7 @@ def material_create(request):
                     next(lector_csv) # Skipping headers
                     
                     # Inicializa la lista que contendrá las tuplas
-                    CATALOGO_MATERIAL_LIST = []
+                    catalogo_material = []
                     
                     # Itera sobre cada fila del archivo CSV
                     for fila in lector_csv:
@@ -137,12 +138,12 @@ def material_create(request):
                         formato = f'{codigo} - {nombre_producto}'
                         
                         # Agrega la tupla a la lista
-                        CATALOGO_MATERIAL_LIST.append({'value': nombre_producto, 'text': formato})
+                        catalogo_material.append({'value': nombre_producto, 'text': formato})
 
                 return render(request, 'material/material_create.html', {
                     'solicitud_form': solicitud_form,
                     'material_formset': material_formset,
-                    'catalogo_material': CATALOGO_MATERIAL_LIST,
+                    'catalogo_material': catalogo_material,
                 })
             else:
                 try:
@@ -233,11 +234,34 @@ def material_detail(request, material_id):
 
             material_forms = [MaterialDetailForm(
                 instance=material, prefix=f'material-{material.id}') for material in materiales]
+            
+            # Cargando los registros de materiales desde el archivo catalogo_productos.csv
+            ruta_csv = os.path.join('csv_files', 'catalogo_productos.csv')
+            with open(ruta_csv, 'r') as archivo_csv:
+                # Lee el archivo CSV
+                lector_csv = csv.reader(archivo_csv)
+                next(lector_csv) # Skipping headers
+                
+                # Inicializa la lista que contendrá las tuplas
+                catalogo_material = []
+                
+                # Itera sobre cada fila del archivo CSV
+                for fila in lector_csv:
+                    # Extrae la información necesaria de las columnas
+                    codigo = fila[0]
+                    nombre_producto = fila[1]
+                    
+                    # Crea la cadena de texto con el formato deseado
+                    formato = f'{codigo} - {nombre_producto}'
+                    
+                    # Agrega la tupla a la lista
+                    catalogo_material.append({'value': nombre_producto, 'text': formato})
 
             return render(request, 'material/material_detail.html', {
                 'solicitud': solicitud,
                 'solicitud_form': solicitud_form,
                 'material_forms': material_forms,
+                'catalogo_material': catalogo_material,
                 'current_user': request.user
             })
         else:

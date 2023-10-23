@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <main class="py-5 m-5">
+  <main class="pt-5 m-5">
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" enctype="multipart/form-data" style="background-color: rgb(255, 255, 255, 0.8);">
@@ -504,16 +504,32 @@
             <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Enviar</button>
           </div>
         </form>
+
+        <button id="btn-back" class="btn btn-secondary">Volver</button>
       </div>
     </div>
   </main>
 
+  <style>
+      #btn-back {
+          width: 10rem;
+          margin-top: 2rem;
+          font-weight: bold;
+          background-color: rgb(0, 128, 0, 0.6);
+          transition: 0.2s ease-in-out;
+      }
+      #btn-back:hover {
+          scale: 1.05;
+          background-color: rgb(0, 128, 0);
+      }
+  </style>
+
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       // Containers
-      const banco2Container = document.getElementById('banco-2-container')
       const proveedorNuevoFields = document.getElementById('proveedor-nuevo-fields')
       const proveedorMigracionFields = document.getElementById('proveedor-migracion-fields')
+      const banco2Container = document.getElementById('banco-2-container')
       const datalist = document.getElementById("opciones_proveedor")
 
       // Inputs
@@ -578,6 +594,7 @@
       const addBanco = document.getElementById('add-banco-2')
       const btnBorrador = document.getElementById('btn-borrador')
       const btnGuardar = document.getElementById('btn-guardar')
+      const btnBack = document.getElementById('btn-back')
       
       // Error messages
       const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
@@ -652,8 +669,12 @@
 
       // Catalogo de proveedores existentes
       var catalogoProveedor = JSON.parse('{{ catalogo_proveedor|safe }}')
-      rfc.setAttribute('list', 'opciones_proveedor')
       rfcMigracion.setAttribute('list', 'opciones_proveedor')
+      rfc.setAttribute('list', 'opciones_proveedor')
+
+      btnBack.addEventListener('click', () => {
+        window.history.back()
+      })
 
       const handleEsMigracion = (esMigracionValue) => {
         const constanciaSituacionFiscalLabel = document.querySelector('#constancia-situacion-fiscal-label')
@@ -781,7 +802,7 @@
         // Filtrando las opciones del catálogo que empiecen con el valor de rfc migracion
         datalist.innerHTML = ''
         for (var i = 0; i < catalogoProveedor.length; i++) {
-          if (catalogoProveedor[i].rfc.startsWith(rfcMigracion.value.toUpperCase())) {
+          if (catalogoProveedor[i].rfc.toUpperCase().startsWith(rfcMigracion.value.toUpperCase())) {
             const option = document.createElement('option')
             option.value = catalogoProveedor[i].rfc
             option.innerText = catalogoProveedor[i].rfc + ' - ' + catalogoProveedor[i].nombre_comercial
@@ -873,7 +894,7 @@
         // Filtrando las opciones del catálogo que empiecen con el valor de rfc
         datalist.innerHTML = ''
         for (var i = 0; i < catalogoProveedor.length; i++) {
-          if (catalogoProveedor[i].rfc.startsWith(rfc.value.toUpperCase())) {
+          if (catalogoProveedor[i].rfc.toUpperCase().startsWith(rfc.value.toUpperCase())) {
             const option = document.createElement('option')
             option.value = catalogoProveedor[i].rfc
             option.innerText = catalogoProveedor[i].rfc + ' - ' + catalogoProveedor[i].nombre_comercial
@@ -1464,9 +1485,9 @@
 
       // Añadiendo un segundo banco
       addBanco.addEventListener('click', () => {
-        banco2.selectedIndex = 0
+        banco2.value = ''
         cuenta2.value = ''
-        moneda2.selectedIndex = 0
+        moneda2.value = ''
         clabe2.value = ''
         
         if(addBanco.textContent == 'Agregar otro banco') {
