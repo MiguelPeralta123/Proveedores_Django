@@ -1,3 +1,6 @@
+import os
+import csv
+
 DEFAULT_LIST = [
     ('', 'Seleccione una opción'),
 ]
@@ -115,43 +118,53 @@ SUBFAMILIA_LIST = [
     ('9006 - Proyectos / Construcciones en proceso', '9006 - Proyectos / Construcciones en proceso')
 ]
 
-MEDIDA_UM_LIST = [
-    ('', 'Seleccione una opción'),
-    ('Cm', 'Cm'),
-    ('Metro', 'Metro'),
-    ('Mm', 'Mm'),
-    ('Pie', 'Pie'),
-    ('Pulgada', 'Pulgada'),
-]
-
-UNIDAD_MEDIDA_LIST = [
-    ('', 'Seleccione una opción'),
-    ('Kilogramo', 'Kilogramo'),
-    ('Gramo', 'Gramo'),
-    ('Onza', 'Onza'),
-    ('Libra', 'Libra'),
-    ('Litro', 'Litro'),
-    ('Mililitro', 'Mililitro'),
-    ('Metro cúbico', 'Metro cúbico'),
-    ('Metro', 'Metro'),
-    ('Centímetro', 'Centímetro'),
-    ('Pie', 'Pie'),
-    ('Pulgada', 'Pulgada'),
-    ('Pieza', 'Pieza'),
-    ('Par', 'Par'),
-    ('Millar', 'Millar'),
-    ('Rollo', 'Rollo'),
-    ('Servicio', 'Servicio'),
-    ('Paquete', 'Paquete'),
-    ('Caja', 'Caja'),
-    ('Tramo', 'Tramo'),
-    ('Saco', 'Saco'),
-    ('Galón', 'Galón'),
-    ('Cubeta', 'Cubeta'),
-    ('Tambo', 'Tambo'),
-    ('Metro cuadrado', 'Metro cuadrado'),
-    ('Kit', 'Kit'),
-    ('Porron', 'Porron'),
-]
+catalogo_unidad_medida_csv_path = os.path.join('csv_files', 'catalogo_unidad_medida.csv')
+with open(catalogo_unidad_medida_csv_path, 'r') as csv_file:
+    # Lee el archivo CSV
+    csv_reader = csv.reader(csv_file)
+    next(csv_reader) # Skipping headers
+    
+    # Inicializa la lista que contendrá las tuplas
+    UNIDAD_MEDIDA_LIST = [
+        ('', 'Seleccione una opción')
+    ]
+    
+    # Itera sobre cada fila del archivo CSV
+    for row in csv_reader:
+        # Extrae la información necesaria de las columnas
+        codigo = row[0]
+        nombre = row[1]
+        
+        # Crea la cadena de texto con el formato deseado
+        formato = f'{codigo} - {nombre}'
+        
+        # Agrega la tupla a la lista
+        UNIDAD_MEDIDA_LIST.append((formato, formato))
 # Ordenar la lista alfabéticamente en función de las etiquetas
 UNIDAD_MEDIDA_LIST = sorted(UNIDAD_MEDIDA_LIST, key=lambda item: item[1])
+
+
+medida_um_csv_path = os.path.join('csv_files', 'medida_um.csv')
+with open(medida_um_csv_path, 'r') as csv_file:
+    # Lee el archivo CSV
+    csv_reader = csv.reader(csv_file)
+    next(csv_reader) # Skipping headers
+    
+    # Inicializa la lista que contendrá las tuplas
+    MEDIDA_UM_LIST = [
+        ('', 'Seleccione una opción')
+    ]
+    
+    # Itera sobre cada fila del archivo CSV
+    for row in csv_reader:
+        # Extrae la información necesaria de las columnas
+        codigo = row[0]
+        nombre = row[1]
+        
+        # Crea la cadena de texto con el formato deseado
+        formato = f'{codigo} - {nombre}'
+        
+        # Agrega la tupla a la lista
+        MEDIDA_UM_LIST.append((formato, formato))
+# Ordenar la lista alfabéticamente en función de las etiquetas
+MEDIDA_UM_LIST = sorted(MEDIDA_UM_LIST, key=lambda item: item[1])

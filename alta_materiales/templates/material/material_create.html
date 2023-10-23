@@ -73,28 +73,28 @@
               <table class="table table-bordered" style="font-size: 0.8rem;">
                 <thead>
                   <tr>                  
-                    <th scope="col">Tipo alta</th>
-                    <th scope="col">Subfamilia</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Largo</th>
-                    <th scope="col">Ancho</th>
-                    <th scope="col">Alto</th>
-                    <th scope="col">Calibre</th>
-                    <th scope="col">Material</th>
-                    <th scope="col">Color</th>
-                    <th scope="col">Marca</th>
-                    <th scope="col">Parte / Modelo</th>
-                    <th scope="col">Nombre común</th>
-                    <th scope="col">Ing. activo</th>
-                    <th scope="col">Tipo producto</th>
-                    <th scope="col">Alias</th>
-                    <th scope="col">Unidad de medida</th>
-                    <th scope="col">Código SAT</th>
-                    <th scope="col">¿Es parte original?</th>
-                    <th scope="col">¿Es material empaque?</th>
-                    <th scope="col">¿Es prod. terminado?</th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
+                    <th scope="col" style="min-width: 6rem;">Tipo alta</th>
+                    <th scope="col" style="min-width: 6rem;">Subfamilia</th>
+                    <th scope="col" style="min-width: 6rem;">Nombre</th>
+                    <th scope="col" style="min-width: 6rem;">Largo</th>
+                    <th scope="col" style="min-width: 6rem;">Ancho</th>
+                    <th scope="col" style="min-width: 6rem;">Alto</th>
+                    <th scope="col" style="min-width: 6rem;">Calibre</th>
+                    <th scope="col" style="min-width: 6rem;">Material</th>
+                    <th scope="col" style="min-width: 6rem;">Color</th>
+                    <th scope="col" style="min-width: 6rem;">Marca</th>
+                    <th scope="col" style="min-width: 6rem;">Parte / Modelo</th>
+                    <th scope="col" style="min-width: 6rem;">Nombre común</th>
+                    <th scope="col" style="min-width: 6rem;">Ing. activo</th>
+                    <th scope="col" style="min-width: 6rem;">Tipo producto</th>
+                    <th scope="col" style="min-width: 6rem;">Alias</th>
+                    <th scope="col" style="min-width: 6rem;">Unidad de medida</th>
+                    <th scope="col" style="min-width: 6rem;">Código SAT</th>
+                    <th scope="col" style="min-width: 6rem;">¿Es parte original?</th>
+                    <th scope="col" style="min-width: 6rem;">¿Es material empaque?</th>
+                    <th scope="col" style="min-width: 6rem;">¿Es prod. terminado?</th>
+                    <th scope="col" style="min-width: 4rem;"></th>
+                    <th scope="col" style="min-width: 4rem;"></th>
                   </tr>
                 </thead>
                 <tbody id="tbody-materials"></tbody>
@@ -139,6 +139,7 @@
                         <p class="m-0">{{ material_form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                         {{ material_form.largo }}
                         <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                        <p id="label-largo" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
                       </div>
   
                       <!-- Ancho field -->
@@ -146,6 +147,7 @@
                         <p class="m-0">{{ material_form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                         {{ material_form.ancho }}
                         <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                        <p id="label-ancho" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
                       </div>
   
                       <!-- Alto field -->
@@ -153,6 +155,7 @@
                         <p class="m-0">{{ material_form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                         {{ material_form.alto }}
                         <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                        <p id="label-alto" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
                       </div>
   
                       <!-- Calibre field -->
@@ -160,6 +163,7 @@
                         <p class="m-0">{{ material_form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                         {{ material_form.calibre }}
                         <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                        <p id="label-calibre" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
                       </div>
                     </div>
 
@@ -303,12 +307,13 @@
               {% endfor %}
             </div>
 
-            <button id="add-material" class="btn btn-secondary mb-3" type="button">Agregar Material</button>
+            <button id="add-material" class="btn btn-secondary mb-3" type="button" style="background-color: #008841; color: white; font-weight: bold;">Agregar Material</button>
           </div>
 
           <div class="d-flex gap-3">
-            <button id="btn-borrador" class="btn w-100" type="submit" name="borrador" value="True" style="background-color: #3498DB; color: white; font-weight: bold;">Guardar como borrador</button>
-            <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Enviar</button>
+            <button id="btn-save-draft" class="btn w-100" type="submit" name="borrador" value="True" style="background-color: #3498DB; color: white; font-weight: bold;" disabled>Guardar como borrador</button>
+
+            <button id="btn-save" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;" disabled>Enviar</button>
           </div>
         </form>
 
@@ -353,8 +358,8 @@
 
       // Buttons
       const btnAddMaterial = document.getElementById('add-material');
-      const btnBorrador = document.getElementById('btn-borrador')
-      const btnGuardar = document.getElementById('btn-guardar')
+      const btnSave = document.getElementById('btn-save')
+      const btnSaveDraft = document.getElementById('btn-save-draft')
       const btnBack = document.getElementById('btn-back')
 
       // Error messages
@@ -411,7 +416,7 @@
       
       handleEsMigracion(esMigracion.checked)
     
-      // Validacion empresa origen
+      // Validación empresa origen
       const validateEmpresaOrigen = () => {
         if (empresaOrigen.value == '') {
           errorEmpresaOrigen.style.display = 'block'
@@ -430,7 +435,7 @@
       empresaOrigen.addEventListener('focus', validateEmpresaOrigen)
       empresaOrigen.addEventListener('change', validateEmpresaOrigen)
       
-      // Validacion empresa destino
+      // Validación empresa destino
       const validateEmpresaDestino = () => {
         if (empresaDestino.value == '') {
           errorEmpresaDestino.style.display = 'block'
@@ -449,7 +454,7 @@
       empresaDestino.addEventListener('focus', validateEmpresaDestino)
       empresaDestino.addEventListener('change', validateEmpresaDestino)
       
-      // Validacion nombre producto migracion
+      // Validación nombre producto migracion
       const validateNombreProductoMigracion = () => {
         if (nombreProductoMigracion.value != '') {
           errorNombreProductoMigracion.style.display = 'none'
@@ -494,7 +499,7 @@
       }
       nombreProductoMigracion.addEventListener('change', validateNombreProductoMigracionOnChange)
 
-      // Validacion empresa
+      // Validación empresa
       const validateEmpresa = () => {
         if (empresa.value == '') {
           errorEmpresa.style.display = 'block'
@@ -506,7 +511,7 @@
       empresa.addEventListener('focus', validateEmpresa)
       empresa.addEventListener('change', validateEmpresa)
       
-      // Validacion justificacion
+      // Validación justificacion
       const validateJustificacion = () => {
         if (justificacion.value == '') {
           errorJustificacion.style.display = 'block'
@@ -632,7 +637,7 @@
 
         // Validación largo
         var largoInputs = document.querySelectorAll('.material-largo')
-        largoInputs.forEach(function(input) {
+        largoInputs.forEach(input => {
             input.addEventListener('input', () => {
                 var largoValue = input.value
                 var container = input.closest('.largo-container')
@@ -642,6 +647,14 @@
                   !isNaN(parseFloat(largoValue)) && isFinite(largoValue) || 
                   fraccionPattern.test(largoValue)) {
                     errorLargo.style.display = 'none'
+                    if (largoValue === 'N/A') {
+                      const medidasContainer = input.closest('#medidas-container')
+                      const medidaLargo = medidasContainer.querySelector('.select-um-largo')
+                      const labelLargo = medidasContainer.querySelector('#label-largo')
+                      medidaLargo.value = ''
+                      labelLargo.style.display = 'block'
+                      labelLargo.innerHTML = 'No aplica'
+                    }
                 } else {
                     errorLargo.style.display = 'block'
                 }
@@ -683,6 +696,21 @@
                   !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue) || 
                   fraccionPattern.test(anchoValue)) {
                     errorAncho.style.display = 'none'
+                    const medidasContainer = input.closest('#medidas-container')
+                    const medidaAncho = medidasContainer.querySelector('.select-um-ancho')
+                    const labelAncho = medidasContainer.querySelector('#label-ancho')
+                    labelAncho.style.display = 'block'
+                    if (anchoValue === 'N/A') {
+                      medidaAncho.value = ''
+                      labelAncho.innerHTML = 'No aplica'
+                    }
+                    else {
+                      if (medidasIguales) {
+                        const medidaLargo = medidasContainer.querySelector('.select-um-largo')
+                        medidaAncho.value = medidaLargo.value
+                        labelAncho.innerHTML = medidaAncho.value
+                      }
+                    }
                 } else {
                     errorAncho.style.display = 'block'
                 }
@@ -726,6 +754,21 @@
                   !isNaN(parseFloat(altoValue)) && isFinite(altoValue) || 
                   fraccionPattern.test(altoValue)) {
                     errorAlto.style.display = 'none'
+                    const medidasContainer = input.closest('#medidas-container')
+                    const medidaAlto = medidasContainer.querySelector('.select-um-alto')
+                    const labelAlto = medidasContainer.querySelector('#label-alto')
+                    labelAlto.style.display = 'block'
+                    if (altoValue === 'N/A') {
+                      medidaAlto.value = ''
+                      labelAlto.innerHTML = 'No aplica'
+                    }
+                    else {
+                      if (medidasIguales) {
+                        const medidaLargo = medidasContainer.querySelector('.select-um-largo')
+                        medidaAlto.value = medidaLargo.value
+                        labelAlto.innerHTML = medidaAlto.value
+                      }
+                    }
                 } else {
                     errorAlto.style.display = 'block'
                 }
@@ -769,6 +812,21 @@
                   !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue) || 
                   fraccionPattern.test(calibreValue)) {
                     errorCalibre.style.display = 'none'
+                    const medidasContainer = input.closest('#medidas-container')
+                    const medidaCalibre = medidasContainer.querySelector('.select-um-calibre')
+                    const labelCalibre = medidasContainer.querySelector('#label-calibre')
+                    labelCalibre.style.display = 'block'
+                    if (calibreValue === 'N/A') {
+                      medidaCalibre.value = ''
+                      labelCalibre.innerHTML = 'No aplica'
+                    }
+                    else {
+                      if (medidasIguales) {
+                        const medidaLargo = medidasContainer.querySelector('.select-um-largo')
+                        medidaCalibre.value = medidaLargo.value
+                        labelCalibre.innerHTML = medidaCalibre.value
+                      }
+                    }
                 } else {
                     errorCalibre.style.display = 'block'
                 }
@@ -829,14 +887,97 @@
         var umLargoInputs = document.querySelectorAll('.select-um-largo')
         umLargoInputs.forEach(input => {
           input.addEventListener('change', () => {
+            const medidasContainer = input.closest('#medidas-container')
+            const largo = medidasContainer.querySelector('.material-largo')
+            const labelLargo = medidasContainer.querySelector('#label-largo')
+            labelLargo.style.display = 'block'
+            if (largo.value === 'N/A') {
+              labelLargo.innerText = 'No aplica'
+            } else {
+              labelLargo.innerText = input.value
+            }
             if (medidasIguales) {
-              var medidasContainer = input.closest('#medidas-container')
-              var ancho = medidasContainer.querySelector('.select-um-ancho')
-              var alto = medidasContainer.querySelector('.select-um-alto')
-              var calibre = medidasContainer.querySelector('.select-um-calibre')
-              ancho.value = input.value
-              alto.value = input.value
-              calibre.value = input.value
+              const ancho = medidasContainer.querySelector('.material-ancho')
+              const alto = medidasContainer.querySelector('.material-alto')
+              const calibre = medidasContainer.querySelector('.material-calibre')
+              const umAncho = medidasContainer.querySelector('.select-um-ancho')
+              const umAlto = medidasContainer.querySelector('.select-um-alto')
+              const umCalibre = medidasContainer.querySelector('.select-um-calibre')
+              umAncho.value = input.value
+              umAlto.value = input.value
+              umCalibre.value = input.value
+              
+              const labelAncho = medidasContainer.querySelector('#label-ancho')
+              labelAncho.style.display = 'block'
+              if (ancho.value === 'N/A') {
+                labelAncho.innerText = 'No aplica'
+              } else {
+                labelAncho.innerText = umAncho.value
+              }
+              
+              const labelAlto = medidasContainer.querySelector('#label-alto')
+              labelAlto.style.display = 'block'
+              if (alto.value === 'N/A') {
+                labelAlto.innerText = 'No aplica'
+              } else {
+                labelAlto.innerText = umAlto.value
+              }
+              
+              const labelCalibre = medidasContainer.querySelector('#label-calibre')
+              labelCalibre.style.display = 'block'
+              if (calibre.value === 'N/A') {
+                labelCalibre.innerText = 'No aplica'
+              } else {
+                labelCalibre.innerText = umCalibre.value
+              }
+            }
+          })
+        })
+
+        // Validación unidad de medida para ancho
+        var umAnchoInputs = document.querySelectorAll('.select-um-ancho')
+        umAnchoInputs.forEach(input => {
+          input.addEventListener('change', () => {
+            const medidasContainer = input.closest('#medidas-container')
+            const ancho = medidasContainer.querySelector('.material-ancho')
+            const labelAncho = medidasContainer.querySelector('#label-ancho')
+            labelAncho.style.display = 'block'
+            if (ancho.value === 'N/A') {
+              labelAncho.innerText = 'No aplica'
+            } else {
+              labelAncho.innerText = input.value
+            }
+          })
+        })
+
+        // Validación unidad de medida para alto
+        var umAltoInputs = document.querySelectorAll('.select-um-alto')
+        umAltoInputs.forEach(input => {
+          input.addEventListener('change', () => {
+            const medidasContainer = input.closest('#medidas-container')
+            const alto = medidasContainer.querySelector('.material-alto')
+            const labelAlto = medidasContainer.querySelector('#label-alto')
+            labelAlto.style.display = 'block'
+            if (alto.value === 'N/A') {
+              labelAlto.innerText = 'No aplica'
+            } else {
+              labelAlto.innerText = input.value
+            }
+          })
+        })
+
+        // Validación unidad de medida para calibre
+        var umCalibreInputs = document.querySelectorAll('.select-um-calibre')
+        umCalibreInputs.forEach(input => {
+          input.addEventListener('change', () => {
+            const medidasContainer = input.closest('#medidas-container')
+            const calibre = medidasContainer.querySelector('.material-calibre')
+            const labelCalibre = medidasContainer.querySelector('#label-calibre')
+            labelCalibre.style.display = 'block'
+            if (calibre.value === 'N/A') {
+              labelCalibre.innerText = 'No aplica'
+            } else {
+              labelCalibre.innerText = input.value
             }
           })
         })
@@ -962,10 +1103,10 @@
           <td>${tipoAlta.value}</td>
           <td>${subfamilia.value}</td>
           <td>${nombre.value}</td>
-          <td>${largo.value} ${umLargo.value}</td>
-          <td>${ancho.value} ${umAncho.value}</td>
-          <td>${alto.value} ${umAlto.value}</td>
-          <td>${calibre.value} ${umCalibre.value}</td>
+          <td>${largo.value}<br />UM: ${umLargo.value}</td>
+          <td>${ancho.value}<br />UM: ${umAncho.value}</td>
+          <td>${alto.value}<br />UM: ${umAlto.value}</td>
+          <td>${calibre.value}<br />UM: ${umCalibre.value}</td>
           <td>${material.value}</td>
           <td>${color.value}</td>
           <td>${marca.value}</td>
@@ -1281,12 +1422,39 @@
         const errorColor = color.closest('.color-container').querySelector('#error-color')
         const errorUnidadMedida = unidadMedida.closest('.unidad-medida-container').querySelector('#error-unidad-medida')
 
-        if (largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || calibre.value != 'N/A' && umCalibre.value == '') {
+        if (largo.value != 'N/A' && umLargo.value == '') {
           errorUnidadesMedida.style.display = 'block'
-          window.alert('Debe seleccionar una unidad para cada medida')
+          window.alert('Debe seleccionar una unidad para "Largo"')
+          return
+        }
+        if (ancho.value != 'N/A' && umAncho.value == '') {
+          errorUnidadesMedida.style.display = 'block'
+          window.alert('Debe seleccionar una unidad para "Ancho"')
+          return
+        }
+        if (alto.value != 'N/A' && umAlto.value == '') {
+          errorUnidadesMedida.style.display = 'block'
+          window.alert('Debe seleccionar una unidad para "Alto"')
+          return
+        }
+        if (calibre.value != 'N/A' && umCalibre.value == '') {
+          errorUnidadesMedida.style.display = 'block'
+          window.alert('Debe seleccionar una unidad para "Calibre"')
           return
         } else {
           errorUnidadesMedida.style.display = 'none'
+          if (largo.value == 'N/A') {
+            umLargo.value = ''
+          }
+          if (ancho.value == 'N/A') {
+            umAncho.value = ''
+          }
+          if (alto.value == 'N/A') {
+            umAlto.value = ''
+          }
+          if (calibre.value == 'N/A') {
+            umCalibre.value = ''
+          }
         }
 
         if (tipoAlta.value == '' || subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || calibre.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || calibre.value != 'N/A' && umCalibre.value == '' || material.value == '' || color.value == '' || unidadMedida.value == '' || errorTipoAlta.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
@@ -1297,6 +1465,7 @@
           createMaterialForm()
           btnAddMaterial.innerHTML = 'Agregar Material'
           medidasIguales = false
+          enableSaveButton()
         }
       });
 
@@ -1454,18 +1623,22 @@
       function enableSaveButton() {
         if(esMigracion.checked) {
           if(errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorEmpresasMigracion.style.display == 'block' || errorNombreProductoMigracion.style.display == 'block' || errorNombreProductoMigracion2.style.display == 'block') {
-            btnGuardar.disabled = true
+            btnSave.disabled = true
+            btnSaveDraft.disabled = true
           }
           else {
-            btnGuardar.disabled = false
+            btnSave.disabled = false
+            btnSaveDraft.disabled = false
           }
         }
         else {
-          if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block') {
-            btnGuardar.disabled = true
+          if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block' || tableMaterials.style.display == 'none') {
+            btnSave.disabled = true
+            btnSaveDraft.disabled = true
           }
           else {
-            btnGuardar.disabled = false
+            btnSave.disabled = false
+            btnSaveDraft.disabled = false
           }
         }
       }
@@ -1478,7 +1651,7 @@
         justificacion.removeAttribute('required')
       }
 
-      btnBorrador.addEventListener('click', () => {// Si no se ha añadido ningún material, no se envía la solicitud
+      btnSaveDraft.addEventListener('click', () => {// Si no se ha añadido ningún material, no se envía la solicitud
         if (!esMigracion.checked && tableMaterials.style.display != 'block') {
           window.alert('Por favor añada al menos un producto');
           event.preventDefault();
@@ -1486,7 +1659,7 @@
         handleBorradorSubmit()
       })
 
-      btnGuardar.addEventListener('click', (event) => {
+      btnSave.addEventListener('click', (event) => {
         // Si no se ha añadido ningún material, no se envía la solicitud
         if (!esMigracion.checked && tableMaterials.style.display != 'block') {
           window.alert('Por favor añada al menos un producto');
@@ -1494,9 +1667,9 @@
         }
         // Si el registro ya existe en otra empresa, se envia directo a sistemas
         if (esMigracion.checked) {
-          btnGuardar.setAttribute('name', 'finanzas');
+          btnSave.setAttribute('name', 'finanzas');
         } else {
-          btnGuardar.setAttribute('name', 'pendiente');
+          btnSave.setAttribute('name', 'pendiente');
         }
       })
     });
