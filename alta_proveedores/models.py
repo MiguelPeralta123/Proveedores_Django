@@ -32,8 +32,6 @@ class Proveedor(models.Model):
     id_fiscal = models.CharField(max_length=10, blank=True)
     agente_aduanal = models.CharField(max_length=10, blank=True)
     dias_credito = models.CharField(max_length=10, default=0, blank=True)
-    limite_credito_MN = models.CharField(max_length=20, default=0, blank=True)
-    limite_credito_ME = models.CharField(max_length=20, default=0, blank=True)
     monto_credito = models.CharField(max_length=20, default=0, blank=True)
     retencion_iva = models.CharField(max_length=10, blank=True)
     retencion_isr = models.CharField(max_length=10, blank=True)

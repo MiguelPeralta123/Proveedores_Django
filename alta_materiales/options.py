@@ -118,6 +118,13 @@ SUBFAMILIA_LIST = [
     ('9006 - Proyectos / Construcciones en proceso', '9006 - Proyectos / Construcciones en proceso')
 ]
 
+PORCENTAJE_IVA_LIST = [
+    ('', 'Seleccione una opción'),
+    ('0', '0'),
+    ('8%', '8%'),
+    ('16%', '16%'),
+]
+
 catalogo_unidad_medida_csv_path = os.path.join('csv_files', 'catalogo_unidad_medida.csv')
 with open(catalogo_unidad_medida_csv_path, 'r') as csv_file:
     # Lee el archivo CSV

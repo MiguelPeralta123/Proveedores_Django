@@ -86,11 +86,11 @@
                     <th scope="col" style="min-width: 6rem;">Parte / Modelo</th>
                     <th scope="col" style="min-width: 6rem;">Nombre común</th>
                     <th scope="col" style="min-width: 6rem;">Ing. activo</th>
-                    <th scope="col" style="min-width: 6rem;">Tipo producto</th>
+                    <th scope="col" style="min-width: 6rem;">Porcentaje IVA</th>
                     <th scope="col" style="min-width: 6rem;">Alias</th>
                     <th scope="col" style="min-width: 6rem;">Unidad de medida</th>
                     <th scope="col" style="min-width: 6rem;">Código SAT</th>
-                    <th scope="col" style="min-width: 6rem;">¿Es parte original?</th>
+                    <th scope="col" style="min-width: 6rem;">¿Es mezcla?</th>
                     <th scope="col" style="min-width: 6rem;">¿Es material empaque?</th>
                     <th scope="col" style="min-width: 6rem;">¿Es prod. terminado?</th>
                     <th scope="col" style="min-width: 4rem;"></th>
@@ -264,11 +264,11 @@
                   </div>
 
                   <div style="display: flex; gap: 1rem;">
-                    <!-- Tipo producto field -->
+                    <!-- Porcentaje IVA field -->
                     <div style="width: 50%; margin-bottom:1rem;">
-                      {{ form.tipo_producto.label_tag }}
-                      {{ form.tipo_producto }}
-                      <p id="error-tipo-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <label for="id_porcentaje_iva">% de IVA:</label>
+                      {{ form.porcentaje_iva }}
+                      <p id="error-porcentaje-iva" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Alias field -->
@@ -296,23 +296,23 @@
                   </div>
 
                   <div style="display: flex; justify-content: space-between; gap: 2rem;">
-                    <!-- Es parte original field -->
+                    <!-- Es mezcla field -->
                     <div style="margin-bottom:1rem;">
-                      {{ form.es_parte_original.label_tag }}
-                      {{ form.es_parte_original }}
-                      <p id="error-es-parte-original" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <label for="id_es_mezcla">¿Es mezcla?</label>
+                      {{ form.es_mezcla }}
+                      <p id="error-es-mezcla" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Es material empaque field -->
                     <div style="margin-bottom:1rem;">
-                      {{ form.es_material_empaque.label_tag }}
+                      <label for="id_es_material_empaque">¿Es material empaque?</label>
                       {{ form.es_material_empaque }}
                       <p id="error-es-material-empaque" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Es prod terminado field -->
                     <div style="margin-bottom:1rem;">
-                      <label for="id_es_prod_terminado">Es prod. terminado:</label>
+                      <label for="id_es_prod_terminado">¿Es prod. terminado?</label>
                       {{ form.es_prod_terminado }}
                       <p id="error-es-prod-terminado" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
@@ -1192,15 +1192,15 @@
           const parteModelo = materialForm.querySelector('.material-parte-modelo')
           const nombreComun = materialForm.querySelector('.material-nombre-comun')
           const ingActivo = materialForm.querySelector('.material-ing-activo')
-          const tipoProducto = materialForm.querySelector('.material-tipo-producto')
+          const porcentajeIva = materialForm.querySelector('.material-porcentaje-iva')
           const alias = materialForm.querySelector('.material-alias')
           const unidadMedida = materialForm.querySelector('.material-unidad-medida')
           const codigoSat = materialForm.querySelector('.material-codigo-sat')
-          const esParteOriginal = materialForm.querySelector('.material-es-parte-original')
+          const esMezcla = materialForm.querySelector('.material-es-mezcla')
           const esMaterialEmpaque = materialForm.querySelector('.material-es-material-empaque')
           const esProdTerminado = materialForm.querySelector('.material-es-prod-terminado')
   
-          esParteOriginalValue = esParteOriginal.checked == true ? 'Si' : 'No'
+          esMezclaValue = esMezcla.checked == true ? 'Si' : 'No'
           esMaterialEmpaqueValue = esMaterialEmpaque.checked == true ? 'Si' : 'No'
           esProdTerminadoValue = esProdTerminado.checked == true ? 'Si' : 'No'
   
@@ -1221,11 +1221,11 @@
           <td>${parteModelo.value}</td>
           <td>${nombreComun.value}</td>
           <td>${ingActivo.value}</td>
-          <td>${tipoProducto.value}</td>
+          <td>${porcentajeIva.value}</td>
           <td>${alias.value}</td>
           <td>${unidadMedida.value}</td>
           <td>${codigoSat.value}</td>
-          <td>${esParteOriginalValue}</td>
+          <td>${esMezclaValue}</td>
           <td>${esMaterialEmpaqueValue}</td>
           <td>${esProdTerminadoValue}</td>
           <td>

@@ -230,22 +230,6 @@
             </div>
 
             <div style="display: flex; gap: 1rem;">
-              <!-- Limite credito MN field -->
-              <div style="width: 100%; margin-bottom:1rem;">
-                <label for="id_limite_credito_MN">Límite crédito (MN):<span style="color: rgb(192, 0, 0);">*</span></label>
-                {{ form.limite_credito_MN }}
-                <p id="error-limite-credito-MN" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Debe ingresar un valor numérico</p>
-              </div>
-              
-              <!-- Limite credito ME field -->
-              <div style="width: 100%; margin-bottom:1rem;">
-                <label for="id_limite_credito_ME">Límite crédito (ME):<span style="color: rgb(192, 0, 0);">*</span></label>
-                {{ form.limite_credito_ME }}
-                <p id="error-limite-credito-ME" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Debe ingresar un valor numérico</p>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 1rem;">
               <!-- Dias credito field -->
               <div style="width: 100%; margin-bottom:1rem;">
                 <label for="id_dias_credito">Días crédito:<span style="color: rgb(192, 0, 0);">*</span></label>
@@ -463,7 +447,7 @@
             <div style="display: flex; justify-content: space-between; gap: 2rem;">
               <!-- Usar en portal proveedores field -->
               <div style="margin-bottom:1rem;">
-                {{ form.usar_en_portal_proveedores.label_tag }}
+                <label for="id_usar_en_portal_proveedores">¿Usar en portal de prov.?</label>
                 {{ form.usar_en_portal_proveedores }}
                 <p id="error-usar-en-portal-proveedores" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
@@ -582,8 +566,6 @@
       const tipoOperacion = document.getElementById('id_tipo_operacion')
       const idFiscal = document.getElementById('id_id_fiscal')
       const agenteAduanal = document.getElementById('id_agente_aduanal')
-      const limiteCreditoMN = document.getElementById('id_limite_credito_MN')
-      const limiteCreditoME = document.getElementById('id_limite_credito_ME')
       const diasCredito = document.getElementById('id_dias_credito')
       const montoCredito = document.getElementById('id_monto_credito')
       const retencionIva = document.getElementById('id_retencion_iva')
@@ -650,8 +632,6 @@
       const errorTipoOperacion = document.getElementById('error-tipo-operacion')
       const errorIdFiscal = document.getElementById('error-id-fiscal')
       const errorAgenteAduanal = document.getElementById('error-agente-aduanal')
-      const errorLimiteCreditoMN = document.getElementById('error-limite-credito-MN')
-      const errorLimiteCreditoME = document.getElementById('error-limite-credito-ME')
       const errorDiasCredito = document.getElementById('error-dias-credito')
       const errorMontoCredito = document.getElementById('error-monto-credito')
       const errorRetencionIva = document.getElementById('error-retencion-iva')
@@ -692,7 +672,7 @@
       const numberPattern = /^[\d,]*$/
 
       // Catalogo de proveedores existentes
-      var catalogoProveedor = JSON.parse('{{ catalogo_proveedor|safe }}')
+      var catalogoProveedor = {{ catalogo_proveedor|safe }}
       if (rfcMigracion) {
         rfcMigracion.setAttribute('list', 'opciones_proveedor')
       }
@@ -798,12 +778,6 @@
         }
         if (agenteAduanal) {
           agenteAduanal.setAttribute('required', true);
-        }
-        if (limiteCreditoMN) {
-          limiteCreditoMN.setAttribute('required', true);
-        }
-        if (limiteCreditoME) {
-          limiteCreditoME.setAttribute('required', true);
         }
         if (diasCredito) {
           diasCredito.setAttribute('required', true);
@@ -924,12 +898,6 @@
         if (agenteAduanal) {
           agenteAduanal.removeAttribute('required');
         }
-        if (limiteCreditoMN) {
-          limiteCreditoMN.removeAttribute('required');
-        }
-        if (limiteCreditoME) {
-          limiteCreditoME.removeAttribute('required');
-        }
         if (diasCredito) {
           diasCredito.removeAttribute('required');
         }
@@ -1044,10 +1012,10 @@
           // Filtrando las opciones del catálogo que empiecen con el valor de rfc migracion
           datalist.innerHTML = ''
           for (var i = 0; i < catalogoProveedor.length; i++) {
-            if (catalogoProveedor[i].rfc.toUpperCase().startsWith(rfcMigracion.value.toUpperCase())) {
+            if (catalogoProveedor[i].value.toUpperCase().startsWith(rfcMigracion.value.toUpperCase())) {
               const option = document.createElement('option')
-              option.value = catalogoProveedor[i].rfc
-              option.innerText = catalogoProveedor[i].rfc + ' - ' + catalogoProveedor[i].nombre_comercial
+              option.value = catalogoProveedor[i].value
+              option.innerText = catalogoProveedor[i].text
               datalist.appendChild(option)
             }
             if (datalist.childElementCount == 0) {
@@ -1128,13 +1096,13 @@
           // Filtrando las opciones del catálogo que empiecen con el valor de rfc
           datalist.innerHTML = ''
           for (var i = 0; i < catalogoProveedor.length; i++) {
-            if (catalogoProveedor[i].rfc.toUpperCase().startsWith(rfc.value.toUpperCase())) {
+            if (catalogoProveedor[i].value.toUpperCase().startsWith(rfc.value.toUpperCase())) {
               const option = document.createElement('option')
-              option.value = catalogoProveedor[i].rfc
-              option.innerText = catalogoProveedor[i].rfc + ' - ' + catalogoProveedor[i].nombre_comercial
+              option.value = catalogoProveedor[i].value
+              option.innerText = catalogoProveedor[i].text
               datalist.appendChild(option)
             }
-            if (catalogoProveedor[i].rfc == rfc.value.toUpperCase() && rfc.value != '') {
+            if (catalogoProveedor[i].value.toUpperCase() == rfc.value.toUpperCase() && rfc.value != '') {
               errorRfc2.style.display = 'block'
               return
             }
@@ -1346,44 +1314,6 @@
 
       const numberWithCommas = (x) => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      }
-      
-      // Validacion limite credito MN
-      if (limiteCreditoMN) {
-        const validateLimiteCreditoMN = () => {
-          if (limiteCreditoMN.value != '' && numberPattern.test(limiteCreditoMN.value)) {
-            errorLimiteCreditoMN.style.display = 'none'
-            // Eliminar carácteres no numéricos
-            const numericValue = limiteCreditoMN.value.replace(/[^0-9]/g, '');
-            // Formatear el valor con números y comas
-            const formattedValue = numberWithCommas(numericValue)
-            limiteCreditoMN.value = formattedValue
-          } else {
-            errorLimiteCreditoMN.style.display = 'block'
-          }
-          enableSaveButton()
-        }
-        limiteCreditoMN.addEventListener('focus', validateLimiteCreditoMN)
-        limiteCreditoMN.addEventListener('input', validateLimiteCreditoMN)
-      }
-      
-      // Validacion limite credito ME
-      if (limiteCreditoME) {
-        const validateLimiteCreditoME = () => {
-          if (limiteCreditoME.value != '' && numberPattern.test(limiteCreditoME.value)) {
-            errorLimiteCreditoME.style.display = 'none'
-            // Eliminar carácteres no numéricos
-            const numericValue = limiteCreditoME.value.replace(/[^0-9]/g, '');
-            // Formatear el valor con números y comas
-            const formattedValue = numberWithCommas(numericValue)
-            limiteCreditoME.value = formattedValue
-          } else {
-            errorLimiteCreditoME.style.display = 'block'
-          }
-          enableSaveButton()
-        }
-        limiteCreditoME.addEventListener('focus', validateLimiteCreditoME)
-        limiteCreditoME.addEventListener('input', validateLimiteCreditoME)
       }
       
       // Validacion dias credito
@@ -1769,7 +1699,7 @@
           }
         }
         else {
-          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorLimiteCreditoMN.style.display == 'block' || errorLimiteCreditoME.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
+          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCredito.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
             if(btnSave) {
               btnSave.disabled = true
               btnDelete.disabled = true

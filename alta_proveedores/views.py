@@ -98,12 +98,35 @@ def proveedor_create(request):
                                 'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
 
                 # Cargando los registros de proveedores desde la base de datos
-                catalogo_proveedor = list(CatalogoProveedor.objects.values())
-                catalogo_proveedor_json = json.dumps(catalogo_proveedor)
+                #catalogo_proveedor = list(CatalogoProveedor.objects.values())
+                #catalogo_proveedor_json = json.dumps(catalogo_proveedor)
+
+                # Cargando los registros de proveedores desde el archivo catalogo_proveedores.csv
+                csv_path = os.path.join('csv_files', 'catalogo_proveedores.csv')
+                with open(csv_path, 'r') as csv_file:
+                    # Lee el archivo CSV
+                    csv_reader = csv.reader(csv_file)
+                    next(csv_reader) # Skipping headers
+                    
+                    # Inicializa la lista que contendrá las tuplas
+                    catalogo_proveedor = []
+                    
+                    # Itera sobre cada fila del archivo CSV
+                    for row in csv_reader:
+                        # Extrae la información necesaria de las columnas
+                        codigo = row[0]
+                        rfc = row[3]
+                        nombre_comercial = row[2]
+                        
+                        # Crea la cadena de texto con el formato deseado
+                        formato = f'{rfc} - {nombre_comercial}'
+                        
+                        # Agrega la tupla a la lista
+                        catalogo_proveedor.append({'value': rfc, 'text': formato})
                 
                 return render(request, 'proveedor/proveedor_create.html', {
                     'form': ProveedorForm(initial=default_values),
-                    'catalogo_proveedor': catalogo_proveedor_json,
+                    'catalogo_proveedor': catalogo_proveedor,
                 })
             else:
                 try:
@@ -173,13 +196,36 @@ def proveedor_detail(request, proveedor_id):
                     instance=proveedor, initial=default_values)
             
             # Cargando los registros de proveedores desde la base de datos
-            catalogo_proveedor = list(CatalogoProveedor.objects.values())
-            catalogo_proveedor_json = json.dumps(catalogo_proveedor)
+            #catalogo_proveedor = list(CatalogoProveedor.objects.values())
+            #catalogo_proveedor_json = json.dumps(catalogo_proveedor)
+
+            # Cargando los registros de proveedores desde el archivo catalogo_proveedores.csv
+            csv_path = os.path.join('csv_files', 'catalogo_proveedores.csv')
+            with open(csv_path, 'r') as csv_file:
+                # Lee el archivo CSV
+                csv_reader = csv.reader(csv_file)
+                next(csv_reader) # Skipping headers
+                
+                # Inicializa la lista que contendrá las tuplas
+                catalogo_proveedor = []
+                
+                # Itera sobre cada fila del archivo CSV
+                for row in csv_reader:
+                    # Extrae la información necesaria de las columnas
+                    codigo = row[0]
+                    rfc = row[3]
+                    nombre_comercial = row[2]
+                    
+                    # Crea la cadena de texto con el formato deseado
+                    formato = f'{rfc} - {nombre_comercial}'
+                    
+                    # Agrega la tupla a la lista
+                    catalogo_proveedor.append({'value': rfc, 'text': formato})
                 
             return render(request, 'proveedor/proveedor_detail.html', {
                 'proveedor': proveedor,
                 'form': proveedor_form,
-                'catalogo_proveedor': catalogo_proveedor_json,
+                'catalogo_proveedor': catalogo_proveedor,
                 'current_user': request.user,
             })
         else:

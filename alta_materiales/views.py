@@ -119,20 +119,20 @@ def material_create(request):
                 material_formset = MaterialFormSet(prefix='material', initial=[{}])
 
                 # Cargando los registros de materiales desde el archivo catalogo_productos.csv
-                ruta_csv = os.path.join('csv_files', 'catalogo_productos.csv')
-                with open(ruta_csv, 'r') as archivo_csv:
+                csv_path = os.path.join('csv_files', 'catalogo_productos.csv')
+                with open(csv_path, 'r') as csv_file:
                     # Lee el archivo CSV
-                    lector_csv = csv.reader(archivo_csv)
-                    next(lector_csv) # Skipping headers
+                    csv_reader = csv.reader(csv_file)
+                    next(csv_reader) # Skipping headers
                     
                     # Inicializa la lista que contendrá las tuplas
                     catalogo_material = []
                     
                     # Itera sobre cada fila del archivo CSV
-                    for fila in lector_csv:
+                    for row in csv_reader:
                         # Extrae la información necesaria de las columnas
-                        codigo = fila[0]
-                        nombre_producto = fila[1]
+                        codigo = row[0]
+                        nombre_producto = row[1]
                         
                         # Crea la cadena de texto con el formato deseado
                         formato = f'{codigo} - {nombre_producto}'
@@ -236,20 +236,20 @@ def material_detail(request, material_id):
                 instance=material, prefix=f'material-{material.id}') for material in materiales]
             
             # Cargando los registros de materiales desde el archivo catalogo_productos.csv
-            ruta_csv = os.path.join('csv_files', 'catalogo_productos.csv')
-            with open(ruta_csv, 'r') as archivo_csv:
+            csv_path = os.path.join('csv_files', 'catalogo_productos.csv')
+            with open(csv_path, 'r') as csv_file:
                 # Lee el archivo CSV
-                lector_csv = csv.reader(archivo_csv)
-                next(lector_csv) # Skipping headers
+                csv_reader = csv.reader(csv_file)
+                next(csv_reader) # Skipping headers
                 
                 # Inicializa la lista que contendrá las tuplas
                 catalogo_material = []
                 
                 # Itera sobre cada fila del archivo CSV
-                for fila in lector_csv:
+                for row in csv_reader:
                     # Extrae la información necesaria de las columnas
-                    codigo = fila[0]
-                    nombre_producto = fila[1]
+                    codigo = row[0]
+                    nombre_producto = row[1]
                     
                     # Crea la cadena de texto con el formato deseado
                     formato = f'{codigo} - {nombre_producto}'
