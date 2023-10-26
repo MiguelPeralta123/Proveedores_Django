@@ -61,6 +61,9 @@ class Material(models.Model):
     codigo_sat = models.CharField(max_length=50, blank=True)
     es_material_empaque = models.BooleanField(default=False)
     es_prod_terminado = models.BooleanField(default=False)
+    foto_producto = models.FileField(upload_to='static/materiales/foto_producto', blank=True)
+    ficha_tecnica = models.FileField(upload_to='static/materiales/ficha_tecnica', blank=True)
+    rechazado = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'material'

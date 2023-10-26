@@ -93,6 +93,8 @@
                     <th scope="col" style="min-width: 6rem;">¿Es mezcla?</th>
                     <th scope="col" style="min-width: 6rem;">¿Es material empaque?</th>
                     <th scope="col" style="min-width: 6rem;">¿Es prod. terminado?</th>
+                    <!--<th scope="col" style="min-width: 6rem;">Foto del producto</th>
+                    <th scope="col" style="min-width: 6rem;">Ficha técnica</th>-->
                     <th scope="col" style="min-width: 4rem;"></th>
                     <th scope="col" style="min-width: 4rem;"></th>
                   </tr>
@@ -318,6 +320,17 @@
                     </div>
                   </div>
 
+                  <!--<h1>{{ materiales.1.nombre_producto }}</h1>-->
+
+                  <!-- Archivos -->
+                  <!-- Foto producto -->
+                  <!--<a href="/{{ materiales.0.foto_producto }}" class="d-block my-2" style="width:fit-content;" download="">Descargar foto del producto</a> -->
+                  <!-- Ficha técnica -->
+                  <!--<a href="/{{ materiales.0.ficha_tecnica }}" class="d-block mt-2 mb-3" style="width:fit-content;" download="">Descargar ficha técnica</a> -->
+
+                  <!-- Esta bandera será false. Si el material se elimina, entonces se marcará como true -->
+                  {{ form.rechazado }}
+
                   <button class="btn btn-secondary mb-3 btn-save-changes" type="button">Guardar cambios</button>
                 </div>
               {% endfor %}
@@ -335,32 +348,30 @@
           {% endif %}
 
           <div id="buttons-container" class="d-flex justify-content-between gap-2">
-            {% if solicitud.rechazado_compras == True or solicitud.rechazado_finanzas == True or solicitud.rechazado_sistemas == True or solicitud.borrador == True %}
+            {% if current_user.id == solicitud.usuario.id and solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas or solicitud.borrador %}
+
               {% if solicitud.es_migracion %}
-                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Enviar</button>
+                <button id="btn-save" class="btn w-100 btn-save btn-rechazado-false" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Enviar</button>
               {% else %}
-                <button id="btn-save" class="btn w-100 btn-save" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="pendiente" value="True">Enviar</button>
+                <button id="btn-save" class="btn w-100 btn-save btn-rechazado-false" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="pendiente" value="True">Enviar</button>
               {% endif %}
 
-              <button id="btn-delete" class="btn btn-delete w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="eliminado" value="True">Eliminar solicitud</button>
-            {% endif %}
+              <button id="btn-remove" class="btn btn-remove w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="eliminado" value="True">Eliminar solicitud</button>
 
-            {% if solicitud.pendiente == True and current_user.compras == True and solicitud.borrador == False %}
-              <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
-              <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
-            {% endif %}
+            {% else %}
 
-            <!--
-            {% if solicitud.compras == True and current_user.finanzas == True %}
-              <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
+              {% if solicitud.pendiente == True and current_user.compras == True and solicitud.borrador == False %}
+                {{ solicitud_form.rechazado_compras }}
+                <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
+                <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
+              {% endif %}
 
-              <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar</button>
-            {% endif %}
-            -->
+              {% if solicitud.finanzas and current_user.sistemas and not solicitud.borrador %}
+                {{ solicitud_form.rechazado_sistemas }}
+                <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
+                <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
+              {% endif %}
 
-            {% if solicitud.finanzas == True and current_user.sistemas == True and solicitud.borrador == False %}
-              <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
-              <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
             {% endif %}
           </div>
         </form>
@@ -400,6 +411,8 @@
       const empresa = document.getElementById('id_empresa')
       const justificacion = document.getElementById('id_justificacion')
       const comentarios = document.getElementById('id_comentarios')
+      const rechazado_compras = document.getElementById('id_rechazado_compras')
+      const rechazado_sistemas = document.getElementById('id_rechazado_sistemas')
       
       // Error messages
       const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
@@ -413,10 +426,11 @@
       
       // Buttons
       const btnSave = document.getElementById('btn-save')
-      const btnDelete = document.getElementById('btn-delete')
+      const btnRemove = document.getElementById('btn-remove')
       const btnApprove = document.getElementById('btn-approve')
       const btnDecline = document.getElementById('btn-decline')
       const btnBack = document.getElementById('btn-back')
+      const btnsRechazadoFalse = document.querySelectorAll('.btn-rechazado-false')
       
       // Regular expressions
       const fraccionPattern = /^(\d+(\.\d+)?\/\d+(\.\d+)?)$/;
@@ -435,8 +449,19 @@
         window.history.back()
       })
 
+      if (btnsRechazadoFalse) {
+        btnsRechazadoFalse.forEach(btnRechazadoFalse => {
+          btnRechazadoFalse.addEventListener('click', () => {
+            const rechazadoBands = document.querySelectorAll('.material-rechazado')
+            rechazadoBands.forEach(rechazadoBand => {
+              rechazadoBand.value = false
+            })
+          })
+        })
+      }
+
       if (materialFormsContainer) {
-        materialFormsContainer.addEventListener('click', (event) => {
+        materialFormsContainer.addEventListener('click', event => {
           // If the "Save changes" button is clicked, hide the forms and refresh the table
           if (event.target && event.target.classList.contains('btn-save-changes')) {
             const form = event.target.closest('.material-form')
@@ -531,16 +556,16 @@
         }
       });
 
-      const disableDeleteButtons = () => {
-        const deleteButtons = tableMaterials.getElementsByClassName('delete-material')
+      const disableRemoveButtons = () => {
+        const removeButtons = tableMaterials.getElementsByClassName('remove-material')
         if (materialCounter > 1) {
-          for (i=0; i<deleteButtons.length; i++) {
-            deleteButtons[i].removeAttribute('disabled')
+          for (i=0; i<removeButtons.length; i++) {
+            removeButtons[i].removeAttribute('disabled')
           }
         }
         else {
-          for (i=0; i<deleteButtons.length; i++) {
-            deleteButtons[i].setAttribute('disabled', true)
+          for (i=0; i<removeButtons.length; i++) {
+            removeButtons[i].setAttribute('disabled', true)
           }
         }
       }
@@ -1175,6 +1200,8 @@
         const materialForms = document.querySelectorAll('.material-form')
         materialForms.forEach((materialForm, index) => {
           materialCounter += 1
+          const rechazado = materialForm.querySelector('.material-rechazado')
+          // Aquí se puede evaluar si el producto está rechazado o no
           const tipoAlta = materialForm.querySelector('.material-tipo-alta')
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
@@ -1232,11 +1259,11 @@
             <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
           </td>
           <td>
-            <button id="delete-material-${index}" class="btn btn-danger delete-material" type="button" style="font-size:0.8rem">Eliminar</button>
+            <button id="remove-material-${index}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
           </td>`
         })
 
-        disableDeleteButtons()
+        disableRemoveButtons()
       }
 
       if (tableMaterials) {
@@ -1265,12 +1292,18 @@
               medidasIguales = false
             }
           }
-          // Delete material
-          if (event.target && event.target.classList.contains('delete-material')) {
-            deleteId = event.target.id.substring(16, event.target.id.length)
-            const form = document.getElementById(`material-form-${deleteId}`)
+          // Remove material
+          if (event.target && event.target.classList.contains('remove-material')) {
+            removeId = event.target.id.substring(16, event.target.id.length)
+            const form = document.getElementById(`material-form-${removeId}`)
             if (form) {
-              form.remove()
+              // En vez de eliminar el material, hacemos que su variable "Rechazado" sea true
+              //form.remove()
+              //form.rechazado = true
+              const rechazado = form.querySelector('.material-rechazado')
+              rechazado.value = true
+              comentarios.setAttribute('required', true)
+
               // Recorre todos los formularios restantes y actualiza sus índices
               const forms = materialFormsContainer.querySelectorAll('.material-form');
               var counter = 0
@@ -1283,6 +1316,14 @@
                 form.style.display = 'none'
                 counter++
               })
+              // Las banderas de tipo "rechazado" serán true
+              if (rechazado_compras) {
+                rechazado_compras.value = true
+                console.log(rechazado_compras.value)
+              }
+              if (rechazado_sistemas) {
+                rechazado_sistemas.value = true
+              }
             }
             fillTable()
           }
@@ -1327,8 +1368,8 @@
         }
       }
 
-      if (btnDelete) {
-        btnDelete.addEventListener('click', () => {
+      if (btnRemove) {
+        btnRemove.addEventListener('click', () => {
           makeFieldsOptional()
         })
       }
@@ -1338,7 +1379,7 @@
           if(errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorEmpresasMigracion.style.display == 'block' || errorNombreProductoMigracion.style.display == 'block' || errorNombreProductoMigracion2.style.display == 'block') {
             if(btnSave) {
               btnSave.disabled = true
-              btnDelete.disabled = true
+              btnRemove.disabled = true
             }
             else {
               if(btnApprove && btnDecline) {
@@ -1350,7 +1391,7 @@
           else {
             if (btnSave) {
               btnSave.disabled = false
-              btnDelete.disabled = false
+              btnRemove.disabled = false
             }
             else {
               if (btnApprove && btnDecline) {
@@ -1361,10 +1402,10 @@
           }
         }
         else {
-          if (errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block' || errorComentarios.style.display == 'block') {
+          if (errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block' || errorComentarios?.style.display == 'block') {
             if(btnSave) {
               btnSave.disabled = true
-              btnDelete.disabled = true
+              btnRemove.disabled = true
             }
             else {
               if(btnApprove && btnDecline) {
@@ -1376,7 +1417,7 @@
           else {
             if (btnSave) {
               btnSave.disabled = false
-              btnDelete.disabled = false
+              btnRemove.disabled = false
             }
             else {
               if (btnApprove && btnDecline) {

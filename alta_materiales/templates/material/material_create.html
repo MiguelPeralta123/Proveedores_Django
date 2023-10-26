@@ -303,6 +303,21 @@
                     </div>
                   </div>
 
+                  <!-- Documentos -->
+                  <!-- Foto producto field -->
+                  <!--<div style="margin-bottom:1rem;">
+                    <label for="id_foto_producto" style="display: block;"><span id="foto-producto-label">Foto del producto:</span></label>
+                    {{ material_form.foto_producto }}
+                    <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>-->
+
+                  <!-- Ficha técnica field -->
+                  <!--<div style="margin-bottom:2rem;">
+                    <label for="id_ficha_tecnica" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
+                    {{ material_form.ficha_tecnica }}
+                    <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  </div>-->
+
                 </div>
               {% endfor %}
             </div>
@@ -1182,6 +1197,7 @@
                   <p class="m-0">{{ material_formset.empty_form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                   {{ material_formset.empty_form.largo }}
                   <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                  <p id="label-largo" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
                 </div>
 
                 <!-- Ancho field -->
@@ -1189,6 +1205,7 @@
                   <p class="m-0">{{ material_formset.empty_form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                   {{ material_formset.empty_form.ancho }}
                   <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                  <p id="label-ancho" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
                 </div>
 
                 <!-- Alto field -->
@@ -1196,6 +1213,7 @@
                   <p class="m-0">{{ material_formset.empty_form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                   {{ material_formset.empty_form.alto }}
                   <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                  <p id="label-alto" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
                 </div>
 
                 <!-- Calibre field -->
@@ -1203,6 +1221,7 @@
                   <p class="m-0">{{ material_formset.empty_form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                   {{ material_formset.empty_form.calibre }}
                   <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                  <p id="label-calibre" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
                 </div>
               </div>
 
@@ -1341,6 +1360,21 @@
                 <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
             </div>
+
+            <!-- Documentos -->
+            <!-- Foto producto field -->
+            <!--<div style="margin-bottom:1rem;">
+              <label for="id_foto_producto" style="display: block;"><span id="foto-producto-label">Foto del producto:</span></label>
+              {{ material_formset.empty_form.foto_producto }}
+              <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>-->
+
+            <!-- Ficha técnica field -->
+            <!--<div style="margin-bottom:2rem;">
+              <label for="id_ficha_tecnica" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
+              {{ material_formset.empty_form.ficha_tecnica }}
+              <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>-->
           `;
         const form = document.createElement('div');
         form.id = `material-form-${formCount}`

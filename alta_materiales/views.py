@@ -148,7 +148,7 @@ def material_create(request):
             else:
                 try:
                     solicitud_form = SolicitudForm(request.POST)
-                    material_formset = MaterialFormSet(request.POST, prefix='material')
+                    material_formset = MaterialFormSet(request.POST, request.FILES, prefix='material')
                     historial_form = HistorialForm(request.POST)
 
                     if solicitud_form.is_valid() and historial_form.is_valid():
@@ -180,15 +180,15 @@ def material_create(request):
                         historial.save()
 
                         # Enviar correo electrónico
-                        if not solicitud.borrador:
-                            subject = 'Nueva solicitud de material'
-                            message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/'
-                            from_email = 'altaproveedoresricofarms@gmail.com'
-                            if solicitud.es_migracion:
-                                recipient_list = ['edurazo@ricofarms.com']
-                            else:
-                                recipient_list = ['compras@ricofarms.com']
-                            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                        #if not solicitud.borrador:
+                        #    subject = 'Nueva solicitud de material'
+                        #    message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/'
+                        #    from_email = 'altaproveedoresricofarms@gmail.com'
+                        #    if solicitud.es_migracion:
+                        #        recipient_list = ['edurazo@ricofarms.com']
+                        #    else:
+                        #        recipient_list = ['compras@ricofarms.com']
+                        #    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                         return redirect('material')
                     
@@ -222,15 +222,23 @@ def material_detail(request, material_id):
             if request.user.compras:
                 solicitud_form = SolicitudFormForCompras(
                     instance=solicitud, initial=default_values)
+                if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
+                    materiales = materiales.filter(rechazado=False)
             elif request.user.finanzas:
                 solicitud_form = SolicitudFormForFinanzas(
                     instance=solicitud, initial=default_values)
+                if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
+                    materiales = materiales.filter(rechazado=False)
             elif request.user.sistemas:
                 solicitud_form = SolicitudFormForSistemas(
                     instance=solicitud, initial=default_values)
+                if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
+                    materiales = materiales.filter(rechazado=False)
             else:
                 solicitud_form = SolicitudDetailForm(
                     instance=solicitud, initial=default_values)
+                if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
+                    materiales = materiales.filter(rechazado=True)
 
             material_forms = [MaterialDetailForm(
                 instance=material, prefix=f'material-{material.id}') for material in materiales]
@@ -260,6 +268,7 @@ def material_detail(request, material_id):
             return render(request, 'material/material_detail.html', {
                 'solicitud': solicitud,
                 'solicitud_form': solicitud_form,
+                'materiales': materiales,
                 'material_forms': material_forms,
                 'catalogo_material': catalogo_material,
                 'current_user': request.user
@@ -312,17 +321,17 @@ def material_detail(request, material_id):
                     historial.save()
 
                     # Enviar correo electrónico
-                    subject = 'Solicitud de material modificada'
-                    if action == 'rechazado':
-                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
-                    else:
-                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/'
-                    from_email = 'altaproveedoresricofarms@gmail.com'
-                    if action == 'rechazado':
-                        recipient_list = [solicitud.usuario.email]
-                    else:
-                        recipient_list = destinatario_correo
-                    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                    #subject = 'Solicitud de material modificada'
+                    #if action == 'rechazado':
+                    #    message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
+                    #else:
+                    #    message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/'
+                    #from_email = 'altaproveedoresricofarms@gmail.com'
+                    #if action == 'rechazado':
+                    #    recipient_list = [solicitud.usuario.email]
+                    #else:
+                    #    recipient_list = destinatario_correo
+                    #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     return redirect('material')
 

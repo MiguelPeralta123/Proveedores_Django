@@ -29,10 +29,10 @@ CONTRIBUYENTE_LIST = [
     ('Persona moral', 'Persona moral'),
 ]
 
-ruta_csv = os.path.join('csv_files', 'catalogo_regimen_capital.csv')
-with open(ruta_csv, 'r') as archivo_csv:
+csv_path_regimen_capital = os.path.join('csv_files', 'catalogo_regimen_capital.csv')
+with open(csv_path_regimen_capital, 'r') as csv_file:
     # Lee el archivo CSV
-    lector_csv = csv.reader(archivo_csv)
+    csv_reader = csv.reader(csv_file)
     
     # Inicializa la lista que contendrá las tuplas
     REGIMEN_CAPITAL_LIST = [
@@ -40,16 +40,16 @@ with open(ruta_csv, 'r') as archivo_csv:
     ]
     
     # Itera sobre cada fila del archivo CSV
-    for fila in lector_csv:
+    for row in csv_reader:
         # Extrae la información necesaria de las columnas
-        clave = fila[2]
-        nombre = fila[1]
+        clave = row[2]
+        nombre = row[1]
         
         # Crea la cadena de texto con el formato deseado
-        formato = f'{clave} - {nombre}'
+        format = f'{clave} - {nombre}'
         
         # Agrega la tupla a la lista
-        REGIMEN_CAPITAL_LIST.append((formato, formato))
+        REGIMEN_CAPITAL_LIST.append((format, format))
 # Ordenar la lista alfabéticamente en función de las etiquetas
 REGIMEN_CAPITAL_LIST = sorted(REGIMEN_CAPITAL_LIST, key=lambda item: item[1])
 
@@ -108,42 +108,67 @@ USO_CFDI_LIST = [
     ('S01 - Sin efectos fiscales', 'S01 - Sin efectos fiscales'),
 ]
 
-RUBRO_LIST = [
-    ('', 'Seleccione una opción'),
-    ('Aduanas', 'Aduanas'),
-    ('Agronomía', 'Agronomía'),
-    ('Aseguradoras', 'Aseguradoras'),
-    ('Aviación', 'Aviación'),
-    ('Aviación', 'Aviación'),
-    ('Bebidas y tabaco', 'Bebidas y tabaco'),
-    ('Comercio electrónico', 'Comercio electrónico'),
-    ('Comercio general', 'Comercio general'),
-    ('Construcción', 'Construcción'),
-    ('Consultoría de sistemas', 'Consultoría de sistemas'),
-    ('Educación', 'Educación'),
-    ('Electrónica', 'Electrónica'),
-    ('Fletes', 'Fletes'),
-    ('Gobierno', 'Gobierno'),
-    ('Industria alimenticia', 'Industria alimenticia'),
-    ('Industria plástica-polietileno', 'Industria plástica-polietileno'),
-    ('Manufactura', 'Manufactura'),
-    ('Minería', 'Minería'),
-    ('Otro', 'Otro'),
-    ('Prensa', 'Prensa'),
-    ('Publicidad', 'Publicidad'),
-    ('Rentas', 'Rentas'),
-    ('Servicios administrativos', 'Servicios administrativos'),
-    ('Servicios de internet', 'Servicios de internet'),
-    ('Servicios financieros', 'Servicios financieros'),
-    ('Servicios públicos', 'Servicios públicos'),
-    ('Tecnología de la información', 'Tecnología de la información'),
-    ('Telecomunicaciones', 'Telecomunicaciones'),
-    ('Textil', 'Textil'),
-    ('Transporte y distribución', 'Transporte y distribución'),
-    ('Turismo', 'Turismo'),
-]
+csv_path_rubro = os.path.join('csv_files', 'catalogo_rubros.csv')
+with open(csv_path_rubro, 'r') as csv_file:
+    # Lee el archivo CSV
+    csv_reader = csv.reader(csv_file)
+    next(csv_reader) # Skipping headers
+    
+    # Inicializa la lista que contendrá las tuplas
+    RUBRO_LIST = [
+        ('', 'Seleccione una opción')
+    ]
+    
+    # Itera sobre cada fila del archivo CSV
+    for row in csv_reader:
+        # Extrae la información necesaria de las columnas
+        codigo = row[0]
+        nombre = row[1]
+        
+        # Crea la cadena de texto con el formato deseado
+        format = f'{codigo} - {nombre}'
+        
+        # Agrega la tupla a la lista
+        RUBRO_LIST.append((format, format))
 # Ordenar la lista alfabéticamente en función de las etiquetas
 RUBRO_LIST = sorted(RUBRO_LIST, key=lambda item: item[1])
+
+#RUBRO_LIST = [
+#    ('', 'Seleccione una opción'),
+#    ('Aduanas', 'Aduanas'),
+#    ('Agronomía', 'Agronomía'),
+#    ('Aseguradoras', 'Aseguradoras'),
+#    ('Aviación', 'Aviación'),
+#    ('Aviación', 'Aviación'),
+#    ('Bebidas y tabaco', 'Bebidas y tabaco'),
+#    ('Comercio electrónico', 'Comercio electrónico'),
+#    ('Comercio general', 'Comercio general'),
+#    ('Construcción', 'Construcción'),
+#    ('Consultoría de sistemas', 'Consultoría de sistemas'),
+#    ('Educación', 'Educación'),
+#    ('Electrónica', 'Electrónica'),
+#    ('Fletes', 'Fletes'),
+#    ('Gobierno', 'Gobierno'),
+#    ('Industria alimenticia', 'Industria alimenticia'),
+#    ('Industria plástica-polietileno', 'Industria plástica-polietileno'),
+#    ('Manufactura', 'Manufactura'),
+#    ('Minería', 'Minería'),
+#    ('Otro', 'Otro'),
+#    ('Prensa', 'Prensa'),
+#    ('Publicidad', 'Publicidad'),
+#    ('Rentas', 'Rentas'),
+#    ('Servicios administrativos', 'Servicios administrativos'),
+#    ('Servicios de internet', 'Servicios de internet'),
+#    ('Servicios financieros', 'Servicios financieros'),
+#    ('Servicios públicos', 'Servicios públicos'),
+#    ('Tecnología de la información', 'Tecnología de la información'),
+#    ('Telecomunicaciones', 'Telecomunicaciones'),
+#    ('Textil', 'Textil'),
+#    ('Transporte y distribución', 'Transporte y distribución'),
+#    ('Turismo', 'Turismo'),
+#]
+# Ordenar la lista alfabéticamente en función de las etiquetas
+#RUBRO_LIST = sorted(RUBRO_LIST, key=lambda item: item[1])
 
 TIPO_OPERACION_LIST = [
     ('', 'Seleccione una opción'),
