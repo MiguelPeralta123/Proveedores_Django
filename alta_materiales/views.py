@@ -222,23 +222,15 @@ def material_detail(request, material_id):
             if request.user.compras:
                 solicitud_form = SolicitudFormForCompras(
                     instance=solicitud, initial=default_values)
-                if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
-                    materiales = materiales.filter(rechazado=False)
             elif request.user.finanzas:
                 solicitud_form = SolicitudFormForFinanzas(
                     instance=solicitud, initial=default_values)
-                if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
-                    materiales = materiales.filter(rechazado=False)
             elif request.user.sistemas:
                 solicitud_form = SolicitudFormForSistemas(
                     instance=solicitud, initial=default_values)
-                if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
-                    materiales = materiales.filter(rechazado=False)
             else:
                 solicitud_form = SolicitudDetailForm(
                     instance=solicitud, initial=default_values)
-                if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
-                    materiales = materiales.filter(rechazado=True)
 
             material_forms = [MaterialDetailForm(
                 instance=material, prefix=f'material-{material.id}') for material in materiales]
@@ -303,6 +295,10 @@ def material_detail(request, material_id):
                     if solicitud.es_migracion == False:
                         if all(form.is_valid() for form in material_forms):
                             for form in material_forms:
+                                #TODO
+                                # Revisar los materiales uno por uno, y si alguno se encuentra marcado como "rechazado", se deberá crear un nuevo registro en material_solicitud y asociar ese material a dicho registro.
+                                # Lo que puedo hacer es modificar el valor id_solicitud de ese registro y asignarle un valor distino, luego crear un nuevo registro en material_solicitud con ese mismo valor en id_solicitud. Su estatus será rechazado_compras o rechazado_sistemas dependiendo de en que punto fue eliminado.
+                                # En la nueva solicitud, el valor de "rechazado" será false, y en la solicitud anterior serguirá siendo false. La idea es que al renderizar los materiales en material_detail
                                 form.save()
                     
                     # Guardar la modificación de la solicitud en el historial de cambios

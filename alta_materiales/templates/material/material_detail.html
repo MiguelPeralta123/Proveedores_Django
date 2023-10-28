@@ -331,7 +331,7 @@
                   <!-- Esta bandera será false. Si el material se elimina, entonces se marcará como true -->
                   {{ form.rechazado }}
 
-                  <button class="btn btn-secondary mb-3 btn-save-changes" type="button">Guardar cambios</button>
+                  <button class="btn btn-secondary mb-3 btn-save-changes" type="button" style="background-color: #008841; color: white; font-weight: bold;">Guardar cambios</button>
                 </div>
               {% endfor %}
             </div>
@@ -382,6 +382,9 @@
   </main>
 
   <style>
+      .table-row-hidden {
+          display: none;
+      }
       #btn-back {
           width: 10rem;
           margin-top: 2rem;
@@ -462,7 +465,7 @@
 
       if (materialFormsContainer) {
         materialFormsContainer.addEventListener('click', event => {
-          // If the "Save changes" button is clicked, hide the forms and refresh the table
+          // Si se hace clic en "Guardar cambios", ocultar el formulario y actualizar la tabla
           if (event.target && event.target.classList.contains('btn-save-changes')) {
             const form = event.target.closest('.material-form')
             errorTipoAlta = form.querySelector('#error-tipo-alta')
@@ -506,20 +509,20 @@
               errorUnidadesMedida.style.display = 'block'
               window.alert('Debe seleccionar una unidad para "Calibre"')
               return
-            } else {
-              errorUnidadesMedida.style.display = 'none'
-              if (largo.value == 'N/A') {
-                umLargo.value = ''
-              }
-              if (ancho.value == 'N/A') {
-                umAncho.value = ''
-              }
-              if (alto.value == 'N/A') {
-                umAlto.value = ''
-              }
-              if (calibre.value == 'N/A') {
-                umCalibre.value = ''
-              }
+            }
+
+            errorUnidadesMedida.style.display = 'none'
+            if (largo.value == 'N/A') {
+              umLargo.value = ''
+            }
+            if (ancho.value == 'N/A') {
+              umAncho.value = ''
+            }
+            if (alto.value == 'N/A') {
+              umAlto.value = ''
+            }
+            if (calibre.value == 'N/A') {
+              umCalibre.value = ''
             }
   
             if (errorTipoAlta.style.display == 'block' || errorSubfamilia.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorUnidadesMedida.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
@@ -535,6 +538,16 @@
                 editButton.removeAttribute('disabled')
               })
               fillTable()
+
+              // Habilitar botones de tipo submit
+              if (btnSave) {
+                btnSave.removeAttribute('disabled')
+                btnRemove.removeAttribute('disabled')
+              }
+              if (btnApprove) {
+                btnApprove.removeAttribute('disabled')
+                btnDecline.removeAttribute('disabled')
+              }
             }
           }
         })
@@ -570,7 +583,7 @@
         }
       }
 
-      // FIELD VALIDATION
+      // VALIDACIÓN DE CAMPOS
       
       // Validación empresa origen
       if (empresaOrigen) {
@@ -634,8 +647,10 @@
             }
             if (datalist.childElementCount == 0) {
               errorNombreProductoMigracion2.style.display = 'block'
+              disableAllFieldsForMigracion()
             } else {
               errorNombreProductoMigracion2.style.display = 'none'
+              enableAllFieldsForMigracion()
             }
           }
           enableSaveButton()
@@ -653,8 +668,10 @@
           }
           if (showError) {
             errorNombreProductoMigracion2.style.display = 'block'
+            disableAllFieldsForMigracion()
           } else {
             errorNombreProductoMigracion2.style.display = 'none'
+            enableAllFieldsForMigracion()
           }
           enableSaveButton()
         }
@@ -758,8 +775,10 @@
                 }
                 if (datalist.childElementCount == 0) {
                   errorNombreProducto2.style.display = 'none'
+                  enableAllFields(input)
                 } else {
                   errorNombreProducto2.style.display = 'block'
+                  disableAllFields(input)
                 }
               }
             })
@@ -776,8 +795,10 @@
               }
               if (showError) {
                 errorNombreProducto2.style.display = 'block'
+                disableAllFields(input)
               } else {
                 errorNombreProducto2.style.display = 'none'
+                enableAllFields(input)
               }
             }
             input.addEventListener('change', validateNombreProductoOnChange)
@@ -795,6 +816,7 @@
                   !isNaN(parseFloat(largoValue)) && isFinite(largoValue) || 
                   fraccionPattern.test(largoValue)) {
                     errorLargo.style.display = 'none'
+                    enableAllFields(input)
                     if (largoValue === 'N/A') {
                       const medidasContainer = input.closest('#medidas-container')
                       const medidaLargo = medidasContainer.querySelector('#select-largo')
@@ -805,6 +827,7 @@
                     }
                 } else {
                     errorLargo.style.display = 'block'
+                    disableAllFields(input)
                 }
             }
             input.addEventListener('input', validateLargo)
@@ -829,8 +852,10 @@
                 !isNaN(parseFloat(largoValue)) && isFinite(largoValue) || 
                 fraccionPattern.test(largoValue)) {
                   errorLargo.style.display = 'none'
+                  enableAllFields(input)
               } else {
                   errorLargo.style.display = 'block'
+                  disableAllFields(input)
               }
             })
         })
@@ -847,6 +872,7 @@
                   !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue) || 
                   fraccionPattern.test(anchoValue)) {
                     errorAncho.style.display = 'none'
+                    enableAllFields(input)
                     const medidasContainer = input.closest('#medidas-container')
                     const medidaAncho = medidasContainer.querySelector('.select-um-ancho')
                     const labelAncho = medidasContainer.querySelector('#label-ancho')
@@ -864,6 +890,7 @@
                     }
                 } else {
                     errorAncho.style.display = 'block'
+                    disableAllFields(input)
                 }
             }
             input.addEventListener('input', validateAncho)
@@ -888,8 +915,10 @@
                   !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue) || 
                   fraccionPattern.test(anchoValue)) {
                     errorAncho.style.display = 'none'
+                    enableAllFields(input)
                 } else {
                     errorAncho.style.display = 'block'
+                    disableAllFields(input)
                 }
               }
             })
@@ -907,6 +936,7 @@
                   !isNaN(parseFloat(altoValue)) && isFinite(altoValue) || 
                   fraccionPattern.test(altoValue)) {
                     errorAlto.style.display = 'none'
+                    enableAllFields(input)
                     const medidasContainer = input.closest('#medidas-container')
                     const medidaAlto = medidasContainer.querySelector('.select-um-alto')
                     const labelAlto = medidasContainer.querySelector('#label-alto')
@@ -924,6 +954,7 @@
                     }
                 } else {
                     errorAlto.style.display = 'block'
+                    disableAllFields(input)
                 }
             }
             input.addEventListener('input', validateAlto)
@@ -948,8 +979,10 @@
                   !isNaN(parseFloat(altoValue)) && isFinite(altoValue) || 
                   fraccionPattern.test(altoValue)) {
                     errorAlto.style.display = 'none'
+                    enableAllFields(input)
                 } else {
                     errorAlto.style.display = 'block'
+                    disableAllFields(input)
                 }
               }
             })
@@ -967,6 +1000,7 @@
                   !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue) || 
                   fraccionPattern.test(calibreValue)) {
                     errorCalibre.style.display = 'none'
+                    enableAllFields(input)
                     const medidasContainer = input.closest('#medidas-container')
                     const medidaCalibre = medidasContainer.querySelector('.select-um-calibre')
                     const labelCalibre = medidasContainer.querySelector('#label-calibre')
@@ -984,6 +1018,7 @@
                     }
                 } else {
                     errorCalibre.style.display = 'block'
+                    disableAllFields(input)
                 }
             }
             input.addEventListener('input', validateCalibre)
@@ -1008,8 +1043,10 @@
                   !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue) || 
                   fraccionPattern.test(calibreValue)) {
                     errorCalibre.style.display = 'none'
+                    enableAllFields(input)
                 } else {
                     errorCalibre.style.display = 'block'
+                    disableAllFields(input)
                 }
               }
             })
@@ -1148,8 +1185,10 @@
                 var errorMaterial = container.querySelector('#error-material')
                 if (materialValue == '') {
                     errorMaterial.style.display = 'block'
+                    disableAllFields(input)
                 } else {
                     errorMaterial.style.display = 'none'
+                    enableAllFields(input)
                 }
             }
             input.addEventListener('focus', validateMaterial)
@@ -1165,8 +1204,10 @@
                 var errorColor = container.querySelector('#error-color')
                 if (colorValue == '') {
                     errorColor.style.display = 'block'
+                    disableAllFields(input)
                 } else {
                     errorColor.style.display = 'none'
+                    enableAllFields(input)
                 }
             }
             input.addEventListener('focus', validateColor)
@@ -1190,6 +1231,132 @@
             input.addEventListener('focus', validateUnidadMedida)
             input.addEventListener('change', validateUnidadMedida)
         })
+
+        const disableAllFields = input => {
+          const form = input.closest('.material-form')
+          const tipoAlta = form.querySelector('.material-tipo-alta')
+          const subfamilia = form.querySelector('.material-subfamilia')
+          const nombre = form.querySelector('.material-nombre')
+          const largo = form.querySelector('.material-largo')
+          const ancho = form.querySelector('.material-ancho')
+          const alto = form.querySelector('.material-alto')
+          const calibre = form.querySelector('.material-calibre')
+          const medidasIguales = form.querySelector('.medidas-iguales')
+          const umLargo = form.querySelector('.material-um-largo')
+          const umAncho = form.querySelector('.material-um-ancho')
+          const umAlto = form.querySelector('.material-um-alto')
+          const umCalibre = form.querySelector('.material-um-calibre')
+          const material = form.querySelector('.material-material')
+          const color = form.querySelector('.material-color')
+          const marca = form.querySelector('.material-marca')
+          const parteModelo = form.querySelector('.material-parte-modelo')
+          const nombreComun = form.querySelector('.material-nombre-comun')
+          const ingActivo = form.querySelector('.material-ing-activo')
+          const porcentajeIva = form.querySelector('.material-porcentaje-iva')
+          const alias = form.querySelector('.material-alias')
+          const unidadMedida = form.querySelector('.material-unidad-medida')
+          const codigoSat = form.querySelector('.material-codigo-sat')
+          const esMezcla = form.querySelector('.material-es-mezcla')
+          const esMaterialEmpaque = form.querySelector('.material-es-material-empaque')
+          const esProdTerminado = form.querySelector('.material-es-prod-terminado')
+          const saveChanges = form.querySelector('.btn-save-changes')
+          tipoAlta.setAttribute('disabled', true)
+          subfamilia.setAttribute('disabled', true)
+          if (!input.classList.contains('material-nombre')) {
+            nombre.setAttribute('disabled', true)
+          }
+          if (!input.classList.contains('material-largo')) {
+            largo.setAttribute('disabled', true)
+          }
+          if (!input.classList.contains('material-ancho')) {
+            ancho.setAttribute('disabled', true)
+          }
+          if (!input.classList.contains('material-alto')) {
+            alto.setAttribute('disabled', true)
+          }
+          if (!input.classList.contains('material-calibre')) {
+            calibre.setAttribute('disabled', true)
+          }
+          medidasIguales.setAttribute('disabled', true)
+          umLargo.setAttribute('disabled', true)
+          umAncho.setAttribute('disabled', true)
+          umAlto.setAttribute('disabled', true)
+          umCalibre.setAttribute('disabled', true)
+          if (!input.classList.contains('material-material')) {
+            material.setAttribute('disabled', true)
+          }
+          if (!input.classList.contains('material-color')) {
+            color.setAttribute('disabled', true)
+          }
+          marca.setAttribute('disabled', true)
+          parteModelo.setAttribute('disabled', true)
+          nombreComun.setAttribute('disabled', true)
+          ingActivo.setAttribute('disabled', true)
+          porcentajeIva.setAttribute('disabled', true)
+          alias.setAttribute('disabled', true)
+          unidadMedida.setAttribute('disabled', true)
+          codigoSat.setAttribute('disabled', true)
+          esMezcla.setAttribute('disabled', true)
+          esMaterialEmpaque.setAttribute('disabled', true)
+          esProdTerminado.setAttribute('disabled', true)
+          saveChanges.setAttribute('disabled', true)
+        }
+
+        const enableAllFields = input => {
+          const form = input.closest('.material-form')
+          const tipoAlta = form.querySelector('.material-tipo-alta')
+          const subfamilia = form.querySelector('.material-subfamilia')
+          const nombre = form.querySelector('.material-nombre')
+          const largo = form.querySelector('.material-largo')
+          const ancho = form.querySelector('.material-ancho')
+          const alto = form.querySelector('.material-alto')
+          const calibre = form.querySelector('.material-calibre')
+          const medidasIguales = form.querySelector('.medidas-iguales')
+          const umLargo = form.querySelector('.material-um-largo')
+          const umAncho = form.querySelector('.material-um-ancho')
+          const umAlto = form.querySelector('.material-um-alto')
+          const umCalibre = form.querySelector('.material-um-calibre')
+          const material = form.querySelector('.material-material')
+          const color = form.querySelector('.material-color')
+          const marca = form.querySelector('.material-marca')
+          const parteModelo = form.querySelector('.material-parte-modelo')
+          const nombreComun = form.querySelector('.material-nombre-comun')
+          const ingActivo = form.querySelector('.material-ing-activo')
+          const porcentajeIva = form.querySelector('.material-porcentaje-iva')
+          const alias = form.querySelector('.material-alias')
+          const unidadMedida = form.querySelector('.material-unidad-medida')
+          const codigoSat = form.querySelector('.material-codigo-sat')
+          const esMezcla = form.querySelector('.material-es-mezcla')
+          const esMaterialEmpaque = form.querySelector('.material-es-material-empaque')
+          const esProdTerminado = form.querySelector('.material-es-prod-terminado')
+          const saveChanges = form.querySelector('.btn-save-changes')
+          tipoAlta.removeAttribute('disabled')
+          subfamilia.removeAttribute('disabled')
+          nombre.removeAttribute('disabled')
+          largo.removeAttribute('disabled')
+          ancho.removeAttribute('disabled')
+          alto.removeAttribute('disabled')
+          calibre.removeAttribute('disabled')
+          medidasIguales.removeAttribute('disabled')
+          umLargo.removeAttribute('disabled')
+          umAncho.removeAttribute('disabled')
+          umAlto.removeAttribute('disabled')
+          umCalibre.removeAttribute('disabled')
+          material.removeAttribute('disabled')
+          color.removeAttribute('disabled')
+          marca.removeAttribute('disabled')
+          parteModelo.removeAttribute('disabled')
+          nombreComun.removeAttribute('disabled')
+          ingActivo.removeAttribute('disabled')
+          porcentajeIva.removeAttribute('disabled')
+          alias.removeAttribute('disabled')
+          unidadMedida.removeAttribute('disabled')
+          codigoSat.removeAttribute('disabled')
+          esMezcla.removeAttribute('disabled')
+          esMaterialEmpaque.removeAttribute('disabled')
+          esProdTerminado.removeAttribute('disabled')
+          saveChanges.removeAttribute('disabled')
+        }
       }
 
       validarCamposMaterial()
@@ -1199,9 +1366,7 @@
         bodyMaterials.innerHTML = ''
         const materialForms = document.querySelectorAll('.material-form')
         materialForms.forEach((materialForm, index) => {
-          materialCounter += 1
-          const rechazado = materialForm.querySelector('.material-rechazado')
-          // Aquí se puede evaluar si el producto está rechazado o no
+          materialCounter++
           const tipoAlta = materialForm.querySelector('.material-tipo-alta')
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
@@ -1230,9 +1395,26 @@
           esMezclaValue = esMezcla.checked == true ? 'Si' : 'No'
           esMaterialEmpaqueValue = esMaterialEmpaque.checked == true ? 'Si' : 'No'
           esProdTerminadoValue = esProdTerminado.checked == true ? 'Si' : 'No'
+
+          const rechazado = materialForm.querySelector('.material-rechazado')
   
           const newRow = bodyMaterials.insertRow()
           newRow.classList.add('table-row')
+          // Si la bandera "rechazado" del producto es true, se oculta la fila
+          const currentUserId = "{{ current_user.id }}"
+          const requestUserId = "{{ solicitud.usuario.id }}"
+          if (currentUserId == requestUserId) {
+            if (rechazado.value == 'False') {
+              newRow.classList.add('table-row-hidden')
+              materialCounter--
+            }
+          }
+          else {
+            if (rechazado.value == 'True') {
+              newRow.classList.add('table-row-hidden')
+              materialCounter--
+            }
+          }
           newRow.id = `table-row-${index}`
           newRow.innerHTML = `
           <td>${tipoAlta.value}</td>
@@ -1270,17 +1452,18 @@
         fillTable()
 
         tableMaterials.addEventListener('click', function(event) {
-          // Edit material
+
+          // Editar material
           if (event.target && event.target.classList.contains('edit-material')) {
-            // Fill the table with the updated data
+            // Llenar la tabla con la información actualizada
             fillTable()
-            // Disable edit button
+            // Deshabilitando los botones Editar
             const editButtons = tableMaterials.querySelectorAll('.edit-material');
             editButtons.forEach(editButton => {
               editButton.setAttribute('disabled', true)
             })
             event.target.disabled = true
-            // Show the selected form
+            // Mostrar el formulario seleccionado
             const forms = document.getElementsByClassName('material-form');
             for (let i = 0; i < forms.length; i++) {
               forms[i].style.display = 'none'
@@ -1291,8 +1474,19 @@
               form.style.display = "block"
               medidasIguales = false
             }
+
+            // Deshabilitar botones de tipo submit. Se habilitarán al hacer clic en "Guardar cambios"
+            if (btnSave) {
+              btnSave.setAttribute('disabled', true)
+              btnRemove.setAttribute('disabled', true)
+            }
+            if (btnApprove) {
+              btnApprove.setAttribute('disabled', true)
+              btnDecline.setAttribute('disabled', true)
+            }
           }
-          // Remove material
+
+          // Eliminar material
           if (event.target && event.target.classList.contains('remove-material')) {
             removeId = event.target.id.substring(16, event.target.id.length)
             const form = document.getElementById(`material-form-${removeId}`)
@@ -1305,7 +1499,7 @@
               comentarios.setAttribute('required', true)
 
               // Recorre todos los formularios restantes y actualiza sus índices
-              const forms = materialFormsContainer.querySelectorAll('.material-form');
+              /*const forms = materialFormsContainer.querySelectorAll('.material-form');
               var counter = 0
               forms.forEach(form => {
                 form.id = `material-form-${counter}`
@@ -1315,16 +1509,17 @@
                 }
                 form.style.display = 'none'
                 counter++
-              })
+              })*/
+
               // Las banderas de tipo "rechazado" serán true
               if (rechazado_compras) {
                 rechazado_compras.value = true
-                console.log(rechazado_compras.value)
               }
               if (rechazado_sistemas) {
                 rechazado_sistemas.value = true
               }
             }
+
             fillTable()
           }
         })
@@ -1372,6 +1567,18 @@
         btnRemove.addEventListener('click', () => {
           makeFieldsOptional()
         })
+      }
+
+      const disableAllFieldsForMigracion = () => {
+        empresaOrigen.setAttribute('disabled', true)
+        empresaDestino.setAttribute('disabled', true)
+        comentarios.setAttribute('disabled', true)
+      }
+
+      const enableAllFieldsForMigracion = () => {
+        empresaOrigen.removeAttribute('disabled')
+        empresaDestino.removeAttribute('disabled')
+        comentarios.removeAttribute('disabled')
       }
 
       function enableSaveButton() {
