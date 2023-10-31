@@ -108,7 +108,7 @@ def proveedor_create(request):
                     csv_reader = csv.reader(csv_file)
                     next(csv_reader) # Skipping headers
                     
-                    # Inicializa la lista que contendrá las tuplas
+                    # Inicializa la lista que contendrá los elementos
                     catalogo_proveedor = []
                     
                     # Itera sobre cada fila del archivo CSV

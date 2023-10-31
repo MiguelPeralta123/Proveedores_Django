@@ -4,7 +4,7 @@
   <main class="pt-5 m-5">
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
-        <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
+        <form class="card card-body" method="POST" enctype="multipart/form-data" style="background-color: rgb(255, 255, 255, 0.8);">
           <h1 class="mb-4">Registrar material</h1>
 
           {{ error }}
@@ -76,6 +76,7 @@
                     <th scope="col" style="min-width: 6rem;">Tipo alta</th>
                     <th scope="col" style="min-width: 6rem;">Subfamilia</th>
                     <th scope="col" style="min-width: 6rem;">Nombre</th>
+                    <th scope="col" style="min-width: 6rem;">Foto del producto</th>
                     <th scope="col" style="min-width: 6rem;">Largo</th>
                     <th scope="col" style="min-width: 6rem;">Ancho</th>
                     <th scope="col" style="min-width: 6rem;">Alto</th>
@@ -128,6 +129,16 @@
                     </datalist>
                     <p id="error-nombre-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un producto con ese nombre</p>
+                  </div>
+                  
+                  <!-- Foto producto field -->
+                  <div class="foto-producto-container" style="margin-bottom:1rem;">
+                    <!-- Foto del producto -->
+                    <img id="id_foto_producto_img" class="w-50 mb-3 rounded" src="" alt="Foto del producto" style="display: none;" />
+
+                    <label for="id_foto_producto" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo se aceptan imágenes)</span></span></label>
+                    {{ material_form.foto_producto }}
+                    <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                   </div>
 
                   <div id="medidas-container">
@@ -304,19 +315,12 @@
                   </div>
 
                   <!-- Documentos -->
-                  <!-- Foto producto field -->
-                  <!--<div style="margin-bottom:1rem;">
-                    <label for="id_foto_producto" style="display: block;"><span id="foto-producto-label">Foto del producto:</span></label>
-                    {{ material_form.foto_producto }}
-                    <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                  </div>-->
-
                   <!-- Ficha técnica field -->
-                  <!--<div style="margin-bottom:2rem;">
+                  <div style="margin-bottom:2rem;">
                     <label for="id_ficha_tecnica" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
                     {{ material_form.ficha_tecnica }}
                     <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                  </div>-->
+                  </div>
 
                 </div>
               {% endfor %}
@@ -657,6 +661,24 @@
                 }
             }
             input.addEventListener('change', validateNombreProductoOnChange)
+        })
+
+        // Validación foto producto
+        var fotoProductoInputs = document.querySelectorAll('.material-foto-producto')
+        fotoProductoInputs.forEach(input => {
+            const validateFotoProducto = () => {
+                const fotoProductoContainer = input.closest('.foto-producto-container')
+                const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
+                if (input.files && input.files[0]) {
+                  var reader = new FileReader()
+                  reader.onload = function(e) {
+                      imagePreview.src = e.target.result;
+                  };
+                  reader.readAsDataURL(input.files[0]);
+                }
+                imagePreview.style.display = 'block'
+            }
+            input.addEventListener('change', validateFotoProducto)
         })
 
         // Validación largo
@@ -1251,6 +1273,7 @@
           const tipoAlta = materialForm.querySelector('.material-tipo-alta')
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
+          const fotoProducto = materialForm.querySelector('#id_foto_producto_img')
           const largo = materialForm.querySelector('.material-largo')
           const ancho = materialForm.querySelector('.material-ancho')
           const alto = materialForm.querySelector('.material-alto')
@@ -1284,6 +1307,7 @@
           <td>${tipoAlta.value}</td>
           <td>${subfamilia.value}</td>
           <td>${nombre.value}</td>
+          <td class="p-0"><img class="w-100" src="${fotoProducto.src}" alt="Foto del producto"/></td>
           <td>${largo.value}<br />UM: ${umLargo.value}</td>
           <td>${ancho.value}<br />UM: ${umAncho.value}</td>
           <td>${alto.value}<br />UM: ${umAlto.value}</td>
@@ -1352,6 +1376,16 @@
               </datalist>
               <p id="error-nombre-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un producto con ese nombre</p>
+            </div>
+
+            <!-- Foto producto field -->
+            <div class="foto-producto-container" style="margin-bottom:1rem;">
+              <!-- Foto del producto -->
+              <img id="id_foto_producto_img" class="w-50 mb-3 rounded" src="" alt="Foto del producto" style="display: none;" />
+
+              <label for="id_foto_producto" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo se aceptan imágenes)</span></span></label>
+              {{ material_formset.empty_form.foto_producto }}
+              <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <div id="medidas-container">
@@ -1528,19 +1562,12 @@
             </div>
 
             <!-- Documentos -->
-            <!-- Foto producto field -->
-            <!--<div style="margin-bottom:1rem;">
-              <label for="id_foto_producto" style="display: block;"><span id="foto-producto-label">Foto del producto:</span></label>
-              {{ material_formset.empty_form.foto_producto }}
-              <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>-->
-
             <!-- Ficha técnica field -->
-            <!--<div style="margin-bottom:2rem;">
+            <div style="margin-bottom:2rem;">
               <label for="id_ficha_tecnica" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
               {{ material_formset.empty_form.ficha_tecnica }}
               <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>-->
+            </div>
           `;
         const form = document.createElement('div');
         form.id = `material-form-${formCount}`

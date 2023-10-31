@@ -76,6 +76,7 @@
                     <th scope="col" style="min-width: 6rem;">Tipo alta</th>
                     <th scope="col" style="min-width: 6rem;">Subfamilia</th>
                     <th scope="col" style="min-width: 6rem;">Nombre</th>
+                    <th scope="col" style="min-width: 6rem;">Foto del producto</th>
                     <th scope="col" style="min-width: 6rem;">Largo</th>
                     <th scope="col" style="min-width: 6rem;">Ancho</th>
                     <th scope="col" style="min-width: 6rem;">Alto</th>
@@ -93,8 +94,6 @@
                     <th scope="col" style="min-width: 6rem;">¿Es mezcla?</th>
                     <th scope="col" style="min-width: 6rem;">¿Es material empaque?</th>
                     <th scope="col" style="min-width: 6rem;">¿Es prod. terminado?</th>
-                    <!--<th scope="col" style="min-width: 6rem;">Foto del producto</th>
-                    <th scope="col" style="min-width: 6rem;">Ficha técnica</th>-->
                     <th scope="col" style="min-width: 4rem;"></th>
                     <th scope="col" style="min-width: 4rem;"></th>
                   </tr>
@@ -129,6 +128,16 @@
                     </datalist>
                     <p id="error-nombre-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un producto con ese nombre</p>
+                  </div>
+                  
+                  <!-- Foto producto field -->
+                  <div class="foto-producto-container" style="margin-bottom:1rem;">
+                    <!-- Foto del producto -->
+                    <img id="id_foto_producto_img" class="w-50 mb-3 rounded" src="/{{ form.foto_producto.value }}" alt="Foto del producto" />
+
+                    <label for="id_foto_producto" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo se aceptan imágenes)</span></span></label>
+                    {{ form.foto_producto }}
+                    <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                   </div>
 
                   <div id="medidas-container">
@@ -320,18 +329,22 @@
                     </div>
                   </div>
 
-                  <!--<h1>{{ materiales.1.nombre_producto }}</h1>-->
+                  <!-- ARCHIVOS -->
 
-                  <!-- Archivos -->
                   <!-- Foto producto -->
-                  <!--<a href="/{{ materiales.0.foto_producto }}" class="d-block my-2" style="width:fit-content;" download="">Descargar foto del producto</a> -->
+                  {% if form.foto_producto.value %}
+                    <a href="/{{ form.foto_producto.value }}" class="d-block my-2" style="width:fit-content;" download="">Descargar foto del producto</a>
+                  {% endif %}
+
                   <!-- Ficha técnica -->
-                  <!--<a href="/{{ materiales.0.ficha_tecnica }}" class="d-block mt-2 mb-3" style="width:fit-content;" download="">Descargar ficha técnica</a> -->
+                  {% if form.ficha_tecnica.value %}
+                    <a href="/{{ form.ficha_tecnica.value }}" class="d-block mt-2" style="width:fit-content;" download="">Descargar ficha técnica</a>
+                  {% endif %}
 
                   <!-- Esta bandera será false. Si el material se elimina, entonces se marcará como true -->
                   {{ form.rechazado }}
 
-                  <button class="btn btn-secondary mb-3 btn-save-changes" type="button" style="background-color: #008841; color: white; font-weight: bold;">Guardar cambios</button>
+                  <button class="btn btn-secondary mt-3 mb-3 btn-save-changes" type="button" style="background-color: #008841; color: white; font-weight: bold;">Guardar cambios</button>
                 </div>
               {% endfor %}
             </div>
@@ -805,6 +818,24 @@
               }
             }
             input.addEventListener('change', validateNombreProductoOnChange)
+        })
+
+        // Validación foto producto
+        var fotoProductoInputs = document.querySelectorAll('.material-foto-producto')
+        fotoProductoInputs.forEach(input => {
+            const validateFotoProducto = () => {
+                const fotoProductoContainer = input.closest('.foto-producto-container')
+                const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
+                if (input.files && input.files[0]) {
+                  var reader = new FileReader()
+                  reader.onload = function(e) {
+                      imagePreview.src = e.target.result;
+                  };
+                  reader.readAsDataURL(input.files[0]);
+                }
+                imagePreview.style.display = 'block'
+            }
+            input.addEventListener('change', validateFotoProducto)
         })
 
         // Validación largo
@@ -1373,6 +1404,7 @@
           const tipoAlta = materialForm.querySelector('.material-tipo-alta')
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
+          const fotoProducto = materialForm.querySelector('#id_foto_producto_img')
           const largo = materialForm.querySelector('.material-largo')
           const ancho = materialForm.querySelector('.material-ancho')
           const alto = materialForm.querySelector('.material-alto')
@@ -1404,21 +1436,6 @@
           const newRow = bodyMaterials.insertRow()
           newRow.classList.add('table-row')
 
-          // Si la bandera "rechazado" del producto es true, se oculta la fila
-          /*const currentUserId = "{{ current_user.id }}"
-          const requestUserId = "{{ solicitud.usuario.id }}"
-          if (currentUserId == requestUserId) {
-            if (rechazado.value == 'False') {
-              newRow.classList.add('table-row-hidden')
-              materialCounter--
-            }
-          }
-          else {
-            if (rechazado.value == 'True') {
-              newRow.classList.add('table-row-hidden')
-              materialCounter--
-            }
-          }*/
           if (rechazado.value == 'true') {
             newRow.classList.add('table-row-hidden')
             materialCounter--
@@ -1429,6 +1446,7 @@
           <td>${tipoAlta.value}</td>
           <td>${subfamilia.value}</td>
           <td>${nombre.value}</td>
+          <td class="p-0"><img class="w-100" src="${fotoProducto.src}" alt="Foto del producto"/></td>
           <td>${largo.value}<br />UM: ${umLargo.value}</td>
           <td>${ancho.value}<br />UM: ${umAncho.value}</td>
           <td>${alto.value}<br />UM: ${umAlto.value}</td>
