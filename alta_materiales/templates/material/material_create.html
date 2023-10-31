@@ -250,10 +250,10 @@
 
                   <div style="display: flex; gap: 1rem;">
                     <!-- Porcentaje IVA field -->
-                    <div style="width: 50%; margin-bottom:1rem;">
+                    <div class="porcentaje-iva-container" style="width: 50%; margin-bottom:1rem;">
                       <label for="id_porcentaje_iva">% de IVA:</label>
                       {{ material_form.porcentaje_iva }}
-                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                      <p id="error-porcentaje-iva" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
                     </div>
 
                     <!-- Alias field -->
@@ -1060,6 +1060,33 @@
             input.addEventListener('input', () => validateColor(input))
         })
 
+        // Validación porcentaje de IVA
+        var porcentajeIvaInputs = document.querySelectorAll('.material-porcentaje-iva')
+        porcentajeIvaInputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                var porcentajeIvaValue = input.value
+                var container = input.closest('.porcentaje-iva-container')
+                var errorPorcentajeIva = container.querySelector('#error-porcentaje-iva')
+                // Verificar si el campo está vacío
+                if (porcentajeIvaValue == '') {
+                  errorPorcentajeIva.style.display = 'block'
+                } else {
+                  errorPorcentajeIva.style.display = 'none'
+                }
+            })
+            input.addEventListener('change', () => {
+                var porcentajeIvaValue = input.value
+                var container = input.closest('.porcentaje-iva-container')
+                var errorPorcentajeIva = container.querySelector('#error-porcentaje-iva')
+                // Verificar si el campo está vacío
+                if (porcentajeIvaValue == '') {
+                  errorPorcentajeIva.style.display = 'block'
+                } else {
+                  errorPorcentajeIva.style.display = 'none'
+                }
+            })
+        })
+
         // Validación unidad de medida
         var unidadMedidaInputs = document.querySelectorAll('.material-unidad-medida')
         unidadMedidaInputs.forEach(function(input) {
@@ -1447,10 +1474,10 @@
 
             <div style="display: flex; gap: 1rem;">
               <!-- Porcentaje IVA field -->
-              <div style="width: 50%; margin-bottom:1rem;">
+              <div class="porcentaje-iva-container" style="width: 50%; margin-bottom:1rem;">
                 <label for="id_porcentaje_iva">% de IVA:</label>
                 {{ material_formset.empty_form.porcentaje_iva }}
-                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                <p id="error-porcentaje-iva" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
 
               <!-- Alias field -->
@@ -1545,8 +1572,8 @@
         var umCalibre
         var material
         var color
+        var porcentajeIva
         var unidadMedida
-        var codigoSat
 
         if (!editingBand) {
           tipoAlta = document.getElementById(`id_material-${materialCounter}-tipo_alta`)
@@ -1562,8 +1589,8 @@
           umCalibre = document.getElementById(`id_material-${materialCounter}-um_calibre`)
           material = document.getElementById(`id_material-${materialCounter}-material`)
           color = document.getElementById(`id_material-${materialCounter}-color`)
+          porcentajeIva = document.getElementById(`id_material-${materialCounter}-porcentaje_iva`)
           unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`)
-          codigoSat = document.getElementById(`id_material-${materialCounter}-codigo_sat`)
         }
         else {
           tipoAlta = document.getElementById(`id_material-${editingId}-tipo_alta`)
@@ -1579,8 +1606,8 @@
           umCalibre = document.getElementById(`id_material-${editingId}-um_calibre`)
           material = document.getElementById(`id_material-${editingId}-material`)
           color = document.getElementById(`id_material-${editingId}-color`)
+          porcentajeIva = document.getElementById(`id_material-${editingId}-porcentaje_iva`)
           unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`)
-          codigoSat = document.getElementById(`id_material-${editingId}-codigo_sat`)
         }
 
         const errorTipoAlta = tipoAlta.closest('.tipo-alta-container').querySelector('#error-tipo-alta')
@@ -1593,9 +1620,10 @@
         const errorUnidadesMedida = largo.closest('#medidas-container').querySelector('#error-unidades-medida')
         const errorMaterial = material.closest('.material-container').querySelector('#error-material')
         const errorColor = color.closest('.color-container').querySelector('#error-color')
+        const errorPorcentajeIva = porcentajeIva.closest('.porcentaje-iva-container').querySelector('#error-porcentaje-iva')
         const errorUnidadMedida = unidadMedida.closest('.unidad-medida-container').querySelector('#error-unidad-medida')
 
-        if (tipoAlta.value == '' || subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || calibre.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || calibre.value != 'N/A' && umCalibre.value == '' || material.value == '' || color.value == '' || unidadMedida.value == '' || errorTipoAlta.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
+        if (tipoAlta.value == '' || subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || calibre.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || calibre.value != 'N/A' && umCalibre.value == '' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorTipoAlta.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorPorcentajeIva.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
           window.alert('Algún campo está vacío o es incorrecto')
         }
         else {

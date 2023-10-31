@@ -361,13 +361,13 @@
             {% else %}
 
               {% if solicitud.pendiente == True and current_user.compras == True and solicitud.borrador == False %}
-                {{ solicitud_form.rechazado_compras }}
+                <!--{{ solicitud_form.rechazado_compras }}-->
                 <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
                 <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
               {% endif %}
 
               {% if solicitud.finanzas and current_user.sistemas and not solicitud.borrador %}
-                {{ solicitud_form.rechazado_sistemas }}
+                <!--{{ solicitud_form.rechazado_sistemas }}-->
                 <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
                 <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
               {% endif %}
@@ -414,8 +414,8 @@
       const empresa = document.getElementById('id_empresa')
       const justificacion = document.getElementById('id_justificacion')
       const comentarios = document.getElementById('id_comentarios')
-      const rechazado_compras = document.getElementById('id_rechazado_compras')
-      const rechazado_sistemas = document.getElementById('id_rechazado_sistemas')
+      //const rechazado_compras = document.getElementById('id_rechazado_compras')
+      //const rechazado_sistemas = document.getElementById('id_rechazado_sistemas')
       
       // Error messages
       const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
@@ -441,6 +441,7 @@
       // Counters and bands
       let materialCounter = 0
       let medidasIguales = false
+      let materialEliminado = false
 
       // Catalogo de materiales existentes
       var catalogoMaterial = {{ catalogo_material|safe }}
@@ -564,8 +565,10 @@
           }
         }
         if (event.target && event.target.classList.contains('btn-approve')) {
-          comentarios.removeAttribute('required')
-          comentarios.value = ''
+          if (!materialEliminado) {
+            comentarios.removeAttribute('required')
+            comentarios.value = ''
+          }
         }
       });
 
@@ -1400,8 +1403,9 @@
   
           const newRow = bodyMaterials.insertRow()
           newRow.classList.add('table-row')
+
           // Si la bandera "rechazado" del producto es true, se oculta la fila
-          const currentUserId = "{{ current_user.id }}"
+          /*const currentUserId = "{{ current_user.id }}"
           const requestUserId = "{{ solicitud.usuario.id }}"
           if (currentUserId == requestUserId) {
             if (rechazado.value == 'False') {
@@ -1414,7 +1418,12 @@
               newRow.classList.add('table-row-hidden')
               materialCounter--
             }
+          }*/
+          if (rechazado.value == 'true') {
+            newRow.classList.add('table-row-hidden')
+            materialCounter--
           }
+
           newRow.id = `table-row-${index}`
           newRow.innerHTML = `
           <td>${tipoAlta.value}</td>
@@ -1496,7 +1505,10 @@
               //form.rechazado = true
               const rechazado = form.querySelector('.material-rechazado')
               rechazado.value = true
-              comentarios.setAttribute('required', true)
+              if (comentarios) {
+                comentarios.setAttribute('required', 'true')
+                materialEliminado = true
+              }
 
               // Recorre todos los formularios restantes y actualiza sus índices
               /*const forms = materialFormsContainer.querySelectorAll('.material-form');
@@ -1512,12 +1524,12 @@
               })*/
 
               // Las banderas de tipo "rechazado" serán true
-              if (rechazado_compras) {
+              /*if (rechazado_compras) {
                 rechazado_compras.value = true
               }
               if (rechazado_sistemas) {
                 rechazado_sistemas.value = true
-              }
+              }*/
             }
 
             fillTable()

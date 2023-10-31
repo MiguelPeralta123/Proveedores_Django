@@ -161,7 +161,6 @@ def material_create(request):
                         if solicitud.es_migracion == False:
                             if material_formset.is_valid():
                                 for material_form in material_formset:
-
                                     if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('largo') or not material_form.cleaned_data.get('ancho') or not material_form.cleaned_data.get('alto') or not material_form.cleaned_data.get('calibre') or not material_form.cleaned_data.get('unidad_medida'):
                                         continue  # Saltar formularios con campos requeridos vacíos
                                     material = material_form.save(commit=False)
@@ -290,15 +289,13 @@ def material_detail(request, material_id):
                 historial_form = HistorialForm(request.POST)
 
                 if solicitud_form.is_valid() and historial_form.is_valid():
+                    solicitudComentarios = solicitud.comentarios
+                    solicitud.comentarios = ''
                     solicitud_form.save()
 
                     if solicitud.es_migracion == False:
                         if all(form.is_valid() for form in material_forms):
                             for form in material_forms:
-                                #TODO
-                                # Revisar los materiales uno por uno, y si alguno se encuentra marcado como "rechazado", se deberá crear un nuevo registro en material_solicitud y asociar ese material a dicho registro.
-                                # Lo que puedo hacer es modificar el valor id_solicitud de ese registro y asignarle un valor distino, luego crear un nuevo registro en material_solicitud con ese mismo valor en id_solicitud. Su estatus será rechazado_compras o rechazado_sistemas dependiendo de en que punto fue eliminado.
-                                # En la nueva solicitud, el valor de "rechazado" será false, y en la solicitud anterior serguirá siendo false. La idea es que al renderizar los materiales en material_detail
                                 form.save()
                     
                     # Guardar la modificación de la solicitud en el historial de cambios
@@ -315,6 +312,67 @@ def material_detail(request, material_id):
                         action = 'abrobado'
                     historial.usuario = request.user
                     historial.save()
+
+                    # Recorremos los materiales para filtrar los rechazados
+                    material_rechazado_forms = []
+                    id_solicitud = generar_codigo_unico()
+                    for material in materiales:
+                        # Verifica si el material está marcado como rechazado
+                        if material.rechazado:
+                            # Al crear una nueva solicitud, ningún material estará rechazado
+                            material.rechazado = False
+                            material.id_solicitud = id_solicitud
+                            material.save()
+                            material_form = MaterialForm(
+                                request.POST, instance=material, prefix=f'material-{material.id}'
+                            )
+                            material_rechazado_forms.append(material_form)
+                    
+                    # Si alguno de los productos fue rechazado, crear una nueva solicitud y asociarlo a ella
+                    if len(material_rechazado_forms) > 0:
+                        solicitud_new_form = SolicitudForm(request.POST)
+                        material_formset = material_rechazado_forms
+                        historial_form = HistorialForm(request.POST)
+
+                        if solicitud_new_form.is_valid() and historial_form.is_valid():
+                            new_solicitud = solicitud_new_form.save(commit=False)
+                            new_solicitud.id_solicitud = id_solicitud
+                            new_solicitud.usuario = solicitud.usuario
+                            new_solicitud.comentarios = solicitudComentarios
+                            if new_solicitud.finanzas == True:
+                                new_solicitud.finanzas = False
+                                new_solicitud.rechazado_compras = True
+                            if new_solicitud.aprobadas == True:
+                                new_solicitud.aprobadas = False
+                                new_solicitud.rechazado_sistemas = True
+                            new_solicitud.save()
+
+                            if new_solicitud.es_migracion == False:
+                                for material_form in material_formset:
+                                    material = material_form.save(commit=False)
+                                    material.id_solicitud = id_solicitud
+                                    material.save()
+                            
+                            # Guardar la creación de la solicitud en el historial de cambios
+                            historial = historial_form.save(commit=False)
+                            historial.id_solicitud = new_solicitud.id
+                            historial.accion = 'creada'
+                            historial.usuario = new_solicitud.usuario
+                            historial.save()
+                            
+                            # Guardar la modificación de la solicitud en el historial de cambios
+                            #historial2 = historial_form.save(commit=False)
+                            #historial2.id_solicitud = new_solicitud.id
+                            #historial2.accion = 'rechazada'
+                            #historial2.usuario = request.user
+                            #historial2.save()
+
+                            # Enviar correo electrónico para materiales rechazados
+                            #subject = 'Solicitud de material modificada'
+                            #message = str(request.user.get_full_name()) + ' ha rechazado un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
+                            #from_email = 'altaproveedoresricofarms@gmail.com'
+                            #recipient_list = [solicitud.usuario.email]
+                            #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     # Enviar correo electrónico
                     #subject = 'Solicitud de material modificada'
