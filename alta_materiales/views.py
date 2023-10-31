@@ -289,8 +289,6 @@ def material_detail(request, material_id):
                 historial_form = HistorialForm(request.POST)
 
                 if solicitud_form.is_valid() and historial_form.is_valid():
-                    solicitudComentarios = solicitud.comentarios
-                    solicitud.comentarios = ''
                     solicitud_form.save()
 
                     if solicitud.es_migracion == False:
@@ -328,17 +326,26 @@ def material_detail(request, material_id):
                             )
                             material_rechazado_forms.append(material_form)
                     
-                    # Si alguno de los productos fue rechazado, crear una nueva solicitud y asociarlo a ella
+                    # Los productos rechazados se agruparán en una nueva solicitud
                     if len(material_rechazado_forms) > 0:
                         solicitud_new_form = SolicitudForm(request.POST)
                         material_formset = material_rechazado_forms
                         historial_form = HistorialForm(request.POST)
+                        historial_form_2 = HistorialForm(request.POST)
 
                         if solicitud_new_form.is_valid() and historial_form.is_valid():
                             new_solicitud = solicitud_new_form.save(commit=False)
                             new_solicitud.id_solicitud = id_solicitud
                             new_solicitud.usuario = solicitud.usuario
-                            new_solicitud.comentarios = solicitudComentarios
+
+                            # Copiar el comentario en la nueva solicitud
+                            new_solicitud.comentarios = solicitud.comentarios
+
+                            # Eliminar el comentario de la solicitud aprobada
+                            solicitud.comentarios = ''
+                            solicitud_form.save()
+
+                            # Cambiar el estatus de la nueva solicitud a rechazado
                             if new_solicitud.finanzas == True:
                                 new_solicitud.finanzas = False
                                 new_solicitud.rechazado_compras = True
@@ -361,11 +368,11 @@ def material_detail(request, material_id):
                             historial.save()
                             
                             # Guardar la modificación de la solicitud en el historial de cambios
-                            #historial2 = historial_form.save(commit=False)
-                            #historial2.id_solicitud = new_solicitud.id
-                            #historial2.accion = 'rechazada'
-                            #historial2.usuario = request.user
-                            #historial2.save()
+                            historial2 = historial_form_2.save(commit=False)
+                            historial2.id_solicitud = new_solicitud.id
+                            historial2.accion = 'rechazada'
+                            historial2.usuario = request.user
+                            historial2.save()
 
                             # Enviar correo electrónico para materiales rechazados
                             #subject = 'Solicitud de material modificada'
