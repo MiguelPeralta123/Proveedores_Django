@@ -5,38 +5,38 @@
   <main class="p-5 row justify-content-center">
     <section class="card card-body" style="max-width: 70rem; margin-top: 6rem; background-color: rgb(255, 255, 255, 0.8);">
       {% if user.puede_crear_proveedor %}
-        <h1 class="text-center display-5 py-3">Alta de solicitudes de proveedores, clientes y materiales</h1>
+        <h1 class="text-center display-5 py-4">Solicitudes de proveedores, clientes y materiales</h1>
       {% else %}
-        <h1 class="text-center display-5 py-3">Alta de solicitudes de materiales</h1>
+        <h1 class="text-center display-5 py-4">Solicitudes de materiales</h1>
       {% endif %}
 
       {% if user.puede_crear_proveedor %}
-        <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 55rem;">
-          <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para crear una solicitud de alta de proveedor</p>
+        <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 45rem;">
+          <p class="ms-3 my-auto fw-bold">Crear una solicitud de alta de proveedor</p>
           <a class="btn" href="proveedores/crear" style="width: 10rem; margin-right: 1rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Crear proveedor</a>
         </div>
       {% endif %}
 
       {% if user.puede_crear_material %}
-        <div class="d-flex align-items-center justify-content-between gap-4 mb-2" style="max-width: 55rem;">
-          <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para crear una solicitud de alta de material</p>
+        <div class="d-flex align-items-center justify-content-between gap-4 mb-2" style="max-width: 45rem;">
+          <p class="ms-3 my-auto fw-bold">Crear una solicitud de alta de material</p>
           <a class="btn" href="materiales/crear" style="width: 10rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Crear material</a>
         </div>
       {% endif %}
       
       {% if user.puede_crear_proveedor or user.puede_crear_material %}
-        <hr style="max-width: 53rem; margin-left: 1rem; margin-right: 1rem;" />
+        <hr style="max-width: 43rem; margin-left: 1rem; margin-right: 1rem;" />
       {% endif %}
 
       {% if user.puede_crear_proveedor or user.compras or user.finanzas or user.sistemas %}
         {% if user.compras or user.finanzas or user.sistemas %}
-          <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 55rem;">
-            <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para aprobar solicitudes de alta de proveedor</p>
+          <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 45rem;">
+            <p class="ms-3 my-auto fw-bold">Aprobar solicitudes de alta de proveedor</p>
             <a class="btn" href="proveedores" style="width: 10rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
           </div>
         {% else %}
-          <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 55rem;">
-            <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para ver el estatus de sus solicitudes de proveedor</p>
+          <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 45rem;">
+            <p class="ms-3 my-auto fw-bold">Ver el estatus de sus solicitudes de proveedor</p>
             <a class="btn" href="proveedores" style="width: 10rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
           </div>
         {% endif %}
@@ -44,13 +44,13 @@
 
       {% if user.puede_crear_material or user.compras or user.sistemas %}
         {% if user.compras or user.sistemas %}
-          <div class="d-flex align-items-center justify-content-between gap-4 mb-2" style="max-width: 55rem;">
-            <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para aprobar solicitudes de alta de material</p>
+          <div class="d-flex align-items-center justify-content-between gap-4 mb-2" style="max-width: 45rem;">
+            <p class="ms-3 my-auto fw-bold">Aprobar solicitudes de alta de material</p>
             <a class="btn" href="materiales" style="width: 10rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
           </div>
         {% else %}
-          <div class="d-flex align-items-center justify-content-between gap-4 mb-2" style="max-width: 55rem;">
-            <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para ver el estatus de sus solicitudes de material</p>
+          <div class="d-flex align-items-center justify-content-between gap-4 mb-2" style="max-width: 45rem;">
+            <p class="ms-3 my-auto fw-bold">Ver el estatus de sus solicitudes de material</p>
             <a class="btn" href="materiales" style="width: 10rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
           </div>
         {% endif %}

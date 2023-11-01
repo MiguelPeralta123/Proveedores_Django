@@ -131,14 +131,29 @@
                     <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un producto con ese nombre</p>
                   </div>
                   
-                  <!-- Foto producto field -->
-                  <div class="foto-producto-container" style="margin-bottom:1rem;">
-                    <!-- Foto del producto -->
-                    <img id="id_foto_producto_img" class="w-50 mb-3 rounded" src="" alt="Foto del producto" style="display: none;" />
+                  <!-- Documentos -->
+                  <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
 
-                    <label for="id_foto_producto" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo se aceptan imágenes)</span></span></label>
-                    {{ material_form.foto_producto }}
-                    <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                    <!-- Foto producto field -->
+                    <div class="foto-producto-container" style="width: 50%;">
+                      <!-- Preview de la foto del producto -->
+                      <img id="id_foto_producto_img" class="w-auto mb-2 rounded" src="" alt="Foto del producto" style="max-width: 100%; max-height: 10rem; display: none;" />
+
+                      <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo se aceptan imágenes)</span></span></label>
+                      {{ material_form.foto_producto }}
+                      <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                    </div>
+  
+                    <!-- Ficha técnica field -->
+                    <div class="ficha-tecnica-container" style="width: 50%;">
+                      <!-- Preview de la ficha técnica -->
+                      <img id="id_ficha_tecnica_img" class="w-auto mb-2 rounded" src="" alt="Ficha técnica" style="max-width: 100%; max-height: 10rem; display: none;" />
+
+                      <label for="id_ficha_tecnica" class="mb-2" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
+                      {{ material_form.ficha_tecnica }}
+                      <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                    </div>
+
                   </div>
 
                   <div id="medidas-container">
@@ -314,14 +329,6 @@
                     </div>
                   </div>
 
-                  <!-- Documentos -->
-                  <!-- Ficha técnica field -->
-                  <div style="margin-bottom:2rem;">
-                    <label for="id_ficha_tecnica" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
-                    {{ material_form.ficha_tecnica }}
-                    <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                  </div>
-
                 </div>
               {% endfor %}
             </div>
@@ -352,6 +359,10 @@
       #btn-back:hover {
           scale: 1.05;
           background-color: rgb(0, 128, 0);
+      }
+      .material-foto-producto,
+      .material-ficha-tecnica {
+        width: 100%;
       }
   </style>
 
@@ -670,15 +681,46 @@
                 const fotoProductoContainer = input.closest('.foto-producto-container')
                 const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
                 if (input.files && input.files[0]) {
-                  var reader = new FileReader()
-                  reader.onload = function(e) {
-                      imagePreview.src = e.target.result;
-                  };
-                  reader.readAsDataURL(input.files[0]);
+                    var reader = new FileReader()
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                    imagePreview.style.display = 'block'
                 }
-                imagePreview.style.display = 'block'
+                else {
+                    imagePreview.src = ''
+                    imagePreview.style.display = 'none'
+                }
             }
             input.addEventListener('change', validateFotoProducto)
+        })
+
+        // Validación ficha técnica
+        var fichaTecnicaInputs = document.querySelectorAll('.material-ficha-tecnica')
+        fichaTecnicaInputs.forEach(input => {
+            const validateFichaTecnica = () => {
+                const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
+                const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
+                if (input.files && input.files[0]) {
+                  if (input.files[0].type.startsWith('image/')) {
+                      var reader = new FileReader()
+                      reader.onload = function(e) {
+                          imagePreview.src = e.target.result
+                      }
+                      reader.readAsDataURL(input.files[0])
+                  }
+                  else {
+                      imagePreview.src = '../../../static/images/pdf-default.png'
+                  }
+                  imagePreview.style.display = 'block'
+                }
+                else {
+                    imagePreview.src = ''
+                    imagePreview.style.display = 'none'
+                }
+            }
+            input.addEventListener('change', validateFichaTecnica)
         })
 
         // Validación largo
@@ -1141,6 +1183,10 @@
           const tipoAlta = form.querySelector('.material-tipo-alta')
           const subfamilia = form.querySelector('.material-subfamilia')
           const nombre = form.querySelector('.material-nombre')
+          const fotoProductoInput = form.querySelector('.material-foto-producto')
+          const fotoProductoImg = form.querySelector('#id_foto_producto_img')
+          const fichaTecnicaInput = form.querySelector('.material-ficha-tecnica')
+          const fichaTecnicaImg = form.querySelector('#id_ficha_tecnica_img')
           const largo = form.querySelector('.material-largo')
           const ancho = form.querySelector('.material-ancho')
           const alto = form.querySelector('.material-alto')
@@ -1164,11 +1210,16 @@
           const esMaterialEmpaque = form.querySelector('.material-es-material-empaque')
           const esProdTerminado = form.querySelector('.material-es-prod-terminado')
           const addMaterial = document.querySelector('#add-material')
+          
           tipoAlta.setAttribute('disabled', true)
           subfamilia.setAttribute('disabled', true)
           if (!input.classList.contains('material-nombre')) {
             nombre.setAttribute('disabled', true)
           }
+          fotoProductoInput.setAttribute('disabled', true)
+          fotoProductoImg.style.opacity = 0.5
+          fichaTecnicaInput.setAttribute('disabled', true)
+          fichaTecnicaImg.style.opacity = 0.5
           if (!input.classList.contains('material-largo')) {
             largo.setAttribute('disabled', true)
           }
@@ -1211,6 +1262,10 @@
           const tipoAlta = form.querySelector('.material-tipo-alta')
           const subfamilia = form.querySelector('.material-subfamilia')
           const nombre = form.querySelector('.material-nombre')
+          const fotoProductoInput = form.querySelector('.material-foto-producto')
+          const fotoProductoImg = form.querySelector('#id_foto_producto_img')
+          const fichaTecnicaInput = form.querySelector('.material-ficha-tecnica')
+          const fichaTecnicaImg = form.querySelector('#id_ficha_tecnica_img')
           const largo = form.querySelector('.material-largo')
           const ancho = form.querySelector('.material-ancho')
           const alto = form.querySelector('.material-alto')
@@ -1234,9 +1289,14 @@
           const esMaterialEmpaque = form.querySelector('.material-es-material-empaque')
           const esProdTerminado = form.querySelector('.material-es-prod-terminado')
           const addMaterial = document.querySelector('#add-material')
+
           tipoAlta.removeAttribute('disabled')
           subfamilia.removeAttribute('disabled')
           nombre.removeAttribute('disabled')
+          fotoProductoInput.removeAttribute('disabled')
+          fotoProductoImg.style.opacity = 1
+          fichaTecnicaInput.removeAttribute('disabled')
+          fichaTecnicaImg.style.opacity = 1
           largo.removeAttribute('disabled')
           ancho.removeAttribute('disabled')
           alto.removeAttribute('disabled')
@@ -1378,14 +1438,29 @@
               <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un producto con ese nombre</p>
             </div>
 
-            <!-- Foto producto field -->
-            <div class="foto-producto-container" style="margin-bottom:1rem;">
-              <!-- Foto del producto -->
-              <img id="id_foto_producto_img" class="w-50 mb-3 rounded" src="" alt="Foto del producto" style="display: none;" />
+            <!-- Documentos -->
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
 
-              <label for="id_foto_producto" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo se aceptan imágenes)</span></span></label>
-              {{ material_formset.empty_form.foto_producto }}
-              <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              <!-- Foto producto field -->
+              <div class="foto-producto-container" style="width: 50%;">
+                <!-- Preview de la foto del producto -->
+                <img id="id_foto_producto_img" class="w-auto mb-2 rounded" src="" alt="Foto del producto" style="max-width: 100%; max-height: 10rem; display: none;" />
+
+                <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo se aceptan imágenes)</span></span></label>
+                {{ material_formset.empty_form.foto_producto }}
+                <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
+
+              <!-- Ficha técnica field -->
+              <div class="ficha-tecnica-container" style="width: 50%;">
+                <!-- Preview de la ficha técnica -->
+                <img id="id_ficha_tecnica_img" class="w-auto mb-2 rounded" src="" alt="Ficha técnica" style="max-width: 100%; max-height: 10rem; display: none;" />
+
+                <label for="id_ficha_tecnica" class="mb-2" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
+                {{ material_formset.empty_form.ficha_tecnica }}
+                <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
+
             </div>
 
             <div id="medidas-container">
@@ -1559,14 +1634,6 @@
                 {{ material_formset.empty_form.es_prod_terminado }}
                 <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
               </div>
-            </div>
-
-            <!-- Documentos -->
-            <!-- Ficha técnica field -->
-            <div style="margin-bottom:2rem;">
-              <label for="id_ficha_tecnica" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
-              {{ material_formset.empty_form.ficha_tecnica }}
-              <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
           `;
         const form = document.createElement('div');

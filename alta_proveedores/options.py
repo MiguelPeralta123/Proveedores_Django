@@ -204,8 +204,9 @@ RETENCION_IVA_LIST = [
 
 RETENCION_ISR_LIST = [
     ('', 'Seleccione una opción'),
-    ('No', 'No'),
-    ('Si', 'Si'),
+    ('No aplica', 'No aplica'),
+    ('1.25%', '1.25%'),
+    ('10%', '10%'),
 ]
 
 IVA_FRONTERA_LIST = [
