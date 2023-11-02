@@ -55,7 +55,7 @@ class Material(models.Model):
     nombre_comun = models.CharField(max_length=50, blank=True)
     es_mezcla = models.BooleanField(default=False)
     ing_activo = models.CharField(max_length=50, blank=True)
-    porcentaje_iva = models.CharField(max_length=50, blank=True)
+    porcentaje_iva = models.CharField(max_length=10, blank=True)
     alias = models.CharField(max_length=50, blank=True)
     unidad_medida = models.CharField(max_length=50, blank=True)
     codigo_sat = models.CharField(max_length=50, blank=True)

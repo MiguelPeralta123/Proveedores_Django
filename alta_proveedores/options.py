@@ -2,14 +2,14 @@ import os
 import csv
 
 EMPRESA_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('Sonorg - Tago - Wichita', 'Sonorg - Tago - Wichita'),
     ('Moonrise - Wellin', 'Moonrise - Wellin'),
     ('Sonorg - Tago - Wichita - Moonrise - Wellin', 'Sonorg - Tago - Wichita - Moonrise - Wellin'),
 ]
 
 EMPRESA_MIGRACION_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('Sonorg', 'Sonorg'),
     ('Tago', 'Tago'),
     ('Wichita', 'Wichita'),
@@ -18,13 +18,13 @@ EMPRESA_MIGRACION_LIST = [
 ]
 
 TIPO_ALTA_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('Proveedor', 'Proveedor'),
     ('Cliente', 'Cliente'),
 ]
 
 CONTRIBUYENTE_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('Persona física', 'Persona física'),
     ('Persona moral', 'Persona moral'),
 ]
@@ -36,7 +36,7 @@ with open(csv_path_regimen_capital, 'r') as csv_file:
     
     # Inicializa la lista que contendrá las tuplas
     REGIMEN_CAPITAL_LIST = [
-        ('', 'Seleccione una opción')
+        ('', ' Seleccione una opción')
     ]
     
     # Itera sobre cada fila del archivo CSV
@@ -54,7 +54,7 @@ with open(csv_path_regimen_capital, 'r') as csv_file:
 REGIMEN_CAPITAL_LIST = sorted(REGIMEN_CAPITAL_LIST, key=lambda item: item[1])
 
 REGIMEN_FISCAL_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('601 - General de Ley Personas Morales', '601 - General de Ley Personas Morales'),
     ('603 - Personas Morales con Fines no Lucrativos', '603 - Personas Morales con Fines no Lucrativos'),
     ('605 - Sueldos y Salarios e Ingresos Asimilados a Salarios', '605 - Sueldos y Salarios e Ingresos Asimilados a Salarios'),
@@ -80,7 +80,7 @@ REGIMEN_FISCAL_LIST = [
 ]
 
 USO_CFDI_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('G01 - Adquisición de Mercancías', 'G01 - Adquisición de Mercancías'),
     ('G02 - Devoluciones', 'G02 - Devoluciones'),
     ('G03 - Gastos en general', 'G03 - Gastos en general'),
@@ -116,7 +116,7 @@ with open(csv_path_rubro, 'r') as csv_file:
     
     # Inicializa la lista que contendrá las tuplas
     RUBRO_LIST = [
-        ('', 'Seleccione una opción')
+        ('', ' Seleccione una opción')
     ]
     
     # Itera sobre cada fila del archivo CSV
@@ -134,7 +134,7 @@ with open(csv_path_rubro, 'r') as csv_file:
 RUBRO_LIST = sorted(RUBRO_LIST, key=lambda item: item[1])
 
 #RUBRO_LIST = [
-#    ('', 'Seleccione una opción'),
+#    ('', ' Seleccione una opción'),
 #    ('Aduanas', 'Aduanas'),
 #    ('Agronomía', 'Agronomía'),
 #    ('Aseguradoras', 'Aseguradoras'),
@@ -171,13 +171,13 @@ RUBRO_LIST = sorted(RUBRO_LIST, key=lambda item: item[1])
 #RUBRO_LIST = sorted(RUBRO_LIST, key=lambda item: item[1])
 
 TIPO_OPERACION_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('Bienes', 'Bienes'),
     ('Servicios', 'Servicios'),
 ]
 
 TIPO_TERCERO_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('Extranjero', 'Extranjero'),
     ('Extranjero Relacionado', 'Extranjero Relacionado'),
     ('Global', 'Global'),
@@ -186,14 +186,14 @@ TIPO_TERCERO_LIST = [
 ]
 
 AGENTE_ADUANAL_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('Si', 'Si'),
     ('No', 'No'),
 ]
 
 RETENCION_IVA_LIST = [
-    ('', 'Seleccione una opción'),
-    ('0', '0'),
+    ('', ' Seleccione una opción'),
+    ('No aplica', 'No aplica'),
     ('3%', '3%'),
     ('4%', '4%'),
     ('6%', '6%'),
@@ -203,21 +203,21 @@ RETENCION_IVA_LIST = [
 ]
 
 RETENCION_ISR_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('No aplica', 'No aplica'),
     ('1.25%', '1.25%'),
     ('10%', '10%'),
 ]
 
 IVA_FRONTERA_LIST = [
-    ('', 'Seleccione una opción'),
-    ('0', '0'),
+    ('', ' Seleccione una opción'),
+    ('No aplica', 'No aplica'),
     ('8%', '8%'),
     ('16%', '16%'),
 ]
 
 BANCO_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('ABC Capital S.A.', 'ABC Capital S.A.'),
     ('Acciones y Valores Banamex S.A. de C.V.', 'Acciones y Valores Banamex S.A. de C.V.'),
     ('Actinver Casa de Bolsa S.A. de C.V.', 'Actinver Casa de Bolsa S.A. de C.V.'),
@@ -320,7 +320,7 @@ BANCO_LIST = [
 BANCO_LIST = sorted(BANCO_LIST, key=lambda item: item[1])
 
 MONEDA_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('MXP', 'MXP'),
     ('USD', 'USD'),
 ]

@@ -2,18 +2,18 @@ import os
 import csv
 
 DEFAULT_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
 ]
 
 EMPRESA_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('Sonorg - Tago - Wichita', 'Sonorg - Tago - Wichita'),
     ('Moonrise - Wellin', 'Moonrise - Wellin'),
     ('Sonorg - Tago - Wichita - Moonrise - Wellin', 'Sonorg - Tago - Wichita - Moonrise - Wellin'),
 ]
 
 EMPRESA_MIGRACION_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('Sonorg', 'Sonorg'),
     ('Tago', 'Tago'),
     ('Wichita', 'Wichita'),
@@ -22,13 +22,13 @@ EMPRESA_MIGRACION_LIST = [
 ]
 
 TIPO_ALTA_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('Almacén', 'Almacén'),
     ('Servicio', 'Servicio'),
 ]
 
 SUBFAMILIA_LIST = [
-    ('', 'Seleccione una opción'),
+    ('', ' Seleccione una opción'),
     ('0101 - Semilla', '0101 - Semilla'),
     ('0201 - Material cultivo', '0201 - Material cultivo'),
     ('0301 - Orgánicos', '0301 - Orgánicos'),
@@ -118,39 +118,6 @@ SUBFAMILIA_LIST = [
     ('9006 - Proyectos / Construcciones en proceso', '9006 - Proyectos / Construcciones en proceso')
 ]
 
-PORCENTAJE_IVA_LIST = [
-    ('', 'Seleccione una opción'),
-    ('0', '0'),
-    ('8%', '8%'),
-    ('16%', '16%'),
-]
-
-catalogo_unidad_medida_csv_path = os.path.join('csv_files', 'catalogo_unidad_medida.csv')
-with open(catalogo_unidad_medida_csv_path, 'r') as csv_file:
-    # Lee el archivo CSV
-    csv_reader = csv.reader(csv_file)
-    next(csv_reader) # Skipping headers
-    
-    # Inicializa la lista que contendrá las tuplas
-    UNIDAD_MEDIDA_LIST = [
-        ('', 'Seleccione una opción')
-    ]
-    
-    # Itera sobre cada fila del archivo CSV
-    for row in csv_reader:
-        # Extrae la información necesaria de las columnas
-        codigo = row[0]
-        nombre = row[1]
-        
-        # Crea la cadena de texto con el formato deseado
-        formato = f'{codigo} - {nombre}'
-        
-        # Agrega la tupla a la lista
-        UNIDAD_MEDIDA_LIST.append((formato, formato))
-# Ordenar la lista alfabéticamente en función de las etiquetas
-UNIDAD_MEDIDA_LIST = sorted(UNIDAD_MEDIDA_LIST, key=lambda item: item[1])
-
-
 medida_um_csv_path = os.path.join('csv_files', 'medida_um.csv')
 with open(medida_um_csv_path, 'r') as csv_file:
     # Lee el archivo CSV
@@ -159,7 +126,7 @@ with open(medida_um_csv_path, 'r') as csv_file:
     
     # Inicializa la lista que contendrá las tuplas
     MEDIDA_UM_LIST = [
-        ('', 'Seleccione una opción')
+        ('', ' Seleccione una opción')
     ]
     
     # Itera sobre cada fila del archivo CSV
@@ -175,3 +142,35 @@ with open(medida_um_csv_path, 'r') as csv_file:
         MEDIDA_UM_LIST.append((formato, formato))
 # Ordenar la lista alfabéticamente en función de las etiquetas
 MEDIDA_UM_LIST = sorted(MEDIDA_UM_LIST, key=lambda item: item[1])
+
+PORCENTAJE_IVA_LIST = [
+    ('', ' Seleccione una opción'),
+    ('No aplica', 'No aplica'),
+    ('8%', '8%'),
+    ('16%', '16%'),
+]
+
+catalogo_unidad_medida_csv_path = os.path.join('csv_files', 'catalogo_unidad_medida.csv')
+with open(catalogo_unidad_medida_csv_path, 'r') as csv_file:
+    # Lee el archivo CSV
+    csv_reader = csv.reader(csv_file)
+    next(csv_reader) # Skipping headers
+    
+    # Inicializa la lista que contendrá las tuplas
+    UNIDAD_MEDIDA_LIST = [
+        ('', ' Seleccione una opción')
+    ]
+    
+    # Itera sobre cada fila del archivo CSV
+    for row in csv_reader:
+        # Extrae la información necesaria de las columnas
+        codigo = row[0]
+        nombre = row[1]
+        
+        # Crea la cadena de texto con el formato deseado
+        formato = f'{codigo} - {nombre}'
+        
+        # Agrega la tupla a la lista
+        UNIDAD_MEDIDA_LIST.append((formato, formato))
+# Ordenar la lista alfabéticamente en función de las etiquetas
+UNIDAD_MEDIDA_LIST = sorted(UNIDAD_MEDIDA_LIST, key=lambda item: item[1])
