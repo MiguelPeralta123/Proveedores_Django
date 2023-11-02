@@ -1179,6 +1179,7 @@
         })
 
         const disableAllFields = input => {
+          const tableButtons = tableMaterials.querySelectorAll('a, button')
           const form = input.closest('.material-form')
           const tipoAlta = form.querySelector('.material-tipo-alta')
           const subfamilia = form.querySelector('.material-subfamilia')
@@ -1211,6 +1212,9 @@
           const esProdTerminado = form.querySelector('.material-es-prod-terminado')
           const addMaterial = document.querySelector('#add-material')
           
+          tableButtons.forEach(button => {
+            button.setAttribute('disabled', true)
+          })
           tipoAlta.setAttribute('disabled', true)
           subfamilia.setAttribute('disabled', true)
           if (!input.classList.contains('material-nombre')) {
@@ -1258,6 +1262,7 @@
         }
 
         const enableAllFields = input => {
+          const tableButtons = tableMaterials.querySelectorAll('a, button')
           const form = input.closest('.material-form')
           const tipoAlta = form.querySelector('.material-tipo-alta')
           const subfamilia = form.querySelector('.material-subfamilia')
@@ -1290,6 +1295,9 @@
           const esProdTerminado = form.querySelector('.material-es-prod-terminado')
           const addMaterial = document.querySelector('#add-material')
 
+          tableButtons.forEach(button => {
+            button.removeAttribute('disabled')
+          })
           tipoAlta.removeAttribute('disabled')
           subfamilia.removeAttribute('disabled')
           nombre.removeAttribute('disabled')

@@ -7,7 +7,9 @@
             <div>
                 <form method="POST">
                     <h1>Inicio de sesión</h1>
+
                     <p style="margin: 0; color: red;">{{error}}</p>
+                    
                     {% csrf_token %}
 
                     <!-- Username field -->
