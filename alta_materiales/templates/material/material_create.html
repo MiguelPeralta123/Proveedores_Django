@@ -139,7 +139,7 @@
                       <!-- Preview de la foto del producto -->
                       <img id="id_foto_producto_img" class="w-auto mb-2 rounded" src="" alt="Foto del producto" style="max-width: 100%; max-height: 10rem; display: none;" />
 
-                      <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo se aceptan imágenes)</span></span></label>
+                      <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
                       {{ material_form.foto_producto }}
                       <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                     </div>
@@ -445,6 +445,16 @@
       })
       
       handleEsMigracion(esMigracion.checked)
+
+      // FIELD VALIDATION
+
+      const firstLetterCapitalized = str => {
+        return str[0].toUpperCase() + str.slice(1).toLowerCase()
+      }
+
+      const firstLetterOfEachWordCapitalized = str => {
+        return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+      }
     
       // Validación empresa origen
       const validateEmpresaOrigen = () => {
@@ -492,6 +502,9 @@
         else {
           errorNombreProductoMigracion.style.display = 'none'
         }
+
+        // Solo la primera letra será mayúscula
+        nombreProductoMigracion.value = nombreProductoMigracion.value != '' ? firstLetterCapitalized(nombreProductoMigracion.value) : ''
 
         // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
         datalist.innerHTML = ''
@@ -553,6 +566,10 @@
         } else {
           errorJustificacion.style.display = 'none'
         }
+
+        // Solo la primera letra será mayúscula
+        justificacion.value = justificacion.value != '' ? firstLetterCapitalized(justificacion.value) : ''
+
         enableSaveButton()
       }
       justificacion.addEventListener('focus', validateJustificacion)
@@ -628,6 +645,8 @@
                 } else {
                   errorNombreProducto.style.display = 'none'
                 }
+                // Solo la primera letra será mayúscula
+                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
             }
             input.addEventListener('focus', validateNombreProducto)
             input.addEventListener('input', () => {
@@ -727,6 +746,7 @@
         var largoInputs = document.querySelectorAll('.material-largo')
         largoInputs.forEach(input => {
             input.addEventListener('input', () => {
+                input.value = input.value.toUpperCase()
                 var largoValue = input.value
                 var container = input.closest('.largo-container')
                 var errorLargo = container.querySelector('#error-largo')
@@ -780,6 +800,7 @@
         var anchoInputs = document.querySelectorAll('.material-ancho')
         anchoInputs.forEach(function(input) {
             input.addEventListener('input', function() {
+                input.value = input.value.toUpperCase()
                 var anchoValue = input.value
                 var container = input.closest('.ancho-container')
                 var errorAncho = container.querySelector('#error-ancho')
@@ -842,6 +863,7 @@
         var altoInputs = document.querySelectorAll('.material-alto')
         altoInputs.forEach(function(input) {
             input.addEventListener('input', function() {
+                input.value = input.value.toUpperCase()
                 var altoValue = input.value
                 var container = input.closest('.alto-container')
                 var errorAlto = container.querySelector('#error-alto')
@@ -904,6 +926,7 @@
         var calibreInputs = document.querySelectorAll('.material-calibre')
         calibreInputs.forEach(function(input) {
             input.addEventListener('input', function() {
+                input.value = input.value.toUpperCase()
                 var calibreValue = input.value
                 var container = input.closest('.calibre-container')
                 var errorCalibre = container.querySelector('#error-calibre')
@@ -1098,6 +1121,8 @@
               errorMaterial.style.display = 'none'
               enableAllFields(input)
           }
+          // Solo la primera letra será mayúscula
+          input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
         }
         var materialInputs = document.querySelectorAll('.material-material')
         materialInputs.forEach(input => {
@@ -1117,11 +1142,43 @@
               errorColor.style.display = 'none'
               enableAllFields(input)
           }
+          // Solo la primera letra será mayúscula
+          input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
         }
         var colorInputs = document.querySelectorAll('.material-color')
         colorInputs.forEach(input => {
             input.addEventListener('focus', () => validateColor(input))
             input.addEventListener('input', () => validateColor(input))
+        })
+
+        // Validación marca
+        const validateMarca = input => {
+          // Solo la primera letra será mayúscula
+          input.value = input.value != '' ? firstLetterOfEachWordCapitalized(input.value) : ''
+        }
+        var marcaInputs = document.querySelectorAll('.material-marca')
+        marcaInputs.forEach(input => {
+            input.addEventListener('input', () => validateMarca(input))
+        })
+
+        // Validación nombre común
+        const validateNombreComun = input => {
+          // Solo la primera letra será mayúscula
+          input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+        }
+        var nombreComunInputs = document.querySelectorAll('.material-nombre-comun')
+        nombreComunInputs.forEach(input => {
+            input.addEventListener('input', () => validateNombreComun(input))
+        })
+
+        // Validación alias
+        const validateAlias = input => {
+          // Solo la primera letra será mayúscula
+          input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+        }
+        var aliasInputs = document.querySelectorAll('.material-alias')
+        aliasInputs.forEach(input => {
+            input.addEventListener('input', () => validateAlias(input))
         })
 
         // Validación porcentaje de IVA
@@ -1454,7 +1511,7 @@
                 <!-- Preview de la foto del producto -->
                 <img id="id_foto_producto_img" class="w-auto mb-2 rounded" src="" alt="Foto del producto" style="max-width: 100%; max-height: 10rem; display: none;" />
 
-                <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo se aceptan imágenes)</span></span></label>
+                <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
                 {{ material_formset.empty_form.foto_producto }}
                 <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>

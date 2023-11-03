@@ -5,7 +5,7 @@
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
-          <h1 class="mb-4">Detalle del proveedor</h1>
+          <h1 class="mb-4">Detalle del proveedor / cliente</h1>
 
           {{ error }}
 
@@ -984,6 +984,14 @@
 
       // FIELD VALIDATION
 
+      const firstLetterCapitalized = str => {
+        return str[0].toUpperCase() + str.slice(1).toLowerCase()
+      }
+
+      const firstLetterOfEachWordCapitalized = str => {
+        return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+      }
+
       // Validación empresa origen
       if (empresaOrigen) {
         const validateEmpresaOrigen = () => {
@@ -1037,10 +1045,13 @@
             errorRfcMigracion.style.display = 'block'
           }
 
+          // Todas las letras deben ser mayúsculas
+          rfcMigracion.value = rfcMigracion.value.toUpperCase()
+
           // Filtrando las opciones del catálogo que empiecen con el valor de rfc migracion
           datalist.innerHTML = ''
           for (var i = 0; i < catalogoProveedor.length; i++) {
-            if (catalogoProveedor[i].value.toUpperCase().startsWith(rfcMigracion.value.toUpperCase())) {
+            if (catalogoProveedor[i].value.toUpperCase().startsWith(rfcMigracion.value)) {
               const option = document.createElement('option')
               option.value = catalogoProveedor[i].value
               option.innerText = catalogoProveedor[i].text
@@ -1084,15 +1095,18 @@
 
             if (tipoAlta.value == 'Cliente') {
               checkboxContainer.style.display = 'none'
+              idFiscal.setAttribute('placeholder', 'para clientes extranjeros')
             }
             else {
               checkboxContainer.style.display = 'flex'
+              idFiscal.setAttribute('placeholder', 'para proveedores extranjeros')
             }
           }
           enableSaveButton()
         }
         tipoAlta.addEventListener('focus', validateTipoAlta)
         tipoAlta.addEventListener('change', validateTipoAlta)
+        validateTipoAlta()
       }
       
       // Validación contribuyente
@@ -1130,10 +1144,13 @@
             errorRfc.style.display = 'block'
           }
 
+          // Todas las letras deben ser mayúsculas
+          rfc.value = rfc.value.toUpperCase()
+
           // Filtrando las opciones del catálogo que empiecen con el valor de rfc
           datalist.innerHTML = ''
           for (var i = 0; i < catalogoProveedor.length; i++) {
-            if (catalogoProveedor[i].value.toUpperCase().startsWith(rfc.value.toUpperCase())) {
+            if (catalogoProveedor[i].value.toUpperCase().startsWith(rfc.value)) {
               const option = document.createElement('option')
               option.value = catalogoProveedor[i].value
               option.innerText = catalogoProveedor[i].text
@@ -1165,6 +1182,10 @@
             errorCurp.style.display = 'block'
             disableAllFields(curp)
           }
+
+          // Todas las letras deben ser mayúsculas
+          curp.value = curp.value.toUpperCase()
+
           enableSaveButton()
         }
         curp.addEventListener('focus', validateCurp)
@@ -1203,6 +1224,10 @@
               disableAllFields(nombreFiscal)
             }
           }
+
+          // Solo la primera letra será mayúscula
+          nombreFiscal.value = nombreFiscal.value != '' ? firstLetterCapitalized(nombreFiscal.value) : ''
+
           enableSaveButton()
         }
         nombreFiscal.addEventListener('focus', validateNombreFiscal)
@@ -1227,6 +1252,10 @@
               disableAllFields(nombreComercial)
             }
           }
+
+          // Solo la primera letra será mayúscula
+          nombreComercial.value = nombreComercial.value != '' ? firstLetterCapitalized(nombreComercial.value) : ''
+
           enableSaveButton()
         }
         nombreComercial.addEventListener('focus', validateNombreComercial)
@@ -1292,6 +1321,24 @@
         telefono2.addEventListener('focus', validateTelefono2)
         telefono2.addEventListener('input', validateTelefono2)
       }
+
+      // Validación representante legal
+      if (representanteLegal) {
+        const validateRepresentanteLegal = () => {
+          // La primera letra de cada palabra será mayúscula
+          representanteLegal.value = representanteLegal.value != '' ? firstLetterOfEachWordCapitalized(representanteLegal.value) : ''
+        }
+        representanteLegal.addEventListener('input', validateRepresentanteLegal)
+      }
+      
+      // Validación contacto
+      if (contacto) {
+        const validateContacto = () => {
+          // La primera letra de cada palabra será mayúscula
+          contacto.value = contacto.value != '' ? firstLetterOfEachWordCapitalized(contacto.value) : ''
+        }
+        contacto.addEventListener('input', validateContacto)
+      }
       
       // Validación correo general
       if (correoGeneral) {
@@ -1303,6 +1350,10 @@
             errorCorreoGeneral.style.display = 'block'
             disableAllFields(correoGeneral)
           }
+
+          // Todas las letras deben ser minúsculas
+          correoGeneral.value = correoGeneral.value.toLowerCase()
+
           enableSaveButton()
         }
         correoGeneral.addEventListener('focus', validateCorreoGeneral)
@@ -1319,10 +1370,23 @@
             errorCorreoPagos.style.display = 'block'
             disableAllFields(correoPagos)
           }
+
+          // Todas las letras deben ser minúsculas
+          correoPagos.value = correoPagos.value.toLowerCase()
+
           enableSaveButton()
         }
         correoPagos.addEventListener('focus', validateCorreoPagos)
         correoPagos.addEventListener('input', validateCorreoPagos)
+      }
+      
+      // Validación sitio web
+      if (sitioWeb) {
+        const validateSitioWeb = () => {
+          // Todas las letras deben ser minúsculas
+          sitioWeb.value = sitioWeb.value.toLowerCase()
+        }
+        sitioWeb.addEventListener('input', validateSitioWeb)
       }
       
       // Validación rubro
@@ -1486,7 +1550,7 @@
         codigoPostal.addEventListener('input', validateCodigoPostal)
       }
       
-      // Validación pais
+      // Validación país
       if (pais) {
         const validatePais = () => {
           if (pais.value == '') {
@@ -1494,6 +1558,10 @@
           } else {
             errorPais.style.display = 'none'
           }
+        
+          // La primera letra de cada palabra será mayúscula
+          pais.value = pais.value != '' ? firstLetterOfEachWordCapitalized(pais.value) : ''
+
           enableSaveButton()
         }
         pais.addEventListener('focus', validatePais)
@@ -1508,6 +1576,10 @@
           } else {
             errorEstado.style.display = 'none'
           }
+        
+          // La primera letra de cada palabra será mayúscula
+          estado.value = estado.value != '' ? firstLetterOfEachWordCapitalized(estado.value) : ''
+
           enableSaveButton()
         }
         estado.addEventListener('focus', validateEstado)
@@ -1522,6 +1594,10 @@
           } else {
             errorCiudad.style.display = 'none'
           }
+        
+          // La primera letra de cada palabra será mayúscula
+          ciudad.value = ciudad.value != '' ? firstLetterOfEachWordCapitalized(ciudad.value) : ''
+          
           enableSaveButton()
         }
         ciudad.addEventListener('focus', validateCiudad)
@@ -1536,6 +1612,10 @@
           } else {
             errorMunicipio.style.display = 'none'
           }
+        
+          // La primera letra de cada palabra será mayúscula
+          municipio.value = municipio.value != '' ? firstLetterOfEachWordCapitalized(municipio.value) : ''
+
           enableSaveButton()
         }
         municipio.addEventListener('focus', validateMunicipio)
@@ -1550,6 +1630,10 @@
           } else {
             errorLocalidad.style.display = 'none'
           }
+        
+          // La primera letra de cada palabra será mayúscula
+          localidad.value = localidad.value != '' ? firstLetterOfEachWordCapitalized(localidad.value) : ''
+
           enableSaveButton()
         }
         localidad.addEventListener('focus', validateLocalidad)
@@ -1564,6 +1648,10 @@
           } else {
             errorColonia.style.display = 'none'
           }
+        
+          // La primera letra de cada palabra será mayúscula
+          colonia.value = colonia.value != '' ? firstLetterOfEachWordCapitalized(colonia.value) : ''
+
           enableSaveButton()
         }
         colonia.addEventListener('focus', validateColonia)
@@ -1578,6 +1666,10 @@
           } else {
             errorCalle.style.display = 'none'
           }
+        
+          // La primera letra de cada palabra será mayúscula
+          calle.value = calle.value != '' ? firstLetterOfEachWordCapitalized(calle.value) : ''
+
           enableSaveButton()
         }
         calle.addEventListener('focus', validateCalle)

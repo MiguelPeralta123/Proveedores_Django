@@ -5,7 +5,7 @@
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" enctype="multipart/form-data" style="background-color: rgb(255, 255, 255, 0.8);">
-          <h1 class="mb-4">Registrar proveedor</h1>
+          <h1 class="mb-4">Registrar proveedor / cliente</h1>
 
           {{ error }}
 
@@ -13,7 +13,7 @@
 
           <!-- Es migracion field -->
           <div style="margin-bottom:1rem;">
-            <p><b>En caso de que el proveedor ya exista en otra empresa, marque la siguiente casilla:</b></p>
+            <p><b>En caso de que el proveedor / cliente ya exista en otra empresa, marque la siguiente casilla:</b></p>
             <label for="id_es_migracion">Es migración:</label>
             {{ form.es_migracion }}
             <p id="error-es-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
@@ -736,6 +736,16 @@
       })
 
       handleEsMigracion(esMigracion.checked)
+
+      // FIELD VALIDATION
+
+      const firstLetterCapitalized = str => {
+        return str[0].toUpperCase() + str.slice(1).toLowerCase()
+      }
+
+      const firstLetterOfEachWordCapitalized = str => {
+        return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+      }
     
       // Validación empresa origen
       const validateEmpresaOrigen = () => {
@@ -753,12 +763,8 @@
         }
         enableSaveButton()
       }
-      empresaOrigen.addEventListener('focus', () => {
-        validateEmpresaOrigen()
-      })
-      empresaOrigen.addEventListener('change', () => {
-        validateEmpresaOrigen()
-      })
+      empresaOrigen.addEventListener('focus', validateEmpresaOrigen)
+      empresaOrigen.addEventListener('change', validateEmpresaOrigen)
       
       // Validación empresa destino
       const validateEmpresaDestino = () => {
@@ -776,12 +782,8 @@
         }
         enableSaveButton()
       }
-      empresaDestino.addEventListener('focus', () => {
-        validateEmpresaDestino()
-      })
-      empresaDestino.addEventListener('change', () => {
-        validateEmpresaDestino()
-      })
+      empresaDestino.addEventListener('focus', validateEmpresaDestino)
+      empresaDestino.addEventListener('change', validateEmpresaDestino)
       
       // Validación rfc migracion
       const validateRfcMigracion = () => {
@@ -791,10 +793,13 @@
           errorRfcMigracion.style.display = 'block'
         }
 
+        // Todas las letras deben ser mayúsculas
+        rfcMigracion.value = rfcMigracion.value.toUpperCase()
+        
         // Filtrando las opciones del catálogo que empiecen con el valor de rfc migracion
         datalist.innerHTML = ''
         for (var i = 0; i < catalogoProveedor.length; i++) {
-          if (catalogoProveedor[i].value.toUpperCase().startsWith(rfcMigracion.value.toUpperCase())) {
+          if (catalogoProveedor[i].value.toUpperCase().startsWith(rfcMigracion.value)) {
             const option = document.createElement('option')
             option.value = catalogoProveedor[i].value
             option.innerText = catalogoProveedor[i].text
@@ -810,12 +815,8 @@
         }
         enableSaveButton()
       }
-      rfcMigracion.addEventListener('focus', () => {
-        validateRfcMigracion()
-      })
-      rfcMigracion.addEventListener('input', () => {
-        validateRfcMigracion()
-      })
+      rfcMigracion.addEventListener('focus', validateRfcMigracion)
+      rfcMigracion.addEventListener('input', validateRfcMigracion)
       
       // Validación empresa
       const validateEmpresa = () => {
@@ -826,12 +827,8 @@
         }
         enableSaveButton()
       }
-      empresa.addEventListener('focus', () => {
-        validateEmpresa()
-      })
-      empresa.addEventListener('change', () => {
-        validateEmpresa()
-      })
+      empresa.addEventListener('focus', validateEmpresa)
+      empresa.addEventListener('change', validateEmpresa)
       
       // Validación tipo alta
       const validateTipoAlta = () => {
@@ -842,19 +839,17 @@
 
           if (tipoAlta.value == 'Cliente') {
             checkboxContainer.style.display = 'none'
+            idFiscal.setAttribute('placeholder', 'para clientes extranjeros')
           }
           else {
             checkboxContainer.style.display = 'flex'
+            idFiscal.setAttribute('placeholder', 'para proveedores extranjeros')
           }
         }
         enableSaveButton()
       }
-      tipoAlta.addEventListener('focus', () => {
-        validateTipoAlta()
-      })
-      tipoAlta.addEventListener('change', () => {
-        validateTipoAlta()
-      })
+      tipoAlta.addEventListener('focus', validateTipoAlta)
+      tipoAlta.addEventListener('change', validateTipoAlta)
       
       // Validación contribuyente
       const validateContribuyente = () => {
@@ -877,12 +872,8 @@
         }
         enableSaveButton()
       }
-      contribuyente.addEventListener('focus', () => {
-        validateContribuyente()
-      })
-      contribuyente.addEventListener('change', () => {
-        validateContribuyente()
-      })
+      contribuyente.addEventListener('focus', validateContribuyente)
+      contribuyente.addEventListener('change', validateContribuyente)
 
       // Validación rfc
       const validateRfc = () => {
@@ -892,10 +883,13 @@
           errorRfc.style.display = 'block'
         }
 
+        // Todas las letras deben ser mayúsculas
+        rfc.value = rfc.value.toUpperCase()
+
         // Filtrando las opciones del catálogo que empiecen con el valor de rfc
         datalist.innerHTML = ''
         for (var i = 0; i < catalogoProveedor.length; i++) {
-          if (catalogoProveedor[i].value.toUpperCase().startsWith(rfc.value.toUpperCase())) {
+          if (catalogoProveedor[i].value.toUpperCase().startsWith(rfc.value)) {
             const option = document.createElement('option')
             option.value = catalogoProveedor[i].value
             option.innerText = catalogoProveedor[i].text
@@ -913,12 +907,8 @@
         }
         enableSaveButton()
       }
-      rfc.addEventListener('focus', () => {
-        validateRfc()
-      })
-      rfc.addEventListener('input', () => {
-        validateRfc()
-      })
+      rfc.addEventListener('focus', validateRfc)
+      rfc.addEventListener('input', validateRfc)
       
       // Validación curp
       const validateCurp = () => {
@@ -929,14 +919,14 @@
           errorCurp.style.display = 'block'
           disableAllFields(curp)
         }
+
+        // Todas las letras deben ser mayúsculas
+        curp.value = curp.value.toUpperCase()
+
         enableSaveButton()
       }
-      curp.addEventListener('focus', () => {
-        validateCurp()
-      })
-      curp.addEventListener('input', () => {
-        validateCurp()
-      })
+      curp.addEventListener('focus', validateCurp)
+      curp.addEventListener('input', validateCurp)
       
       // Validación nombre fiscal
       const validateNombreFiscal = () => {
@@ -955,14 +945,14 @@
             disableAllFields(nombreFiscal)
           }
         }
+
+        // Solo la primera letra será mayúscula
+        nombreFiscal.value = nombreFiscal.value != '' ? firstLetterCapitalized(nombreFiscal.value) : ''
+
         enableSaveButton()
       }
-      nombreFiscal.addEventListener('focus', () => {
-        validateNombreFiscal()
-      })
-      nombreFiscal.addEventListener('input', () => {
-        validateNombreFiscal()
-      })
+      nombreFiscal.addEventListener('focus', validateNombreFiscal)
+      nombreFiscal.addEventListener('input', validateNombreFiscal)
       
       // Validación regimen de capital
       const validateRegimenCapital = () => {
@@ -973,12 +963,8 @@
         }
         enableSaveButton()
       }
-      regimenCapital.addEventListener('focus', () => {
-        validateRegimenCapital()
-      })
-      regimenCapital.addEventListener('change', () => {
-        validateRegimenCapital()
-      })
+      regimenCapital.addEventListener('focus', validateRegimenCapital)
+      regimenCapital.addEventListener('change', validateRegimenCapital)
       
       // Validación nombre comercial
       const validateNombreComercial = () => {
@@ -997,14 +983,14 @@
             disableAllFields(nombreComercial)
           }
         }
+
+        // Solo la primera letra será mayúscula
+        nombreComercial.value = nombreComercial.value != '' ? firstLetterCapitalized(nombreComercial.value) : ''
+
         enableSaveButton()
       }
-      nombreComercial.addEventListener('focus', () => {
-        validateNombreComercial()
-      })
-      nombreComercial.addEventListener('input', () => {
-        validateNombreComercial()
-      })
+      nombreComercial.addEventListener('focus', validateNombreComercial)
+      nombreComercial.addEventListener('input', validateNombreComercial)
       
       // Validación regimen fiscal
       const validateRegimenFiscal = () => {
@@ -1015,12 +1001,22 @@
         }
         enableSaveButton()
       }
-      regimenFiscal.addEventListener('focus', () => {
-        validateRegimenFiscal()
-      })
-      regimenFiscal.addEventListener('change', () => {
-        validateRegimenFiscal()
-      })
+      regimenFiscal.addEventListener('focus', validateRegimenFiscal)
+      regimenFiscal.addEventListener('change', validateRegimenFiscal)
+      
+      // Validación representante legal
+      const validateRepresentanteLegal = () => {
+        // La primera letra de cada palabra será mayúscula
+        representanteLegal.value = representanteLegal.value != '' ? firstLetterOfEachWordCapitalized(representanteLegal.value) : ''
+      }
+      representanteLegal.addEventListener('input', validateRepresentanteLegal)
+      
+      // Validación contacto
+      const validateContacto = () => {
+        // La primera letra de cada palabra será mayúscula
+        contacto.value = contacto.value != '' ? firstLetterOfEachWordCapitalized(contacto.value) : ''
+      }
+      contacto.addEventListener('input', validateContacto)
       
       // Validación uso cfdi
       const validateUsoCfdi = () => {
@@ -1031,12 +1027,8 @@
         }
         enableSaveButton()
       }
-      usoCfdi.addEventListener('focus', () => {
-        validateUsoCfdi()
-      })
-      usoCfdi.addEventListener('change', () => {
-        validateUsoCfdi()
-      })
+      usoCfdi.addEventListener('focus', validateUsoCfdi)
+      usoCfdi.addEventListener('change', validateUsoCfdi)
       
       // Validación telefono 1
       const validateTelefono1 = () => {
@@ -1049,12 +1041,8 @@
         }
         enableSaveButton()
       }
-      telefono1.addEventListener('focus', () => {
-        validateTelefono1()
-      })
-      telefono1.addEventListener('input', () => {
-        validateTelefono1()
-      })
+      telefono1.addEventListener('focus', validateTelefono1)
+      telefono1.addEventListener('input', validateTelefono1)
       
       // Validación telefono 2
       const validateTelefono2 = () => {
@@ -1067,12 +1055,8 @@
         }
         enableSaveButton()
       }
-      telefono2.addEventListener('focus', () => {
-        validateTelefono2()
-      })
-      telefono2.addEventListener('input', () => {
-        validateTelefono2()
-      })
+      telefono2.addEventListener('focus', validateTelefono2)
+      telefono2.addEventListener('input', validateTelefono2)
       
       // Validación correo general
       const validateCorreoGeneral = () => {
@@ -1083,14 +1067,14 @@
           errorCorreoGeneral.style.display = 'block'
           disableAllFields(correoGeneral)
         }
+
+        // Todas las letras deben ser minúsculas
+        correoGeneral.value = correoGeneral.value.toLowerCase()
+
         enableSaveButton()
       }
-      correoGeneral.addEventListener('focus', () => {
-        validateCorreoGeneral()
-      })
-      correoGeneral.addEventListener('input', () => {
-        validateCorreoGeneral()
-      })
+      correoGeneral.addEventListener('focus', validateCorreoGeneral)
+      correoGeneral.addEventListener('input', validateCorreoGeneral)
       
       // Validación correo pagos
       const validateCorreoPagos = () => {
@@ -1101,14 +1085,21 @@
           errorCorreoPagos.style.display = 'block'
           disableAllFields(correoPagos)
         }
+
+        // Todas las letras deben ser minúsculas
+        correoPagos.value = correoPagos.value.toLowerCase()
+
         enableSaveButton()
       }
-      correoPagos.addEventListener('focus', () => {
-        validateCorreoPagos()
-      })
-      correoPagos.addEventListener('input', () => {
-        validateCorreoPagos()
-      })
+      correoPagos.addEventListener('focus', validateCorreoPagos)
+      correoPagos.addEventListener('input', validateCorreoPagos)
+      
+      // Validación sitio web
+      const validateSitioWeb = () => {
+        // Todas las letras deben ser minúsculas
+        sitioWeb.value = sitioWeb.value.toLowerCase()
+      }
+      sitioWeb.addEventListener('input', validateSitioWeb)
       
       // Validación rubro
       const validateRubro = () => {
@@ -1119,12 +1110,8 @@
         }
         enableSaveButton()
       }
-      rubro.addEventListener('focus', () => {
-        validateRubro()
-      })
-      rubro.addEventListener('change', () => {
-        validateRubro()
-      })
+      rubro.addEventListener('focus', validateRubro)
+      rubro.addEventListener('change', validateRubro)
       
       // Validación tipo operacion
       const validateTipoOperacion = () => {
@@ -1135,12 +1122,8 @@
         }
         enableSaveButton()
       }
-      tipoOperacion.addEventListener('focus', () => {
-        validateTipoOperacion()
-      })
-      tipoOperacion.addEventListener('change', () => {
-        validateTipoOperacion()
-      })
+      tipoOperacion.addEventListener('focus', validateTipoOperacion)
+      tipoOperacion.addEventListener('change', validateTipoOperacion)
       
       // Validación agente aduanal
       const validateAgenteAduanal = () => {
@@ -1151,12 +1134,8 @@
         }
         enableSaveButton()
       }
-      agenteAduanal.addEventListener('focus', () => {
-        validateAgenteAduanal()
-      })
-      agenteAduanal.addEventListener('change', () => {
-        validateAgenteAduanal()
-      })
+      agenteAduanal.addEventListener('focus', validateAgenteAduanal)
+      agenteAduanal.addEventListener('change', validateAgenteAduanal)
 
       const numberWithCommas = (x) => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -1176,12 +1155,8 @@
         }
         enableSaveButton()
       }
-      diasCredito.addEventListener('focus', () => {
-        validateDiasCredito()
-      })
-      diasCredito.addEventListener('input', () => {
-        validateDiasCredito()
-      })
+      diasCredito.addEventListener('focus', validateDiasCredito)
+      diasCredito.addEventListener('input', validateDiasCredito)
       
       // Validación monto credito (moneda nacional)
       const validateMontoCreditoMn = () => {
@@ -1197,12 +1172,8 @@
         }
         enableSaveButton()
       }
-      montoCreditoMn.addEventListener('focus', () => {
-        validateMontoCreditoMn()
-      })
-      montoCreditoMn.addEventListener('input', () => {
-        validateMontoCreditoMn()
-      })
+      montoCreditoMn.addEventListener('focus', validateMontoCreditoMn)
+      montoCreditoMn.addEventListener('input', validateMontoCreditoMn)
 
       // Validación monto credito (moneda extranjera)
       const validateMontoCreditoMe = () => {
@@ -1218,12 +1189,8 @@
         }
         enableSaveButton()
       }
-      montoCreditoMe.addEventListener('focus', () => {
-        validateMontoCreditoMe()
-      })
-      montoCreditoMe.addEventListener('input', () => {
-        validateMontoCreditoMe()
-      })
+      montoCreditoMe.addEventListener('focus', validateMontoCreditoMe)
+      montoCreditoMe.addEventListener('input', validateMontoCreditoMe)
       
       // Validación retencion iva
       const validateRetencionIva = () => {
@@ -1234,12 +1201,8 @@
         }
         enableSaveButton()
       }
-      retencionIva.addEventListener('focus', () => {
-        validateRetencionIva()
-      })
-      retencionIva.addEventListener('change', () => {
-        validateRetencionIva()
-      })
+      retencionIva.addEventListener('focus', validateRetencionIva)
+      retencionIva.addEventListener('change', validateRetencionIva)
       
       // Validación retencion isr
       const validateRetencionIsr = () => {
@@ -1250,12 +1213,8 @@
         }
         enableSaveButton()
       }
-      retencionIsr.addEventListener('focus', () => {
-        validateRetencionIsr()
-      })
-      retencionIsr.addEventListener('change', () => {
-        validateRetencionIsr()
-      })
+      retencionIsr.addEventListener('focus', validateRetencionIsr)
+      retencionIsr.addEventListener('change', validateRetencionIsr)
       
       // Validación iva frontera
       const validateIvaFrontera = () => {
@@ -1266,12 +1225,8 @@
         }
         enableSaveButton()
       }
-      ivaFrontera.addEventListener('focus', () => {
-        validateIvaFrontera()
-      })
-      ivaFrontera.addEventListener('change', () => {
-        validateIvaFrontera()
-      })
+      ivaFrontera.addEventListener('focus', validateIvaFrontera)
+      ivaFrontera.addEventListener('change', validateIvaFrontera)
       
       // Validación codigo postal
       const validateCodigoPostal = () => {
@@ -1284,28 +1239,24 @@
         }
         enableSaveButton()
       }
-      codigoPostal.addEventListener('focus', () => {
-        validateCodigoPostal()
-      })
-      codigoPostal.addEventListener('input', () => {
-        validateCodigoPostal()
-      })
+      codigoPostal.addEventListener('focus', validateCodigoPostal)
+      codigoPostal.addEventListener('input', validateCodigoPostal)
       
-      // Validación pais
+      // Validación país
       const validatePais = () => {
         if (pais.value == '') {
           errorPais.style.display = 'block'
         } else {
           errorPais.style.display = 'none'
         }
+        
+        // La primera letra de cada palabra será mayúscula
+        pais.value = pais.value != '' ? firstLetterOfEachWordCapitalized(pais.value) : ''
+
         enableSaveButton()
       }
-      pais.addEventListener('focus', () => {
-        validatePais()
-      })
-      pais.addEventListener('input', () => {
-        validatePais()
-      })
+      pais.addEventListener('focus', validatePais)
+      pais.addEventListener('input', validatePais)
       
       // Validación estado
       const validateEstado = () => {
@@ -1314,14 +1265,14 @@
         } else {
           errorEstado.style.display = 'none'
         }
+
+        // La primera letra de cada palabra será mayúscula
+        estado.value = estado.value != '' ? firstLetterOfEachWordCapitalized(estado.value) : ''
+
         enableSaveButton()
       }
-      estado.addEventListener('focus', () => {
-        validateEstado()
-      })
-      estado.addEventListener('input', () => {
-        validateEstado()
-      })
+      estado.addEventListener('focus', validateEstado)
+      estado.addEventListener('input', validateEstado)
       
       // Validación ciudad
       const validateCiudad = () => {
@@ -1330,14 +1281,14 @@
         } else {
           errorCiudad.style.display = 'none'
         }
+        
+        // La primera letra de cada palabra será mayúscula
+        ciudad.value = ciudad.value != '' ? firstLetterOfEachWordCapitalized(ciudad.value) : ''
+
         enableSaveButton()
       }
-      ciudad.addEventListener('focus', () => {
-        validateCiudad()
-      })
-      ciudad.addEventListener('input', () => {
-        validateCiudad()
-      })
+      ciudad.addEventListener('focus', validateCiudad)
+      ciudad.addEventListener('input', validateCiudad)
       
       // Validación municipio
       const validateMunicipio = () => {
@@ -1346,14 +1297,14 @@
         } else {
           errorMunicipio.style.display = 'none'
         }
+        
+        // La primera letra de cada palabra será mayúscula
+        municipio.value = municipio.value != '' ? firstLetterOfEachWordCapitalized(municipio.value) : ''
+
         enableSaveButton()
       }
-      municipio.addEventListener('focus', () => {
-        validateMunicipio()
-      })
-      municipio.addEventListener('input', () => {
-        validateMunicipio()
-      })
+      municipio.addEventListener('focus', validateMunicipio)
+      municipio.addEventListener('input', validateMunicipio)
       
       // Validación localidad
       const validateLocalidad = () => {
@@ -1362,14 +1313,14 @@
         } else {
           errorLocalidad.style.display = 'none'
         }
+        
+        // La primera letra de cada palabra será mayúscula
+        localidad.value = localidad.value != '' ? firstLetterOfEachWordCapitalized(localidad.value) : ''
+
         enableSaveButton()
       }
-      localidad.addEventListener('focus', () => {
-        validateLocalidad()
-      })
-      localidad.addEventListener('input', () => {
-        validateLocalidad()
-      })
+      localidad.addEventListener('focus', validateLocalidad)
+      localidad.addEventListener('input', validateLocalidad)
       
       // Validación colonia
       const validateColonia = () => {
@@ -1378,14 +1329,14 @@
         } else {
           errorColonia.style.display = 'none'
         }
+        
+        // La primera letra de cada palabra será mayúscula
+        colonia.value = colonia.value != '' ? firstLetterOfEachWordCapitalized(colonia.value) : ''
+
         enableSaveButton()
       }
-      colonia.addEventListener('focus', () => {
-        validateColonia()
-      })
-      colonia.addEventListener('input', () => {
-        validateColonia()
-      })
+      colonia.addEventListener('focus', validateColonia)
+      colonia.addEventListener('input', validateColonia)
       
       // Validación calle
       const validateCalle = () => {
@@ -1394,14 +1345,14 @@
         } else {
           errorCalle.style.display = 'none'
         }
+        
+        // La primera letra de cada palabra será mayúscula
+        calle.value = calle.value != '' ? firstLetterOfEachWordCapitalized(calle.value) : ''
+
         enableSaveButton()
       }
-      calle.addEventListener('focus', () => {
-        validateCalle()
-      })
-      calle.addEventListener('input', () => {
-        validateCalle()
-      })
+      calle.addEventListener('focus', validateCalle)
+      calle.addEventListener('input', validateCalle)
       
       // Validación numero exterior
       const validateNumeroExterior = () => {
@@ -1412,12 +1363,8 @@
         }
         enableSaveButton()
       }
-      numeroExterior.addEventListener('focus', () => {
-        validateNumeroExterior()
-      })
-      numeroExterior.addEventListener('input', () => {
-        validateNumeroExterior()
-      })
+      numeroExterior.addEventListener('focus', validateNumeroExterior)
+      numeroExterior.addEventListener('input', validateNumeroExterior)
       
       // Validación banco
       const validateBanco = () => {
@@ -1428,12 +1375,8 @@
         }
         enableSaveButton()
       }
-      banco.addEventListener('focus', () => {
-        validateBanco()
-      })
-      banco.addEventListener('change', () => {
-        validateBanco()
-      })
+      banco.addEventListener('focus', validateBanco)
+      banco.addEventListener('change', validateBanco)
       
       // Validación cuenta
       const validateCuenta = () => {
@@ -1444,12 +1387,8 @@
         }
         enableSaveButton()
       }
-      cuenta.addEventListener('focus', () => {
-        validateCuenta()
-      })
-      cuenta.addEventListener('input', () => {
-        validateCuenta()
-      })
+      cuenta.addEventListener('focus', validateCuenta)
+      cuenta.addEventListener('input', validateCuenta)
       
       // Validación moneda
       const validateMoneda = () => {
@@ -1460,12 +1399,8 @@
         }
         enableSaveButton()
       }
-      moneda.addEventListener('focus', () => {
-        validateMoneda()
-      })
-      moneda.addEventListener('change', () => {
-        validateMoneda()
-      })
+      moneda.addEventListener('focus', validateMoneda)
+      moneda.addEventListener('change', validateMoneda)
       
       // Validación clabe
       const validateClabe = () => {
@@ -1476,12 +1411,8 @@
         }
         enableSaveButton()
       }
-      clabe.addEventListener('focus', () => {
-        validateClabe()
-      })
-      clabe.addEventListener('input', () => {
-        validateClabe()
-      })
+      clabe.addEventListener('focus', validateClabe)
+      clabe.addEventListener('input', validateClabe)
 
       // Añadiendo un segundo banco
       btnAddBanco.addEventListener('click', () => {
@@ -1527,12 +1458,8 @@
         }
         enableSaveButton()
       }
-      banco2.addEventListener('focus', () => {
-        validateBanco2()
-      })
-      banco2.addEventListener('change', () => {
-        validateBanco2()
-      })
+      banco2.addEventListener('focus', validateBanco2)
+      banco2.addEventListener('change', validateBanco2)
       
       // Validación cuenta 2
       const validateCuenta2 = () => {
@@ -1543,12 +1470,8 @@
         }
         enableSaveButton()
       }
-      cuenta2.addEventListener('focus', () => {
-        validateCuenta2()
-      })
-      cuenta2.addEventListener('input', () => {
-        validateCuenta2()
-      })
+      cuenta2.addEventListener('focus', validateCuenta2)
+      cuenta2.addEventListener('input', validateCuenta2)
       
       // Validación moneda 2
       const validateMoneda2 = () => {
@@ -1559,12 +1482,8 @@
         }
         enableSaveButton()
       }
-      moneda2.addEventListener('focus', () => {
-        validateMoneda2()
-      })
-      moneda2.addEventListener('change', () => {
-        validateMoneda2()
-      })
+      moneda2.addEventListener('focus', validateMoneda2)
+      moneda2.addEventListener('change', validateMoneda2)
       
       // Validación clabe 2
       const validateClabe2 = () => {
@@ -1575,12 +1494,8 @@
         }
         enableSaveButton()
       }
-      clabe2.addEventListener('focus', () => {
-        validateClabe2()
-      })
-      clabe2.addEventListener('input', () => {
-        validateClabe2()
-      })
+      clabe2.addEventListener('focus', validateClabe2)
+      clabe2.addEventListener('input', validateClabe2)
 
       const disableAllFieldsForMigracion = () => {
         esMigracion.setAttribute('disabled', true)

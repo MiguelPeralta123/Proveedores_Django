@@ -143,7 +143,7 @@
                         <a id="id_foto_producto_download" href="/{{ form.foto_producto.value }}" class="mb-2" style="width:fit-content; display: block;" download="">Descargar foto del producto</a>
                       {% endif %}
 
-                      <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo se aceptan imágenes)</span></span></label>
+                      <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
                       {{ form.foto_producto }}
                       <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                     </div>
@@ -301,7 +301,7 @@
 
                   <div style="display: flex; gap: 1rem;">
                     <!-- Porcentaje IVA field -->
-                    <div style="width: 50%; margin-bottom:1rem;">
+                    <div class="porcentaje-iva-container" style="width: 50%; margin-bottom:1rem;">
                       <label for="id_porcentaje_iva">% de IVA:</label>
                       {{ form.porcentaje_iva }}
                       <p id="error-porcentaje-iva" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
@@ -357,7 +357,11 @@
                   <!-- Esta bandera será false. Si el material se elimina, entonces se marcará como true -->
                   {{ form.rechazado }}
 
-                  <button class="btn btn-secondary mt-3 mb-3 btn-save-changes" type="button" style="background-color: #008841; color: white; font-weight: bold;">Guardar cambios</button>
+                  {% if corrent_user.id == solicitud.usuario.id and solicitud.rechazado_compras or corrent_user.id == solicitud.usuario.id and solicitud.rechazado_sistemas or solicitud.pendiente and current_user.compras or solicitud.compras and current_user.finanzas or solicitud.finanzas and current_user.sistemas %}
+                    <button class="btn btn-secondary mt-3 mb-3 btn-save-changes" type="button" style="width: 10rem; background-color: #008841; color: white; font-weight: bold;">Guardar cambios</button>
+                  {% else %}
+                    <button class="btn btn-secondary mt-3 mb-3 btn-save-changes" type="button" style="width: 10rem; background-color: #008841; color: white; font-weight: bold;">Cerrar</button>
+                  {% endif %}
                 </div>
               {% endfor %}
             </div>
@@ -386,7 +390,7 @@
 
             {% else %}
 
-              {% if solicitud.pendiente == True and current_user.compras == True and solicitud.borrador == False %}
+              {% if solicitud.pendiente and current_user.compras and not solicitud.borrador %}
                 <!--{{ solicitud_form.rechazado_compras }}-->
                 <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
                 <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
@@ -510,6 +514,7 @@
             errorUnidadesMedida = form.querySelector('#error-unidades-medida')
             errorMaterial = form.querySelector('#error-material')
             errorColor = form.querySelector('#error-color')
+            errorPorcentajeIva = form.querySelector('#error-porcentaje-iva')
             errorUnidadMedida = form.querySelector('#error-unidad-medida')
 
             const largo = form.querySelector('.material-largo')
@@ -556,7 +561,7 @@
               umCalibre.value = ''
             }
   
-            if (errorTipoAlta.style.display == 'block' || errorSubfamilia.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorUnidadesMedida.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
+            if (errorTipoAlta.style.display == 'block' || errorSubfamilia.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorUnidadesMedida.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorPorcentajeIva.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
               window.alert('Algún campo está vacío o es incorrecto')
             }
             else {
@@ -616,7 +621,15 @@
         }
       }
 
-      // VALIDACIÓN DE CAMPOS
+      // FIELD VALIDATION
+
+      const firstLetterCapitalized = str => {
+        return str[0].toUpperCase() + str.slice(1).toLowerCase()
+      }
+
+      const firstLetterOfEachWordCapitalized = str => {
+        return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+      }
       
       // Validación empresa origen
       if (empresaOrigen) {
@@ -668,6 +681,9 @@
           } else {
             errorNombreProductoMigracion.style.display = 'block'
           }
+
+          // Solo la primera letra será mayúscula
+          nombreProductoMigracion.value = nombreProductoMigracion.value != '' ? firstLetterCapitalized(nombreProductoMigracion.value) : ''
 
           // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
           datalist.innerHTML = ''
@@ -733,6 +749,10 @@
           } else {
             errorJustificacion.style.display = 'none'
           }
+
+          // Solo la primera letra será mayúscula
+          justificacion.value = justificacion.value != '' ? firstLetterCapitalized(justificacion.value) : ''
+
           enableSaveButton()
         }
         justificacion.addEventListener('focus', validateJustificacion)
@@ -791,6 +811,8 @@
                 } else {
                   errorNombreProducto.style.display = 'none'
                 }
+                // Solo la primera letra será mayúscula
+                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
             }
             input.addEventListener('focus', validateNombreProducto)
             input.addEventListener('input', () => {
@@ -901,6 +923,7 @@
         var largoInputs = document.querySelectorAll('.material-largo')
         largoInputs.forEach(input => {
             const validateLargo = () => {
+                input.value = input.value.toUpperCase()
                 var largoValue = input.value
                 var container = input.closest('.largo-container')
                 var errorLargo = container.querySelector('#error-largo')
@@ -957,6 +980,7 @@
         var anchoInputs = document.querySelectorAll('.material-ancho')
         anchoInputs.forEach(input => {
             const validateAncho = () => {
+                input.value = input.value.toUpperCase()
                 var anchoValue = input.value
                 var container = input.closest('.ancho-container')
                 var errorAncho = container.querySelector('#error-ancho')
@@ -1021,6 +1045,7 @@
         var altoInputs = document.querySelectorAll('.material-alto')
         altoInputs.forEach(input => {
             const validateAlto = () => {
+                input.value = input.value.toUpperCase()
                 var altoValue = input.value
                 var container = input.closest('.alto-container')
                 var errorAlto = container.querySelector('#error-alto')
@@ -1085,6 +1110,7 @@
         var calibreInputs = document.querySelectorAll('.material-calibre')
         calibreInputs.forEach(input => {
             const validateCalibre = () => {
+                input.value = input.value.toUpperCase()
                 var calibreValue = input.value
                 var container = input.closest('.calibre-container')
                 var errorCalibre = container.querySelector('#error-calibre')
@@ -1283,6 +1309,8 @@
                     errorMaterial.style.display = 'none'
                     enableAllFields(input)
                 }
+                // Solo la primera letra será mayúscula
+                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
             }
             input.addEventListener('focus', validateMaterial)
             input.addEventListener('input', validateMaterial)
@@ -1302,9 +1330,59 @@
                     errorColor.style.display = 'none'
                     enableAllFields(input)
                 }
+                // Solo la primera letra será mayúscula
+                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
             }
             input.addEventListener('focus', validateColor)
             input.addEventListener('input', validateColor)
+        })
+
+        // Validación marca
+        var marcaInputs = document.querySelectorAll('.material-marca')
+        marcaInputs.forEach(input => {
+            const validateColor = () => {
+                // Solo la primera letra será mayúscula
+                input.value = input.value != '' ? firstLetterOfEachWordCapitalized(input.value) : ''
+            }
+            input.addEventListener('input', validateColor)
+        })
+
+        // Validación nombre común
+        var nombreComunInputs = document.querySelectorAll('.material-nombre-comun')
+        nombreComunInputs.forEach(input => {
+            const validateNombreComun = () => {
+                // Solo la primera letra será mayúscula
+                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+            }
+            input.addEventListener('input', validateNombreComun)
+        })
+
+        // Validación alias
+        var aliasInputs = document.querySelectorAll('.material-alias')
+        aliasInputs.forEach(input => {
+            const validateAlias = () => {
+                // Solo la primera letra será mayúscula
+                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+            }
+            input.addEventListener('input', validateAlias)
+        })
+
+        // Validación porcentaje de IVA
+        var porcentajeIvaInputs = document.querySelectorAll('.material-porcentaje-iva')
+        porcentajeIvaInputs.forEach(input => {
+            const validatePorcentajeIva = () => {
+                var porcentajeIvaValue = input.value
+                var container = input.closest('.porcentaje-iva-container')
+                var errorPorcentajeIva = container.querySelector('#error-porcentaje-iva')
+                // Verificar si el campo está vacío
+                if (porcentajeIvaValue == '') {
+                  errorPorcentajeIva.style.display = 'block'
+                } else {
+                  errorPorcentajeIva.style.display = 'none'
+                }
+            }
+            input.addEventListener('focus', validatePorcentajeIva)
+            input.addEventListener('change', validatePorcentajeIva)
         })
 
         // Validación unidad de medida
@@ -1566,7 +1644,7 @@
           <td>${esMaterialEmpaqueValue}</td>
           <td>${esProdTerminadoValue}</td>
           <td>
-            <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
+            <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Abrir</button>
           </td>
           <td>
             <button id="remove-material-${index}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>

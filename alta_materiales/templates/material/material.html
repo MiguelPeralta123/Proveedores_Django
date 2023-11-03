@@ -31,11 +31,20 @@
                         href="{% url 'material_detail' solicitud.id %}"
                         style="transition: 0.2s ease-in-out;">
                         <div class="d-flex justify-content-between gap-3 my-2">
-                            <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                            {% if solicitud.es_migracion %}
+                                <h4 class="my-0">Migración - {{solicitud.nombre_producto_migracion}}</h4>
+                            {% else %}
+                                <h4 class="my-0">{{solicitud.justificacion}}</h4>
+                            {% endif %}
                             <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
                         </div>
+                        <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                         <div class="d-flex justify-content-between gap-3">
-                            <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                            {% if solicitud.empresa %}
+                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                            {% else %}
+                                <p><b>Empresa:</b> {{solicitud.empresa_destino}}</p>
+                            {% endif %}
                             <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                         </div>
                         {% if solicitud.borrador %}
@@ -83,11 +92,20 @@
                                 href="{% url 'material_detail' solicitud.id %}"
                                 style="transition: 0.2s ease-in-out;">
                                 <div class="d-flex justify-content-between gap-3 my-2">
-                                    <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                    {% if solicitud.es_migracion %}
+                                        <h4 class="my-0">Migración - {{solicitud.nombre_producto_migracion}}</h4>
+                                    {% else %}
+                                        <h4 class="my-0">{{solicitud.justificacion}}</h4>
+                                    {% endif %}
                                     <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
                                 </div>
+                                <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                                 <div class="d-flex justify-content-between gap-3">
-                                    <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                    {% if solicitud.empresa %}
+                                        <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                    {% else %}
+                                        <p><b>Empresa:</b> {{solicitud.empresa_destino}}</p>
+                                    {% endif %}
                                     <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                                 </div>
                                 {% if solicitud.borrador %}
@@ -136,9 +154,14 @@
                             href="{% url 'material_detail' solicitud.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                {% if solicitud.es_migracion %}
+                                    <h4 class="my-0">Migración - {{solicitud.nombre_producto_migracion}}</h4>
+                                {% else %}
+                                    <h4 class="my-0">{{solicitud.justificacion}}</h4>
+                                {% endif %}
                                 <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
                             </div>
+                            <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                             <div class="d-flex justify-content-between gap-3">
                                 <p><b>Empresa:</b> {{solicitud.empresa}}</p>
                                 <p><b>Fecha:</b> {{solicitud.fecha}}</p>
@@ -186,9 +209,14 @@
                             href="{% url 'material_detail' solicitud.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                {% if solicitud.es_migracion %}
+                                    <h4 class="my-0">Migración - {{solicitud.nombre_producto_migracion}}</h4>
+                                {% else %}
+                                    <h4 class="my-0">{{solicitud.justificacion}}</h4>
+                                {% endif %}
                                 <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
                             </div>
+                            <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                             <div class="d-flex justify-content-between gap-3">
                                 <p><b>Empresa:</b> {{solicitud.empresa}}</p>
                                 <p><b>Fecha:</b> {{solicitud.fecha}}</p>
@@ -236,9 +264,14 @@
                             href="{% url 'material_detail' solicitud.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                {% if solicitud.es_migracion %}
+                                    <h4 class="my-0">Migración - {{solicitud.nombre_producto_migracion}}</h4>
+                                {% else %}
+                                    <h4 class="my-0">{{solicitud.justificacion}}</h4>
+                                {% endif %}
                                 <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
                             </div>
+                            <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                             <div class="d-flex justify-content-between gap-3">
                                 <p><b>Empresa:</b> {{solicitud.empresa}}</p>
                                 <p><b>Fecha:</b> {{solicitud.fecha}}</p>
@@ -286,9 +319,14 @@
                             href="{% url 'material_detail' solicitud.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                {% if solicitud.es_migracion %}
+                                    <h4 class="my-0">Migración - {{solicitud.nombre_producto_migracion}}</h4>
+                                {% else %}
+                                    <h4 class="my-0">{{solicitud.justificacion}}</h4>
+                                {% endif %}
                                 <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
                             </div>
+                            <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                             <div class="d-flex justify-content-between gap-3">
                                 <p><b>Empresa:</b> {{solicitud.empresa}}</p>
                                 <p><b>Fecha:</b> {{solicitud.fecha}}</p>
@@ -336,40 +374,20 @@
                             href="{% url 'material_detail' solicitud.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                <h4 class="my-0">{{solicitud.usuario.get_full_name}}</h4>
+                                {% if solicitud.es_migracion %}
+                                    <h4 class="my-0">Migración - {{solicitud.nombre_producto_migracion}}</h4>
+                                {% else %}
+                                    <h4 class="my-0">{{solicitud.justificacion}}</h4>
+                                {% endif %}
                                 <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
                             </div>
+                            <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                             <div class="d-flex justify-content-between gap-3">
                                 <p><b>Empresa:</b> {{solicitud.empresa}}</p>
                                 <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                             </div>
-                            {% if solicitud.borrador %}
-                            <p class="text-success">✎ Guardado como borrador</p>
-                            {% endif %}
-                            {% if solicitud.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
-                            {% if solicitud.compras %}
-                            <p class="text-success">🕐 Pendiente finanzas</p>
-                            {% endif %}
-                            {% if solicitud.rechazado_compras %}
-                            <p class="text-danger">❌ Rechazado por compras</p>
-                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                            {% endif %}
-                            {% if solicitud.finanzas %}
-                            <p class="text-success">🕐 Pendiente sistemas</p>
-                            {% endif %}
-                            {% if solicitud.rechazado_finanzas %}
-                            <p class="text-danger">❌ Rechazado por finanzas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                            {% endif %}
-                            {% if solicitud.sistemas %}
-                            <p class="text-success">✅ Aprobado</p>
-                            {% endif %}
-                            {% if solicitud.rechazado_sistemas %}
-                            <p class="text-danger">❌ Rechazado por sistemas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
-                            {% endif %}
+
+                            <p class="text-success">🗑 Solicitud eliminada</p>
 
                             {% for cambio in historial %}
                                 {% if solicitud.id == cambio.id_solicitud %}

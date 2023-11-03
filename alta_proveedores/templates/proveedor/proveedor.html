@@ -5,7 +5,7 @@
 <main class="py-5 m-5">
     <div class="row mt-5 justify-content-center">
         <div style="max-width: 40rem;">
-            <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de proveedores</h1>
+            <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de proveedores / clientes</h1>
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
                 <div id="filtrar-solicitudes-container" class="mt-5">
@@ -406,33 +406,8 @@
                                 {% endif %}
                                 <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                             </div>
-                            {% if proveedor.borrador %}
-                            <p class="text-success">✎ Guardado como borrador</p>
-                            {% endif %}
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
-                            {% if proveedor.compras %}
-                            <p class="text-success">🕐 Pendiente finanzas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_compras %}
-                            <p class="text-success">❌ Rechazado por compras</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.finanzas %}
-                            <p class="text-success">🕐 Pendiente sistemas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_finanzas %}
-                            <p class="text-success">❌ Rechazado por finanzas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.sistemas %}
-                            <p class="text-success">✅ Aprobado</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_sistemas %}
-                            <p class="text-success">❌ Rechazado por sistemas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
+                            
+                            <p class="text-success">🗑 Solicitud eliminada</p>
 
                             {% for cambio in historial %}
                                 {% if proveedor.id == cambio.id_proveedor %}
