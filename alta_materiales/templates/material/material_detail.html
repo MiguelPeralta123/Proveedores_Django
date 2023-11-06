@@ -357,7 +357,7 @@
                   <!-- Esta bandera será false. Si el material se elimina, entonces se marcará como true -->
                   {{ form.rechazado }}
 
-                  {% if corrent_user.id == solicitud.usuario.id and solicitud.rechazado_compras or corrent_user.id == solicitud.usuario.id and solicitud.rechazado_sistemas or solicitud.pendiente and current_user.compras or solicitud.compras and current_user.finanzas or solicitud.finanzas and current_user.sistemas %}
+                  {% if current_user.id == solicitud.usuario.id and solicitud.rechazado_compras or current_user.id == solicitud.usuario.id and solicitud.rechazado_sistemas or solicitud.pendiente and current_user.compras or solicitud.compras and current_user.finanzas or solicitud.finanzas and current_user.sistemas %}
                     <button class="btn btn-secondary mt-3 mb-3 btn-save-changes" type="button" style="width: 10rem; background-color: #008841; color: white; font-weight: bold;">Guardar cambios</button>
                   {% else %}
                     <button class="btn btn-secondary mt-3 mb-3 btn-save-changes" type="button" style="width: 10rem; background-color: #008841; color: white; font-weight: bold;">Cerrar</button>

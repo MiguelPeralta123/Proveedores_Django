@@ -305,6 +305,9 @@ def material_detail(request, material_id):
                     elif solicitud.pendiente:
                         historial.accion = 'modificada'
                         action = 'modificado'
+                    elif solicitud.eliminado:
+                        historial.accion = 'eliminada'
+                        action = 'eliminado'
                     else:
                         historial.accion = 'aprobada'
                         action = 'abrobado'
@@ -392,7 +395,8 @@ def material_detail(request, material_id):
                     #    recipient_list = [solicitud.usuario.email]
                     #else:
                     #    recipient_list = destinatario_correo
-                    #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                    #if not solicitud.eliminado:
+                        #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     return redirect('material')
 

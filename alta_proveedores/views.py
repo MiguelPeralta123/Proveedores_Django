@@ -263,6 +263,9 @@ def proveedor_detail(request, proveedor_id):
                     elif proveedor.pendiente:
                         historial.accion = 'modificada'
                         action = 'modificado'
+                    elif proveedor.eliminado:
+                        historial.accion = 'eliminada'
+                        action = 'eliminado'
                     else:
                         historial.accion = 'aprobada'
                         action = 'abrobado'
@@ -280,7 +283,8 @@ def proveedor_detail(request, proveedor_id):
                     #    recipient_list = [proveedor.usuario.email]
                     #else:
                     #    recipient_list = destinatario_correo
-                    #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                    #if not proveedor.eliminado:
+                        #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     return redirect('proveedor')
                 
