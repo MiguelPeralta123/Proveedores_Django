@@ -33,16 +33,21 @@ urlpatterns = [
     # URL para home
     path('', views_proveedores.home, name='home'),
 
-    # URLs para inicio de sesión (login, logout)
+    # URL para inicio de sesión (login, logout)
     path('signin/', views_login.signin, name='signin'),
     path('signout/', views_login.signout, name='signout'),
 
-    # URLs para proveedores (get all, create, detail)
+    # URL para proveedores (get all, create, detail)
     path('proveedores/', views_proveedores.proveedor, name='proveedor'),
     path('proveedores/crear/', views_proveedores.proveedor_create, name='proveedor_create'),
     path('proveedores/<int:proveedor_id>/', views_proveedores.proveedor_detail, name='proveedor_detail'),
 
-    # URLs para solicitudes y materiales
+    # URL para clientes (get all, create, detail)
+    path('clientes/', views_proveedores.proveedor, name='cliente'),
+    path('clientes/crear/', views_proveedores.proveedor_create, name='cliente_create'),
+    path('clientes/<int:cliente_id>/', views_proveedores.proveedor_detail, name='cliente_detail'),
+
+    # URL para materiales
     path('materiales/', views_materiales.material, name='material'),
     path('materiales/crear/', views_materiales.material_create, name='material_create'),
     path('materiales/<int:material_id>/', views_materiales.material_detail, name='material_detail'),

@@ -135,9 +135,17 @@
                   <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
 
                     <!-- Foto producto field -->
-                    <div class="foto-producto-container" style="width: 50%;">
-                      <!-- Preview de la foto del producto -->
-                      <img id="id_foto_producto_img" class="w-auto mb-2 rounded" src="" alt="Foto del producto" style="max-width: 100%; max-height: 10rem; display: none;" />
+                    <div class="foto-producto-container d-flex" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-end;">
+
+                      <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
+                        <!-- Preview de la foto del producto -->
+                        <img id="id_foto_producto_img" class="mb-2 rounded" src="" alt="Foto del producto" style="width: 100%; max-height: 10rem; display: none;" />
+
+                        <!-- Botón para eliminar la foto del producto -->
+                        <button id="id_btn_delete_foto_producto" class="btn btn-secondary btn-delete-foto-producto mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem; display: none;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
+                        </button>
+                      </div>
 
                       <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
                       {{ material_form.foto_producto }}
@@ -145,9 +153,16 @@
                     </div>
   
                     <!-- Ficha técnica field -->
-                    <div class="ficha-tecnica-container" style="width: 50%;">
-                      <!-- Preview de la ficha técnica -->
-                      <img id="id_ficha_tecnica_img" class="w-auto mb-2 rounded" src="" alt="Ficha técnica" style="max-width: 100%; max-height: 10rem; display: none;" />
+                    <div class="ficha-tecnica-container d-flex" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-end;">
+                      <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
+                        <!-- Preview de la ficha técnica -->
+                        <img id="id_ficha_tecnica_img" class="mb-2 rounded" src="" alt="Ficha técnica" style="width: 100%; max-height: 10rem; display: none;" />
+                        
+                        <!-- Botón para eliminar la ficha técnica -->
+                        <button id="id_btn_delete_ficha_tecnica" class="btn btn-secondary btn-delete-ficha-tecnica mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem; display: none;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
+                        </button>
+                      </div>
 
                       <label for="id_ficha_tecnica" class="mb-2" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
                       {{ material_form.ficha_tecnica }}
@@ -699,6 +714,7 @@
             const validateFotoProducto = () => {
                 const fotoProductoContainer = input.closest('.foto-producto-container')
                 const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
+                const deleteImagePreview = fotoProductoContainer.querySelector('#id_btn_delete_foto_producto')
                 if (input.files && input.files[0]) {
                     var reader = new FileReader()
                     reader.onload = function(e) {
@@ -706,13 +722,31 @@
                     };
                     reader.readAsDataURL(input.files[0]);
                     imagePreview.style.display = 'block'
+                    deleteImagePreview.style.display = 'block'
                 }
                 else {
                     imagePreview.src = ''
                     imagePreview.style.display = 'none'
+                    deleteImagePreview.style.display = 'none'
                 }
             }
             input.addEventListener('change', validateFotoProducto)
+        })
+
+        // Validación eliminar foto producto
+        var deleteFotoProductoButtons = document.querySelectorAll('.btn-delete-foto-producto')
+        deleteFotoProductoButtons.forEach(input => {
+            const deleteFotoProducto = () => {
+                const fotoProductoContainer = input.closest('.foto-producto-container')
+                const fotoProducto = fotoProductoContainer.querySelector('.material-foto-producto')
+                const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
+                const deleteImagePreview = fotoProductoContainer.querySelector('#id_btn_delete_foto_producto')
+                fotoProducto.value = ''
+                imagePreview.src = ''
+                imagePreview.style.display = 'none'
+                deleteImagePreview.style.display = 'none'
+            }
+            input.addEventListener('click', deleteFotoProducto)
         })
 
         // Validación ficha técnica
@@ -721,6 +755,7 @@
             const validateFichaTecnica = () => {
                 const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
                 const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
+                const deleteImagePreview = fichaTecnicaContainer.querySelector('#id_btn_delete_ficha_tecnica')
                 if (input.files && input.files[0]) {
                   if (input.files[0].type.startsWith('image/')) {
                       var reader = new FileReader()
@@ -733,13 +768,31 @@
                       imagePreview.src = '../../../static/images/pdf-default.png'
                   }
                   imagePreview.style.display = 'block'
+                  deleteImagePreview.style.display = 'block'
                 }
                 else {
                     imagePreview.src = ''
                     imagePreview.style.display = 'none'
+                    deleteImagePreview.style.display = 'none'
                 }
             }
             input.addEventListener('change', validateFichaTecnica)
+        })
+
+        // Validación eliminar ficha técnica
+        var deleteFichaTecnicaButtons = document.querySelectorAll('.btn-delete-ficha-tecnica')
+        deleteFichaTecnicaButtons.forEach(input => {
+            const deleteFichaTecnica = () => {
+                const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
+                const fichaTecnica = fichaTecnicaContainer.querySelector('.material-ficha-tecnica')
+                const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
+                const deleteImagePreview = fichaTecnicaContainer.querySelector('#id_btn_delete_ficha_tecnica')
+                fichaTecnica.value = ''
+                imagePreview.src = ''
+                imagePreview.style.display = 'none'
+                deleteImagePreview.style.display = 'none'
+            }
+            input.addEventListener('click', deleteFichaTecnica)
         })
 
         // Validación largo
@@ -1507,9 +1560,19 @@
             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
 
               <!-- Foto producto field -->
-              <div class="foto-producto-container" style="width: 50%;">
-                <!-- Preview de la foto del producto -->
-                <img id="id_foto_producto_img" class="w-auto mb-2 rounded" src="" alt="Foto del producto" style="max-width: 100%; max-height: 10rem; display: none;" />
+              <div class="foto-producto-container d-flex" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-end;">
+
+                <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
+
+                  <!-- Preview de la foto del producto -->
+                  <img id="id_foto_producto_img" class="mb-2 rounded" src="" alt="Foto del producto" style="width: 100%; max-height: 10rem; display: none;" />
+
+                  <!-- Botón para eliminar la foto del producto -->
+                  <button id="id_btn_delete_foto_producto" class="btn btn-secondary btn-delete-foto-producto mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem; display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
+                  </button>
+
+                </div>
 
                 <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
                 {{ material_formset.empty_form.foto_producto }}
@@ -1517,9 +1580,17 @@
               </div>
 
               <!-- Ficha técnica field -->
-              <div class="ficha-tecnica-container" style="width: 50%;">
-                <!-- Preview de la ficha técnica -->
-                <img id="id_ficha_tecnica_img" class="w-auto mb-2 rounded" src="" alt="Ficha técnica" style="max-width: 100%; max-height: 10rem; display: none;" />
+              <div class="ficha-tecnica-container d-flex" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-end;">
+                <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
+
+                  <!-- Preview de la ficha técnica -->
+                  <img id="id_ficha_tecnica_img" class="mb-2 rounded" src="" alt="Ficha técnica" style="width: 100%; max-height: 10rem; display: none;" />
+                  
+                  <!-- Botón para eliminar la ficha técnica -->
+                  <button id="id_btn_delete_ficha_tecnica" class="btn btn-secondary btn-delete-ficha-tecnica mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem; display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
+                  </button>
+                </div>
 
                 <label for="id_ficha_tecnica" class="mb-2" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
                 {{ material_formset.empty_form.ficha_tecnica }}

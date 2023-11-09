@@ -5,7 +5,14 @@
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
-          <h1 class="mb-4">Detalle del proveedor / cliente</h1>
+
+          {% if proveedor.tipo_alta == 'Proveedor' %}
+            <h1 class="mb-4">Detalle del proveedor</h1>
+          {% elif proveedor.tipo_alta == 'Cliente' %}
+            <h1 class="mb-4">Detalle del cliente</h1>
+          {% else %}
+            <h1 class="mb-4">Detalle del cliente / proveedor</h1>
+          {% endif %}
 
           {{ error }}
 

@@ -5,7 +5,11 @@
 <main class="py-5 m-5">
     <div class="row mt-5 justify-content-center">
         <div style="max-width: 40rem;">
-            <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de proveedores / clientes</h1>
+            {% if current_user.puede_crear_proveedor %}
+                <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de proveedores</h1>
+            {% else %}
+                <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de clientes</h1>
+            {% endif %}
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
                 <div id="filtrar-solicitudes-container" class="mt-5">

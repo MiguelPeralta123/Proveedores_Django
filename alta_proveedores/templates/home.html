@@ -4,16 +4,25 @@
 {% block content %}
   <main class="p-5 row justify-content-center">
     <section class="card card-body" style="max-width: 70rem; margin-top: 6rem; background-color: rgb(255, 255, 255, 0.8);">
-      {% if user.puede_crear_proveedor %}
-        <h1 class="text-center display-5 py-4">Solicitudes de proveedores, clientes y materiales</h1>
+      {% if user.puede_crear_proveedor and user.puede_crear_material %}
+        <h1 class="text-center display-5 py-4">Solicitudes de proveedores y materiales</h1>
+      {% elif user.puede_crear_cliente and user.puede_crear_material %}
+        <h1 class="text-center display-5 py-4">Solicitudes de clientes y materiales</h1>
       {% else %}
         <h1 class="text-center display-5 py-4">Solicitudes de materiales</h1>
       {% endif %}
 
       {% if user.puede_crear_proveedor %}
         <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 55rem;">
-          <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para solicitar un alta de proveedor / cliente</p>
+          <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para solicitar un alta de proveedor</p>
           <a class="btn" href="proveedores/crear" style="width: 10rem; margin-right: 1rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Crear solicitud</a>
+        </div>
+      {% endif %}
+
+      {% if user.puede_crear_cliente %}
+        <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 55rem;">
+          <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para solicitar un alta de cliente</p>
+          <a class="btn" href="clientes/crear" style="width: 10rem; margin-right: 1rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Crear solicitud</a>
         </div>
       {% endif %}
 
@@ -24,20 +33,34 @@
         </div>
       {% endif %}
       
-      {% if user.puede_crear_proveedor or user.puede_crear_material %}
+      {% if user.puede_crear_proveedor or user.puede_crear_cliente or user.puede_crear_material %}
         <hr style="max-width: 53rem; margin-left: 1rem; margin-right: 1rem;" />
       {% endif %}
 
       {% if user.puede_crear_proveedor or user.compras or user.finanzas or user.sistemas %}
         {% if user.compras or user.finanzas or user.sistemas %}
           <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 55rem;">
-            <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para ver sus solicitudes de alta de proveedor / cliente</p>
+            <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para ver sus solicitudes de alta de proveedor</p>
             <a class="btn" href="proveedores" style="width: 10rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
           </div>
         {% else %}
           <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 55rem;">
             <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para ver el estatus de sus solicitudes de proveedor</p>
             <a class="btn" href="proveedores" style="width: 10rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {% if user.puede_crear_cliente or user.compras or user.finanzas or user.sistemas %}
+        {% if user.compras or user.finanzas or user.sistemas %}
+          <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 55rem;">
+            <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para ver sus solicitudes de alta de cliente</p>
+            <a class="btn" href="clientes" style="width: 10rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
+          </div>
+        {% else %}
+          <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 55rem;">
+            <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para ver el estatus de sus solicitudes de cliente</p>
+            <a class="btn" href="clientes" style="width: 10rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>
           </div>
         {% endif %}
       {% endif %}

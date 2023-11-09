@@ -5,7 +5,14 @@
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" enctype="multipart/form-data" style="background-color: rgb(255, 255, 255, 0.8);">
-          <h1 class="mb-4">Registrar proveedor / cliente</h1>
+          
+          {% if current_user.puede_crear_proveedor %}
+            <h1 class="mb-4">Registrar proveedor</h1>
+          {% endif %}
+
+          {% if current_user.puede_crear_cliente %}
+            <h1 class="mb-4">Registrar cliente</h1>
+          {% endif %}
 
           {{ error }}
 
@@ -13,7 +20,7 @@
 
           <!-- Es migracion field -->
           <div style="margin-bottom:1rem;">
-            <p><b>En caso de que el proveedor / cliente ya exista en otra empresa, marque la siguiente casilla:</b></p>
+            <p><b>En caso de que el registro ya exista en otra empresa, marque la siguiente casilla:</b></p>
             <label for="id_es_migracion">Es migración:</label>
             {{ form.es_migracion }}
             <p id="error-es-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
@@ -832,24 +839,19 @@
       
       // Validación tipo alta
       const validateTipoAlta = () => {
-        if (tipoAlta.value == '') {
-          errorTipoAlta.style.display = 'block'
-        } else {
-          errorTipoAlta.style.display = 'none'
+        {% if current_user.puede_crear_proveedor %}
+          tipoAlta.value = "Proveedor";
+          idFiscal.setAttribute('placeholder', 'para proveedores extranjeros')
+        {% endif %}
 
-          if (tipoAlta.value == 'Cliente') {
-            checkboxContainer.style.display = 'none'
-            idFiscal.setAttribute('placeholder', 'para clientes extranjeros')
-          }
-          else {
-            checkboxContainer.style.display = 'flex'
-            idFiscal.setAttribute('placeholder', 'para proveedores extranjeros')
-          }
-        }
-        enableSaveButton()
+        {% if current_user.puede_crear_cliente %}
+          tipoAlta.value = "Cliente";
+          idFiscal.setAttribute('placeholder', 'para clientes extranjeros')
+        {% endif %}
+
+        tipoAlta.setAttribute('disabled', true)
       }
-      tipoAlta.addEventListener('focus', validateTipoAlta)
-      tipoAlta.addEventListener('change', validateTipoAlta)
+      validateTipoAlta()
       
       // Validación contribuyente
       const validateContribuyente = () => {
@@ -1516,7 +1518,6 @@
       const disableAllFields = input => {
         esMigracion.setAttribute('disabled', true)
         empresa.setAttribute('disabled', true)
-        tipoAlta.setAttribute('disabled', true)
         contribuyente.setAttribute('disabled', true)
         if (input.name != 'rfc') {
           rfc.setAttribute('disabled', true)
@@ -1594,7 +1595,6 @@
       const enableAllFields = () => {
         esMigracion.removeAttribute('disabled')
         empresa.removeAttribute('disabled')
-        tipoAlta.removeAttribute('disabled')
         contribuyente.removeAttribute('disabled')
         rfc.removeAttribute('disabled')
         if (contribuyente.value == 'Persona física') {

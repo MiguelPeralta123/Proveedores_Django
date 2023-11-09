@@ -134,14 +134,26 @@
                   <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
 
                     <!-- Foto producto field -->
-                    <div class="foto-producto-container" style="width: 50%;">
-                      <!-- Preview de la foto del producto -->
-                      <img id="id_foto_producto_img" class="w-auto mb-2 rounded" src="/{{ form.foto_producto.value }}" alt="Foto del producto" style="max-width: 100%; max-height: 10rem;" />
+                    <div class="foto-producto-container d-flex" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-end;">
 
-                      <!-- Enlace para descargar la foto del producto -->
                       {% if form.foto_producto.value %}
-                        <a id="id_foto_producto_download" href="/{{ form.foto_producto.value }}" class="mb-2" style="width:fit-content; display: block;" download="">Descargar foto del producto</a>
+                        <div id="image_preview_container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                      {% else %}
+                        <div id="image_preview_container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; display: none;">
                       {% endif %}
+                        <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
+                          <!-- Preview de la foto del producto -->
+                          <img id="id_foto_producto_img" class="mb-2 rounded" src="/{{ form.foto_producto.value }}" alt="Foto del producto" style="width: 100%; max-height: 10rem;" />
+                          
+                          <!-- Botón para eliminar la foto del producto -->
+                          <button id="id_btn_delete_foto_producto" class="btn btn-secondary btn-delete-foto-producto mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
+                          </button>
+                        </div>
+
+                        <!-- Enlace para descargar la foto del producto -->
+                        <a id="id_foto_producto_download" href="/{{ form.foto_producto.value }}" class="mb-2" style="width:fit-content; display: block;" download="">Descargar foto del producto</a>
+                      </div>
 
                       <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
                       {{ form.foto_producto }}
@@ -149,14 +161,26 @@
                     </div>
   
                     <!-- Ficha técnica field -->
-                    <div class="ficha-tecnica-container" style="width: 50%;">
-                      <!-- Preview de la ficha técnica -->
-                      <img id="id_ficha_tecnica_img" class="w-auto mb-2 rounded" src="/{{ form.ficha_tecnica.value }}" alt="Ficha técnica" style="max-width: 100%; max-height: 10rem;" />
+                    <div class="ficha-tecnica-container d-flex" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-end;">
 
-                      <!-- Enlace para descargar la ficha técnica -->
                       {% if form.ficha_tecnica.value %}
-                        <a id="id_ficha_tecnica_download" href="/{{ form.ficha_tecnica.value }}" class="mb-2" style="width:fit-content; display: block;" download="">Descargar ficha técnica</a>
+                        <div id="image_preview_container" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                      {% else %}
+                        <div id="image_preview_container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; display: none;">
                       {% endif %}
+                        <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
+                          <!-- Preview de la ficha técnica -->
+                          <img id="id_ficha_tecnica_img" class="mb-2 rounded" src="/{{ form.ficha_tecnica.value }}" alt="Ficha técnica" style="width: 100%; max-height: 10rem;" />
+                          
+                          <!-- Botón para eliminar la ficha técnica -->
+                          <button id="id_btn_delete_ficha_tecnica" class="btn btn-secondary btn-delete-ficha-tecnica mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
+                          </button>
+                        </div>
+
+                        <!-- Enlace para descargar la ficha técnica -->
+                        <a id="id_ficha_tecnica_download" href="/{{ form.ficha_tecnica.value }}" class="mb-2" style="width:fit-content; display: block;" download="">Descargar ficha técnica</a>
+                      </div>
 
                       <label for="id_ficha_tecnica" class="mb-2" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
                       {{ form.ficha_tecnica }}
@@ -864,7 +888,9 @@
         fotoProductoInputs.forEach(input => {
             const validateFotoProducto = () => {
                 const fotoProductoContainer = input.closest('.foto-producto-container')
+                const imagePreviewContainer = fotoProductoContainer.querySelector('#image_preview_container')
                 const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
+                const deleteImagePreview = fotoProductoContainer.querySelector('#id_btn_delete_foto_producto')
                 const imageDownload = fotoProductoContainer.querySelector('#id_foto_producto_download')
                 if (input.files && input.files[0]) {
                     var reader = new FileReader()
@@ -873,12 +899,12 @@
                         imageDownload.href = e.target.result
                     };
                     reader.readAsDataURL(input.files[0]);
-                    imagePreview.style.display = 'block'
+                    imagePreviewContainer.style.display = 'flex'
                     imageDownload.style.display = 'block'
                 }
                 else {
                     imagePreview.src = ''
-                    imagePreview.style.display = 'none'
+                    imagePreviewContainer.style.display = 'none'
                     imageDownload.src = ''
                     imageDownload.style.display = 'none'
                 }
@@ -886,11 +912,27 @@
             input.addEventListener('change', validateFotoProducto)
         })
 
+        // Validación eliminar foto producto
+        var deleteFotoProductoButtons = document.querySelectorAll('.btn-delete-foto-producto')
+        deleteFotoProductoButtons.forEach(input => {
+            const deleteFotoProducto = () => {
+                const fotoProductoContainer = input.closest('.foto-producto-container')
+                const fotoProducto = fotoProductoContainer.querySelector('.material-foto-producto')
+                const imagePreviewContainer = fotoProductoContainer.querySelector('#image_preview_container')
+                const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
+                fotoProducto.value = ''
+                imagePreview.src = ''
+                imagePreviewContainer.style.display = 'none'
+            }
+            input.addEventListener('click', deleteFotoProducto)
+        })
+
         // Validación ficha técnica
         var fichaTecnicaInputs = document.querySelectorAll('.material-ficha-tecnica')
         fichaTecnicaInputs.forEach(input => {
             const validateFichaTecnica = () => {
                 const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
+                const imagePreviewContainer = fichaTecnicaContainer.querySelector('#image_preview_container')
                 const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
                 const imageDownload = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_download')
                 if (input.files && input.files[0]) {
@@ -906,17 +948,32 @@
                         }
                     }
                     reader.readAsDataURL(input.files[0])
-                    imagePreview.style.display = 'block'
+                    imagePreviewContainer.style.display = 'flex'
                     imageDownload.style.display = 'block'
                 }
                 else {
                     imagePreview.src = ''
-                    imagePreview.style.display = 'none'
+                    imagePreviewContainer.style.display = 'none'
                     imageDownload.src = ''
                     imageDownload.style.display = 'none'
                 }
             }
             input.addEventListener('change', validateFichaTecnica)
+        })
+
+        // Validación eliminar ficha técnica
+        var deleteFichaTecnicaButtons = document.querySelectorAll('.btn-delete-ficha-tecnica')
+        deleteFichaTecnicaButtons.forEach(input => {
+            const deleteFichaTecnica = () => {
+                const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
+                const fichaTecnica = fichaTecnicaContainer.querySelector('.material-ficha-tecnica')
+                const imagePreviewContainer = fichaTecnicaContainer.querySelector('#image_preview_container')
+                const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
+                fichaTecnica.value = ''
+                imagePreview.src = ''
+                imagePreviewContainer.style.display = 'none'
+            }
+            input.addEventListener('click', deleteFichaTecnica)
         })
 
         // Validación largo
