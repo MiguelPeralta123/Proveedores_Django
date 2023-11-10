@@ -25,12 +25,16 @@
               <li class="nav-item" style="margin-right: 1rem;">
                 <a class="nav-link active" aria-current="page" href="/">Inicio</a>
               </li>
-              {% if user.puede_crear_proveedor or user.compras or user.finanzas or user.sistemas %}
+              {% if user.compras or user.finanzas or user.sistemas %}
+                <li class="nav-item" style="margin-right: 1rem;">
+                  <a class="nav-link active" aria-current="page" href="/proveedores">Clientes / Proveedores</a>
+                </li>
+              {% elif user.puede_crear_proveedor %}
                 <li class="nav-item" style="margin-right: 1rem;">
                   <a class="nav-link active" aria-current="page" href="/proveedores">Proveedores</a>
                 </li>
               {% endif %}
-              {% if user.puede_crear_cliente or user.compras or user.finanzas or user.sistemas %}
+              {% if user.puede_crear_cliente %}
                 <li class="nav-item" style="margin-right: 1rem;">
                   <a class="nav-link active" aria-current="page" href="/clientes">Clientes</a>
                 </li>

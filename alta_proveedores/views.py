@@ -2,12 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Q
-import time
-from .forms import *
-from .models import *
-
 import json
 from django.http import JsonResponse
+from threading import Timer
+from .forms import *
+from .models import *
 
 # VISTA DE INICIO
 # Decorator to force login. The return route is defined in proveedores/settings.py
@@ -67,6 +66,8 @@ def proveedor(request):
 
             historial = []
             for proveedor in proveedores:
+                historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
+            for proveedor in mis_proveedores:
                 historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
 
             if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
@@ -158,7 +159,7 @@ def proveedor_create(request):
                         #        recipient_list = ['fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
                         #    else:
                         #        recipient_list = ['compras@ricofarms.com']
-                        #    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                        #    send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
                         return redirect('proveedor')
                     
@@ -287,7 +288,7 @@ def proveedor_detail(request, proveedor_id):
                         #else:
                         #    recipient_list = destinatario_correo
                         #if not proveedor.eliminado:
-                            #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                            #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
                         return redirect('proveedor')
                     
@@ -305,11 +306,62 @@ def proveedor_detail(request, proveedor_id):
         print(f"Se produjo un error al cargar el proveedor: {str(e)}")
         return redirect('home')
 
-# Función que se ejecuta cada 2 minutos
-#def mi_funcion():
-    # Coloca el código de tu función aquí
-#    print("Ejecutando mi función cada 2 minutos")
 
-#while True:
-#    mi_funcion()  # Llama a tu función
-#    time.sleep(120)
+# ENVIANDO UN CORREO DE RECORDATORIO CADA 30 MINUTOS
+
+def enviarCorreo(departamento, elementos, folios):
+    cadenaFolios = ''
+    for folio in folios:
+        cadenaFolios += '\n' + folio
+
+    subject = 'Recordatorio de solicitudes por aprobar'
+    message = 'Tiene ' + str(elementos) + ' solicitudes de alta de proveedor pendientes de aprobación. Por favor ingrese a http://23.19.74.40:8001/proveedores/ para revisarlas.' + cadenaFolios
+
+    from_email = 'altaproveedoresricofarms@gmail.com'
+    
+    if departamento == 'compras':
+        email = ['compras@ricofarms.com']
+    if departamento == 'finanzas':
+        email = ['fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
+    if departamento == 'sistemas':
+        email = ['edurazo@ricofarms.com']
+
+    #send_mail(subject, message, from_email, email, fail_silently=True)
+
+def solicitudesPendientes():
+    # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por compras
+    proveedores_compras = Proveedor.objects.filter(pendiente=True)
+    if len(proveedores_compras) > 0:
+        folios = []
+        for proveedor in proveedores_compras:
+            if proveedor.rfc != '':
+                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+            else:
+                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+        enviarCorreo('compras', len(proveedores_compras), folios)
+
+    # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por finanzas
+    proveedores_finanzas = Proveedor.objects.filter(compras=True)
+    if len(proveedores_finanzas) > 0:
+        folios = []
+        for proveedor in proveedores_finanzas:
+            if proveedor.rfc != '':
+                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+            else:
+                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+        enviarCorreo('finanzas', len(proveedores_finanzas), folios)
+
+    # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por sistemas
+    proveedores_sistemas = Proveedor.objects.filter(finanzas=True)
+    if len(proveedores_sistemas) > 0:
+        folios = []
+        for proveedor in proveedores_sistemas:
+            if proveedor.rfc != '':
+                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+            else:
+                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+        enviarCorreo('sistemas', len(proveedores_sistemas), folios)
+
+    Timer(1800, solicitudesPendientes).start()
+
+#solicitudesPendientes()

@@ -1731,12 +1731,14 @@
       })
 
       btnGuardar.addEventListener('click', () => {
-        // Si el registro ya existe en otra empresa, se envia directo a sistemas
+        tipoAlta.removeAttribute('disabled')
+        // Si es migración, se envia directo a sistemas
         if (esMigracion.checked) {
           btnGuardar.setAttribute('name', 'finanzas');
         }
         else {
-          if (tipoAlta.value === 'Cliente') {
+          // Clientes no pasan por compras
+          if (tipoAlta.value == 'Cliente') {
             btnGuardar.setAttribute('name', 'compras');
           }
           else {

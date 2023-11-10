@@ -6,12 +6,10 @@
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
 
-          {% if proveedor.tipo_alta == 'Proveedor' %}
-            <h1 class="mb-4">Detalle del proveedor</h1>
-          {% elif proveedor.tipo_alta == 'Cliente' %}
-            <h1 class="mb-4">Detalle del cliente</h1>
+          {% if proveedor.es_migracion %}
+            <h1 class="mb-4">Detalle del Proveedor</h1>
           {% else %}
-            <h1 class="mb-4">Detalle del cliente / proveedor</h1>
+            <h1 class="mb-4">Detalle del {{ proveedor.tipo_alta }}</h1>
           {% endif %}
 
           {{ error }}
@@ -707,7 +705,13 @@
       })
     
       buttonsContainer.addEventListener('click', function (event) {
+        tipoAlta.removeAttribute('disabled')
         if (event.target && event.target.classList.contains('btn-save')) {
+          if (tipoAlta) {
+            if (tipoAlta.value == 'Cliente') {
+              btnSave.name = 'compras'
+            }
+          }
           comentarios.value = ''
         }
         if (event.target && event.target.classList.contains('btn-reject')) {
@@ -1089,24 +1093,8 @@
       // Validación tipo alta
       if (tipoAlta) {
         const validateTipoAlta = () => {
-          if (tipoAlta.value == '') {
-            errorTipoAlta.style.display = 'block'
-          } else {
-            errorTipoAlta.style.display = 'none'
-
-            if (tipoAlta.value == 'Cliente') {
-              checkboxContainer.style.display = 'none'
-              idFiscal.setAttribute('placeholder', 'para clientes extranjeros')
-            }
-            else {
-              checkboxContainer.style.display = 'flex'
-              idFiscal.setAttribute('placeholder', 'para proveedores extranjeros')
-            }
-          }
-          enableSaveButton()
+          tipoAlta.setAttribute('disabled', true)
         }
-        tipoAlta.addEventListener('focus', validateTipoAlta)
-        tipoAlta.addEventListener('change', validateTipoAlta)
         validateTipoAlta()
       }
       
@@ -1852,7 +1840,6 @@
         }
         else {
           empresa.setAttribute('disabled', true)
-          tipoAlta.setAttribute('disabled', true)
           contribuyente.setAttribute('disabled', true)
           if (input.name != 'rfc') {
             rfc.setAttribute('disabled', true)
@@ -1935,7 +1922,6 @@
         }
         else {
           empresa.removeAttribute('disabled')
-          tipoAlta.removeAttribute('disabled')
           contribuyente.removeAttribute('disabled')
           rfc.removeAttribute('disabled')
           if (contribuyente.value == 'Persona física') {

@@ -1,17 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.forms import formset_factory
 from django.contrib.auth.decorators import login_required
+from django.forms import formset_factory
 from django.core.mail import send_mail
 from django.db.models import Q
+import json
+from django.http import JsonResponse
+from threading import Timer
+import csv
+import os
 from .forms import *
 from .models import *
 from .options import *
-
-import csv
-import os
-
-import json
-from django.http import JsonResponse
 
 # Creating a unique id for each request
 import random
@@ -81,6 +80,8 @@ def material(request):
 
             historial = []
             for solicitud in solicitudes:
+                historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
+            for solicitud in mis_solicitudes:
                 historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
 
             if request.user.puede_crear_material:
@@ -161,7 +162,7 @@ def material_create(request):
                         if solicitud.es_migracion == False:
                             if material_formset.is_valid():
                                 for material_form in material_formset:
-                                    if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('largo') or not material_form.cleaned_data.get('ancho') or not material_form.cleaned_data.get('alto') or not material_form.cleaned_data.get('calibre') or not material_form.cleaned_data.get('unidad_medida'):
+                                    if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('largo') or not material_form.cleaned_data.get('ancho') or not material_form.cleaned_data.get('alto') or not material_form.cleaned_data.get('unidad_medida'):
                                         continue  # Saltar formularios con campos requeridos vacíos
                                     material = material_form.save(commit=False)
                                     material.id_solicitud = id_solicitud
@@ -411,3 +412,63 @@ def material_detail(request, material_id):
     except Exception as e:
         print(f"Se produjo un error al cargar el material: {str(e)}")
         return redirect('home')
+
+
+# ENVIANDO UN CORREO DE RECORDATORIO CADA 30 MINUTOS
+
+def enviarCorreo(departamento, elementos, folios):
+    cadenaFolios = ''
+    for folio in folios:
+        cadenaFolios += '\n' + folio
+
+    subject = 'Recordatorio de solicitudes por aprobar'
+    message = 'Tiene ' + str(elementos) + ' solicitudes de alta de material pendientes de aprobación. Por favor ingrese a http://23.19.74.40:8001/materiales/ para revisarlas.' + cadenaFolios
+
+    from_email = 'altaproveedoresricofarms@gmail.com'
+    
+    if departamento == 'compras':
+        email = ['compras@ricofarms.com']
+    if departamento == 'finanzas':
+        email = ['fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
+    if departamento == 'sistemas':
+        email = ['edurazo@ricofarms.com']
+
+    #send_mail(subject, message, from_email, email, fail_silently=True)
+
+def solicitudesPendientes():
+    # Revisar si hay solicitudes de material pendientes de aprobar por compras
+    solicitudes_compras = MaterialSolicitud.objects.filter(pendiente=True)
+    if len(solicitudes_compras) > 0:
+        folios = []
+        for solicitud in solicitudes_compras:
+            if solicitud.justificacion != '':
+                folios.append(str(solicitud.id) + ' - ' + solicitud.justificacion)
+            else:
+                folios.append(str(solicitud.id) + ' - ' + solicitud.nombre_producto_migracion)
+        enviarCorreo('compras', len(solicitudes_compras), folios)
+
+    # Revisar si hay solicitudes de material pendientes de aprobar por finanzas
+    solicitudes_finanzas = MaterialSolicitud.objects.filter(compras=True)
+    if len(solicitudes_finanzas) > 0:
+        folios = []
+        for solicitud in solicitudes_finanzas:
+            if solicitud.justificacion != '':
+                folios.append(str(solicitud.id) + ' - ' + solicitud.justificacion)
+            else:
+                folios.append(str(solicitud.id) + ' - ' + solicitud.nombre_producto_migracion)
+        enviarCorreo('finanzas', len(solicitudes_finanzas), folios)
+
+    # Revisar si hay solicitudes de cliente / solicitud pendientes de aprobar por sistemas
+    solicitudes_sistemas = MaterialSolicitud.objects.filter(finanzas=True)
+    if len(solicitudes_sistemas) > 0:
+        folios = []
+        for solicitud in solicitudes_sistemas:
+            if solicitud.justificacion != '':
+                folios.append(str(solicitud.id) + ' - ' + solicitud.justificacion)
+            else:
+                folios.append(str(solicitud.id) + ' - ' + solicitud.nombre_producto_migracion)
+        enviarCorreo('sistemas', len(solicitudes_sistemas), folios)
+
+    Timer(1800, solicitudesPendientes).start()
+
+#solicitudesPendientes()

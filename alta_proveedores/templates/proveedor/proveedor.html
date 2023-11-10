@@ -5,7 +5,10 @@
 <main class="py-5 m-5">
     <div class="row mt-5 justify-content-center">
         <div style="max-width: 40rem;">
-            {% if current_user.puede_crear_proveedor %}
+            
+            {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
+                <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de clientes / proveedores</h1>
+            {% elif current_user.puede_crear_proveedor %}
                 <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de proveedores</h1>
             {% else %}
                 <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de clientes</h1>

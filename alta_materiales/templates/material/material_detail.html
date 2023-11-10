@@ -78,9 +78,8 @@
                     <th scope="col" style="min-width: 6rem;">Nombre</th>
                     <th scope="col" style="min-width: 6rem;">Foto del producto</th>
                     <th scope="col" style="min-width: 6rem;">Largo</th>
-                    <th scope="col" style="min-width: 6rem;">Ancho</th>
+                    <th scope="col" style="min-width: 6rem;">Ancho / Calibre</th>
                     <th scope="col" style="min-width: 6rem;">Alto</th>
-                    <th scope="col" style="min-width: 6rem;">Calibre</th>
                     <th scope="col" style="min-width: 6rem;">Material</th>
                     <th scope="col" style="min-width: 6rem;">Color</th>
                     <th scope="col" style="min-width: 6rem;">Marca</th>
@@ -194,7 +193,7 @@
                     
                     <div style="display: flex; gap: 1rem;">
                       <!-- Largo field -->
-                      <div class="largo-container" style="width: 25%; margin-bottom:1rem;">
+                      <div class="largo-container" style="width: 33%; margin-bottom:1rem;">
                         <p class="m-0">{{ form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                         {{ form.largo }}
                         <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
@@ -206,8 +205,8 @@
                       </div>
   
                       <!-- Ancho field -->
-                      <div class="ancho-container" style="width: 25%; margin-bottom:1rem;">
-                        <p class="m-0">{{ form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      <div class="ancho-container" style="width: 33%; margin-bottom:1rem;">
+                        <p class="m-0">Ancho / Calibre<span style="color: rgb(192, 0, 0);">*</span></p>
                         {{ form.ancho }}
                         <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
                         {% if form.ancho.value == 'N/A' %}
@@ -218,7 +217,7 @@
                       </div>
   
                       <!-- Alto field -->
-                      <div class="alto-container" style="width: 25%; margin-bottom:1rem;">
+                      <div class="alto-container" style="width: 33%; margin-bottom:1rem;">
                         <p class="m-0">{{ form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                         {{ form.alto }}
                         <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
@@ -226,18 +225,6 @@
                           <p id="label-alto" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray';">No aplica</p>
                         {% else %}
                           <p id="label-alto" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray';">{{ form.um_alto.value }}</p>
-                        {% endif %}
-                      </div>
-  
-                      <!-- Calibre field -->
-                      <div class="calibre-container" style="width: 25%; margin-bottom:1rem;">
-                        <p class="m-0">{{ form.calibre.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-                        {{ form.calibre }}
-                        <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
-                        {% if form.calibre.value == 'N/A' %}
-                          <p id="label-calibre" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray';">No aplica</p>
-                        {% else %}
-                          <p id="label-calibre" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray';">{{ form.um_calibre.value }}</p>
                         {% endif %}
                       </div>
                     </div>
@@ -263,11 +250,6 @@
                         <div id="select-alto" style="display: none;">
                           {{ form.um_alto }}
                           <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                        </div>
-                        <!-- UM Calibre field -->
-                        <div id="select-calibre" style="display: none;">
-                          {{ form.um_calibre }}
-                          <p id="error-calibre" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                         </div>
 
                         <p id="error-unidades-medida" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una unidad para cada medida</p>
@@ -534,7 +516,6 @@
             errorLargo = form.querySelector('#error-largo')
             errorAncho = form.querySelector('#error-ancho')
             errorAlto = form.querySelector('#error-alto')
-            errorCalibre = form.querySelector('#error-calibre')
             errorUnidadesMedida = form.querySelector('#error-unidades-medida')
             errorMaterial = form.querySelector('#error-material')
             errorColor = form.querySelector('#error-color')
@@ -544,11 +525,9 @@
             const largo = form.querySelector('.material-largo')
             const ancho = form.querySelector('.material-ancho')
             const alto = form.querySelector('.material-alto')
-            const calibre = form.querySelector('.material-calibre')
             const umLargo = form.querySelector('.select-um-largo')
             const umAncho = form.querySelector('.select-um-ancho')
             const umAlto = form.querySelector('.select-um-alto')
-            const umCalibre = form.querySelector('.select-um-calibre')
 
             if (largo.value != 'N/A' && umLargo.value == '') {
               errorUnidadesMedida.style.display = 'block'
@@ -565,11 +544,6 @@
               window.alert('Debe seleccionar una unidad para "Alto"')
               return
             }
-            if (calibre.value != 'N/A' && umCalibre.value == '') {
-              errorUnidadesMedida.style.display = 'block'
-              window.alert('Debe seleccionar una unidad para "Calibre"')
-              return
-            }
 
             errorUnidadesMedida.style.display = 'none'
             if (largo.value == 'N/A') {
@@ -581,11 +555,8 @@
             if (alto.value == 'N/A') {
               umAlto.value = ''
             }
-            if (calibre.value == 'N/A') {
-              umCalibre.value = ''
-            }
   
-            if (errorTipoAlta.style.display == 'block' || errorSubfamilia.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorCalibre.style.display == 'block' || errorUnidadesMedida.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorPorcentajeIva.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
+            if (errorTipoAlta.style.display == 'block' || errorSubfamilia.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorUnidadesMedida.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorPorcentajeIva.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
               window.alert('Algún campo está vacío o es incorrecto')
             }
             else {
@@ -1011,11 +982,9 @@
               var selectLargo = medidasContainer.querySelector('#select-largo')
               var selectAncho = medidasContainer.querySelector('#select-ancho')
               var selectAlto = medidasContainer.querySelector('#select-alto')
-              var selectCalibre = medidasContainer.querySelector('#select-calibre')
               selectLargo.style.display = 'block'
               selectAncho.style.display = 'none'
               selectAlto.style.display = 'none'
-              selectCalibre.style.display = 'none'
               
               var largoValue = input.value
               var container = input.closest('.largo-container')
@@ -1075,11 +1044,9 @@
                 var selectLargo = medidasContainer.querySelector('#select-largo')
                 var selectAncho = medidasContainer.querySelector('#select-ancho')
                 var selectAlto = medidasContainer.querySelector('#select-alto')
-                var selectCalibre = medidasContainer.querySelector('#select-calibre')
                 selectLargo.style.display = 'none'
                 selectAncho.style.display = 'block'
                 selectAlto.style.display = 'none'
-                selectCalibre.style.display = 'none'
                 
                 var anchoValue = input.value
                 var container = input.closest('.ancho-container')
@@ -1140,11 +1107,9 @@
                 var selectLargo = medidasContainer.querySelector('#select-largo')
                 var selectAncho = medidasContainer.querySelector('#select-ancho')
                 var selectAlto = medidasContainer.querySelector('#select-alto')
-                var selectCalibre = medidasContainer.querySelector('#select-calibre')
                 selectLargo.style.display = 'none'
                 selectAncho.style.display = 'none'
                 selectAlto.style.display = 'block'
-                selectCalibre.style.display = 'none'
 
                 var altoValue = input.value
                 var container = input.closest('.alto-container')
@@ -1162,71 +1127,6 @@
               }
             })
         })
-
-        // Validación calibre
-        var calibreInputs = document.querySelectorAll('.material-calibre')
-        calibreInputs.forEach(input => {
-            const validateCalibre = () => {
-                input.value = input.value.toUpperCase()
-                var calibreValue = input.value
-                var container = input.closest('.calibre-container')
-                var errorCalibre = container.querySelector('#error-calibre')
-                // Verificar si el valor es "N/A", numérico o fracción
-                if (calibreValue === 'N/A' || 
-                  !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue) || 
-                  fraccionPattern.test(calibreValue)) {
-                    errorCalibre.style.display = 'none'
-                    enableAllFields(input)
-                    const medidasContainer = input.closest('#medidas-container')
-                    const medidaCalibre = medidasContainer.querySelector('.select-um-calibre')
-                    const labelCalibre = medidasContainer.querySelector('#label-calibre')
-                    labelCalibre.style.display = 'block'
-                    if (calibreValue === 'N/A') {
-                      medidaCalibre.value = ''
-                      labelCalibre.innerHTML = 'No aplica'
-                    }
-                    else {
-                      if (medidasIguales) {
-                        const medidaLargo = medidasContainer.querySelector('.select-um-largo')
-                        medidaCalibre.value = medidaLargo.value
-                        labelCalibre.innerHTML = medidaCalibre.value
-                      }
-                    }
-                } else {
-                    errorCalibre.style.display = 'block'
-                    disableAllFields(input)
-                }
-            }
-            input.addEventListener('input', validateCalibre)
-            input.addEventListener('focus', () => {
-              validateCalibre()
-              if (!medidasIguales) {
-                var medidasContainer = input.closest('#medidas-container')
-                var selectLargo = medidasContainer.querySelector('#select-largo')
-                var selectAncho = medidasContainer.querySelector('#select-ancho')
-                var selectAlto = medidasContainer.querySelector('#select-alto')
-                var selectCalibre = medidasContainer.querySelector('#select-calibre')
-                selectLargo.style.display = 'none'
-                selectAncho.style.display = 'none'
-                selectAlto.style.display = 'none'
-                selectCalibre.style.display = 'block'
-
-                var calibreValue = input.value
-                var container = input.closest('.calibre-container')
-                var errorCalibre = container.querySelector('#error-calibre')
-                // Verificar si el valor es "N/A", numérico o fracción
-                if (calibreValue === 'N/A' || 
-                  !isNaN(parseFloat(calibreValue)) && isFinite(calibreValue) || 
-                  fraccionPattern.test(calibreValue)) {
-                    errorCalibre.style.display = 'none'
-                    enableAllFields(input)
-                } else {
-                    errorCalibre.style.display = 'block'
-                    disableAllFields(input)
-                }
-              }
-            })
-        })
         
         // Validación medidas iguales
         var mismaMedidaInputs = document.querySelectorAll('.medidas-iguales')
@@ -1237,14 +1137,11 @@
               var largo = unidadesMedidaContainer.querySelector('.select-um-largo')
               var ancho = unidadesMedidaContainer.querySelector('.select-um-ancho')
               var alto = unidadesMedidaContainer.querySelector('.select-um-alto')
-              var calibre = unidadesMedidaContainer.querySelector('.select-um-calibre')
               ancho.value = largo.value
               alto.value = largo.value
-              calibre.value = largo.value
               unidadesMedidaContainer.querySelector('#select-largo').style.display = 'block'
               unidadesMedidaContainer.querySelector('#select-ancho').style.display = 'none'
               unidadesMedidaContainer.querySelector('#select-alto').style.display = 'none'
-              unidadesMedidaContainer.querySelector('#select-calibre').style.display = 'none'
               medidasIguales = true
             }
             else {
@@ -1269,13 +1166,10 @@
             if (medidasIguales) {
               const ancho = medidasContainer.querySelector('.material-ancho')
               const alto = medidasContainer.querySelector('.material-alto')
-              const calibre = medidasContainer.querySelector('.material-calibre')
               const umAncho = medidasContainer.querySelector('.select-um-ancho')
               const umAlto = medidasContainer.querySelector('.select-um-alto')
-              const umCalibre = medidasContainer.querySelector('.select-um-calibre')
               umAncho.value = input.value
               umAlto.value = input.value
-              umCalibre.value = input.value
               
               const labelAncho = medidasContainer.querySelector('#label-ancho')
               labelAncho.style.display = 'block'
@@ -1291,14 +1185,6 @@
                 labelAlto.innerText = 'No aplica'
               } else {
                 labelAlto.innerText = umAlto.value
-              }
-              
-              const labelCalibre = medidasContainer.querySelector('#label-calibre')
-              labelCalibre.style.display = 'block'
-              if (calibre.value === 'N/A') {
-                labelCalibre.innerText = 'No aplica'
-              } else {
-                labelCalibre.innerText = umCalibre.value
               }
             }
           })
@@ -1332,22 +1218,6 @@
               labelAlto.innerText = 'No aplica'
             } else {
               labelAlto.innerText = input.value
-            }
-          })
-        })
-
-        // Validación unidad de medida para calibre
-        var umCalibreInputs = document.querySelectorAll('.select-um-calibre')
-        umCalibreInputs.forEach(input => {
-          input.addEventListener('change', () => {
-            const medidasContainer = input.closest('#medidas-container')
-            const calibre = medidasContainer.querySelector('.material-calibre')
-            const labelCalibre = medidasContainer.querySelector('#label-calibre')
-            labelCalibre.style.display = 'block'
-            if (calibre.value === 'N/A') {
-              labelCalibre.innerText = 'No aplica'
-            } else {
-              labelCalibre.innerText = input.value
             }
           })
         })
@@ -1475,12 +1345,10 @@
           const largo = form.querySelector('.material-largo')
           const ancho = form.querySelector('.material-ancho')
           const alto = form.querySelector('.material-alto')
-          const calibre = form.querySelector('.material-calibre')
           const medidasIguales = form.querySelector('.medidas-iguales')
           const umLargo = form.querySelector('.material-um-largo')
           const umAncho = form.querySelector('.material-um-ancho')
           const umAlto = form.querySelector('.material-um-alto')
-          const umCalibre = form.querySelector('.material-um-calibre')
           const material = form.querySelector('.material-material')
           const color = form.querySelector('.material-color')
           const marca = form.querySelector('.material-marca')
@@ -1523,14 +1391,10 @@
           if (!input.classList.contains('material-alto')) {
             alto.setAttribute('disabled', true)
           }
-          if (!input.classList.contains('material-calibre')) {
-            calibre.setAttribute('disabled', true)
-          }
           medidasIguales.setAttribute('disabled', true)
           umLargo.setAttribute('disabled', true)
           umAncho.setAttribute('disabled', true)
           umAlto.setAttribute('disabled', true)
-          umCalibre.setAttribute('disabled', true)
           if (!input.classList.contains('material-material')) {
             material.setAttribute('disabled', true)
           }
@@ -1566,12 +1430,10 @@
           const largo = form.querySelector('.material-largo')
           const ancho = form.querySelector('.material-ancho')
           const alto = form.querySelector('.material-alto')
-          const calibre = form.querySelector('.material-calibre')
           const medidasIguales = form.querySelector('.medidas-iguales')
           const umLargo = form.querySelector('.material-um-largo')
           const umAncho = form.querySelector('.material-um-ancho')
           const umAlto = form.querySelector('.material-um-alto')
-          const umCalibre = form.querySelector('.material-um-calibre')
           const material = form.querySelector('.material-material')
           const color = form.querySelector('.material-color')
           const marca = form.querySelector('.material-marca')
@@ -1606,12 +1468,10 @@
           largo.removeAttribute('disabled')
           ancho.removeAttribute('disabled')
           alto.removeAttribute('disabled')
-          calibre.removeAttribute('disabled')
           medidasIguales.removeAttribute('disabled')
           umLargo.removeAttribute('disabled')
           umAncho.removeAttribute('disabled')
           umAlto.removeAttribute('disabled')
-          umCalibre.removeAttribute('disabled')
           material.removeAttribute('disabled')
           color.removeAttribute('disabled')
           marca.removeAttribute('disabled')
@@ -1644,11 +1504,9 @@
           const largo = materialForm.querySelector('.material-largo')
           const ancho = materialForm.querySelector('.material-ancho')
           const alto = materialForm.querySelector('.material-alto')
-          const calibre = materialForm.querySelector('.material-calibre')
           const umLargo = materialForm.querySelector('.material-um-largo')
           const umAncho = materialForm.querySelector('.material-um-ancho')
           const umAlto = materialForm.querySelector('.material-um-alto')
-          const umCalibre = materialForm.querySelector('.material-um-calibre')
           const material = materialForm.querySelector('.material-material')
           const color = materialForm.querySelector('.material-color')
           const marca = materialForm.querySelector('.material-marca')
@@ -1686,7 +1544,6 @@
           <td>${largo.value}<br />UM: ${umLargo.value}</td>
           <td>${ancho.value}<br />UM: ${umAncho.value}</td>
           <td>${alto.value}<br />UM: ${umAlto.value}</td>
-          <td>${calibre.value}<br />UM: ${umCalibre.value}</td>
           <td>${material.value}</td>
           <td>${color.value}</td>
           <td>${marca.value}</td>
