@@ -66,7 +66,8 @@ def proveedor(request):
 
             historial = []
             for proveedor in proveedores:
-                historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
+                if proveedor not in mis_proveedores:
+                    historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
             for proveedor in mis_proveedores:
                 historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
 

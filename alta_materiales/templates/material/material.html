@@ -40,10 +40,10 @@
                         </div>
                         <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                         <div class="d-flex justify-content-between gap-3">
-                            {% if solicitud.empresa %}
-                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
-                            {% else %}
+                            {% if solicitud.es_migracion %}
                                 <p><b>Empresa:</b> {{solicitud.empresa_destino}}</p>
+                            {% else %}
+                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
                             {% endif %}
                             <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                         </div>
@@ -101,10 +101,10 @@
                                 </div>
                                 <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                                 <div class="d-flex justify-content-between gap-3">
-                                    {% if solicitud.empresa %}
-                                        <p><b>Empresa:</b> {{solicitud.empresa}}</p>
-                                    {% else %}
+                                    {% if solicitud.es_migracion %}
                                         <p><b>Empresa:</b> {{solicitud.empresa_destino}}</p>
+                                    {% else %}
+                                        <p><b>Empresa:</b> {{solicitud.empresa}}</p>
                                     {% endif %}
                                     <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                                 </div>
@@ -163,7 +163,11 @@
                             </div>
                             <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                             <div class="d-flex justify-content-between gap-3">
-                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% if solicitud.es_migracion %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa_destino}}</p>
+                                {% else %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% endif %}
                                 <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                             </div>
                             {% if solicitud.borrador %}
@@ -218,7 +222,11 @@
                             </div>
                             <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                             <div class="d-flex justify-content-between gap-3">
-                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% if solicitud.es_migracion %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa_destino}}</p>
+                                {% else %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% endif %}
                                 <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                             </div>
                             {% if solicitud.borrador %}
@@ -273,7 +281,11 @@
                             </div>
                             <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                             <div class="d-flex justify-content-between gap-3">
-                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% if solicitud.es_migracion %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa_destino}}</p>
+                                {% else %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% endif %}
                                 <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                             </div>
                             {% if solicitud.borrador %}
@@ -328,7 +340,11 @@
                             </div>
                             <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                             <div class="d-flex justify-content-between gap-3">
-                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% if solicitud.es_migracion %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa_destino}}</p>
+                                {% else %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% endif %}
                                 <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                             </div>
                             {% if solicitud.borrador %}
@@ -383,7 +399,11 @@
                             </div>
                             <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
                             <div class="d-flex justify-content-between gap-3">
-                                <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% if solicitud.es_migracion %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa_destino}}</p>
+                                {% else %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% endif %}
                                 <p><b>Fecha:</b> {{solicitud.fecha}}</p>
                             </div>
 

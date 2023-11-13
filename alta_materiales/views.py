@@ -80,7 +80,8 @@ def material(request):
 
             historial = []
             for solicitud in solicitudes:
-                historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
+                if solicitud not in mis_solicitudes:
+                    historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
             for solicitud in mis_solicitudes:
                 historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
 

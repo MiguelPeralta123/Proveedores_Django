@@ -1693,6 +1693,8 @@
           color = document.getElementById(`id_material-${editingId}-color`)
           porcentajeIva = document.getElementById(`id_material-${editingId}-porcentaje_iva`)
           unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`)
+
+          editingBand = false
         }
 
         const errorTipoAlta = tipoAlta.closest('.tipo-alta-container').querySelector('#error-tipo-alta')
@@ -1761,7 +1763,7 @@
           const form = document.getElementById(`material-form-${editingId}`)
           if (form) {
             form.style.display = "block"
-            // Then, the last form created is removed
+            // Se elimina el ultimo formulario creado
             const lastForm = document.getElementById(`material-form-${formCount - 1}`);
             if (lastForm) {
               lastForm.remove();
@@ -1784,7 +1786,7 @@
 
         // If the delete button is clicked, remove the row and the form
         if (event.target && event.target.classList.contains('remove-material')) {
-          const row = event.target.closest('.table-row');
+          const row = event.target.closest('.table-row')
           if (row) {
             row.remove();
             // Recorre todos las filas restantes y actualiza sus índices
@@ -1818,7 +1820,9 @@
               }
             }
           }
-          const form = document.getElementById(`material-form-${editingId}`);
+
+          const removeId = event.target.id.substring(16, event.target.id.length)
+          const form = document.getElementById(`material-form-${removeId}`)
           if (form) {
             form.remove();
             // Recorre todos los formularios restantes y actualiza sus índices
