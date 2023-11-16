@@ -53,7 +53,12 @@
               <datalist id="opciones_proveedor">
               </datalist>
               <p id="error-rfc-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
-              <p id="error-rfc-migracion-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">No existe ningún proveedor con ese RFC</p>
+              {% if current_user.puede_crear_proveedor %}
+                <p id="error-rfc-migracion-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">No existe ningún proveedor con ese RFC</p>
+              {% endif %}
+              {% if current_user.puede_crear_cliente %}
+                <p id="error-rfc-migracion-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">No existe ningún cliente con ese RFC</p>
+              {% endif %}
             </div>
           </div>
 
@@ -91,7 +96,12 @@
                 <datalist id="opciones_proveedor">
                 </datalist>
                 <p id="error-rfc" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un RFC válido</p>
-                <p id="error-rfc-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un proveedor con ese RFC</p>
+                {% if current_user.puede_crear_proveedor %}
+                  <p id="error-rfc-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un proveedor con ese RFC</p>
+                {% endif %}
+                {% if current_user.puede_crear_cliente %}
+                  <p id="error-rfc-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un cliente con ese RFC</p>
+                {% endif %}
               </div>
 
               <!-- CURP field -->

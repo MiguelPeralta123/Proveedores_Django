@@ -9,13 +9,13 @@ from .forms import *
 from .models import *
 
 # VISTA DE INICIO
-# Decorator to force login. The return route is defined in proveedores/settings.py
+# Decorador para obligar a iniciar sesión. La ruta a la que devuelve está definida en settings.py
 @login_required
 def home(request):
     return render(request, 'home.html')
 
 
-# VISTAS DE PROVEEDOR (GET ALL, CREATE, DETAIL)
+# VISTAS DE PROVEEDOR
 
 @login_required
 def proveedor(request, tipo):
@@ -25,72 +25,93 @@ def proveedor(request, tipo):
                 if tipo == 'proveedores':
                     proveedores = Proveedor.objects.filter(
                         Q(pendiente=True, tipo_alta='Proveedor') |
-                        Q(pendiente=True, tipo_alta=''))
+                        Q(pendiente=True, tipo_alta='')
+                    ).order_by('id')
                     if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Proveedor') |
-                            Q(usuario=request.user, tipo_alta=''))
+                            Q(usuario=request.user, tipo_alta='')
+                        ).order_by('id')
                 if tipo == 'clientes':
                     proveedores = Proveedor.objects.filter(
                         Q(pendiente=True, tipo_alta='Cliente') |
-                        Q(pendiente=True, tipo_alta=''))
+                        Q(pendiente=True, tipo_alta='')
+                    ).order_by('id')
                     if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Cliente') |
-                            Q(usuario=request.user, tipo_alta=''))
+                            Q(usuario=request.user, tipo_alta='')
+                        ).order_by('id')
             elif request.user.finanzas:
                 if tipo == 'proveedores':
                     proveedores = Proveedor.objects.filter(
                         Q(compras=True, tipo_alta='Proveedor') |
-                        Q(compras=True, tipo_alta=''))
+                        Q(compras=True, tipo_alta='')
+                    ).order_by('id')
                     if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Proveedor') |
-                            Q(usuario=request.user, tipo_alta=''))
+                            Q(usuario=request.user, tipo_alta='')
+                        ).order_by('id')
                 if tipo == 'clientes':
                     proveedores = Proveedor.objects.filter(
                         Q(compras=True, tipo_alta='Cliente') |
-                        Q(compras=True, tipo_alta=''))
+                        Q(compras=True, tipo_alta='')
+                    ).order_by('id')
                     if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Cliente') |
-                            Q(usuario=request.user, tipo_alta=''))
+                            Q(usuario=request.user, tipo_alta='')
+                        ).order_by('id')
             elif request.user.sistemas:
                 if tipo == 'proveedores':
                     proveedores = Proveedor.objects.filter(
                         Q(finanzas=True, tipo_alta='Proveedor') |
-                        Q(finanzas=True, tipo_alta=''))
+                        Q(finanzas=True, tipo_alta='')
+                    ).order_by('id')
                     if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Proveedor') |
-                            Q(usuario=request.user, tipo_alta=''))
+                            Q(usuario=request.user, tipo_alta='')
+                        ).order_by('id')
                 if tipo == 'clientes':
                     proveedores = Proveedor.objects.filter(
                         Q(finanzas=True, tipo_alta='Cliente') |
-                        Q(finanzas=True, tipo_alta=''))
+                        Q(finanzas=True, tipo_alta='')
+                    ).order_by('id')
                     if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Cliente') |
-                            Q(usuario=request.user, tipo_alta=''))
+                            Q(usuario=request.user, tipo_alta='')
+                        ).order_by('id')
             else:
-                proveedores = Proveedor.objects.filter(usuario=request.user)
-                proveedores_borradores = proveedores.filter(borrador=True)
+                if tipo == 'proveedores':
+                    proveedores = Proveedor.objects.filter(
+                        Q(usuario=request.user, tipo_alta='Proveedor') |
+                        Q(usuario=request.user, tipo_alta='')
+                    ).order_by('id')
+                elif tipo == 'clientes':
+                    proveedores = Proveedor.objects.filter(
+                        Q(usuario=request.user, tipo_alta='Cliente') |
+                        Q(usuario=request.user, tipo_alta='')
+                    ).order_by('id')
+                proveedores_borradores = proveedores.filter(borrador=True).order_by('id')
                 proveedores_pendientes = proveedores.filter(
                     Q(pendiente=True) | 
                     Q(compras=True) | 
                     Q(finanzas=True)
-                )
+                ).order_by('id')
                 proveedores_rechazados = proveedores.filter(
                     Q(rechazado_compras=True) | 
                     Q(rechazado_finanzas=True) | 
                     Q(rechazado_sistemas=True)
-                )
-                proveedores_aprobados = proveedores.filter(sistemas=True)
-                proveedores_eliminados = proveedores.filter(eliminado=True)
+                ).order_by('id')
+                proveedores_aprobados = proveedores.filter(sistemas=True).order_by('id')
+                proveedores_eliminados = proveedores.filter(eliminado=True).order_by('id')
 
                 historial = []
                 for proveedor in proveedores:
-                    historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
+                    historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id).order_by('id')
                 
                 return render(request, 'proveedor/proveedor.html', {
                     'tipo': tipo,
@@ -107,9 +128,9 @@ def proveedor(request, tipo):
             historial = []
             for proveedor in proveedores:
                 if proveedor not in mis_proveedores:
-                    historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
+                    historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id).order_by('id')
             for proveedor in mis_proveedores:
-                historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
+                historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id).order_by('id')
 
             if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
                 return render(request, 'proveedor/proveedor.html', {

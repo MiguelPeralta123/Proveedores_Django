@@ -36,36 +36,36 @@ def material(request):
     try:
         if request.user.puede_crear_material or request.user.compras or request.user.finanzas or request.user.sistemas:
             if request.user.compras:
-                solicitudes = MaterialSolicitud.objects.filter(pendiente=True)
+                solicitudes = MaterialSolicitud.objects.filter(pendiente=True).order_by('id')
                 if request.user.puede_crear_material:
-                    mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+                    mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user).order_by('id')
             elif request.user.finanzas:
-                solicitudes = MaterialSolicitud.objects.filter(compras=True)
+                solicitudes = MaterialSolicitud.objects.filter(compras=True).order_by('id')
                 if request.user.puede_crear_material:
-                    mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+                    mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user).order_by('id')
             elif request.user.sistemas:
-                solicitudes = MaterialSolicitud.objects.filter(finanzas=True)
+                solicitudes = MaterialSolicitud.objects.filter(finanzas=True).order_by('id')
                 if request.user.puede_crear_material:
-                    mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
+                    mis_solicitudes = MaterialSolicitud.objects.filter(usuario=request.user).order_by('id')
             else:
-                solicitudes = MaterialSolicitud.objects.filter(usuario=request.user)
-                solicitudes_borradores = solicitudes.filter(borrador=True)
+                solicitudes = MaterialSolicitud.objects.filter(usuario=request.user).order_by('id')
+                solicitudes_borradores = solicitudes.filter(borrador=True).order_by('id')
                 solicitudes_pendientes = solicitudes.filter(
                     Q(pendiente=True) | 
                     Q(compras=True) | 
                     Q(finanzas=True)
-                )
+                ).order_by('id')
                 solicitudes_rechazadas = solicitudes.filter(
                     Q(rechazado_compras=True) | 
                     Q(rechazado_finanzas=True) | 
                     Q(rechazado_sistemas=True)
-                )
-                solicitudes_aprobadas = solicitudes.filter(sistemas=True)
-                solicitudes_eliminadas = solicitudes.filter(eliminado=True)
+                ).order_by('id')
+                solicitudes_aprobadas = solicitudes.filter(sistemas=True).order_by('id')
+                solicitudes_eliminadas = solicitudes.filter(eliminado=True).order_by('id')
 
                 historial = []
                 for solicitud in solicitudes:
-                    historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
+                    historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id).order_by('id')
                 
                 return render(request, 'material/material.html', {
                     'solicitudes': solicitudes,
@@ -81,9 +81,9 @@ def material(request):
             historial = []
             for solicitud in solicitudes:
                 if solicitud not in mis_solicitudes:
-                    historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
+                    historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id).order_by('id')
             for solicitud in mis_solicitudes:
-                historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id)
+                historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id).order_by('id')
 
             if request.user.puede_crear_material:
                 return render(request, 'material/material.html', {
