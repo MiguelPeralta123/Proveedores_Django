@@ -7,7 +7,7 @@
         <div style="max-width: 40rem;">
             
             {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
-                <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de clientes / proveedores</h1>
+                <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de {{tipo}}</h1>
             {% elif current_user.puede_crear_proveedor %}
                 <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de proveedores</h1>
             {% else %}

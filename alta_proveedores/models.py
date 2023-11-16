@@ -31,6 +31,7 @@ class Proveedor(models.Model):
     tipo_tercero = models.CharField(max_length=100, blank=True)
     id_fiscal = models.CharField(max_length=10, blank=True)
     agente_aduanal = models.CharField(max_length=10, blank=True)
+    fair_trade = models.CharField(max_length=20, blank=True)
     dias_credito = models.CharField(max_length=10, default=0, blank=True)
     monto_credito_mn = models.CharField(max_length=20, default=0, blank=True)
     monto_credito_me = models.CharField(max_length=20, default=0, blank=True)

@@ -219,7 +219,7 @@
               </div>
             </div>
 
-            <div style="display: flex; gap: 1rem;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
               <!-- id fiscal field -->
               <div style="width: 100%; margin-bottom:1rem;">
                 <label for="id_id_fiscal">ID fiscal:</label>
@@ -232,6 +232,13 @@
                 <p class="m-0">{{ form.agente_aduanal.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.agente_aduanal }}
                 <p id="error-agente-aduanal" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+              </div>
+
+              <!-- Número de identificación Fair Trade field -->
+              <div id="fair_trade_container" style="width: 100%; margin-bottom:1rem; display: none;">
+                <p class="m-0">Núm. de identificación Fair Trade<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ form.fair_trade }}
+                <p id="error-fair-trade" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
             </div>
 
@@ -344,14 +351,14 @@
             </div>
 
             <div style="display: flex; gap: 1rem;">
-              <!-- Numero exterior field -->
+              <!-- Número exterior field -->
               <div style="width: 50%; margin-bottom:1rem;">
                 <label for="id_numero_exterior">Número exterior:<span style="color: rgb(192, 0, 0);">*</span></label>
                 {{ form.numero_exterior }}
                 <p id="error-numero-exterior" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
               </div>
 
-              <!-- Numero interior field -->
+              <!-- Número interior field -->
               <div style="width: 50%; margin-bottom:1rem;">
                 <label for="id_numero_interior">Número interior:</label>
                 {{ form.numero_interior }}
@@ -558,6 +565,7 @@
       const tipoTercero = document.getElementById('id_tipo_tercero')
       const idFiscal = document.getElementById('id_id_fiscal')
       const agenteAduanal = document.getElementById('id_agente_aduanal')
+      const fairTrade = document.getElementById('id_fair_trade')
       const diasCredito = document.getElementById('id_dias_credito')
       const montoCreditoMn = document.getElementById('id_monto_credito_mn')
       const montoCreditoMe = document.getElementById('id_monto_credito_me')
@@ -629,6 +637,7 @@
       const errorTipoTercero = document.getElementById('error-tipo-tercero')
       const errorIdFiscal = document.getElementById('error-id-fiscal')
       const errorAgenteAduanal = document.getElementById('error-agente-aduanal')
+      const errorFairTrade = document.getElementById('error-fair-trade')
       const errorDiasCredito = document.getElementById('error-dias-credito')
       const errorMontoCreditoMn = document.getElementById('error-monto-credito-mn')
       const errorMontoCreditoMe = document.getElementById('error-monto-credito-me')
@@ -714,6 +723,7 @@
         tipoOperacion.required = !esMigracionValue
         tipoTercero.required = !esMigracionValue
         agenteAduanal.required = !esMigracionValue
+        fairTrade.required = !esMigracionValue
         diasCredito.required = !esMigracionValue
         montoCreditoMn.required = !esMigracionValue
         retencionIva.required = !esMigracionValue
@@ -839,14 +849,19 @@
       
       // Validación tipo alta
       const validateTipoAlta = () => {
+        const fairTradeContainer = document.querySelector('#fair_trade_container')
         {% if current_user.puede_crear_proveedor %}
           tipoAlta.value = "Proveedor";
           idFiscal.setAttribute('placeholder', 'para proveedores extranjeros')
+          fairTradeContainer.style.display = 'none'
+          fairTrade.removeAttribute('required')
         {% endif %}
 
         {% if current_user.puede_crear_cliente %}
           tipoAlta.value = "Cliente";
           idFiscal.setAttribute('placeholder', 'para clientes extranjeros')
+          fairTradeContainer.style.display = 'block'
+          fairTrade.setAttribute('required', true)
         {% endif %}
 
         tipoAlta.setAttribute('disabled', true)
@@ -916,10 +931,10 @@
       const validateCurp = () => {
         if (curpPattern.test(curp.value)) {
           errorCurp.style.display = 'none'
-          enableAllFields()
+          //enableAllFields()
         } else {
           errorCurp.style.display = 'block'
-          disableAllFields(curp)
+          //disableAllFields(curp)
         }
 
         // Todas las letras deben ser mayúsculas
@@ -1143,6 +1158,18 @@
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
       
+      // Validación núm. de identificación Fair Trade
+      const validateFairTrade = () => {
+        if (fairTrade.value == '') {
+          errorFairTrade.style.display = 'block'
+        } else {
+          errorFairTrade.style.display = 'none'
+        }
+        enableSaveButton()
+      }
+      fairTrade.addEventListener('focus', validateFairTrade)
+      fairTrade.addEventListener('input', validateFairTrade)
+      
       // Validación dias credito
       const validateDiasCredito = () => {
         if (diasCredito.value != '' && numberPattern.test(diasCredito.value)) {
@@ -1356,7 +1383,7 @@
       calle.addEventListener('focus', validateCalle)
       calle.addEventListener('input', validateCalle)
       
-      // Validación numero exterior
+      // Validación número exterior
       const validateNumeroExterior = () => {
         if (numeroExterior.value == '') {
           errorNumeroExterior.style.display = 'block'
@@ -1554,6 +1581,7 @@
         tipoTercero.setAttribute('disabled', true)
         idFiscal.setAttribute('disabled', true)
         agenteAduanal.setAttribute('disabled', true)
+        fairTrade.setAttribute('disabled', true)
         diasCredito.setAttribute('disabled', true)
         montoCreditoMn.setAttribute('disabled', true)
         montoCreditoMe.setAttribute('disabled', true)
@@ -1617,6 +1645,7 @@
         tipoTercero.removeAttribute('disabled')
         idFiscal.removeAttribute('disabled')
         agenteAduanal.removeAttribute('disabled')
+        fairTrade.removeAttribute('disabled')
         diasCredito.removeAttribute('disabled')
         montoCreditoMn.removeAttribute('disabled')
         montoCreditoMe.removeAttribute('disabled')
@@ -1665,7 +1694,7 @@
           }
         }
         else {
-          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCreditoMn.style.display == 'block' || errorMontoCreditoMe.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
+          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorFairTrade.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCreditoMn.style.display == 'block' || errorMontoCreditoMe.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
             btnGuardar.disabled = true
             btnBorrador.disabled = true
           }
@@ -1699,6 +1728,7 @@
         tipoTercero.removeAttribute('required')
         idFiscal.removeAttribute('required')
         agenteAduanal.removeAttribute('required')
+        fairTrade.removeAttribute('required')
         diasCredito.removeAttribute('required')
         montoCreditoMn.removeAttribute('required')
         montoCreditoMe.removeAttribute('required')

@@ -142,7 +142,7 @@
                       {% endif %}
                         <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
                           <!-- Preview de la foto del producto -->
-                          <img id="id_foto_producto_img" class="mb-2 rounded" src="/{{ form.foto_producto.value }}" alt="Foto del producto" style="width: 100%; max-height: 10rem;" />
+                          <img id="id_foto_producto_img" class="mb-2 rounded" src="/{{ form.foto_producto.value }}" alt="Foto del producto" style="max-width: 80%; max-height: 10rem;" />
                           
                           <!-- Botón para eliminar la foto del producto -->
                           <button id="id_btn_delete_foto_producto" class="btn btn-secondary btn-delete-foto-producto mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem;">
@@ -169,7 +169,7 @@
                       {% endif %}
                         <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
                           <!-- Preview de la ficha técnica -->
-                          <img id="id_ficha_tecnica_img" class="mb-2 rounded" src="/{{ form.ficha_tecnica.value }}" alt="Ficha técnica" style="width: 100%; max-height: 10rem;" />
+                          <img id="id_ficha_tecnica_img" class="mb-2 rounded" src="/{{ form.ficha_tecnica.value }}" alt="Ficha técnica" style="max-width: 80%; max-height: 10rem;" />
                           
                           <!-- Botón para eliminar la ficha técnica -->
                           <button id="id_btn_delete_ficha_tecnica" class="btn btn-secondary btn-delete-ficha-tecnica mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem;">
@@ -604,9 +604,16 @@
 
       const disableRemoveButtons = () => {
         const removeButtons = tableMaterials.getElementsByClassName('remove-material')
-        if (materialCounter > 1) {
-          for (i=0; i<removeButtons.length; i++) {
-            removeButtons[i].removeAttribute('disabled')
+        if (btnApprove || btnDecline || btnSave || btnRemove) {
+          if (materialCounter > 1) {
+            for (i=0; i<removeButtons.length; i++) {
+              removeButtons[i].removeAttribute('disabled')
+            }
+          }
+          else {
+            for (i=0; i<removeButtons.length; i++) {
+              removeButtons[i].setAttribute('disabled', true)
+            }
           }
         }
         else {
@@ -1496,7 +1503,6 @@
         bodyMaterials.innerHTML = ''
         const materialForms = document.querySelectorAll('.material-form')
         materialForms.forEach((materialForm, index) => {
-          materialCounter++
           const tipoAlta = materialForm.querySelector('.material-tipo-alta')
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
@@ -1526,43 +1532,46 @@
           esProdTerminadoValue = esProdTerminado.checked == true ? 'Si' : 'No'
 
           const rechazado = materialForm.querySelector('.material-rechazado')
-  
-          const newRow = bodyMaterials.insertRow()
-          newRow.classList.add('table-row')
 
-          if (rechazado.value == 'true') {
-            newRow.classList.add('table-row-hidden')
-            materialCounter--
+          if (tipoAlta.value && subfamilia.value && nombre.value && largo.value && ancho.value && alto.value && material.value && color.value && porcentajeIva.value && unidadMedida.value) {
+            materialCounter++
+            const newRow = bodyMaterials.insertRow()
+            newRow.classList.add('table-row')
+
+            if (rechazado.value == 'true') {
+              newRow.classList.add('table-row-hidden')
+              materialCounter--
+            }
+
+            newRow.id = `table-row-${index}`
+            newRow.innerHTML = `
+            <td>${tipoAlta.value}</td>
+            <td>${subfamilia.value}</td>
+            <td>${nombre.value}</td>
+            <td class="p-0"><img class="w-100" src="${fotoProducto.src}" alt="Foto del producto"/></td>
+            <td>${largo.value}<br />UM: ${umLargo.value}</td>
+            <td>${ancho.value}<br />UM: ${umAncho.value}</td>
+            <td>${alto.value}<br />UM: ${umAlto.value}</td>
+            <td>${material.value}</td>
+            <td>${color.value}</td>
+            <td>${marca.value}</td>
+            <td>${parteModelo.value}</td>
+            <td>${nombreComun.value}</td>
+            <td>${ingActivo.value}</td>
+            <td>${porcentajeIva.value}</td>
+            <td>${alias.value}</td>
+            <td>${unidadMedida.value}</td>
+            <td>${codigoSat.value}</td>
+            <td>${esMezclaValue}</td>
+            <td>${esMaterialEmpaqueValue}</td>
+            <td>${esProdTerminadoValue}</td>
+            <td>
+              <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Abrir</button>
+            </td>
+            <td>
+              <button id="remove-material-${index}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
+            </td>`
           }
-
-          newRow.id = `table-row-${index}`
-          newRow.innerHTML = `
-          <td>${tipoAlta.value}</td>
-          <td>${subfamilia.value}</td>
-          <td>${nombre.value}</td>
-          <td class="p-0"><img class="w-100" src="${fotoProducto.src}" alt="Foto del producto"/></td>
-          <td>${largo.value}<br />UM: ${umLargo.value}</td>
-          <td>${ancho.value}<br />UM: ${umAncho.value}</td>
-          <td>${alto.value}<br />UM: ${umAlto.value}</td>
-          <td>${material.value}</td>
-          <td>${color.value}</td>
-          <td>${marca.value}</td>
-          <td>${parteModelo.value}</td>
-          <td>${nombreComun.value}</td>
-          <td>${ingActivo.value}</td>
-          <td>${porcentajeIva.value}</td>
-          <td>${alias.value}</td>
-          <td>${unidadMedida.value}</td>
-          <td>${codigoSat.value}</td>
-          <td>${esMezclaValue}</td>
-          <td>${esMaterialEmpaqueValue}</td>
-          <td>${esProdTerminadoValue}</td>
-          <td>
-            <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Abrir</button>
-          </td>
-          <td>
-            <button id="remove-material-${index}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
-          </td>`
         })
 
         disableRemoveButtons()
@@ -1611,28 +1620,29 @@
             removeId = event.target.id.substring(16, event.target.id.length)
             const form = document.getElementById(`material-form-${removeId}`)
             if (form) {
-              // En vez de eliminar el material, hacemos que su variable "Rechazado" sea true
-              //form.remove()
-              //form.rechazado = true
-              const rechazado = form.querySelector('.material-rechazado')
-              rechazado.value = true
-              if (comentarios) {
-                comentarios.setAttribute('required', 'true')
-                materialEliminado = true
-              }
-
-              // Recorre todos los formularios restantes y actualiza sus índices
-              /*const forms = materialFormsContainer.querySelectorAll('.material-form');
-              var counter = 0
-              forms.forEach(form => {
-                form.id = `material-form-${counter}`
-                const inputs = form.querySelectorAll('[id^=id_material-]');
-                for (let j = 0; j < inputs.length; j++) {
-                  inputs[j].id = inputs[j].id.replace(/\d+/, i);
+              // Si el usuario es el requisitor, se elimina el producto de la tabla
+              {% if current_user.id == solicitud.usuario.id %}
+                form.remove()
+                // Recorre todos los formularios restantes y actualiza sus índices
+                const forms = materialFormsContainer.querySelectorAll('.material-form');
+                var counter = 0
+                forms.forEach(form => {
+                  form.id = `material-form-${counter}`
+                  const inputs = form.querySelectorAll('[id^=id_material-]');
+                  for (let j = 0; j < inputs.length; j++) {
+                    inputs[j].id = inputs[j].id.replace(/\d+/, i);
+                  }
+                  form.style.display = 'none'
+                  counter++
+                })
+              {% else %}
+                const rechazado = form.querySelector('.material-rechazado')
+                rechazado.value = true
+                if (comentarios) {
+                  comentarios.setAttribute('required', 'true')
+                  materialEliminado = true
                 }
-                form.style.display = 'none'
-                counter++
-              })*/
+              {% endif %}
 
               // Las banderas de tipo "rechazado" serán true
               /*if (rechazado_compras) {

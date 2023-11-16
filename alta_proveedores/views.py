@@ -18,21 +18,60 @@ def home(request):
 # VISTAS DE PROVEEDOR (GET ALL, CREATE, DETAIL)
 
 @login_required
-def proveedor(request):
+def proveedor(request, tipo):
     try:
         if request.user.puede_crear_proveedor or request.user.puede_crear_cliente or request.user.compras or request.user.finanzas or request.user.sistemas:
             if request.user.compras:
-                proveedores = Proveedor.objects.filter(pendiente=True)
-                if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
-                    mis_proveedores = Proveedor.objects.filter(usuario=request.user)
+                if tipo == 'proveedores':
+                    proveedores = Proveedor.objects.filter(
+                        Q(pendiente=True, tipo_alta='Proveedor') |
+                        Q(pendiente=True, tipo_alta=''))
+                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                        mis_proveedores = Proveedor.objects.filter(
+                            Q(usuario=request.user, tipo_alta='Proveedor') |
+                            Q(usuario=request.user, tipo_alta=''))
+                if tipo == 'clientes':
+                    proveedores = Proveedor.objects.filter(
+                        Q(pendiente=True, tipo_alta='Cliente') |
+                        Q(pendiente=True, tipo_alta=''))
+                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                        mis_proveedores = Proveedor.objects.filter(
+                            Q(usuario=request.user, tipo_alta='Cliente') |
+                            Q(usuario=request.user, tipo_alta=''))
             elif request.user.finanzas:
-                proveedores = Proveedor.objects.filter(compras=True)
-                if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
-                    mis_proveedores = Proveedor.objects.filter(usuario=request.user)
+                if tipo == 'proveedores':
+                    proveedores = Proveedor.objects.filter(
+                        Q(compras=True, tipo_alta='Proveedor') |
+                        Q(compras=True, tipo_alta=''))
+                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                        mis_proveedores = Proveedor.objects.filter(
+                            Q(usuario=request.user, tipo_alta='Proveedor') |
+                            Q(usuario=request.user, tipo_alta=''))
+                if tipo == 'clientes':
+                    proveedores = Proveedor.objects.filter(
+                        Q(compras=True, tipo_alta='Cliente') |
+                        Q(compras=True, tipo_alta=''))
+                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                        mis_proveedores = Proveedor.objects.filter(
+                            Q(usuario=request.user, tipo_alta='Cliente') |
+                            Q(usuario=request.user, tipo_alta=''))
             elif request.user.sistemas:
-                proveedores = Proveedor.objects.filter(finanzas=True)
-                if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
-                    mis_proveedores = Proveedor.objects.filter(usuario=request.user)
+                if tipo == 'proveedores':
+                    proveedores = Proveedor.objects.filter(
+                        Q(finanzas=True, tipo_alta='Proveedor') |
+                        Q(finanzas=True, tipo_alta=''))
+                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                        mis_proveedores = Proveedor.objects.filter(
+                            Q(usuario=request.user, tipo_alta='Proveedor') |
+                            Q(usuario=request.user, tipo_alta=''))
+                if tipo == 'clientes':
+                    proveedores = Proveedor.objects.filter(
+                        Q(finanzas=True, tipo_alta='Cliente') |
+                        Q(finanzas=True, tipo_alta=''))
+                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                        mis_proveedores = Proveedor.objects.filter(
+                            Q(usuario=request.user, tipo_alta='Cliente') |
+                            Q(usuario=request.user, tipo_alta=''))
             else:
                 proveedores = Proveedor.objects.filter(usuario=request.user)
                 proveedores_borradores = proveedores.filter(borrador=True)
@@ -54,6 +93,7 @@ def proveedor(request):
                     historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id)
                 
                 return render(request, 'proveedor/proveedor.html', {
+                    'tipo': tipo,
                     'proveedores': proveedores,
                     'historial': historial,
                     'proveedores_borradores': proveedores_borradores,
@@ -73,6 +113,7 @@ def proveedor(request):
 
             if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
                 return render(request, 'proveedor/proveedor.html', {
+                    'tipo': tipo,
                     'proveedores': proveedores,
                     'mis_proveedores': mis_proveedores,
                     'historial': historial,
@@ -80,6 +121,7 @@ def proveedor(request):
                 })
             else:
                 return render(request, 'proveedor/proveedor.html', {
+                    'tipo': tipo,
                     'proveedores': proveedores,
                     'historial': historial,
                     'current_user': request.user
