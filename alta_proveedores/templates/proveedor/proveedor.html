@@ -38,10 +38,14 @@
                         href="{% url 'proveedor_detail' proveedor.id %}"
                         style="transition: 0.2s ease-in-out;">
                         <div class="d-flex justify-content-between gap-3 my-2">
-                            {% if proveedor.nombre_comercial != '' %}
+                            {% if not proveedor.es_migracion and proveedor.nombre_comercial %}
                                 <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
-                            {% else %}
+                            {% elif not proveedor.es_migracion and proveedor.borrador %}
+                                <h4 class="my-0">Borrador - {{proveedor.tipo_alta}}</h4>
+                            {% elif proveedor.es_migracion and proveedor.rfc_migracion %}
                                 <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                            {% elif proveedor.es_migracion and proveedor.borrador %}
+                                <h4 class="my-0">Migración - {{proveedor.tipo_alta}}</h4>
                             {% endif %}
                             <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
                         </div>
@@ -99,10 +103,14 @@
                                 href="{% url 'proveedor_detail' proveedor.id %}"
                                 style="transition: 0.2s ease-in-out;">
                                 <div class="d-flex justify-content-between gap-3 my-2">
-                                    {% if proveedor.nombre_comercial != '' %}
+                                    {% if not proveedor.es_migracion and proveedor.nombre_comercial %}
                                         <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
-                                    {% else %}
+                                    {% elif not proveedor.es_migracion and proveedor.borrador %}
+                                        <h4 class="my-0">Borrador - {{proveedor.tipo_alta}}</h4>
+                                    {% elif proveedor.es_migracion and proveedor.rfc_migracion %}
                                         <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                                    {% elif proveedor.es_migracion and proveedor.borrador %}
+                                        <h4 class="my-0">Migración - {{proveedor.tipo_alta}}</h4>
                                     {% endif %}
                                     <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
                                 </div>
@@ -161,10 +169,14 @@
                             href="{% url 'proveedor_detail' proveedor.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                {% if proveedor.nombre_comercial != '' %}
+                                {% if not proveedor.es_migracion and proveedor.nombre_comercial %}
                                     <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
-                                {% else %}
+                                {% elif not proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Borrador - {{proveedor.tipo_alta}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.rfc_migracion %}
                                     <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Migración - {{proveedor.tipo_alta}}</h4>
                                 {% endif %}
                                 <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
                             </div>
@@ -220,10 +232,14 @@
                             href="{% url 'proveedor_detail' proveedor.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                {% if proveedor.nombre_comercial != '' %}
+                                {% if not proveedor.es_migracion and proveedor.nombre_comercial %}
                                     <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
-                                {% else %}
+                                {% elif not proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Borrador - {{proveedor.tipo_alta}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.rfc_migracion %}
                                     <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Migración - {{proveedor.tipo_alta}}</h4>
                                 {% endif %}
                                 <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
                             </div>
@@ -279,10 +295,14 @@
                             href="{% url 'proveedor_detail' proveedor.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                {% if proveedor.nombre_comercial != '' %}
+                                {% if not proveedor.es_migracion and proveedor.nombre_comercial %}
                                     <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
-                                {% else %}
+                                {% elif not proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Borrador - {{proveedor.tipo_alta}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.rfc_migracion %}
                                     <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Migración - {{proveedor.tipo_alta}}</h4>
                                 {% endif %}
                                 <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
                             </div>
@@ -338,10 +358,14 @@
                             href="{% url 'proveedor_detail' proveedor.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                {% if proveedor.nombre_comercial != '' %}
+                                {% if not proveedor.es_migracion and proveedor.nombre_comercial %}
                                     <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
-                                {% else %}
+                                {% elif not proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Borrador - {{proveedor.tipo_alta}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.rfc_migracion %}
                                     <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Migración - {{proveedor.tipo_alta}}</h4>
                                 {% endif %}
                                 <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
                             </div>
@@ -397,10 +421,14 @@
                             href="{% url 'proveedor_detail' proveedor.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                {% if proveedor.nombre_comercial != '' %}
+                                {% if not proveedor.es_migracion and proveedor.nombre_comercial %}
                                     <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
-                                {% else %}
+                                {% elif not proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Borrador - {{proveedor.tipo_alta}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.rfc_migracion %}
                                     <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Migración - {{proveedor.tipo_alta}}</h4>
                                 {% endif %}
                                 <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
                             </div>

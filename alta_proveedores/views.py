@@ -328,13 +328,13 @@ def proveedor_detail(request, proveedor_id):
                         if proveedor.rechazado_compras or proveedor.rechazado_finanzas or proveedor.rechazado_sistemas:
                             historial.accion = 'rechazada'
                             action = 'rechazado'
-                        elif proveedor.pendiente:
+                        elif proveedor.pendiente or proveedor.compras or proveedor.finanzas:
                             historial.accion = 'modificada'
                             action = 'modificado'
                         elif proveedor.eliminado:
                             historial.accion = 'eliminada'
                             action = 'eliminado'
-                        else:
+                        elif proveedor.sistemas:
                             historial.accion = 'aprobada'
                             action = 'abrobado'
                         historial.usuario = request.user
@@ -390,7 +390,7 @@ def enviarCorreo(departamento, elementos, folios):
     if departamento == 'sistemas':
         email = ['edurazo@ricofarms.com']
 
-    #send_mail(subject, message, from_email, email, fail_silently=True)
+    send_mail(subject, message, from_email, email, fail_silently=True)
 
 def solicitudesPendientes():
     # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por compras

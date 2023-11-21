@@ -304,13 +304,13 @@ def material_detail(request, material_id):
                     if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas:
                         historial.accion = 'rechazada'
                         action = 'rechazado'
-                    elif solicitud.pendiente:
+                    elif solicitud.pendiente or solicitud.compras or solicitud.finanzas:
                         historial.accion = 'modificada'
                         action = 'modificado'
                     elif solicitud.eliminado:
                         historial.accion = 'eliminada'
                         action = 'eliminado'
-                    else:
+                    elif solicitud.sistemas:
                         historial.accion = 'aprobada'
                         action = 'abrobado'
                     historial.usuario = request.user
@@ -434,7 +434,7 @@ def enviarCorreo(departamento, elementos, folios):
     if departamento == 'sistemas':
         email = ['edurazo@ricofarms.com']
 
-    #send_mail(subject, message, from_email, email, fail_silently=True)
+    send_mail(subject, message, from_email, email, fail_silently=True)
 
 def solicitudesPendientes():
     # Revisar si hay solicitudes de material pendientes de aprobar por compras

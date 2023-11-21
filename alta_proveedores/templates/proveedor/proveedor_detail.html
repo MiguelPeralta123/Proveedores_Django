@@ -521,17 +521,17 @@
 
             {% if proveedor.pendiente and current_user.compras and proveedor.borrador == False %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="compras" value="True">Aprobar</button>
-              <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
+              <button id="btn-decline" class="btn btn-decline w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
             {% endif %}
 
             {% if proveedor.compras and current_user.finanzas and proveedor.borrador == False %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
-              <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar</button>
+              <button id="btn-decline" class="btn btn-decline w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar</button>
             {% endif %}
 
             {% if proveedor.finanzas and current_user.sistemas and proveedor.borrador == False %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
-              <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
+              <button id="btn-decline" class="btn btn-decline w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
             {% endif %}
           </div>
         </form>
@@ -716,53 +716,58 @@
       })
     
       buttonsContainer.addEventListener('click', function (event) {
-        tipoAlta.removeAttribute('disabled')
         if (event.target && event.target.classList.contains('btn-save')) {
           if (tipoAlta) {
+            tipoAlta.removeAttribute('disabled')
             if (tipoAlta.value == 'Cliente') {
               btnSave.name = 'compras'
             }
           }
-          comentarios.value = ''
+          if (comentarios) {
+            comentarios.value = ''
+          }
         }
-        if (event.target && event.target.classList.contains('btn-reject')) {
-          comentarios.setAttribute('required', 'true')
-          if(comentarios.value == '') {
-            errorComentarios.style.display = 'block'
+        if (event.target && event.target.classList.contains('btn-decline')) {
+          if (tipoAlta) {
+            tipoAlta.removeAttribute('disabled')
+          }
+          if (comentarios) {
+            comentarios.setAttribute('required', 'true')
+            if(comentarios.value == '') {
+              errorComentarios.style.display = 'block'
+            }
           }
         }
         if (event.target && event.target.classList.contains('btn-approve')) {
-          comentarios.removeAttribute('required')
-          comentarios.value = ''
+          if (tipoAlta) {
+            tipoAlta.removeAttribute('disabled')
+          }
+          if (comentarios) {
+            comentarios.removeAttribute('required')
+            comentarios.value = ''
+          }
         }
       })
     
       // Los checkbox se muestran solo para proveedores, no para clientes
-      if (tipoAlta) {
-        if (tipoAlta.value == 'Cliente') {
-          checkboxContainer.style.display = 'none'
-        }
+      if (tipoAlta && tipoAlta.value == 'Cliente') {
+        checkboxContainer.style.display = 'none'
       }
     
       // La curp es obligatoria solo para personas físicas
-      if (contribuyente) {
-        if (contribuyente.value == 'Persona moral') {
-          curp.required = false
-          curp.disabled = true
-        }
+      if (contribuyente && contribuyente.value == 'Persona moral') {
+        curp.required = false
+        curp.disabled = true
       }
     
       // Si se añadió un segundo banco, mostrar el elemento "banco-2-container"
-      if (banco2) {
-        if (banco2.value != '') {
-          console.log(banco2.value)
-          banco2Container.style.display = 'block'
-          banco2.required = true
-          cuenta2.required = true
-          moneda2.required = true
-          clabe2.required = true
-          btnAddBanco.textContent = 'Eliminar banco'
-        }
+      if (banco2 && banco2.value != '') {
+        banco2Container.style.display = 'block'
+        banco2.required = true
+        cuenta2.required = true
+        moneda2.required = true
+        clabe2.required = true
+        btnAddBanco.textContent = 'Eliminar banco'
       }
 
       const makeFieldsMandatory = () => {
@@ -777,9 +782,6 @@
         }
         if (empresa) {
           empresa.setAttribute('required', true);
-        }
-        if (tipoAlta) {
-          tipoAlta.setAttribute('required', true);
         }
         if (contribuyente) {
           contribuyente.setAttribute('required', true);
@@ -896,9 +898,6 @@
         }
         if (empresa) {
           empresa.removeAttribute('required');
-        }
-        if (tipoAlta) {
-          tipoAlta.removeAttribute('required');
         }
         if (contribuyente) {
           contribuyente.removeAttribute('required');
@@ -1183,10 +1182,8 @@
         const validateCurp = () => {
           if (curpPattern.test(curp.value)) {
             errorCurp.style.display = 'none'
-            enableAllFields()
           } else {
             errorCurp.style.display = 'block'
-            disableAllFields(curp)
           }
 
           // Todas las letras deben ser mayúsculas
@@ -1438,16 +1435,18 @@
       }
       
       // Validación núm. de identificación Fair Trade
-      const validateFairTrade = () => {
-        if (fairTrade.value == '') {
-          errorFairTrade.style.display = 'block'
-        } else {
-          errorFairTrade.style.display = 'none'
+      if (fairTrade) {
+        const validateFairTrade = () => {
+          if (fairTrade.value == '') {
+            errorFairTrade.style.display = 'block'
+          } else {
+            errorFairTrade.style.display = 'none'
+          }
+          enableSaveButton()
         }
-        enableSaveButton()
+        fairTrade.addEventListener('focus', validateFairTrade)
+        fairTrade.addEventListener('input', validateFairTrade)
       }
-      fairTrade.addEventListener('focus', validateFairTrade)
-      fairTrade.addEventListener('input', validateFairTrade)
 
       const numberWithCommas = (x) => {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -1865,7 +1864,9 @@
         if (empresaOrigen) {
           empresaOrigen.setAttribute('disabled', true)
           empresaDestino.setAttribute('disabled', true)
-          comentarios.setAttribute('disabled', true)
+          if (comentarios) {
+            comentarios.setAttribute('disabled', true)
+          }
         }
         else {
           empresa.setAttribute('disabled', true)
@@ -1905,7 +1906,9 @@
           tipoTercero.setAttribute('disabled', true)
           idFiscal.setAttribute('disabled', true)
           agenteAduanal.setAttribute('disabled', true)
-          fairTrade.setAttribute('disabled', true)
+          if (fairTrade) {
+            fairTrade.setAttribute('disabled', true)
+          }
           diasCredito.setAttribute('disabled', true)
           montoCreditoMn.setAttribute('disabled', true)
           montoCreditoMe.setAttribute('disabled', true)
@@ -1948,7 +1951,9 @@
         if (empresaOrigen) {
           empresaOrigen.removeAttribute('disabled')
           empresaDestino.removeAttribute('disabled')
-          comentarios.removeAttribute('disabled')
+          if (comentarios) {
+            comentarios.removeAttribute('disabled')
+          }
         }
         else {
           empresa.removeAttribute('disabled')
@@ -1974,7 +1979,9 @@
           tipoTercero.removeAttribute('disabled')
           idFiscal.removeAttribute('disabled')
           agenteAduanal.removeAttribute('disabled')
-          fairTrade.removeAttribute('disabled')
+          if (fairTrade) {
+            fairTrade.removeAttribute('disabled')
+          }
           diasCredito.removeAttribute('disabled')
           montoCreditoMn.removeAttribute('disabled')
           montoCreditoMe.removeAttribute('disabled')
@@ -2040,15 +2047,17 @@
           }
         }
         else {
-          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorFairTrade.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCreditoMn.style.display == 'block' || errorMontoCreditoMe.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
-            if(btnSave) {
-              btnSave.disabled = true
-              btnDelete.disabled = true
-            }
-            else {
-              if (btnApprove) {
-                btnApprove.disabled = true
-                btnDecline.disabled = true
+          if (errorEmpresa.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCreditoMn.style.display == 'block' || errorMontoCreditoMe.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
+            if (errorFairTrade && errorFairTrade.style.display == 'none') {
+              if(btnSave) {
+                btnSave.disabled = true
+                btnDelete.disabled = true
+              }
+              else {
+                if (btnApprove) {
+                  btnApprove.disabled = true
+                  btnDecline.disabled = true
+                }
               }
             }
           }

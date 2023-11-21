@@ -584,23 +584,25 @@
         })
       }
       
-      buttonsContainer.addEventListener('click', function(event) {  
-        if (event.target && event.target.classList.contains('btn-save')) {
-          comentarios.value = ''
-        }
-        if (event.target && event.target.classList.contains('btn-reject')) {
-          comentarios.setAttribute('required', 'true')
-          if(comentarios.value == '') {
-            errorComentarios.style.display = 'block'
-          }
-        }
-        if (event.target && event.target.classList.contains('btn-approve')) {
-          if (!materialEliminado) {
-            comentarios.removeAttribute('required')
+      if (comentarios) {
+        buttonsContainer.addEventListener('click', function(event) {  
+          if (event.target && event.target.classList.contains('btn-save')) {
             comentarios.value = ''
           }
-        }
-      });
+          if (event.target && event.target.classList.contains('btn-reject')) {
+            comentarios.setAttribute('required', 'true')
+            if(comentarios.value == '') {
+              errorComentarios.style.display = 'block'
+            }
+          }
+          if (event.target && event.target.classList.contains('btn-approve')) {
+            if (!materialEliminado && comentarios) {
+              comentarios.removeAttribute('required')
+              comentarios.value = ''
+            }
+          }
+        });
+      }
 
       const disableRemoveButtons = () => {
         const removeButtons = tableMaterials.getElementsByClassName('remove-material')
@@ -1705,13 +1707,17 @@
       const disableAllFieldsForMigracion = () => {
         empresaOrigen.setAttribute('disabled', true)
         empresaDestino.setAttribute('disabled', true)
-        comentarios.setAttribute('disabled', true)
+        if (comentarios) {
+          comentarios.setAttribute('disabled', true)
+        }
       }
 
       const enableAllFieldsForMigracion = () => {
         empresaOrigen.removeAttribute('disabled')
         empresaDestino.removeAttribute('disabled')
-        comentarios.removeAttribute('disabled')
+        if (comentarios) {
+          comentarios.removeAttribute('disabled')
+        }
       }
 
       function enableSaveButton() {

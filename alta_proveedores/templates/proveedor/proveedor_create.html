@@ -718,7 +718,6 @@
         rfcMigracion.required = esMigracionValue
 
         empresa.required = !esMigracionValue
-        tipoAlta.required = !esMigracionValue
         contribuyente.required = !esMigracionValue
         rfc.required = !esMigracionValue
         regimenCapital.required = !esMigracionValue
@@ -859,6 +858,7 @@
       
       // Validación tipo alta
       const validateTipoAlta = () => {
+        tipoAlta.setAttribute('disabled', true)
         const fairTradeContainer = document.querySelector('#fair_trade_container')
         {% if current_user.puede_crear_proveedor %}
           tipoAlta.value = "Proveedor";
@@ -873,8 +873,6 @@
           fairTradeContainer.style.display = 'block'
           fairTrade.setAttribute('required', true)
         {% endif %}
-
-        tipoAlta.setAttribute('disabled', true)
       }
       validateTipoAlta()
       
@@ -941,10 +939,8 @@
       const validateCurp = () => {
         if (curpPattern.test(curp.value)) {
           errorCurp.style.display = 'none'
-          //enableAllFields()
         } else {
           errorCurp.style.display = 'block'
-          //disableAllFields(curp)
         }
 
         // Todas las letras deben ser mayúsculas
@@ -1169,16 +1165,18 @@
       }
       
       // Validación núm. de identificación Fair Trade
-      const validateFairTrade = () => {
-        if (fairTrade.value == '') {
-          errorFairTrade.style.display = 'block'
-        } else {
-          errorFairTrade.style.display = 'none'
+      if (fairTrade) {
+        const validateFairTrade = () => {
+          if (fairTrade.value == '') {
+            errorFairTrade.style.display = 'block'
+          } else {
+            errorFairTrade.style.display = 'none'
+          }
+          enableSaveButton()
         }
-        enableSaveButton()
+        fairTrade.addEventListener('focus', validateFairTrade)
+        fairTrade.addEventListener('input', validateFairTrade)
       }
-      fairTrade.addEventListener('focus', validateFairTrade)
-      fairTrade.addEventListener('input', validateFairTrade)
       
       // Validación dias credito
       const validateDiasCredito = () => {
@@ -1704,7 +1702,7 @@
           }
         }
         else {
-          if (errorEmpresa.style.display == 'block' || errorTipoAlta.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorFairTrade.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCreditoMn.style.display == 'block' || errorMontoCreditoMe.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
+          if (errorEmpresa.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorFairTrade.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCreditoMn.style.display == 'block' || errorMontoCreditoMe.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
             btnGuardar.disabled = true
             btnBorrador.disabled = true
           }
@@ -1716,11 +1714,11 @@
       }
 
       const handleBorradorSubmit = () => {
+        tipoAlta.removeAttribute('disabled')
         empresaOrigen.removeAttribute('required')
         empresaDestino.removeAttribute('required')
         rfcMigracion.removeAttribute('required')
         empresa.removeAttribute('required')
-        tipoAlta.removeAttribute('required')
         contribuyente.removeAttribute('required')
         rfc.removeAttribute('required')
         curp.removeAttribute('required')
@@ -1762,8 +1760,6 @@
         cuenta2.removeAttribute('required')
         moneda2.removeAttribute('required')
         clabe2.removeAttribute('required')
-        constanciaSituacionFiscal.removeAttribute('required')
-        estadoCuentaBancario.removeAttribute('required')
       }
 
       btnBorrador.addEventListener('click', () => {

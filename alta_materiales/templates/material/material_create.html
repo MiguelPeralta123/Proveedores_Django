@@ -495,7 +495,7 @@
       empresaDestino.addEventListener('focus', validateEmpresaDestino)
       empresaDestino.addEventListener('change', validateEmpresaDestino)
       
-      // Validación nombre producto migracion
+      // Validación nombre producto migración
       const validateNombreProductoMigracion = () => {
         if (nombreProductoMigracion.value == '') {
           errorNombreProductoMigracion.style.display = 'block'
@@ -525,11 +525,8 @@
           enableAllFieldsForMigracion()
         }
         enableSaveButton()
-      }
-      nombreProductoMigracion.addEventListener('focus', validateNombreProductoMigracion)
-      nombreProductoMigracion.addEventListener('input', validateNombreProductoMigracion)
-      
-      const validateNombreProductoMigracionOnChange = () => {
+
+        // Change
         let showError = true
         for (var i = 0; i < catalogoMaterial.length; i++) {
           if (catalogoMaterial[i].value.toUpperCase() == nombreProductoMigracion.value.toUpperCase()) {
@@ -546,7 +543,9 @@
         }
         enableSaveButton()
       }
-      nombreProductoMigracion.addEventListener('change', validateNombreProductoMigracionOnChange)
+      nombreProductoMigracion.addEventListener('focus', validateNombreProductoMigracion)
+      nombreProductoMigracion.addEventListener('input', validateNombreProductoMigracion)
+      nombreProductoMigracion.addEventListener('change', validateNombreProductoMigracion)
 
       // Validación empresa
       const validateEmpresa = () => {
@@ -637,6 +636,7 @@
         nombreProductoInputs.forEach(function(input) {
             input.setAttribute('list', 'opciones_material')
             const validateNombreProducto = () => {
+                // Focus
                 var nombreProductoValue = input.value
                 var container = input.closest('.nombre-producto-container')
                 var errorNombreProducto = container.querySelector('#error-nombre-producto')
@@ -648,10 +648,8 @@
                 }
                 // Solo la primera letra será mayúscula
                 input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
-            }
-            input.addEventListener('focus', validateNombreProducto)
-            input.addEventListener('input', () => {
-                validateNombreProducto()
+
+                // Input
                 // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
                 const nombreProductoContainer = input.closest('.nombre-producto-container')
                 const errorNombreProducto2 = nombreProductoContainer.querySelector('#error-nombre-producto-2')
@@ -671,11 +669,8 @@
                   errorNombreProducto2.style.display = 'block'
                   disableAllFields(input)
                 }
-            })
 
-            const validateNombreProductoOnChange = () => {
-                const nombreProductoContainer = input.closest('.nombre-producto-container')
-                const errorNombreProducto2 = nombreProductoContainer.querySelector('#error-nombre-producto-2')
+                // Change
                 let showError = false
                 for (var i = 0; i < catalogoMaterial.length; i++) {
                   if (catalogoMaterial[i].value.toUpperCase() == input.value.toUpperCase()) {
@@ -691,7 +686,9 @@
                   enableAllFields(input)
                 }
             }
-            input.addEventListener('change', validateNombreProductoOnChange)
+            input.addEventListener('focus', validateNombreProducto)
+            input.addEventListener('input', validateNombreProducto)
+            input.addEventListener('change', validateNombreProducto)
         })
 
         // Validación foto producto
