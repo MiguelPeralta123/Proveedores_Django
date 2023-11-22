@@ -146,6 +146,9 @@ def material_create(request):
                     'solicitud_form': solicitud_form,
                     'material_formset': material_formset,
                     'catalogo_material': catalogo_material,
+                    'subfamilia_producto_list': SUBFAMILIA_PRODUCTO_LIST,
+                    'subfamilia_servicio_list': SUBFAMILIA_SERVICIO_LIST,
+                    'unidad_medida_list': UNIDAD_MEDIDA_LIST,
                 })
             else:
                 try:
@@ -264,7 +267,10 @@ def material_detail(request, material_id):
                 'materiales': materiales,
                 'material_forms': material_forms,
                 'catalogo_material': catalogo_material,
-                'current_user': request.user
+                'subfamilia_producto_list': SUBFAMILIA_PRODUCTO_LIST,
+                'subfamilia_servicio_list': SUBFAMILIA_SERVICIO_LIST,
+                'unidad_medida_list': UNIDAD_MEDIDA_LIST,
+                'current_user': request.user,
             })
         else:
             try:

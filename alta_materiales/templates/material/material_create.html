@@ -5,7 +5,7 @@
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" enctype="multipart/form-data" style="background-color: rgb(255, 255, 255, 0.8);">
-          <h1 class="mb-4">Registrar material</h1>
+          <h1 class="mb-4">Registrar material / servicio</h1>
 
           {{ error }}
 
@@ -13,7 +13,7 @@
 
           <!-- Es migracion field -->
           <div style="margin-bottom:1rem;">
-            <p><b>En caso de que el material ya exista en otra empresa, marque la siguiente casilla:</b></p>
+            <p><b>En caso de que el material / servicio ya exista en otra empresa, marque la siguiente casilla:</b></p>
             <label for="id_es_migracion">Es migración:</label>
             {{ solicitud_form.es_migracion }}
             <p id="error-es-migracion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
@@ -41,7 +41,7 @@
 
             <!-- Nombre producto migracion field -->
             <div class="mt-3 mb-3">
-              <label for="id_nombre_producto_migracion">Nombre producto:<span style="color: rgb(192, 0, 0);">*</span></label>
+              <label for="id_nombre_producto_migracion">Nombre producto / servicio:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ solicitud_form.nombre_producto_migracion }}
               <datalist id="opciones_material">
               </datalist>
@@ -76,7 +76,7 @@
                     <th scope="col" style="min-width: 6rem;">Tipo alta</th>
                     <th scope="col" style="min-width: 6rem;">Subfamilia</th>
                     <th scope="col" style="min-width: 6rem;">Nombre</th>
-                    <th scope="col" style="min-width: 6rem;">Foto del producto</th>
+                    <th scope="col" style="min-width: 6rem;">Foto</th>
                     <th scope="col" style="min-width: 6rem;">Largo</th>
                     <th scope="col" style="min-width: 6rem;">Ancho / Calibre</th>
                     <th scope="col" style="min-width: 6rem;">Alto</th>
@@ -122,7 +122,7 @@
 
                   <!-- Nombre producto field -->
                   <div class="nombre-producto-container" style="margin-bottom:1rem;">
-                    <p class="m-0">{{ material_form.nombre_producto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    <label for="id_nombre_producto">Nombre producto / servicio:<span style="color: rgb(192, 0, 0);">*</span></label>
                     {{ material_form.nombre_producto }}
                     <datalist id="opciones_material">
                     </datalist>
@@ -146,7 +146,7 @@
                         </button>
                       </div>
 
-                      <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
+                      <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
                       {{ material_form.foto_producto }}
                       <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                     </div>
@@ -227,7 +227,7 @@
                     </div>
                   </div>
 
-                  <div style="display: flex; gap: 1rem;">
+                  <div id="material-color-container" style="display: flex; gap: 1rem;">
                     <!-- Material field -->
                     <div class="material-container" style="width: 50%; margin-bottom:1rem;">
                       <p class="m-0">{{ material_form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
@@ -334,7 +334,7 @@
               {% endfor %}
             </div>
 
-            <button id="add-material" class="btn btn-secondary mb-3" type="button" style="background-color: #008841; color: white; font-weight: bold;">Agregar Material</button>
+            <button id="add-material" class="btn btn-secondary mb-3" type="button" style="background-color: #008841; color: white; font-weight: bold;">Agregar Material / servicio</button>
           </div>
 
           <div class="d-flex gap-3">
@@ -413,9 +413,14 @@
       let editingId = 0
       let medidasIguales = false
 
-      // Catalogo de materiales existentes
+      // Catálogo de materiales existentes
       var catalogoMaterial = {{ catalogo_material|safe }}
       nombreProductoMigracion.setAttribute('list', 'opciones_material')
+
+      // Catálogos de subfamilia y unidad de medida
+      var subfamiliasProductoList = {{ subfamilia_producto_list|safe }}
+      var subfamiliasServicioList = {{ subfamilia_servicio_list|safe }}
+      var unidadesMedidaList = {{ unidad_medida_list|safe }}
 
       btnBack.addEventListener('click', () => {
         window.history.back()
@@ -600,6 +605,60 @@
                   errorTipoAlta.style.display = 'block'
                 } else {
                   errorTipoAlta.style.display = 'none'
+                  // Filtrar las subfamilias y unidades de medida dependiendo del tipo de alta
+                  const form = input.closest('.material-form')
+                  const subfamilia = form.querySelector('.select-subfamilia')
+                  const unidadMedida = form.querySelector('.select-unidad-medida')
+                  var cadenaSubfamilias = ''
+                  var cadenaUnidadesMedida = ''
+                  // Medidas, material y color no serán visibles para clientes
+                  const medidasContainer = form.querySelector('#medidas-container')
+                  const materialColorContainer = form.querySelector('#material-color-container')
+
+                  if (tipoAltaValue === 'Almacén') {
+                    subfamiliasProductoList.forEach(item => {
+                      if (item === ' Seleccione una opción') {
+                        cadenaSubfamilias += `<option value selected>${item}</option>`
+                        return
+                      }
+                      cadenaSubfamilias += `<option value="${item}">${item}</option>`
+                    })
+                    unidadesMedidaList.forEach(item => {
+                      if (item === ' Seleccione una opción') {
+                        cadenaUnidadesMedida += `<option value selected>${item}</option>`
+                        return
+                      }
+                      if (item === 'Servicio') {
+                        return
+                      }
+                      cadenaUnidadesMedida += `<option value="${item}">${item}</option>`
+                    })
+                    // Mostrando las medidas, material y color
+                    medidasContainer.style.display = 'block'
+                    materialColorContainer.style.display = 'flex'
+                  }
+                  if (tipoAltaValue === 'Servicio') {
+                    subfamiliasServicioList.forEach(item => {
+                      if (item === ' Seleccione una opción') {
+                        cadenaSubfamilias += `<option value selected>${item}</option>`
+                        return
+                      }
+                      cadenaSubfamilias += `<option value="${item}">${item}</option>`
+                    })
+                    cadenaUnidadesMedida = `<option value selected>Selecciona una opción</option>
+                    <option value="Servicio">Servicio</option>`
+                    // Ocultando las medidas, material y color
+                    medidasContainer.style.display = 'none'
+                    materialColorContainer.style.display = 'none'
+                  }
+                  subfamilia.innerHTML = cadenaSubfamilias
+                  unidadMedida.innerHTML = cadenaUnidadesMedida
+
+                  // Mostrando los errores de subfamilia y unidad de medida
+                  const errorSubfamilia = form.querySelector('#error-subfamilia')
+                  const errorUnidadMedida = form.querySelector('#error-unidad-medida')
+                  errorSubfamilia.style.display = 'block'
+                  errorUnidadMedida.style.display = 'block'
                 }
             })
         })
@@ -1358,9 +1417,9 @@
           <td>${subfamilia.value}</td>
           <td>${nombre.value}</td>
           <td class="p-0"><img class="w-100" src="${fotoProducto.src}" alt="Foto del producto"/></td>
-          <td>${largo.value}<br />UM: ${umLargo.value}</td>
-          <td>${ancho.value}<br />UM: ${umAncho.value}</td>
-          <td>${alto.value}<br />UM: ${umAlto.value}</td>
+          <td>${largo.value}<br />${umLargo.value}</td>
+          <td>${ancho.value}<br />${umAncho.value}</td>
+          <td>${alto.value}<br />${umAlto.value}</td>
           <td>${material.value}</td>
           <td>${color.value}</td>
           <td>${marca.value}</td>
@@ -1527,7 +1586,7 @@
               </div>
             </div>
 
-            <div style="display: flex; gap: 1rem;">
+            <div id="material-color-container" style="display: flex; gap: 1rem;">
               <!-- Material field -->
               <div class="material-container" style="width: 50%; margin-bottom:1rem;">
                 <p class="m-0">{{ material_formset.empty_form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
@@ -1707,7 +1766,7 @@
         const errorPorcentajeIva = porcentajeIva.closest('.porcentaje-iva-container').querySelector('#error-porcentaje-iva')
         const errorUnidadMedida = unidadMedida.closest('.unidad-medida-container').querySelector('#error-unidad-medida')
 
-        if (tipoAlta.value == '' || subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block') {
+        if (tipoAlta.value == '') {
           window.alert('Algún campo está vacío o es incorrecto')
           if (tipoAlta.value == '') {
             errorTipoAlta.style.display = 'block'
@@ -1739,8 +1798,67 @@
           if (unidadMedida.value == '') {
             errorUnidadMedida.style.display = 'block'
           }
+          return
         }
-        else {
+
+        if (tipoAlta.value == 'Almacén' && (subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block')) {
+          window.alert('Algún campo está vacío o es incorrecto')
+          if (tipoAlta.value == '') {
+            errorTipoAlta.style.display = 'block'
+          }
+          if (subfamilia.value == '') {
+            errorSubfamilia.style.display = 'block'
+          }
+          if (nombreProducto.value == '') {
+            errorNombreProducto.style.display = 'block'
+          }
+          if (largo.value == '') {
+            errorLargo.style.display = 'block'
+          }
+          if (ancho.value == '') {
+            errorAncho.style.display = 'block'
+          }
+          if (alto.value == '') {
+            errorAlto.style.display = 'block'
+          }
+          if (material.value == '') {
+            errorMaterial.style.display = 'block'
+          }
+          if (color.value == '') {
+            errorColor.style.display = 'block'
+          }
+          if (porcentajeIva.value == '') {
+            errorPorcentajeIva.style.display = 'block'
+          }
+          if (unidadMedida.value == '') {
+            errorUnidadMedida.style.display = 'block'
+          }
+          return
+        }
+
+        // Si tipo de alta es Servicio, las medidas, material y color no son obligatorios
+        if (tipoAlta.value == 'Servicio' && (subfamilia.value == '' || nombreProducto.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block')) {
+          window.alert('Algún campo está vacío o es incorrecto')
+          if (tipoAlta.value == '') {
+            errorTipoAlta.style.display = 'block'
+          }
+          if (subfamilia.value == '') {
+            errorSubfamilia.style.display = 'block'
+          }
+          if (nombreProducto.value == '') {
+            errorNombreProducto.style.display = 'block'
+          }
+          if (porcentajeIva.value == '') {
+            errorPorcentajeIva.style.display = 'block'
+          }
+          if (unidadMedida.value == '') {
+            errorUnidadMedida.style.display = 'block'
+          }
+          return
+        }
+
+        // Validamos las medidas para cada unidad
+        if (tipoAlta == 'Almacén') {
           if (largo.value != 'N/A' && umLargo.value == '') {
             errorUnidadesMedida.style.display = 'block'
             window.alert('Debe seleccionar una unidad para "Largo"')
@@ -1768,13 +1886,14 @@
               umAlto.value = ''
             }
           }
-          // Si todos los campos están correctos, llenar la tabla y crear un nuevo formulario
-          fillTable()
-          createMaterialForm()
-          btnAddMaterial.innerHTML = 'Agregar Material'
-          medidasIguales = false
-          enableSaveButton()
         }
+        
+        // Si todos los campos están correctos, llenar la tabla y crear un nuevo formulario
+        fillTable()
+        createMaterialForm()
+        btnAddMaterial.innerHTML = 'Agregar Material / servicio'
+        medidasIguales = false
+        enableSaveButton()
       });
 
       tableMaterials.addEventListener('click', function(event) {

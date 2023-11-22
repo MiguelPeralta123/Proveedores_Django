@@ -42,7 +42,7 @@
 
             <!-- Nombre producto migracion field -->
             <div class="mt-3 mb-3">
-              <label for="id_nombre_producto_migracion">Nombre producto:<span style="color: rgb(192, 0, 0);">*</span></label>
+              <label for="id_nombre_producto_migracion">Nombre:<span style="color: rgb(192, 0, 0);">*</span></label>
               {{ solicitud_form.nombre_producto_migracion }}
               <datalist id="opciones_material">
               </datalist>
@@ -67,7 +67,7 @@
               <p id="error-justificacion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
 
-            <h3>Materiales</h3>
+            <h3>Materiales / servicios</h3>
 
             <div id="table-materials" class="table-responsive my-3" style="font-size: 0.8rem; background-color: rgb(255, 255, 255);">
               <table class="table table-bordered table-sm">
@@ -76,7 +76,7 @@
                     <th scope="col" style="min-width: 6rem;">Tipo alta</th>
                     <th scope="col" style="min-width: 6rem;">Subfamilia</th>
                     <th scope="col" style="min-width: 6rem;">Nombre</th>
-                    <th scope="col" style="min-width: 6rem;">Foto del producto</th>
+                    <th scope="col" style="min-width: 6rem;">Foto</th>
                     <th scope="col" style="min-width: 6rem;">Largo</th>
                     <th scope="col" style="min-width: 6rem;">Ancho / Calibre</th>
                     <th scope="col" style="min-width: 6rem;">Alto</th>
@@ -121,7 +121,7 @@
 
                   <!-- Nombre producto field -->
                   <div class="nombre-producto-container" style="margin-bottom:1rem;">
-                    <p class="m-0">{{ form.nombre_producto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                    <label for="id_nombre_producto">Nombre:<span style="color: rgb(192, 0, 0);">*</span></label>
                     {{ form.nombre_producto }}
                     <datalist id="opciones_material">
                     </datalist>
@@ -141,20 +141,20 @@
                         <div id="image_preview_container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; display: none;">
                       {% endif %}
                         <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
-                          <!-- Preview de la foto del producto -->
-                          <img id="id_foto_producto_img" class="mb-2 rounded" src="/{{ form.foto_producto.value }}" alt="Foto del producto" style="max-width: 80%; max-height: 10rem;" />
+                          <!-- Preview de la foto -->
+                          <img id="id_foto_producto_img" class="mb-2 rounded" src="/{{ form.foto_producto.value }}" alt="Foto" style="max-width: 80%; max-height: 10rem;" />
                           
-                          <!-- Botón para eliminar la foto del producto -->
+                          <!-- Botón para eliminar la foto -->
                           <button id="id_btn_delete_foto_producto" class="btn btn-secondary btn-delete-foto-producto mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
                           </button>
                         </div>
 
-                        <!-- Enlace para descargar la foto del producto -->
-                        <a id="id_foto_producto_download" href="/{{ form.foto_producto.value }}" class="mb-2" style="width:fit-content; display: block;" download="">Descargar foto del producto</a>
+                        <!-- Enlace para descargar la foto -->
+                        <a id="id_foto_producto_download" href="/{{ form.foto_producto.value }}" class="mb-2" style="width:fit-content; display: block;" download="">Descargar foto</a>
                       </div>
 
-                      <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
+                      <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
                       {{ form.foto_producto }}
                       <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                     </div>
@@ -485,6 +485,12 @@
 
       // Catalogo de materiales existentes
       var catalogoMaterial = {{ catalogo_material|safe }}
+
+      // Catálogos de subfamilia y unidad de medida
+      var subfamiliasProductoList = {{ subfamilia_producto_list|safe }}
+      var subfamiliasServicioList = {{ subfamilia_servicio_list|safe }}
+      var unidadesMedidaList = {{ unidad_medida_list|safe }}
+
       if (nombreProductoMigracion) {
         nombreProductoMigracion.setAttribute('list', 'opciones_material')
       }
@@ -768,7 +774,7 @@
         // Validación tipo alta
         var tipoAltaInputs = document.querySelectorAll('.material-tipo-alta')
         tipoAltaInputs.forEach(input => {
-            const validateTipoAlta = () => {
+            input.addEventListener('focus', () => {
                 var tipoAltaValue = input.value
                 var container = input.closest('.tipo-alta-container')
                 var errorTipoAlta = container.querySelector('#error-tipo-alta')
@@ -778,9 +784,63 @@
                 } else {
                   errorTipoAlta.style.display = 'none'
                 }
-            }
-            input.addEventListener('focus', validateTipoAlta)
-            input.addEventListener('change', validateTipoAlta)
+            })
+            input.addEventListener('change', () => {
+                var tipoAltaValue = input.value
+                var container = input.closest('.tipo-alta-container')
+                var errorTipoAlta = container.querySelector('#error-tipo-alta')
+                // Verificar si el campo está vacío
+                if (tipoAltaValue == '') {
+                  errorTipoAlta.style.display = 'block'
+                } else {
+                  errorTipoAlta.style.display = 'none'
+                  // Filtrar las subfamilias y unidades de medida dependiendo del tipo de alta
+                  const form = input.closest('.material-form')
+                  const subfamilia = form.querySelector('.select-subfamilia')
+                  const unidadMedida = form.querySelector('.select-unidad-medida')
+                  var cadenaSubfamilias = ''
+                  var cadenaUnidadesMedida = ''
+
+                  if (tipoAltaValue === 'Almacén') {
+                    subfamiliasProductoList.forEach(item => {
+                      if (item === ' Seleccione una opción') {
+                        cadenaSubfamilias += `<option value selected>${item}</option>`
+                        return
+                      }
+                      cadenaSubfamilias += `<option value="${item}">${item}</option>`
+                    })
+                    unidadesMedidaList.forEach(item => {
+                      if (item === ' Seleccione una opción') {
+                        cadenaUnidadesMedida += `<option value selected>${item}</option>`
+                        return
+                      }
+                      if (item === 'Servicio') {
+                        return
+                      }
+                      cadenaUnidadesMedida += `<option value="${item}">${item}</option>`
+                    })
+                  }
+                  if (tipoAltaValue === 'Servicio') {
+                    subfamiliasServicioList.forEach(item => {
+                      if (item === ' Seleccione una opción') {
+                        cadenaSubfamilias += `<option value selected>${item}</option>`
+                        return
+                      }
+                      cadenaSubfamilias += `<option value="${item}">${item}</option>`
+                    })
+                    cadenaUnidadesMedida = `<option value selected>Selecciona una opción</option>
+                    <option value="Servicio">Servicio</option>`
+                  }
+                  subfamilia.innerHTML = cadenaSubfamilias
+                  unidadMedida.innerHTML = cadenaUnidadesMedida
+
+                  // Mostrando los errores de subfamilia y unidad de medida
+                  const errorSubfamilia = form.querySelector('#error-subfamilia')
+                  const errorUnidadMedida = form.querySelector('#error-unidad-medida')
+                  errorSubfamilia.style.display = 'block'
+                  errorUnidadMedida.style.display = 'block'
+                }
+            })
         })
 
         // Validación subfamilia
@@ -1550,7 +1610,7 @@
             <td>${tipoAlta.value}</td>
             <td>${subfamilia.value}</td>
             <td>${nombre.value}</td>
-            <td class="p-0"><img class="w-100" src="${fotoProducto.src}" alt="Foto del producto"/></td>
+            <td class="p-0"><img class="w-100" src="${fotoProducto.src}" alt="Foto"/></td>
             <td>${largo.value}<br />UM: ${umLargo.value}</td>
             <td>${ancho.value}<br />UM: ${umAncho.value}</td>
             <td>${alto.value}<br />UM: ${umAlto.value}</td>
