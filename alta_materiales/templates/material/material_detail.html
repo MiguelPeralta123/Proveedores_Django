@@ -67,16 +67,22 @@
               <p id="error-justificacion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
 
-            <h3>Materiales / servicios</h3>
+            <div class="d-flex justify-content-between">
+              <h3>Materiales / servicios</h3>
+              <button id="id_btn_download_table" class="btn btn-secondary btn-download-table" type="button" style="color: white; font-size: 1rem;">
+                ↓
+              </button>
+            </div>
 
             <div id="table-materials" class="table-responsive my-3" style="font-size: 0.8rem; background-color: rgb(255, 255, 255);">
-              <table class="table table-bordered table-sm">
+              <table id="materials-table" class="table table-bordered table-sm">
                 <thead class="text-center">
                   <tr>
                     <th scope="col" style="min-width: 6rem;">Tipo alta</th>
                     <th scope="col" style="min-width: 6rem;">Subfamilia</th>
                     <th scope="col" style="min-width: 6rem;">Nombre</th>
                     <th scope="col" style="min-width: 6rem;">Foto</th>
+                    <th scope="col" style="min-width: 6rem;">Ficha técnica</th>
                     <th scope="col" style="min-width: 6rem;">Largo</th>
                     <th scope="col" style="min-width: 6rem;">Ancho / Calibre</th>
                     <th scope="col" style="min-width: 6rem;">Alto</th>
@@ -185,7 +191,6 @@
                       {{ form.ficha_tecnica }}
                       <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
                     </div>
-
                   </div>
 
                   <div id="medidas-container">
@@ -257,7 +262,7 @@
                     </div>
                   </div>
 
-                  <div style="display: flex; gap: 1rem;">
+                  <div id="material-color-container" style="display: flex; gap: 1rem;">
                     <!-- Material field -->
                     <div class="material-container" style="width: 50%; margin-bottom:1rem;">
                       <p class="m-0">{{ form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
@@ -438,13 +443,16 @@
       }
   </style>
 
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Containers
-      const materialFormsContainer = document.getElementById('material-forms');
+      const materialFormsContainer = document.getElementById('material-forms')
       const tableMaterials = document.getElementById('table-materials')
       const bodyMaterials = document.getElementById('tbody-materials')
-      const buttonsContainer = document.getElementById('buttons-container');
+      const buttonsContainer = document.getElementById('buttons-container')
       const datalist = document.getElementById("opciones_material")
 
       // Inputs
@@ -474,6 +482,7 @@
       const btnDecline = document.getElementById('btn-decline')
       const btnBack = document.getElementById('btn-back')
       const btnsRechazadoFalse = document.querySelectorAll('.btn-rechazado-false')
+      const btnDownloadTable = document.querySelector('#id_btn_download_table')
       
       // Regular expressions
       const fraccionPattern = /^(\d+(\.\d+)?\/\d+(\.\d+)?)$/;
@@ -499,6 +508,22 @@
         window.history.back()
       })
 
+      btnDownloadTable.addEventListener('click', () => {
+        console.log('Descargando PDF...')
+        /*
+        // Crear un objeto jsPDF
+        var doc = new jspdf()
+        // Obtener la tabla por su ID
+        var table = document.querySelector("#materials-table")
+        // Convertir la tabla a un formato compatible con jsPDF
+        var data = doc.autoTableHtmlToJson(table)
+        // Agregar la tabla al documento
+        doc.autoTable(data.columns, data.rows)
+        // Descargar el archivo PDF
+        doc.save("productos y servicios.pdf")
+        */
+      })
+
       if (btnsRechazadoFalse) {
         btnsRechazadoFalse.forEach(btnRechazadoFalse => {
           btnRechazadoFalse.addEventListener('click', () => {
@@ -515,42 +540,53 @@
           // Si se hace clic en "Guardar cambios", ocultar el formulario y actualizar la tabla
           if (event.target && event.target.classList.contains('btn-save-changes')) {
             const form = event.target.closest('.material-form')
-            errorTipoAlta = form.querySelector('#error-tipo-alta')
-            errorSubfamilia = form.querySelector('#error-subfamilia')
-            errorNombreProducto = form.querySelector('#error-nombre-producto')
-            errorNombreProducto2 = form.querySelector('#error-nombre-producto-2')
-            errorLargo = form.querySelector('#error-largo')
-            errorAncho = form.querySelector('#error-ancho')
-            errorAlto = form.querySelector('#error-alto')
-            errorUnidadesMedida = form.querySelector('#error-unidades-medida')
-            errorMaterial = form.querySelector('#error-material')
-            errorColor = form.querySelector('#error-color')
-            errorPorcentajeIva = form.querySelector('#error-porcentaje-iva')
-            errorUnidadMedida = form.querySelector('#error-unidad-medida')
-
+            const tipoAlta = form.querySelector('.material-tipo-alta')
+            const subfamilia = form.querySelector('.material-subfamilia')
+            const nombreProducto = form.querySelector('.material-nombre')
+            const errorNombreProducto2 = form.querySelector('#error-nombre-producto-2')
             const largo = form.querySelector('.material-largo')
             const ancho = form.querySelector('.material-ancho')
             const alto = form.querySelector('.material-alto')
             const umLargo = form.querySelector('.select-um-largo')
             const umAncho = form.querySelector('.select-um-ancho')
             const umAlto = form.querySelector('.select-um-alto')
+            const errorUnidadesMedida = form.querySelector('#error-unidades-medida')
+            const material = form.querySelector('.material-material')
+            const color = form.querySelector('.material-color')
+            const porcentajeIva = form.querySelector('.material-porcentaje-iva')
+            const unidadMedida = form.querySelector('.material-unidad-medida')
 
-            if (largo.value != 'N/A' && umLargo.value == '') {
-              errorUnidadesMedida.style.display = 'block'
-              window.alert('Debe seleccionar una unidad para "Largo"')
-              return
-            }
-            if (ancho.value != 'N/A' && umAncho.value == '') {
-              errorUnidadesMedida.style.display = 'block'
-              window.alert('Debe seleccionar una unidad para "Ancho"')
-              return
-            }
-            if (alto.value != 'N/A' && umAlto.value == '') {
-              errorUnidadesMedida.style.display = 'block'
-              window.alert('Debe seleccionar una unidad para "Alto"')
-              return
-            }
+            // Errores
+            const errorTipoAlta = form.querySelector('#error-tipo-alta')
+            const errorSubfamilia = form.querySelector('#error-subfamilia')
+            const errorNombreProducto = form.querySelector('#error-nombre')
+            const errorLargo = form.querySelector('#error-largo')
+            const errorAncho = form.querySelector('#error-ancho')
+            const errorAlto = form.querySelector('#error-alto')
+            const errorMaterial = form.querySelector('#error-material')
+            const errorColor = form.querySelector('#error-color')
+            const errorPorcentajeIva = form.querySelector('#error-porcentaje-iva')
+            const errorUnidadMedida = form.querySelector('#error-unidad-medida')
 
+            // Si tipoAlta es 'Almacén', valida las medidas y sus unidades
+            if (tipoAlta.value === 'Almacén') {
+              if (largo.value != 'N/A' && umLargo.value == '') {
+                errorUnidadesMedida.style.display = 'block'
+                window.alert('Debe seleccionar una unidad para "Largo"')
+                return
+              }
+              if (ancho.value != 'N/A' && umAncho.value == '') {
+                errorUnidadesMedida.style.display = 'block'
+                window.alert('Debe seleccionar una unidad para "Ancho"')
+                return
+              }
+              if (alto.value != 'N/A' && umAlto.value == '') {
+                errorUnidadesMedida.style.display = 'block'
+                window.alert('Debe seleccionar una unidad para "Alto"')
+                return
+              }
+            }
+            // Si todas las medidas tienen una unidad, se oculta el error
             errorUnidadesMedida.style.display = 'none'
             if (largo.value == 'N/A') {
               umLargo.value = ''
@@ -561,30 +597,87 @@
             if (alto.value == 'N/A') {
               umAlto.value = ''
             }
-  
-            if (errorTipoAlta.style.display == 'block' || errorSubfamilia.style.display == 'block' || errorNombreProducto.style.display == 'block' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block' || errorUnidadesMedida.style.display == 'block' || errorMaterial.style.display == 'block' || errorColor.style.display == 'block' || errorPorcentajeIva.style.display == 'block' || errorUnidadMedida.style.display == 'block') {
-              window.alert('Algún campo está vacío o es incorrecto')
-            }
-            else {
-              const forms = materialFormsContainer.querySelectorAll('.material-form');
-              forms.forEach(form => {
-                form.style.display = 'none'
-              })
-              const editButtons = tableMaterials.querySelectorAll('.edit-material');
-              editButtons.forEach(editButton => {
-                editButton.removeAttribute('disabled')
-              })
-              fillTable()
 
-              // Habilitar botones de tipo submit
-              if (btnSave) {
-                btnSave.removeAttribute('disabled')
-                btnRemove.removeAttribute('disabled')
+            // Si tipoAlta es 'Servicio', no requiere largo, ancho, alto, material ni color
+            if (tipoAlta.value === 'Servicio') {
+              largo.value = ''
+              umLargo.value = ''
+              ancho.value = ''
+              umAncho.value = ''
+              alto.value = ''
+              umAlto.value = ''
+              material.value = ''
+              color.value = ''
+            }
+
+            const mostrarErrores = () => {
+              window.alert('Algún campo está vacío o es incorrecto')
+              if (tipoAlta.value == '') {
+                errorTipoAlta.style.display = 'block'
               }
-              if (btnApprove) {
-                btnApprove.removeAttribute('disabled')
-                btnDecline.removeAttribute('disabled')
+              if (subfamilia.value == '') {
+                errorSubfamilia.style.display = 'block'
               }
+              if (nombreProducto.value == '') {
+                errorNombreProducto.style.display = 'block'
+              }
+              if (largo.value == '') {
+                errorLargo.style.display = 'block'
+              }
+              if (ancho.value == '') {
+                errorAncho.style.display = 'block'
+              }
+              if (alto.value == '') {
+                errorAlto.style.display = 'block'
+              }
+              if (material.value == '') {
+                errorMaterial.style.display = 'block'
+              }
+              if (color.value == '') {
+                errorColor.style.display = 'block'
+              }
+              if (porcentajeIva.value == '') {
+                errorPorcentajeIva.style.display = 'block'
+              }
+              if (unidadMedida.value == '') {
+                errorUnidadMedida.style.display = 'block'
+              }
+            }
+
+            // Si el tipo de alta es '', devuelve un error
+            if (tipoAlta.value == '') {
+              mostrarErrores()
+              return
+            }
+            // Si el tipo de alta es 'Almacén', se requieren todos los campos obligatorios
+            if (tipoAlta.value == 'Almacén' && (subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || largo.value == '' || ancho.value == '' || alto.value == '' || errorUnidadesMedida.style.display == 'block' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '')) {
+              mostrarErrores()
+              return
+            }
+            // Si el tipo de alta es 'Servicio', no requiere largo, ancho, alto, material ni color
+            if (tipoAlta.value == 'Servicio' && (subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || porcentajeIva.value == '' || unidadMedida.value == '')) {
+              mostrarErrores()
+              return
+            }
+            // Si todos los campos están correctos, oculta el formulario y actualiza la tabla
+            const forms = materialFormsContainer.querySelectorAll('.material-form');
+            forms.forEach(form => {
+              form.style.display = 'none'
+            })
+            const editButtons = tableMaterials.querySelectorAll('.edit-material');
+            editButtons.forEach(editButton => {
+              editButton.removeAttribute('disabled')
+            })
+            fillTable()
+
+            // Habilitar botones de tipo submit
+            if (btnSave) {
+              btnSave.removeAttribute('disabled')
+              btnRemove.removeAttribute('disabled')
+            }
+            if (btnApprove) {
+              btnApprove.removeAttribute('disabled')
+              btnDecline.removeAttribute('disabled')
             }
           }
         })
@@ -691,10 +784,6 @@
           } else {
             errorNombreProductoMigracion.style.display = 'block'
           }
-
-          // Solo la primera letra será mayúscula
-          nombreProductoMigracion.value = nombreProductoMigracion.value != '' ? firstLetterCapitalized(nombreProductoMigracion.value) : ''
-
           // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
           datalist.innerHTML = ''
           for (var i = 0; i < catalogoMaterial.length; i++) {
@@ -718,6 +807,9 @@
         nombreProductoMigracion.addEventListener('input', validateNombreProductoMigracion)
 
         const validateNombreProductoMigracionOnChange = () => {
+          // Solo la primera letra será mayúscula
+          nombreProductoMigracion.value = nombreProductoMigracion.value != '' ? firstLetterCapitalized(nombreProductoMigracion.value) : ''
+
           let showError = true
           for (var i = 0; i < catalogoMaterial.length; i++) {
             if (catalogoMaterial[i].value.toUpperCase() == nombreProductoMigracion.value.toUpperCase()) {
@@ -759,18 +851,19 @@
           } else {
             errorJustificacion.style.display = 'none'
           }
-
+          enableSaveButton()
+        }
+        const validateJustificacionOnChange = () => {
           // Solo la primera letra será mayúscula
           justificacion.value = justificacion.value != '' ? firstLetterCapitalized(justificacion.value) : ''
-
-          enableSaveButton()
         }
         justificacion.addEventListener('focus', validateJustificacion)
         justificacion.addEventListener('input', validateJustificacion)
+        justificacion.addEventListener('change', validateJustificacionOnChange)
       }
 
       const validarCamposMaterial = () => {
-
+        
         // Validación tipo alta
         var tipoAltaInputs = document.querySelectorAll('.material-tipo-alta')
         tipoAltaInputs.forEach(input => {
@@ -785,62 +878,105 @@
                   errorTipoAlta.style.display = 'none'
                 }
             })
-            input.addEventListener('change', () => {
-                var tipoAltaValue = input.value
-                var container = input.closest('.tipo-alta-container')
-                var errorTipoAlta = container.querySelector('#error-tipo-alta')
-                // Verificar si el campo está vacío
-                if (tipoAltaValue == '') {
-                  errorTipoAlta.style.display = 'block'
-                } else {
-                  errorTipoAlta.style.display = 'none'
-                  // Filtrar las subfamilias y unidades de medida dependiendo del tipo de alta
-                  const form = input.closest('.material-form')
-                  const subfamilia = form.querySelector('.select-subfamilia')
-                  const unidadMedida = form.querySelector('.select-unidad-medida')
-                  var cadenaSubfamilias = ''
-                  var cadenaUnidadesMedida = ''
 
-                  if (tipoAltaValue === 'Almacén') {
-                    subfamiliasProductoList.forEach(item => {
-                      if (item === ' Seleccione una opción') {
-                        cadenaSubfamilias += `<option value selected>${item}</option>`
-                        return
-                      }
-                      cadenaSubfamilias += `<option value="${item}">${item}</option>`
-                    })
-                    unidadesMedidaList.forEach(item => {
-                      if (item === ' Seleccione una opción') {
-                        cadenaUnidadesMedida += `<option value selected>${item}</option>`
-                        return
-                      }
-                      if (item === 'Servicio') {
-                        return
-                      }
-                      cadenaUnidadesMedida += `<option value="${item}">${item}</option>`
-                    })
-                  }
-                  if (tipoAltaValue === 'Servicio') {
-                    subfamiliasServicioList.forEach(item => {
-                      if (item === ' Seleccione una opción') {
-                        cadenaSubfamilias += `<option value selected>${item}</option>`
-                        return
-                      }
-                      cadenaSubfamilias += `<option value="${item}">${item}</option>`
-                    })
-                    cadenaUnidadesMedida = `<option value selected>Selecciona una opción</option>
-                    <option value="Servicio">Servicio</option>`
-                  }
-                  subfamilia.innerHTML = cadenaSubfamilias
-                  unidadMedida.innerHTML = cadenaUnidadesMedida
+            // Validando si es producto/servicio para mostrar u ocultar medidas, material y color
+            const validateTipoAltaOnChange = () => {
+              var tipoAltaValue = input.value
+              var container = input.closest('.tipo-alta-container')
+              var errorTipoAlta = container.querySelector('#error-tipo-alta')
+              // Verificar si el campo está vacío
+              if (tipoAltaValue == '') {
+                errorTipoAlta.style.display = 'block'
+              }
+              else {
+                errorTipoAlta.style.display = 'none'
+                // Filtrar las subfamilias y unidades de medida dependiendo del tipo de alta
+                const form = input.closest('.material-form')
+                const subfamilia = form.querySelector('.select-subfamilia')
+                const unidadMedida = form.querySelector('.select-unidad-medida')
+                var cadenaSubfamilias = ''
+                var cadenaUnidadesMedida = ''
+                // Medidas, material y color no serán visibles para clientes
+                const medidasContainer = form.querySelector('#medidas-container')
+                const materialColorContainer = form.querySelector('#material-color-container')
 
-                  // Mostrando los errores de subfamilia y unidad de medida
-                  const errorSubfamilia = form.querySelector('#error-subfamilia')
-                  const errorUnidadMedida = form.querySelector('#error-unidad-medida')
-                  errorSubfamilia.style.display = 'block'
-                  errorUnidadMedida.style.display = 'block'
+                if (tipoAltaValue === 'Almacén') {
+                  subfamiliasProductoList.forEach(item => {
+                    if (item === ' Seleccione una opción') {
+                      cadenaSubfamilias += `<option value selected>${item}</option>`
+                      return
+                    }
+                    cadenaSubfamilias += `<option value="${item}">${item}</option>`
+                  })
+                  unidadesMedidaList.forEach(item => {
+                    if (item === ' Seleccione una opción') {
+                      cadenaUnidadesMedida += `<option value selected>${item}</option>`
+                      return
+                    }
+                    if (item === 'Servicio') {
+                      return
+                    }
+                    cadenaUnidadesMedida += `<option value="${item}">${item}</option>`
+                  })
+                  // Mostrando las medidas, material y color
+                  medidasContainer.style.display = 'block'
+                  materialColorContainer.style.display = 'flex'
                 }
-            })
+                if (tipoAltaValue === 'Servicio') {
+                  subfamiliasServicioList.forEach(item => {
+                    if (item === ' Seleccione una opción') {
+                      cadenaSubfamilias += `<option value selected>${item}</option>`
+                      return
+                    }
+                    cadenaSubfamilias += `<option value="${item}">${item}</option>`
+                  })
+                  cadenaUnidadesMedida = `<option value selected>Selecciona una opción</option>
+                  <option value="Servicio">Servicio</option>`
+                  // Ocultando las medidas, material y color
+                  medidasContainer.style.display = 'none'
+                  materialColorContainer.style.display = 'none'
+                }
+                subfamilia.innerHTML = cadenaSubfamilias
+                unidadMedida.innerHTML = cadenaUnidadesMedida
+
+                // Mostrando los errores de subfamilia y unidad de medida
+                const errorSubfamilia = form.querySelector('#error-subfamilia')
+                const errorUnidadMedida = form.querySelector('#error-unidad-medida')
+                errorSubfamilia.style.display = 'block'
+                errorUnidadMedida.style.display = 'block'
+              }
+            }
+            input.addEventListener('change', validateTipoAltaOnChange)
+
+            // Validando si es producto/servicio al cargar la página
+            const validateTipoAltaOnLoad = () => {
+              var tipoAltaValue = input.value
+              var container = input.closest('.tipo-alta-container')
+              var errorTipoAlta = container.querySelector('#error-tipo-alta')
+              // Verificar si el campo está vacío
+              if (tipoAltaValue == '') {
+                errorTipoAlta.style.display = 'block'
+              }
+              else {
+                errorTipoAlta.style.display = 'none'
+                // Medidas, material y color no serán visibles para clientes
+                const form = input.closest('.material-form')
+                const medidasContainer = form.querySelector('#medidas-container')
+                const materialColorContainer = form.querySelector('#material-color-container')
+
+                if (tipoAltaValue === 'Almacén') {
+                  // Mostrando las medidas, material y color
+                  medidasContainer.style.display = 'block'
+                  materialColorContainer.style.display = 'flex'
+                }
+                if (tipoAltaValue === 'Servicio') {
+                  // Ocultando las medidas, material y color
+                  medidasContainer.style.display = 'none'
+                  materialColorContainer.style.display = 'none'
+                }
+              }
+            }
+            validateTipoAltaOnLoad()
         })
 
         // Validación subfamilia
@@ -875,8 +1011,6 @@
                 } else {
                   errorNombreProducto.style.display = 'none'
                 }
-                // Solo la primera letra será mayúscula
-                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
             }
             input.addEventListener('focus', validateNombreProducto)
             input.addEventListener('input', () => {
@@ -903,6 +1037,9 @@
             })
 
             const validateNombreProductoOnChange = () => {
+              // Solo la primera letra será mayúscula
+              input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+
               const nombreProductoContainer = input.closest('.nombre-producto-container')
               const errorNombreProducto2 = nombreProductoContainer.querySelector('#error-nombre-producto-2')
               let showError = false
@@ -970,11 +1107,11 @@
         // Validación ficha técnica
         var fichaTecnicaInputs = document.querySelectorAll('.material-ficha-tecnica')
         fichaTecnicaInputs.forEach(input => {
+            const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
+            const imagePreviewContainer = fichaTecnicaContainer.querySelector('#image_preview_container')
+            const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
+            const imageDownload = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_download')
             const validateFichaTecnica = () => {
-                const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
-                const imagePreviewContainer = fichaTecnicaContainer.querySelector('#image_preview_container')
-                const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
-                const imageDownload = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_download')
                 if (input.files && input.files[0]) {
                     var reader = new FileReader()
                     reader.onload = function(e) {
@@ -998,7 +1135,28 @@
                     imageDownload.style.display = 'none'
                 }
             }
+
+            const isImage = url => {
+              return(url.match(/\.(jpeg|jpg|gif|png)$/) != null)
+            }
+
+            const validateFichaTecnicaOnLoad = () => {
+                if (imagePreview.src.includes('static')) {
+                    if (!isImage(imagePreview.src)) {
+                      imagePreview.src = '../../../static/images/pdf-default.png'
+                    }
+                    imagePreviewContainer.style.display = 'flex'
+                    imageDownload.style.display = 'block'
+                }
+                else {
+                    imagePreview.src = ''
+                    imagePreviewContainer.style.display = 'none'
+                    imageDownload.src = ''
+                    imageDownload.style.display = 'none'
+                }
+            }
             input.addEventListener('change', validateFichaTecnica)
+            validateFichaTecnicaOnLoad()
         })
 
         // Validación eliminar ficha técnica
@@ -1020,7 +1178,6 @@
         var largoInputs = document.querySelectorAll('.material-largo')
         largoInputs.forEach(input => {
             const validateLargo = () => {
-                input.value = input.value.toUpperCase()
                 var largoValue = input.value
                 var container = input.closest('.largo-container')
                 var errorLargo = container.querySelector('#error-largo')
@@ -1069,13 +1226,15 @@
                   disableAllFields(input)
               }
             })
+            input.addEventListener('change', () => {
+              input.value = input.value.toUpperCase()
+            })
         })
 
         // Validación ancho
         var anchoInputs = document.querySelectorAll('.material-ancho')
         anchoInputs.forEach(input => {
             const validateAncho = () => {
-                input.value = input.value.toUpperCase()
                 var anchoValue = input.value
                 var container = input.closest('.ancho-container')
                 var errorAncho = container.querySelector('#error-ancho')
@@ -1132,13 +1291,15 @@
                 }
               }
             })
+            input.addEventListener('change', () => {
+              input.value = input.value.toUpperCase()
+            })
         })
 
         // Validación alto
         var altoInputs = document.querySelectorAll('.material-alto')
         altoInputs.forEach(input => {
             const validateAlto = () => {
-                input.value = input.value.toUpperCase()
                 var altoValue = input.value
                 var container = input.closest('.alto-container')
                 var errorAlto = container.querySelector('#error-alto')
@@ -1195,14 +1356,33 @@
                 }
               }
             })
+            input.addEventListener('change', () => {
+              input.value = input.value.toUpperCase()
+            })
         })
         
         // Validación medidas iguales
-        var mismaMedidaInputs = document.querySelectorAll('.medidas-iguales')
+        const mismaMedidaInputs = document.querySelectorAll('.medidas-iguales')
         mismaMedidaInputs.forEach(input => {
+          const unidadesMedidaContainer = input.closest('#id-unidades-medida')
+
+          // Al cargar la pagina, verificar si las medidas son iguales para marcar la casilla
+          const validateMedidasIguales = () => {
+            const umLargo = unidadesMedidaContainer.querySelector('.material-um-largo')
+            const umAncho = unidadesMedidaContainer.querySelector('.material-um-ancho')
+            const umAlto = unidadesMedidaContainer.querySelector('.material-um-alto')
+            if (umLargo.value == umAncho.value && umLargo.value == umAlto.value) {
+              input.checked = true
+              unidadesMedidaContainer.querySelector('#select-largo').style.display = 'block'
+              unidadesMedidaContainer.querySelector('#select-ancho').style.display = 'none'
+              unidadesMedidaContainer.querySelector('#select-alto').style.display = 'none'
+              medidasIguales = true
+            }
+          }
+          validateMedidasIguales()
+
           input.addEventListener('change', () => {
             if (input.checked) {
-              var unidadesMedidaContainer = input.closest('#id-unidades-medida')
               var largo = unidadesMedidaContainer.querySelector('.select-um-largo')
               var ancho = unidadesMedidaContainer.querySelector('.select-um-ancho')
               var alto = unidadesMedidaContainer.querySelector('.select-um-alto')
@@ -1222,8 +1402,9 @@
         // Validación unidad de medida para largo
         var umLargoInputs = document.querySelectorAll('.select-um-largo')
         umLargoInputs.forEach(input => {
+          const medidasContainer = input.closest('#medidas-container')
+
           input.addEventListener('change', () => {
-            const medidasContainer = input.closest('#medidas-container')
             const largo = medidasContainer.querySelector('.material-largo')
             const labelLargo = medidasContainer.querySelector('#label-largo')
             labelLargo.style.display = 'block'
@@ -1232,6 +1413,10 @@
             } else {
               labelLargo.innerText = input.value
             }
+
+            // Verificar si la casilla de medidas iguales está marcada
+            medidasIguales = medidasContainer.querySelector('#id-medidas-iguales').checked
+            console.log()
             if (medidasIguales) {
               const ancho = medidasContainer.querySelector('.material-ancho')
               const alto = medidasContainer.querySelector('.material-alto')
@@ -1305,11 +1490,14 @@
                     errorMaterial.style.display = 'none'
                     enableAllFields(input)
                 }
+            }
+            const validateMaterialOnChange = () => {
                 // Solo la primera letra será mayúscula
                 input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
             }
             input.addEventListener('focus', validateMaterial)
             input.addEventListener('input', validateMaterial)
+            input.addEventListener('change', validateMaterialOnChange)
         })
 
         // Validación color
@@ -1326,11 +1514,14 @@
                     errorColor.style.display = 'none'
                     enableAllFields(input)
                 }
-                // Solo la primera letra será mayúscula
-                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
             }
+            const validateColorOnChange = () => {
+              // Solo la primera letra será mayúscula
+              input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+          }
             input.addEventListener('focus', validateColor)
             input.addEventListener('input', validateColor)
+            input.addEventListener('change', validateColorOnChange)
         })
 
         // Validación marca
@@ -1340,7 +1531,7 @@
                 // Solo la primera letra será mayúscula
                 input.value = input.value != '' ? firstLetterOfEachWordCapitalized(input.value) : ''
             }
-            input.addEventListener('input', validateColor)
+            input.addEventListener('change', validateColor)
         })
 
         // Validación nombre común
@@ -1350,17 +1541,7 @@
                 // Solo la primera letra será mayúscula
                 input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
             }
-            input.addEventListener('input', validateNombreComun)
-        })
-
-        // Validación alias
-        var aliasInputs = document.querySelectorAll('.material-alias')
-        aliasInputs.forEach(input => {
-            const validateAlias = () => {
-                // Solo la primera letra será mayúscula
-                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
-            }
-            input.addEventListener('input', validateAlias)
+            input.addEventListener('change', validateNombreComun)
         })
 
         // Validación porcentaje de IVA
@@ -1379,6 +1560,16 @@
             }
             input.addEventListener('focus', validatePorcentajeIva)
             input.addEventListener('change', validatePorcentajeIva)
+        })
+
+        // Validación alias
+        var aliasInputs = document.querySelectorAll('.material-alias')
+        aliasInputs.forEach(input => {
+            const validateAlias = () => {
+                // Solo la primera letra será mayúscula
+                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+            }
+            input.addEventListener('change', validateAlias)
         })
 
         // Validación unidad de medida
@@ -1569,6 +1760,7 @@
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
           const fotoProducto = materialForm.querySelector('#id_foto_producto_img')
+          const fichaTecnica = materialForm.querySelector('#id_ficha_tecnica_img')
           const largo = materialForm.querySelector('.material-largo')
           const ancho = materialForm.querySelector('.material-ancho')
           const alto = materialForm.querySelector('.material-alto')
@@ -1595,7 +1787,7 @@
 
           const rechazado = materialForm.querySelector('.material-rechazado')
 
-          if (tipoAlta.value && subfamilia.value && nombre.value && largo.value && ancho.value && alto.value && material.value && color.value && porcentajeIva.value && unidadMedida.value) {
+          if (tipoAlta.value && subfamilia.value && nombre.value && porcentajeIva.value && unidadMedida.value) {
             materialCounter++
             const newRow = bodyMaterials.insertRow()
             newRow.classList.add('table-row')
@@ -1605,15 +1797,35 @@
               materialCounter--
             }
 
+            const isImage = url => {
+              return(url.match(/\.(jpeg|jpg|gif|png)$/) != null)
+            }
+
             newRow.id = `table-row-${index}`
             newRow.innerHTML = `
             <td>${tipoAlta.value}</td>
             <td>${subfamilia.value}</td>
-            <td>${nombre.value}</td>
-            <td class="p-0"><img class="w-100" src="${fotoProducto.src}" alt="Foto"/></td>
-            <td>${largo.value}<br />UM: ${umLargo.value}</td>
-            <td>${ancho.value}<br />UM: ${umAncho.value}</td>
-            <td>${alto.value}<br />UM: ${umAlto.value}</td>
+            <td>${nombre.value}</td>`
+            if (isImage(fotoProducto.src)) {
+              newRow.innerHTML += `
+              <td class="p-0"><img style="width: auto; max-height: 4rem" src="${fotoProducto.src}" alt="Foto del producto"/></td>`
+            }
+            else {
+              newRow.innerHTML += `
+              <td class="p-0"><p>Sin imagen</p></td>`
+            }
+            if (isImage(fichaTecnica.src)) {
+              newRow.innerHTML += `
+              <td class="p-0"><img style="width: auto; max-height: 4rem" src="${fichaTecnica.src}" alt="Foto del producto"/></td>`
+            }
+            else {
+              newRow.innerHTML += `
+              <td class="p-0"><p>Sin imagen</p></td>`
+            }
+            newRow.innerHTML += `
+            <td>${largo.value}<br />${umLargo.value}</td>
+            <td>${ancho.value}<br />${umAncho.value}</td>
+            <td>${alto.value}<br />${umAlto.value}</td>
             <td>${material.value}</td>
             <td>${color.value}</td>
             <td>${marca.value}</td>

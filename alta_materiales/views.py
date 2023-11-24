@@ -166,7 +166,7 @@ def material_create(request):
                         if solicitud.es_migracion == False:
                             if material_formset.is_valid():
                                 for material_form in material_formset:
-                                    if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('largo') or not material_form.cleaned_data.get('ancho') or not material_form.cleaned_data.get('alto') or not material_form.cleaned_data.get('unidad_medida'):
+                                    if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('unidad_medida'):
                                         continue  # Saltar formularios con campos requeridos vacíos
                                     material = material_form.save(commit=False)
                                     material.id_solicitud = id_solicitud

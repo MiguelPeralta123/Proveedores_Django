@@ -77,13 +77,14 @@
                     <th scope="col" style="min-width: 6rem;">Subfamilia</th>
                     <th scope="col" style="min-width: 6rem;">Nombre</th>
                     <th scope="col" style="min-width: 6rem;">Foto</th>
+                    <th scope="col" style="min-width: 6rem;">Ficha técnica</th>
                     <th scope="col" style="min-width: 6rem;">Largo</th>
-                    <th scope="col" style="min-width: 6rem;">Ancho / Calibre</th>
+                    <th scope="col" style="min-width: 6rem;">Ancho / calibre</th>
                     <th scope="col" style="min-width: 6rem;">Alto</th>
                     <th scope="col" style="min-width: 6rem;">Material</th>
                     <th scope="col" style="min-width: 6rem;">Color</th>
                     <th scope="col" style="min-width: 6rem;">Marca</th>
-                    <th scope="col" style="min-width: 6rem;">Parte / Modelo</th>
+                    <th scope="col" style="min-width: 6rem;">Parte / modelo</th>
                     <th scope="col" style="min-width: 6rem;">Nombre común</th>
                     <th scope="col" style="min-width: 6rem;">Ing. activo</th>
                     <th scope="col" style="min-width: 6rem;">Porcentaje IVA</th>
@@ -509,6 +510,51 @@
           errorNombreProductoMigracion.style.display = 'none'
         }
 
+        // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
+        datalist.innerHTML = ''
+        for (var i = 0; i < catalogoMaterial.length; i++) {
+          if (catalogoMaterial[i].value.toUpperCase().startsWith(nombreProductoMigracion.value.toUpperCase())) {
+            const option = document.createElement('option')
+            option.value = catalogoMaterial[i].value
+            option.innerText = catalogoMaterial[i].text
+            datalist.appendChild(option)
+          }
+        }
+        if (datalist.childElementCount == 0) {
+          errorNombreProductoMigracion2.style.display = 'block'
+          disableAllFieldsForMigracion()
+        } else {
+          errorNombreProductoMigracion2.style.display = 'none'
+          enableAllFieldsForMigracion()
+        }
+        enableSaveButton()
+
+        // Change
+        let showError = true
+        for (var i = 0; i < catalogoMaterial.length; i++) {
+          if (catalogoMaterial[i].value.toUpperCase() == nombreProductoMigracion.value.toUpperCase()) {
+            showError = false
+            break
+          }
+        }
+        if (showError) {
+          errorNombreProductoMigracion2.style.display = 'block'
+          disableAllFieldsForMigracion()
+        } else {
+          errorNombreProductoMigracion2.style.display = 'none'
+          enableAllFieldsForMigracion()
+        }
+        enableSaveButton()
+      }
+
+      const validateNombreProductoMigracionOnChange = () => {
+        if (nombreProductoMigracion.value == '') {
+          errorNombreProductoMigracion.style.display = 'block'
+        }
+        else {
+          errorNombreProductoMigracion.style.display = 'none'
+        }
+
         // Solo la primera letra será mayúscula
         nombreProductoMigracion.value = nombreProductoMigracion.value != '' ? firstLetterCapitalized(nombreProductoMigracion.value) : ''
 
@@ -550,7 +596,7 @@
       }
       nombreProductoMigracion.addEventListener('focus', validateNombreProductoMigracion)
       nombreProductoMigracion.addEventListener('input', validateNombreProductoMigracion)
-      nombreProductoMigracion.addEventListener('change', validateNombreProductoMigracion)
+      nombreProductoMigracion.addEventListener('change', validateNombreProductoMigracionOnChange)
 
       // Validación empresa
       const validateEmpresa = () => {
@@ -564,21 +610,22 @@
       empresa.addEventListener('focus', validateEmpresa)
       empresa.addEventListener('change', validateEmpresa)
       
-      // Validación justificacion
+      // Validación justificación
       const validateJustificacion = () => {
         if (justificacion.value == '') {
           errorJustificacion.style.display = 'block'
         } else {
           errorJustificacion.style.display = 'none'
         }
-
+        enableSaveButton()
+      }
+      const validateJustificacionOnChange = () => {
         // Solo la primera letra será mayúscula
         justificacion.value = justificacion.value != '' ? firstLetterCapitalized(justificacion.value) : ''
-
-        enableSaveButton()
       }
       justificacion.addEventListener('focus', validateJustificacion)
       justificacion.addEventListener('input', validateJustificacion)
+      justificacion.addEventListener('change', validateJustificacionOnChange)
       
       const validarCamposMaterial = () => {
 
@@ -705,8 +752,6 @@
                 } else {
                   errorNombreProducto.style.display = 'none'
                 }
-                // Solo la primera letra será mayúscula
-                input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
 
                 // Input
                 // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
@@ -745,9 +790,62 @@
                   enableAllFields(input)
                 }
             }
+
+            const validateNombreProductoOnChange = () => {
+              // Focus
+              var nombreProductoValue = input.value
+              var container = input.closest('.nombre-producto-container')
+              var errorNombreProducto = container.querySelector('#error-nombre-producto')
+              // Verificar si el campo está vacío
+              if (nombreProductoValue == '') {
+                errorNombreProducto.style.display = 'block'
+              } else {
+                errorNombreProducto.style.display = 'none'
+              }
+              
+              // Solo la primera letra será mayúscula
+              input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+
+              // Input
+              // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
+              const nombreProductoContainer = input.closest('.nombre-producto-container')
+              const errorNombreProducto2 = nombreProductoContainer.querySelector('#error-nombre-producto-2')
+              datalist.innerHTML = ''
+              for (var i = 0; i < catalogoMaterial.length; i++) {
+                if (catalogoMaterial[i].value.toUpperCase().startsWith(input.value.toUpperCase())) {
+                  const option = document.createElement('option')
+                  option.value = catalogoMaterial[i].value
+                  option.innerText = catalogoMaterial[i].text
+                  datalist.appendChild(option)
+                }
+              }
+              if (datalist.childElementCount == 0) {
+                errorNombreProducto2.style.display = 'none'
+                enableAllFields(input)
+              } else {
+                errorNombreProducto2.style.display = 'block'
+                disableAllFields(input)
+              }
+
+              // Change
+              let showError = false
+              for (var i = 0; i < catalogoMaterial.length; i++) {
+                if (catalogoMaterial[i].value.toUpperCase() == input.value.toUpperCase()) {
+                  showError = true
+                  break
+                }
+              }
+              if (showError) {
+                errorNombreProducto2.style.display = 'block'
+                disableAllFields(input)
+              } else {
+                errorNombreProducto2.style.display = 'none'
+                enableAllFields(input)
+              }
+            }
             input.addEventListener('focus', validateNombreProducto)
             input.addEventListener('input', validateNombreProducto)
-            input.addEventListener('change', validateNombreProducto)
+            input.addEventListener('change', validateNombreProductoOnChange)
         })
 
         // Validación foto producto
@@ -841,7 +939,6 @@
         var largoInputs = document.querySelectorAll('.material-largo')
         largoInputs.forEach(input => {
             input.addEventListener('input', () => {
-                input.value = input.value.toUpperCase()
                 var largoValue = input.value
                 var container = input.closest('.largo-container')
                 var errorLargo = container.querySelector('#error-largo')
@@ -887,13 +984,15 @@
                   disableAllFields(input)
               }
             })
+            input.addEventListener('change', () => {
+              input.value = input.value.toUpperCase()
+            })
         })
 
         // Validación ancho
         var anchoInputs = document.querySelectorAll('.material-ancho')
         anchoInputs.forEach(function(input) {
             input.addEventListener('input', function() {
-                input.value = input.value.toUpperCase()
                 var anchoValue = input.value
                 var container = input.closest('.ancho-container')
                 var errorAncho = container.querySelector('#error-ancho')
@@ -948,13 +1047,15 @@
                 }
               }
             })
+            input.addEventListener('change', () => {
+              input.value = input.value.toUpperCase()
+            })
         })
 
         // Validación alto
         var altoInputs = document.querySelectorAll('.material-alto')
         altoInputs.forEach(function(input) {
             input.addEventListener('input', function() {
-                input.value = input.value.toUpperCase()
                 var altoValue = input.value
                 var container = input.closest('.alto-container')
                 var errorAlto = container.querySelector('#error-alto')
@@ -1008,6 +1109,9 @@
                     disableAllFields(input)
                 }
               }
+            })
+            input.addEventListener('change', () => {
+              input.value = input.value.toUpperCase()
             })
         })
 
@@ -1117,6 +1221,8 @@
               errorMaterial.style.display = 'none'
               enableAllFields(input)
           }
+        }
+        const validateMaterialOnChange = input => {
           // Solo la primera letra será mayúscula
           input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
         }
@@ -1124,6 +1230,7 @@
         materialInputs.forEach(input => {
             input.addEventListener('focus', () => validateMaterial(input))
             input.addEventListener('input', () => validateMaterial(input))
+            input.addEventListener('change', () => validateMaterialOnChange(input))
         })
 
         // Validación color
@@ -1138,6 +1245,8 @@
               errorColor.style.display = 'none'
               enableAllFields(input)
           }
+        }
+        const validateColorOnChange = input => {
           // Solo la primera letra será mayúscula
           input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
         }
@@ -1145,6 +1254,7 @@
         colorInputs.forEach(input => {
             input.addEventListener('focus', () => validateColor(input))
             input.addEventListener('input', () => validateColor(input))
+            input.addEventListener('change', () => validateColorOnChange(input))
         })
 
         // Validación marca
@@ -1154,7 +1264,7 @@
         }
         var marcaInputs = document.querySelectorAll('.material-marca')
         marcaInputs.forEach(input => {
-            input.addEventListener('input', () => validateMarca(input))
+            input.addEventListener('change', () => validateMarca(input))
         })
 
         // Validación nombre común
@@ -1164,17 +1274,7 @@
         }
         var nombreComunInputs = document.querySelectorAll('.material-nombre-comun')
         nombreComunInputs.forEach(input => {
-            input.addEventListener('input', () => validateNombreComun(input))
-        })
-
-        // Validación alias
-        const validateAlias = input => {
-          // Solo la primera letra será mayúscula
-          input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
-        }
-        var aliasInputs = document.querySelectorAll('.material-alias')
-        aliasInputs.forEach(input => {
-            input.addEventListener('input', () => validateAlias(input))
+            input.addEventListener('change', () => validateNombreComun(input))
         })
 
         // Validación porcentaje de IVA
@@ -1202,6 +1302,16 @@
                   errorPorcentajeIva.style.display = 'none'
                 }
             })
+        })
+
+        // Validación alias
+        const validateAlias = input => {
+          // Solo la primera letra será mayúscula
+          input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+        }
+        var aliasInputs = document.querySelectorAll('.material-alias')
+        aliasInputs.forEach(input => {
+            input.addEventListener('change', () => validateAlias(input))
         })
 
         // Validación unidad de medida
@@ -1385,6 +1495,7 @@
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
           const fotoProducto = materialForm.querySelector('#id_foto_producto_img')
+          const fichaTecnica = materialForm.querySelector('#id_ficha_tecnica_img')
           const largo = materialForm.querySelector('.material-largo')
           const ancho = materialForm.querySelector('.material-ancho')
           const alto = materialForm.querySelector('.material-alto')
@@ -1409,14 +1520,34 @@
           esMaterialEmpaqueValue = esMaterialEmpaque.checked == true ? 'Si' : 'No'
           esProdTerminadoValue = esProdTerminado.checked == true ? 'Si' : 'No'
 
+          const isImage = url => {
+            return url.includes('image')
+          }
+
           const newRow = bodyMaterials.insertRow()
           newRow.classList.add('table-row')
           newRow.id = `table-row-${index}`
           newRow.innerHTML = `
           <td>${tipoAlta.value}</td>
           <td>${subfamilia.value}</td>
-          <td>${nombre.value}</td>
-          <td class="p-0"><img class="w-100" src="${fotoProducto.src}" alt="Foto del producto"/></td>
+          <td>${nombre.value}</td>`
+          if (isImage(fotoProducto.src)) {
+            newRow.innerHTML += `
+            <td class="p-0"><img style="width: auto; max-height: 4rem" src="${fotoProducto.src}" alt="Foto del producto"/></td>`
+          }
+          else {
+            newRow.innerHTML += `
+            <td class="p-0"><p>Sin imagen</p></td>`
+          }
+          if (isImage(fichaTecnica.src)) {
+            newRow.innerHTML += `
+            <td class="p-0"><img style="width: auto; max-height: 4rem" src="${fichaTecnica.src}" alt="Foto del producto"/></td>`
+          }
+          else {
+            newRow.innerHTML += `
+            <td class="p-0"><p>Sin imagen</p></td>`
+          }
+          newRow.innerHTML += `
           <td>${largo.value}<br />${umLargo.value}</td>
           <td>${ancho.value}<br />${umAncho.value}</td>
           <td>${alto.value}<br />${umAlto.value}</td>
@@ -1766,7 +1897,7 @@
         const errorPorcentajeIva = porcentajeIva.closest('.porcentaje-iva-container').querySelector('#error-porcentaje-iva')
         const errorUnidadMedida = unidadMedida.closest('.unidad-medida-container').querySelector('#error-unidad-medida')
 
-        if (tipoAlta.value == '') {
+        const mostrarErrores = () => {
           window.alert('Algún campo está vacío o es incorrecto')
           if (tipoAlta.value == '') {
             errorTipoAlta.style.display = 'block'
@@ -1798,62 +1929,21 @@
           if (unidadMedida.value == '') {
             errorUnidadMedida.style.display = 'block'
           }
+        }
+
+        if (tipoAlta.value == '') {
+          mostrarErrores()
           return
         }
 
         if (tipoAlta.value == 'Almacén' && (subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block')) {
-          window.alert('Algún campo está vacío o es incorrecto')
-          if (tipoAlta.value == '') {
-            errorTipoAlta.style.display = 'block'
-          }
-          if (subfamilia.value == '') {
-            errorSubfamilia.style.display = 'block'
-          }
-          if (nombreProducto.value == '') {
-            errorNombreProducto.style.display = 'block'
-          }
-          if (largo.value == '') {
-            errorLargo.style.display = 'block'
-          }
-          if (ancho.value == '') {
-            errorAncho.style.display = 'block'
-          }
-          if (alto.value == '') {
-            errorAlto.style.display = 'block'
-          }
-          if (material.value == '') {
-            errorMaterial.style.display = 'block'
-          }
-          if (color.value == '') {
-            errorColor.style.display = 'block'
-          }
-          if (porcentajeIva.value == '') {
-            errorPorcentajeIva.style.display = 'block'
-          }
-          if (unidadMedida.value == '') {
-            errorUnidadMedida.style.display = 'block'
-          }
+          mostrarErrores()
           return
         }
 
         // Si tipo de alta es Servicio, las medidas, material y color no son obligatorios
         if (tipoAlta.value == 'Servicio' && (subfamilia.value == '' || nombreProducto.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block')) {
-          window.alert('Algún campo está vacío o es incorrecto')
-          if (tipoAlta.value == '') {
-            errorTipoAlta.style.display = 'block'
-          }
-          if (subfamilia.value == '') {
-            errorSubfamilia.style.display = 'block'
-          }
-          if (nombreProducto.value == '') {
-            errorNombreProducto.style.display = 'block'
-          }
-          if (porcentajeIva.value == '') {
-            errorPorcentajeIva.style.display = 'block'
-          }
-          if (unidadMedida.value == '') {
-            errorUnidadMedida.style.display = 'block'
-          }
+          mostrarErrores()
           return
         }
 
@@ -1874,18 +1964,29 @@
             window.alert('Debe seleccionar una unidad para "Alto"')
             return
           }
-          else {
-            errorUnidadesMedida.style.display = 'none'
-            if (largo.value == 'N/A') {
-              umLargo.value = ''
-            }
-            if (ancho.value == 'N/A') {
-              umAncho.value = ''
-            }
-            if (alto.value == 'N/A') {
-              umAlto.value = ''
-            }
-          }
+        }
+        // Si todas las medidas tienen una unidad, se oculta el error
+        errorUnidadesMedida.style.display = 'none'
+        if (largo.value == 'N/A') {
+          umLargo.value = ''
+        }
+        if (ancho.value == 'N/A') {
+          umAncho.value = ''
+        }
+        if (alto.value == 'N/A') {
+          umAlto.value = ''
+        }
+        
+        // Si tipoAlta es 'Servicio', no requiere largo, ancho, alto, material ni color
+        if (tipoAlta.value === 'Servicio') {
+          largo.value = ''
+          umLargo.value = ''
+          ancho.value = ''
+          umAncho.value = ''
+          alto.value = ''
+          umAlto.value = ''
+          material.value = ''
+          color.value = ''
         }
         
         // Si todos los campos están correctos, llenar la tabla y crear un nuevo formulario
