@@ -67,11 +67,13 @@
               <p id="error-justificacion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es requerido</p>
             </div>
 
-            <div class="d-flex justify-content-between">
+            <div id="title-button-container" class="d-flex justify-content-between">
               <h3>Materiales / servicios</h3>
-              <button id="id_btn_download_table" class="btn btn-secondary btn-download-table" type="button" style="color: white; font-size: 1rem;">
-                ↓
-              </button>
+              {% if current_user.sistemas %}
+                <button id="id_btn_download_table" class="btn btn-secondary btn-download-table" type="button" style="font-size: 0.8rem; color: white;">
+                  ↓
+                </button>
+              {% endif %}
             </div>
 
             <div id="table-materials" class="table-responsive my-3" style="font-size: 0.8rem; background-color: rgb(255, 255, 255);">
@@ -423,6 +425,13 @@
   </main>
 
   <style>
+      #id_btn_download_table {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      #id_btn_download_table.visible {
+        opacity: 1;
+      }
       .table-row-hidden {
           display: none;
       }
@@ -443,8 +452,8 @@
       }
   </style>
 
-  <!-- jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <!-- SheetJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -508,21 +517,27 @@
         window.history.back()
       })
 
-      btnDownloadTable.addEventListener('click', () => {
-        console.log('Descargando PDF...')
-        /*
-        // Crear un objeto jsPDF
-        var doc = new jspdf()
-        // Obtener la tabla por su ID
-        var table = document.querySelector("#materials-table")
-        // Convertir la tabla a un formato compatible con jsPDF
-        var data = doc.autoTableHtmlToJson(table)
-        // Agregar la tabla al documento
-        doc.autoTable(data.columns, data.rows)
-        // Descargar el archivo PDF
-        doc.save("productos y servicios.pdf")
-        */
+      btnDownloadTable.addEventListener('mouseover', () => {
+        btnDownloadTable.classList.add('visible')
       })
+      btnDownloadTable.addEventListener('mouseout', () => {
+        btnDownloadTable.classList.remove('visible')
+      })
+
+      // Generar Excel a partir de la tabla de productos
+      if (btnDownloadTable) {
+        btnDownloadTable.addEventListener('click', () => {
+          var tableSelect = document.getElementById('materials-table');
+          var ws = XLSX.utils.table_to_sheet(tableSelect);
+      
+          // Crear el libro y agregar la hoja de cálculo
+          var wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, 'Productos');
+      
+          // Guardar el libro como archivo Excel
+          XLSX.writeFile(wb, 'Tabla productos.xlsx');
+        });
+      }
 
       if (btnsRechazadoFalse) {
         btnsRechazadoFalse.forEach(btnRechazadoFalse => {
@@ -1416,7 +1431,6 @@
 
             // Verificar si la casilla de medidas iguales está marcada
             medidasIguales = medidasContainer.querySelector('#id-medidas-iguales').checked
-            console.log()
             if (medidasIguales) {
               const ancho = medidasContainer.querySelector('.material-ancho')
               const alto = medidasContainer.querySelector('.material-alto')
@@ -1798,6 +1812,9 @@
             }
 
             const isImage = url => {
+              if (url.includes('image')) {
+                return true
+              }
               return(url.match(/\.(jpeg|jpg|gif|png)$/) != null)
             }
 
