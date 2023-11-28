@@ -40,8 +40,7 @@
                 <li class="nav-item" style="margin-right: 1rem;">
                   <a class="nav-link active" aria-current="page" href="/proveedores">Proveedores</a>
                 </li>
-              {% endif %}
-              {% if user.puede_crear_cliente %}
+              {% elif user.puede_crear_cliente %}
                 <li class="nav-item" style="margin-right: 1rem;">
                   <a class="nav-link active" aria-current="page" href="/clientes">Clientes</a>
                 </li>
