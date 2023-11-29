@@ -14,9 +14,55 @@ from .models import *
 def home(request):
     return render(request, 'home.html')
 
+# VISTAS DE CONFIGURACIÓN
+@login_required
+def settings(request):
+    if request.user.compras or request.user.finanzas or request.user.sistemas:
+        return render(request, 'settings/settings.html')
+    else:
+        return redirect('home')
+
+@login_required
+def permissions(request):
+    try:
+        if request.user.compras or request.user.finanzas or request.user.sistemas:
+            if request.method == 'GET':
+                return render(request, 'settings/permissions.html', {
+                    'form': PermissionsForm(),
+                    'current_user': request.user,
+                })
+            else:
+                try:
+                    permissions_form = PermissionsForm(request.POST)
+
+                    if permissions_form.is_valid():
+                        permissions = permissions_form.save(commit=False)
+                        permissions.usuario = request.user
+                        permissions.save()
+
+                        # Enviar correo electrónico
+                        subject = 'Se han actualizado sus permisos de autorización'
+                        message =  'El usuario ' + str(request.user.get_full_name()) + ' le ha otorgado permisos para autorizar solicitudes de altas'
+                        from_email = 'altaproveedoresricofarms@gmail.com'
+                        recipient_list = [permissions.nuevo_autorizador]
+                        #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+
+                        return redirect('home')
+                    
+                except ValueError as e:
+                    return render(request, 'proveedor/proveedor_create.html', {
+                        'form': PermissionsForm(),
+                        'error': str(e)
+                    })
+        else:
+            return redirect('home')
+    
+    except Exception as e:
+        print(f"Se produjo un error al ceder los permisos de autorización: {str(e)}")
+        return redirect('home')
+
 
 # VISTAS DE PROVEEDOR
-
 @login_required
 def proveedor(request, tipo):
     try:

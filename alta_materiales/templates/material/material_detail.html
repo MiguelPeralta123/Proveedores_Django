@@ -4,7 +4,7 @@
   <main class="pt-5 m-5">
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
-        <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
+        <form class="card card-body" method="POST" enctype="multipart/form-data" style="background-color: rgb(255, 255, 255, 0.8);">
           <h1 class="mb-4">Detalle de la solicitud</h1>
 
           {{ error }}
@@ -517,15 +517,17 @@
         window.history.back()
       })
 
-      btnDownloadTable.addEventListener('mouseover', () => {
-        btnDownloadTable.classList.add('visible')
-      })
-      btnDownloadTable.addEventListener('mouseout', () => {
-        btnDownloadTable.classList.remove('visible')
-      })
-
-      // Generar Excel a partir de la tabla de productos
+      // Eventos para btnDownloadTable
       if (btnDownloadTable) {
+        // Se hace visible cuando el mouse entra
+        btnDownloadTable.addEventListener('mouseover', () => {
+          btnDownloadTable.classList.add('visible')
+        })
+        // Se hace invisible cuando el mouse sale
+        btnDownloadTable.addEventListener('mouseout', () => {
+          btnDownloadTable.classList.remove('visible')
+        })
+        // Generar Excel a partir de la tabla de productos
         btnDownloadTable.addEventListener('click', () => {
           var tableSelect = document.getElementById('materials-table');
           var ws = XLSX.utils.table_to_sheet(tableSelect);
@@ -701,6 +703,8 @@
       if (comentarios) {
         buttonsContainer.addEventListener('click', function(event) {  
           if (event.target && event.target.classList.contains('btn-save')) {
+            comentarios.removeAttribute('required')
+            comentarios.removeAttribute('readonly')
             comentarios.value = ''
           }
           if (event.target && event.target.classList.contains('btn-reject')) {
@@ -710,7 +714,7 @@
             }
           }
           if (event.target && event.target.classList.contains('btn-approve')) {
-            if (!materialEliminado && comentarios) {
+            if (!materialEliminado) {
               comentarios.removeAttribute('required')
               comentarios.value = ''
             }
@@ -1112,7 +1116,18 @@
                 const fotoProducto = fotoProductoContainer.querySelector('.material-foto-producto')
                 const imagePreviewContainer = fotoProductoContainer.querySelector('#image_preview_container')
                 const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
-                fotoProducto.value = ''
+                
+                // Crear un nuevo campo de entrada de tipo "file"
+                var newfotoProducto = document.createElement('input')
+                newfotoProducto.type = 'file'
+                newfotoProducto.name = fotoProducto.name
+                newfotoProducto.classList.add('form-file')
+                newfotoProducto.classList.add('material-foto-producto')
+                newfotoProducto.accept = 'image/*'
+                newfotoProducto.id = fotoProducto.id
+                // Reemplazar el campo de entrada original con el nuevo
+                fotoProductoContainer.replaceChild(newfotoProducto, fotoProducto)
+
                 imagePreview.src = ''
                 imagePreviewContainer.style.display = 'none'
             }

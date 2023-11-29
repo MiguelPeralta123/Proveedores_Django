@@ -287,12 +287,12 @@ def material_detail(request, material_id):
                         request.POST, instance=solicitud)
                     destinatario_correo = [solicitud.usuario.email]
                 else:
-                    solicitud_form = SolicitudForm(
+                    solicitud_form = SolicitudDetailForm(
                         request.POST, instance=solicitud)
                     destinatario_correo = ['compras@ricofarms.com']
 
                 material_forms = [MaterialForm(
-                    request.POST, instance=material, prefix=f'material-{material.id}') for material in materiales]
+                    request.POST, request.FILES, instance=material, prefix=f'material-{material.id}') for material in materiales]
                 
                 historial_form = HistorialForm(request.POST)
 

@@ -48,9 +48,14 @@
               <li class="nav-item" style="margin-right: 1rem;">
                 <a class="nav-link active" aria-current="page" href="/materiales">Materiales / servicios</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" style="margin-right: 1rem;">
                 <a class="nav-link active" aria-current="page" href="/signout">Cerrar sesión</a>
               </li>
+              {% if user.compras or user.finanzas or user.sistemas %}
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/settings">⚙</a>
+                </li>
+              {% endif %}
               <!-- Si no, solo mostramos las opciones "Iniciar sesión" y "Crear cuenta" -->
             {% else %}
               <li class="nav-item">

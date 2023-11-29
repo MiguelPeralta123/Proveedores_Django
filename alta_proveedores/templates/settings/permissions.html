@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <main class="pt-5 m-5">
+    <div class="row mt-5 justify-content-center">
+      <div style="max-width: 40rem;">
+        <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
+          <h1 class="mb-4">Ceder permisos de autorización</h1>
+
+          {{ error }}
+
+          {% csrf_token %}
+
+          <!-- Nuevo autorizador field -->
+          <div style="width: 100%; margin-bottom:1rem;">
+            <label for="id_rubro">Nuevo autorizador:<span style="color: rgb(192, 0, 0);">*</span></label>
+            {{ form.nuevo_autorizador }}
+            <p id="error-nuevo-autorizador" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
+        </form>
+
+        <button id="btn-back" class="btn btn-secondary">Volver</button>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    #btn-back {
+      width: 10rem;
+      margin-top: 2rem;
+      font-weight: bold;
+      background-color: rgb(0, 128, 0, 0.6);
+      transition: 0.2s ease-in-out;
+    }
+    #btn-back:hover {
+      scale: 1.05;
+      background-color: rgb(0, 128, 0);
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Inputs
+      const rubro = document.getElementById('id_rubro')
+
+      // Buttons
+      const btnGuardar = document.getElementById('btn-guardar')
+      const btnBack = document.getElementById('btn-back')
+      
+      // Error messages
+      const errorNuevoAutorizador = document.getElementById('error-nuevo-autorizador')
+
+      btnBack.addEventListener('click', () => {
+        window.history.back()
+      })
+      
+      // Validación nuevo autorizador
+      const validateNuevoAutorizador = () => {
+        if (nuevoAutorizador.value == '') {
+          errorNuevoAutorizador.style.display = 'block'
+        } else {
+          errorNuevoAutorizador.style.display = 'none'
+        }
+        enableSaveButton()
+      }
+      nuevoAutorizador.addEventListener('focus', validateNuevoAutorizador)
+      nuevoAutorizador.addEventListener('change', validateNuevoAutorizador)
+
+      btnGuardar.addEventListener('click', () => {
+        console.log('Cediendo permisos de autorización a', nuevoAutorizador.value)
+      })
+    })
+  </script>
+{% endblock %}

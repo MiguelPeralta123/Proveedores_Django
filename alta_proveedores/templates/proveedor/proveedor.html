@@ -38,11 +38,11 @@
                         href="{% url 'proveedor_detail' proveedor.id %}"
                         style="transition: 0.2s ease-in-out;">
                         <div class="d-flex justify-content-between gap-3 my-2">
-                            {% if not proveedor.es_migracion and proveedor.nombre_comercial %}
+                            {% if not proveedor.es_migracion and proveedor.nombre_comercial or not proveedor.es_migracion and proveedor.eliminado %}
                                 <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
                             {% elif not proveedor.es_migracion and proveedor.borrador %}
                                 <h4 class="my-0">Borrador - {{proveedor.tipo_alta}}</h4>
-                            {% elif proveedor.es_migracion and proveedor.rfc_migracion %}
+                            {% elif proveedor.es_migracion and proveedor.rfc_migracion or proveedor.es_migracion and proveedor.eliminado %}
                                 <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
                             {% elif proveedor.es_migracion and proveedor.borrador %}
                                 <h4 class="my-0">Migración - {{proveedor.tipo_alta}}</h4>
@@ -58,32 +58,28 @@
                             {% endif %}
                             <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                         </div>
+
                         {% if proveedor.borrador %}
-                        <p class="text-success">✎ Guardado como borrador</p>
-                        {% endif %}
-                        {% if proveedor.pendiente %}
-                        <p class="text-success">🕐 Pendiente compras</p>
-                        {% endif %}
-                        {% if proveedor.compras %}
-                        <p class="text-success">🕐 Pendiente finanzas</p>
-                        {% endif %}
-                        {% if proveedor.rechazado_compras %}
-                        <p class="text-success">❌ Rechazado por compras</p>
-                        <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                        {% endif %}
-                        {% if proveedor.finanzas %}
-                        <p class="text-success">🕐 Pendiente sistemas</p>
-                        {% endif %}
-                        {% if proveedor.rechazado_finanzas %}
-                        <p class="text-success">❌ Rechazado por finanzas</p>
-                        <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                        {% endif %}
-                        {% if proveedor.sistemas %}
-                        <p class="text-success">✅ Aprobado</p>
-                        {% endif %}
-                        {% if proveedor.rechazado_sistemas %}
-                        <p class="text-success">❌ Rechazado por sistemas</p>
-                        <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            <p class="text-success">✎ Guardado como borrador</p>
+                        {% elif proveedor.pendiente %}
+                            <p class="text-success">🕐 Pendiente compras</p>
+                        {% elif proveedor.compras %}
+                            <p class="text-success">🕐 Pendiente finanzas</p>
+                        {% elif proveedor.rechazado_compras %}
+                            <p class="text-success">❌ Rechazado por compras</p>
+                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                        {% elif proveedor.finanzas %}
+                            <p class="text-success">🕐 Pendiente sistemas</p>
+                        {% elif proveedor.rechazado_finanzas %}
+                            <p class="text-success">❌ Rechazado por finanzas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                        {% elif proveedor.sistemas %}
+                            <p class="text-success">✅ Aprobado</p>
+                        {% elif proveedor.rechazado_sistemas %}
+                            <p class="text-success">❌ Rechazado por sistemas</p>
+                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                        {% elif proveedor.eliminado %}
+                            <p class="text-success">🗑 Solicitud eliminada</p>
                         {% endif %}
 
                         {% for cambio in historial %}
@@ -123,32 +119,28 @@
                                     {% endif %}
                                     <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                                 </div>
+                                
                                 {% if proveedor.borrador %}
-                                <p class="text-success">✎ Guardado como borrador</p>
-                                {% endif %}
-                                {% if proveedor.pendiente %}
-                                <p class="text-success">🕐 Pendiente compras</p>
-                                {% endif %}
-                                {% if proveedor.compras %}
-                                <p class="text-success">🕐 Pendiente finanzas</p>
-                                {% endif %}
-                                {% if proveedor.rechazado_compras %}
-                                <p class="text-success">❌ Rechazado por compras</p>
-                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                                {% endif %}
-                                {% if proveedor.finanzas %}
-                                <p class="text-success">🕐 Pendiente sistemas</p>
-                                {% endif %}
-                                {% if proveedor.rechazado_finanzas %}
-                                <p class="text-success">❌ Rechazado por finanzas</p>
-                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                                {% endif %}
-                                {% if proveedor.sistemas %}
-                                <p class="text-success">✅ Aprobado</p>
-                                {% endif %}
-                                {% if proveedor.rechazado_sistemas %}
-                                <p class="text-success">❌ Rechazado por sistemas</p>
-                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                    <p class="text-success">✎ Guardado como borrador</p>
+                                {% elif proveedor.pendiente %}
+                                    <p class="text-success">🕐 Pendiente compras</p>
+                                {% elif proveedor.compras %}
+                                    <p class="text-success">🕐 Pendiente finanzas</p>
+                                {% elif proveedor.rechazado_compras %}
+                                    <p class="text-success">❌ Rechazado por compras</p>
+                                    <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                {% elif proveedor.finanzas %}
+                                    <p class="text-success">🕐 Pendiente sistemas</p>
+                                {% elif proveedor.rechazado_finanzas %}
+                                    <p class="text-success">❌ Rechazado por finanzas</p>
+                                    <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                {% elif proveedor.sistemas %}
+                                    <p class="text-success">✅ Aprobado</p>
+                                {% elif proveedor.rechazado_sistemas %}
+                                    <p class="text-success">❌ Rechazado por sistemas</p>
+                                    <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                {% elif proveedor.eliminado %}
+                                    <p class="text-success">🗑 Solicitud eliminada</p>
                                 {% endif %}
 
                                 {% for cambio in historial %}
@@ -189,32 +181,28 @@
                                 {% endif %}
                                 <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                             </div>
+                            
                             {% if proveedor.borrador %}
-                            <p class="text-success">✎ Guardado como borrador</p>
-                            {% endif %}
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
-                            {% if proveedor.compras %}
-                            <p class="text-success">🕐 Pendiente finanzas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_compras %}
-                            <p class="text-success">❌ Rechazado por compras</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.finanzas %}
-                            <p class="text-success">🕐 Pendiente sistemas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_finanzas %}
-                            <p class="text-success">❌ Rechazado por finanzas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.sistemas %}
-                            <p class="text-success">✅ Aprobado</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_sistemas %}
-                            <p class="text-success">❌ Rechazado por sistemas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                <p class="text-success">✎ Guardado como borrador</p>
+                            {% elif proveedor.pendiente %}
+                                <p class="text-success">🕐 Pendiente compras</p>
+                            {% elif proveedor.compras %}
+                                <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% elif proveedor.rechazado_compras %}
+                                <p class="text-success">❌ Rechazado por compras</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.finanzas %}
+                                <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% elif proveedor.rechazado_finanzas %}
+                                <p class="text-success">❌ Rechazado por finanzas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.sistemas %}
+                                <p class="text-success">✅ Aprobado</p>
+                            {% elif proveedor.rechazado_sistemas %}
+                                <p class="text-success">❌ Rechazado por sistemas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.eliminado %}
+                                <p class="text-success">🗑 Solicitud eliminada</p>
                             {% endif %}
 
                             {% for cambio in historial %}
@@ -252,32 +240,28 @@
                                 {% endif %}
                                 <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                             </div>
+                            
                             {% if proveedor.borrador %}
-                            <p class="text-success">✎ Guardado como borrador</p>
-                            {% endif %}
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
-                            {% if proveedor.compras %}
-                            <p class="text-success">🕐 Pendiente finanzas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_compras %}
-                            <p class="text-success">❌ Rechazado por compras</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.finanzas %}
-                            <p class="text-success">🕐 Pendiente sistemas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_finanzas %}
-                            <p class="text-success">❌ Rechazado por finanzas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.sistemas %}
-                            <p class="text-success">✅ Aprobado</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_sistemas %}
-                            <p class="text-success">❌ Rechazado por sistemas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                <p class="text-success">✎ Guardado como borrador</p>
+                            {% elif proveedor.pendiente %}
+                                <p class="text-success">🕐 Pendiente compras</p>
+                            {% elif proveedor.compras %}
+                                <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% elif proveedor.rechazado_compras %}
+                                <p class="text-success">❌ Rechazado por compras</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.finanzas %}
+                                <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% elif proveedor.rechazado_finanzas %}
+                                <p class="text-success">❌ Rechazado por finanzas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.sistemas %}
+                                <p class="text-success">✅ Aprobado</p>
+                            {% elif proveedor.rechazado_sistemas %}
+                                <p class="text-success">❌ Rechazado por sistemas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.eliminado %}
+                                <p class="text-success">🗑 Solicitud eliminada</p>
                             {% endif %}
 
                             {% for cambio in historial %}
@@ -315,32 +299,28 @@
                                 {% endif %}
                                 <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                             </div>
+                            
                             {% if proveedor.borrador %}
-                            <p class="text-success">✎ Guardado como borrador</p>
-                            {% endif %}
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
-                            {% if proveedor.compras %}
-                            <p class="text-success">🕐 Pendiente finanzas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_compras %}
-                            <p class="text-success">❌ Rechazado por compras</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.finanzas %}
-                            <p class="text-success">🕐 Pendiente sistemas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_finanzas %}
-                            <p class="text-success">❌ Rechazado por finanzas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.sistemas %}
-                            <p class="text-success">✅ Aprobado</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_sistemas %}
-                            <p class="text-success">❌ Rechazado por sistemas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                <p class="text-success">✎ Guardado como borrador</p>
+                            {% elif proveedor.pendiente %}
+                                <p class="text-success">🕐 Pendiente compras</p>
+                            {% elif proveedor.compras %}
+                                <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% elif proveedor.rechazado_compras %}
+                                <p class="text-success">❌ Rechazado por compras</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.finanzas %}
+                                <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% elif proveedor.rechazado_finanzas %}
+                                <p class="text-success">❌ Rechazado por finanzas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.sistemas %}
+                                <p class="text-success">✅ Aprobado</p>
+                            {% elif proveedor.rechazado_sistemas %}
+                                <p class="text-success">❌ Rechazado por sistemas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.eliminado %}
+                                <p class="text-success">🗑 Solicitud eliminada</p>
                             {% endif %}
 
                             {% for cambio in historial %}
@@ -378,32 +358,28 @@
                                 {% endif %}
                                 <p><b>Fecha:</b> {{proveedor.fecha}}</p>
                             </div>
+                            
                             {% if proveedor.borrador %}
-                            <p class="text-success">✎ Guardado como borrador</p>
-                            {% endif %}
-                            {% if proveedor.pendiente %}
-                            <p class="text-success">🕐 Pendiente compras</p>
-                            {% endif %}
-                            {% if proveedor.compras %}
-                            <p class="text-success">🕐 Pendiente finanzas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_compras %}
-                            <p class="text-success">❌ Rechazado por compras</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.finanzas %}
-                            <p class="text-success">🕐 Pendiente sistemas</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_finanzas %}
-                            <p class="text-success">❌ Rechazado por finanzas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
-                            {% endif %}
-                            {% if proveedor.sistemas %}
-                            <p class="text-success">✅ Aprobado</p>
-                            {% endif %}
-                            {% if proveedor.rechazado_sistemas %}
-                            <p class="text-success">❌ Rechazado por sistemas</p>
-                            <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                                <p class="text-success">✎ Guardado como borrador</p>
+                            {% elif proveedor.pendiente %}
+                                <p class="text-success">🕐 Pendiente compras</p>
+                            {% elif proveedor.compras %}
+                                <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% elif proveedor.rechazado_compras %}
+                                <p class="text-success">❌ Rechazado por compras</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.finanzas %}
+                                <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% elif proveedor.rechazado_finanzas %}
+                                <p class="text-success">❌ Rechazado por finanzas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.sistemas %}
+                                <p class="text-success">✅ Aprobado</p>
+                            {% elif proveedor.rechazado_sistemas %}
+                                <p class="text-success">❌ Rechazado por sistemas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.eliminado %}
+                                <p class="text-success">🗑 Solicitud eliminada</p>
                             {% endif %}
 
                             {% for cambio in historial %}
@@ -421,11 +397,11 @@
                             href="{% url 'proveedor_detail' proveedor.id %}"
                             style="transition: 0.2s ease-in-out;">
                             <div class="d-flex justify-content-between gap-3 my-2">
-                                {% if not proveedor.es_migracion and proveedor.nombre_comercial %}
+                                {% if not proveedor.es_migracion and proveedor.nombre_comercial or not proveedor.es_migracion and proveedor.eliminado %}
                                     <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
                                 {% elif not proveedor.es_migracion and proveedor.borrador %}
                                     <h4 class="my-0">Borrador - {{proveedor.tipo_alta}}</h4>
-                                {% elif proveedor.es_migracion and proveedor.rfc_migracion %}
+                                {% elif proveedor.es_migracion and proveedor.rfc_migracion or proveedor.es_migracion and proveedor.eliminado %}
                                     <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
                                 {% elif proveedor.es_migracion and proveedor.borrador %}
                                     <h4 class="my-0">Migración - {{proveedor.tipo_alta}}</h4>

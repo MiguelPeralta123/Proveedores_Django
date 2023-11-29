@@ -324,3 +324,13 @@ MONEDA_LIST = [
     ('MXP', 'MXP'),
     ('USD', 'USD'),
 ]
+
+AUTORIZADORES_LIST = [
+    ('', ' Seleccione una opción'),
+    ('Edna Cristina Valdez López', 'Edna Cristina Valdez López'),
+    ('Ernesto Durazo Grijalva', 'Ernesto Durazo Grijalva'),
+    ('Gerardo Cornejo López', 'Gerardo Cornejo López'),
+    ('Mayola Leticia Hernández Solis', 'Mayola Leticia Hernández Solis'),
+    ('Vianey Angelina Rivera Vázquez', 'Vianey Angelina Rivera Vázquez'),
+    ('Viviana Estefanía Ibarra Valenzuela', 'Viviana Estefanía Ibarra Valenzuela'),
+]

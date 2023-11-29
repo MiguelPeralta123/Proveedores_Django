@@ -30,8 +30,10 @@ urlpatterns = [
     # URL para admin
     path('admin/', admin.site.urls),
 
-    # URL para home
+    # URL para home y settings
     path('', views_proveedores.home, name='home'),
+    path('settings/', views_proveedores.settings, name='settings'),
+    path('settings/permissions', views_proveedores.permissions, name='permissions'),
 
     # URL para inicio de sesión (login, logout)
     path('signin/', views_login.signin, name='signin'),

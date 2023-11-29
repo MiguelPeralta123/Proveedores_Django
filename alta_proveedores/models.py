@@ -116,3 +116,16 @@ class CatalogoProveedor(models.Model):
 
     def __str__(self):
         return self.rfc + " - " + self.nombre_comercial
+
+
+class Permission(models.Model):
+    nuevo_autorizador = models.CharField(max_length=100)
+    fecha = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    
+    class Meta:
+        verbose_name = 'permiso'
+        verbose_name_plural = "permisos"
+
+    def __str__(self):
+        return str(self.id) + ".- " + self.nuevo_autorizador

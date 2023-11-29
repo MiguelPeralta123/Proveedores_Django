@@ -1,6 +1,6 @@
 from django import forms
 import re
-from .models import Proveedor, ProveedorHistorial
+from .models import Proveedor, ProveedorHistorial, Permission
 from .options import *
 from datetime import date
 
@@ -385,3 +385,12 @@ class HistorialForm(forms.ModelForm):
     class Meta:
         model = ProveedorHistorial
         fields = []
+
+
+class PermissionsForm(forms.ModelForm):
+    class Meta:
+        model = Permission
+        fields = ['nuevo_autorizador']
+        widgets = {
+            'nuevo_autorizador': forms.Select(choices=AUTORIZADORES_LIST, attrs={'class':'form-control', 'initial':''}),
+        }
