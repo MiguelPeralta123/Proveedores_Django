@@ -11,14 +11,34 @@
 
           {% csrf_token %}
 
-          <!-- Nuevo autorizador field -->
-          <div style="width: 100%; margin-bottom:1rem;">
-            <label for="id_rubro">Nuevo autorizador:<span style="color: rgb(192, 0, 0);">*</span></label>
-            {{ form.nuevo_autorizador }}
-            <p id="error-nuevo-autorizador" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-          </div>
+          <p><b>Usuarios con permisos de 
+            {% if current_user.compras %}compras:{% endif %}
+            {% if current_user.finanzas %}finanzas:{% endif %}
+            {% if current_user.sistemas %}sistemas:{% endif %}
+          </b></p>
 
-          <button id="btn-guardar" class="btn w-100" type="submit" value="True" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
+          {% for autorizador in autorizadores %}
+            <div style="margin-bottom:1rem;">
+              <input 
+                type="checkbox" 
+                id="id_checkbox_autorizador_{{autorizador.id}}" 
+                name="{{autorizador.id}}" 
+                {% if current_user.compras and autorizador.compras %}
+                  checked 
+                {% elif current_user.finanzas and autorizador.finanzas %}
+                  checked
+                {% elif current_user.sistemas and autorizador.sistemas %}
+                  checked
+                {% endif %}
+                {% if autorizador.autorizador %}
+                  disabled
+                {% endif %}
+              />
+              <label for="id_checkbox_autorizador_{{autorizador.id}}">{{ autorizador.get_full_name }}</label>
+            </div>
+          {% endfor %}
+
+          <button id="btn-guardar" class="btn w-100" type="submit" style="background-color: #008841; color: white; font-weight: bold;">Guardar</button>
         </form>
 
         <button id="btn-back" class="btn btn-secondary">Volver</button>
@@ -43,7 +63,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       // Inputs
-      const rubro = document.getElementById('id_rubro')
+      const nuevoAutorizador = document.getElementById('id_nuevo_autorizador')
 
       // Buttons
       const btnGuardar = document.getElementById('btn-guardar')
@@ -57,7 +77,7 @@
       })
       
       // Validación nuevo autorizador
-      const validateNuevoAutorizador = () => {
+      /*const validateNuevoAutorizador = () => {
         if (nuevoAutorizador.value == '') {
           errorNuevoAutorizador.style.display = 'block'
         } else {
@@ -66,10 +86,20 @@
         enableSaveButton()
       }
       nuevoAutorizador.addEventListener('focus', validateNuevoAutorizador)
-      nuevoAutorizador.addEventListener('change', validateNuevoAutorizador)
+      nuevoAutorizador.addEventListener('change', validateNuevoAutorizador)*/
 
-      btnGuardar.addEventListener('click', () => {
+      function enableSaveButton() {
+        if(errorNuevoAutorizador.style.display == 'block') {
+          btnGuardar.disabled = true
+        }
+        else {
+          btnGuardar.disabled = false
+        }
+      }
+
+      btnGuardar.addEventListener('click', event => {
         console.log('Cediendo permisos de autorización a', nuevoAutorizador.value)
+        event.preventDefault()
       })
     })
   </script>

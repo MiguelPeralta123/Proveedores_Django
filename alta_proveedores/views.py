@@ -26,34 +26,55 @@ def settings(request):
 def permissions(request):
     try:
         if request.user.compras or request.user.finanzas or request.user.sistemas:
+            # Obtener la lista de autorizadores
+            autorizadores = CustomUser.objects.filter(
+                Q(autorizador = True) |
+                Q(autorizador_sustituto = True)
+            ).order_by('first_name')
+
             if request.method == 'GET':
                 return render(request, 'settings/permissions.html', {
-                    'form': PermissionsForm(),
                     'current_user': request.user,
+                    'autorizadores': autorizadores,
                 })
-            else:
+            elif request.method == 'POST':
                 try:
-                    permissions_form = PermissionsForm(request.POST)
+                    for autorizador in autorizadores:
+                        usuario = get_object_or_404(CustomUser, pk=autorizador.id)
+                        if autorizador.autorizador_sustituto and request.POST.get(str(autorizador.id)):
+                            if request.user.compras:
+                                usuario.compras = True
+                            if request.user.finanzas:
+                                usuario.finanzas = True
+                            if request.user.sistemas:
+                                usuario.sistemas = True
+                        elif autorizador.autorizador_sustituto and not request.POST.get(str(autorizador.id)):
+                            if request.user.compras:
+                                usuario.compras = False
+                            if request.user.finanzas:
+                                usuario.finanzas = False
+                            if request.user.sistemas:
+                                usuario.sistemas = False
+                        usuario.save()
 
-                    if permissions_form.is_valid():
-                        permissions = permissions_form.save(commit=False)
-                        permissions.usuario = request.user
-                        permissions.save()
-
-                        # Enviar correo electrónico
+                        # Enviar correo electrónico al usuario para notificarle los cambios
                         subject = 'Se han actualizado sus permisos de autorización'
                         message =  'El usuario ' + str(request.user.get_full_name()) + ' le ha otorgado permisos para autorizar solicitudes de altas'
                         from_email = 'altaproveedoresricofarms@gmail.com'
-                        recipient_list = [permissions.nuevo_autorizador]
+                        recipient_list = [autorizador.email]
                         #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
-                        return redirect('home')
+                    return redirect('home')
                     
                 except ValueError as e:
-                    return render(request, 'proveedor/proveedor_create.html', {
-                        'form': PermissionsForm(),
+                    return render(request, 'settings/permissions.html', {
+                        'current_user': request.user,
+                        'autorizadores': autorizadores,
                         'error': str(e)
                     })
+            else:
+                return redirect('home')
+
         else:
             return redirect('home')
     
@@ -73,7 +94,7 @@ def proveedor(request, tipo):
                         Q(pendiente=True, tipo_alta='Proveedor') |
                         Q(pendiente=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                    if request.user.compras or request.user.finanzas or request.user.sistemas:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Proveedor') |
                             Q(usuario=request.user, tipo_alta='')
@@ -83,7 +104,7 @@ def proveedor(request, tipo):
                         Q(pendiente=True, tipo_alta='Cliente') |
                         Q(pendiente=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                    if request.user.compras or request.user.finanzas or request.user.sistemas:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Cliente') |
                             Q(usuario=request.user, tipo_alta='')
@@ -94,7 +115,7 @@ def proveedor(request, tipo):
                         Q(compras=True, tipo_alta='Proveedor') |
                         Q(compras=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                    if request.user.compras or request.user.finanzas or request.user.sistemas:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Proveedor') |
                             Q(usuario=request.user, tipo_alta='')
@@ -104,7 +125,7 @@ def proveedor(request, tipo):
                         Q(compras=True, tipo_alta='Cliente') |
                         Q(compras=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                    if request.user.compras or request.user.finanzas or request.user.sistemas:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Cliente') |
                             Q(usuario=request.user, tipo_alta='')
@@ -115,7 +136,7 @@ def proveedor(request, tipo):
                         Q(finanzas=True, tipo_alta='Proveedor') |
                         Q(finanzas=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                    if request.user.compras or request.user.finanzas or request.user.sistemas:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Proveedor') |
                             Q(usuario=request.user, tipo_alta='')
@@ -125,7 +146,7 @@ def proveedor(request, tipo):
                         Q(finanzas=True, tipo_alta='Cliente') |
                         Q(finanzas=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+                    if request.user.compras or request.user.finanzas or request.user.sistemas:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Cliente') |
                             Q(usuario=request.user, tipo_alta='')

@@ -26,12 +26,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
+    requisitor = models.BooleanField(default=True)
     puede_crear_proveedor = models.BooleanField(default=False)
     puede_crear_cliente = models.BooleanField(default=False)
     puede_crear_material = models.BooleanField(default=True)
     compras = models.BooleanField(default=False)
     finanzas = models.BooleanField(default=False)
     sistemas = models.BooleanField(default=False)
+    autorizador = models.BooleanField(default=False)
+    autorizador_sustituto = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
