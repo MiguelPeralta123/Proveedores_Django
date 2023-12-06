@@ -285,7 +285,7 @@ def proveedor_create(request):
                             message = str(request.user.get_full_name()) + ' ha solicitado un alta de proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
                             from_email = 'altaproveedoresricofarms@gmail.com'
                             if proveedor.es_migracion:
-                                recipient_list = ['edurazo@ricofarms.com']
+                                recipient_list = ['edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
                             elif proveedor.tipo_alta == 'Cliente':
                                 recipient_list = ['fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
                             else:
@@ -374,7 +374,7 @@ def proveedor_detail(request, proveedor_id):
                     elif request.user.finanzas:
                         proveedor_form = ProveedorFormForFinanzas(
                             request.POST, instance=proveedor)
-                        destinatario_correo = [proveedor.usuario.email, 'edurazo@ricofarms.com']
+                        destinatario_correo = [proveedor.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
                     elif request.user.sistemas:
                         proveedor_form = ProveedorFormForSistemas(
                             request.POST, instance=proveedor)
@@ -455,7 +455,7 @@ def enviarCorreo(departamento, elementos, folios):
     if departamento == 'finanzas':
         email = ['fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
     if departamento == 'sistemas':
-        email = ['edurazo@ricofarms.com']
+        email = ['edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
 
     #send_mail(subject, message, from_email, email, fail_silently=True)
 

@@ -189,7 +189,7 @@ def material_create(request):
                             message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/'
                             from_email = 'altaproveedoresricofarms@gmail.com'
                             if solicitud.es_migracion:
-                                recipient_list = ['edurazo@ricofarms.com']
+                                recipient_list = ['edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
                             else:
                                 recipient_list = ['compras@ricofarms.com']
                             #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
@@ -277,11 +277,11 @@ def material_detail(request, material_id):
                 if request.user.compras:
                     solicitud_form = SolicitudFormForCompras(
                         request.POST, instance=solicitud)
-                    destinatario_correo = [solicitud.usuario.email, 'edurazo@ricofarms.com']
+                    destinatario_correo = [solicitud.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
                 elif request.user.finanzas:
                     solicitud_form = SolicitudFormForFinanzas(
                         request.POST, instance=solicitud)
-                    destinatario_correo = [solicitud.usuario.email, 'edurazo@ricofarms.com']
+                    destinatario_correo = [solicitud.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
                 elif request.user.sistemas:
                     solicitud_form = SolicitudFormForSistemas(
                         request.POST, instance=solicitud)
@@ -438,7 +438,7 @@ def enviarCorreo(departamento, elementos, folios):
     if departamento == 'finanzas':
         email = ['fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
     if departamento == 'sistemas':
-        email = ['edurazo@ricofarms.com']
+        email = ['edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
 
     #send_mail(subject, message, from_email, email, fail_silently=True)
 
@@ -478,4 +478,4 @@ def solicitudesPendientes():
 
     Timer(1800, solicitudesPendientes).start()
 
-solicitudesPendientes()
+#solicitudesPendientes()
