@@ -12,8 +12,8 @@ class ProveedorForm(forms.ModelForm):
         fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'rfc_migracion', 'empresa', 'tipo_alta', 'contribuyente', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cfdi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'fair_trade', 'dias_credito', 'monto_credito_mn', 'monto_credito_me', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'swift', 'otro_codigo_bancario', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'swift_2', 'otro_codigo_bancario_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'constancia_situacion_fiscal', 'estado_cuenta_bancario', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_ORIGEN_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_DESTINO_LIST, attrs={'class':'form-control', 'initial':''}),
             'rfc_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control', 'initial':''}),
@@ -88,8 +88,8 @@ class ProveedorDetailForm(forms.ModelForm):
         fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'rfc_migracion', 'empresa', 'tipo_alta', 'contribuyente', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cfdi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'fair_trade', 'dias_credito', 'monto_credito_mn', 'monto_credito_me', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'swift', 'otro_codigo_bancario', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'swift_2', 'otro_codigo_bancario_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_ORIGEN_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_DESTINO_LIST, attrs={'class':'form-control', 'initial':''}),
             'rfc_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control', 'initial':''}),
@@ -163,8 +163,8 @@ class ProveedorFormForCompras(forms.ModelForm):
         fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'rfc_migracion', 'empresa', 'tipo_alta', 'contribuyente', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cfdi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'fair_trade', 'dias_credito', 'monto_credito_mn', 'monto_credito_me', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'swift', 'otro_codigo_bancario', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'swift_2', 'otro_codigo_bancario_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_ORIGEN_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_DESTINO_LIST, attrs={'class':'form-control', 'initial':''}),
             'rfc_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control', 'initial':''}),
@@ -238,8 +238,8 @@ class ProveedorFormForFinanzas(forms.ModelForm):
         fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'rfc_migracion', 'empresa', 'tipo_alta', 'contribuyente', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cfdi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'fair_trade', 'dias_credito', 'monto_credito_mn', 'monto_credito_me', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'swift', 'otro_codigo_bancario', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'swift_2', 'otro_codigo_bancario_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_ORIGEN_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_DESTINO_LIST, attrs={'class':'form-control', 'initial':''}),
             'rfc_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control', 'initial':''}),
@@ -313,8 +313,8 @@ class ProveedorFormForSistemas(forms.ModelForm):
         fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'rfc_migracion', 'empresa', 'tipo_alta', 'contribuyente', 'rfc', 'curp', 'regimen_capital', 'nombre_fiscal', 'nombre_comercial', 'regimen_fiscal', 'uso_cfdi', 'representante_legal', 'telefono_1', 'telefono_2', 'contacto', 'correo_general', 'correo_pagos', 'sitio_web', 'rubro', 'tipo_operacion', 'tipo_tercero', 'id_fiscal', 'agente_aduanal', 'fair_trade', 'dias_credito', 'monto_credito_mn', 'monto_credito_me', 'retencion_iva', 'retencion_isr', 'iva_frontera', 'codigo_postal', 'pais', 'estado', 'ciudad', 'municipio', 'localidad', 'colonia', 'calle', 'numero_exterior', 'numero_interior', 'banco', 'cuenta', 'moneda', 'clabe', 'swift', 'otro_codigo_bancario', 'banco_2', 'cuenta_2', 'moneda_2', 'clabe_2', 'swift_2', 'otro_codigo_bancario_2', 'usar_en_portal_proveedores', 'no_aplica_para_rafaga', 'no_relacionar_OC', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_ORIGEN_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_DESTINO_LIST, attrs={'class':'form-control', 'initial':''}),
             'rfc_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control', 'initial':''}),

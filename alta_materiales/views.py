@@ -192,7 +192,7 @@ def material_create(request):
                                 recipient_list = ['edurazo@ricofarms.com']
                             else:
                                 recipient_list = ['compras@ricofarms.com']
-                            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                            #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                         return redirect('material')
                     
@@ -390,7 +390,7 @@ def material_detail(request, material_id):
                             message = str(request.user.get_full_name()) + ' ha rechazado un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
                             from_email = 'altaproveedoresricofarms@gmail.com'
                             recipient_list = [solicitud.usuario.email]
-                            send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                            #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     # Enviar correo electrónico
                     subject = 'Solicitud de material modificada'
@@ -403,8 +403,8 @@ def material_detail(request, material_id):
                         recipient_list = [solicitud.usuario.email]
                     else:
                         recipient_list = destinatario_correo
-                    if not solicitud.eliminado:
-                        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                    #if not solicitud.eliminado:
+                        #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     return redirect('material')
 
@@ -440,7 +440,7 @@ def enviarCorreo(departamento, elementos, folios):
     if departamento == 'sistemas':
         email = ['edurazo@ricofarms.com']
 
-    send_mail(subject, message, from_email, email, fail_silently=True)
+    #send_mail(subject, message, from_email, email, fail_silently=True)
 
 def solicitudesPendientes():
     # Revisar si hay solicitudes de material pendientes de aprobar por compras

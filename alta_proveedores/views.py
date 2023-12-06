@@ -62,7 +62,7 @@ def permissions(request):
                         message =  'El usuario ' + str(request.user.get_full_name()) + ' le ha otorgado permisos para autorizar solicitudes de altas'
                         from_email = 'altaproveedoresricofarms@gmail.com'
                         recipient_list = [autorizador.email]
-                        send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+                        #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
                     return redirect('home')
                     
@@ -290,7 +290,7 @@ def proveedor_create(request):
                                 recipient_list = ['fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
                             else:
                                 recipient_list = ['compras@ricofarms.com']
-                            send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+                            #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
                         return redirect('proveedor')
                     
@@ -418,8 +418,8 @@ def proveedor_detail(request, proveedor_id):
                             recipient_list = [proveedor.usuario.email]
                         else:
                             recipient_list = destinatario_correo
-                        if not proveedor.eliminado:
-                            send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+                        #if not proveedor.eliminado:
+                            #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
                         return redirect('proveedor')
                     
@@ -457,7 +457,7 @@ def enviarCorreo(departamento, elementos, folios):
     if departamento == 'sistemas':
         email = ['edurazo@ricofarms.com']
 
-    send_mail(subject, message, from_email, email, fail_silently=True)
+    #send_mail(subject, message, from_email, email, fail_silently=True)
 
 def solicitudesPendientes():
     # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por compras
@@ -495,4 +495,4 @@ def solicitudesPendientes():
 
     Timer(1800, solicitudesPendientes).start()
 
-solicitudesPendientes()
+#solicitudesPendientes()

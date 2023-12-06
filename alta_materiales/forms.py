@@ -9,12 +9,8 @@ class SolicitudForm(forms.ModelForm):
         fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'es_migracion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
-            'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_ORIGEN_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_DESTINO_LIST, attrs={'class':'form-control', 'initial':''}),
             'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
@@ -68,8 +64,8 @@ class SolicitudDetailForm(forms.ModelForm):
         fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_ORIGEN_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_DESTINO_LIST, attrs={'class':'form-control', 'initial':''}),
             'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
@@ -123,8 +119,8 @@ class SolicitudFormForCompras(forms.ModelForm):
         fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_ORIGEN_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_DESTINO_LIST, attrs={'class':'form-control', 'initial':''}),
             'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
@@ -146,8 +142,8 @@ class SolicitudFormForFinanzas(forms.ModelForm):
         fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_ORIGEN_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_DESTINO_LIST, attrs={'class':'form-control', 'initial':''}),
             'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),
@@ -169,8 +165,8 @@ class SolicitudFormForSistemas(forms.ModelForm):
         fields = ['es_migracion', 'empresa_origen', 'empresa_destino', 'nombre_producto_migracion', 'empresa', 'justificacion', 'pendiente', 'compras', 'finanzas', 'sistemas', 'rechazado_compras', 'rechazado_finanzas', 'rechazado_sistemas', 'eliminado', 'borrador', 'comentarios']
         widgets = {
             'es_migracion': forms.CheckboxInput(attrs={'class':'form-checkbox'}),
-            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
-            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_origen': forms.Select(choices=EMPRESA_MIGRACION_ORIGEN_LIST, attrs={'class':'form-control', 'initial':''}),
+            'empresa_destino': forms.Select(choices=EMPRESA_MIGRACION_DESTINO_LIST, attrs={'class':'form-control', 'initial':''}),
             'nombre_producto_migracion': forms.TextInput(attrs={'class':'form-control'}),
             'empresa': forms.Select(choices=EMPRESA_LIST, attrs={'class':'form-control', 'initial':''}),
             'justificacion': forms.Textarea(attrs={'class':'form-control', 'placeholder':'máximo 250 caracteres...'}),

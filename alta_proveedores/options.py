@@ -8,7 +8,16 @@ EMPRESA_LIST = [
     ('Sonorg - Tago - Wichita - Moonrise - Wellin', 'Sonorg - Tago - Wichita - Moonrise - Wellin'),
 ]
 
-EMPRESA_MIGRACION_LIST = [
+EMPRESA_MIGRACION_ORIGEN_LIST = [
+    ('', ' Seleccione una opción'),
+    ('Datamine Sonorg', 'Datamine Sonorg'),
+    ('Datamine Tago', 'Datamine Tago'),
+    ('Datamine Wichita', 'Datamine Wichita'),
+    ('Datamine Moonrise', 'Datamine Moonrise'),
+    ('Datamine Wellin', 'Datamine Wellin'),
+]
+
+EMPRESA_MIGRACION_DESTINO_LIST = [
     ('', ' Seleccione una opción'),
     ('Sonorg', 'Sonorg'),
     ('Tago', 'Tago'),
