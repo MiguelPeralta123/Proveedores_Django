@@ -10,18 +10,13 @@ EMPRESA_LIST = [
 
 EMPRESA_MIGRACION_ORIGEN_LIST = [
     ('', ' Seleccione una opción'),
-    ('Datamine Sonorg', 'Datamine Sonorg'),
-    ('Datamine Tago', 'Datamine Tago'),
-    ('Datamine Wichita', 'Datamine Wichita'),
-    ('Datamine Moonrise', 'Datamine Moonrise'),
-    ('Datamine Wellin', 'Datamine Wellin'),
+    ('Moonrise', 'Moonrise'),
+    ('Wellin', 'Wellin'),
 ]
 
 EMPRESA_MIGRACION_DESTINO_LIST = [
     ('', ' Seleccione una opción'),
     ('Sonorg', 'Sonorg'),
-    ('Tago', 'Tago'),
-    ('Wichita', 'Wichita'),
     ('Moonrise', 'Moonrise'),
     ('Wellin', 'Wellin'),
 ]
