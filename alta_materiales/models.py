@@ -38,6 +38,7 @@ class MaterialSolicitud(models.Model):
 class Material(models.Model):
     id_solicitud = models.CharField(max_length=10)
     tipo_alta = models.CharField(max_length=50, blank=True)
+    codigo = models.CharField(max_length=50, blank=True)
     subfamilia = models.CharField(max_length=50, blank=True)
     nombre_producto = models.CharField(max_length=100, blank=True)
     largo = models.CharField(max_length=20, blank=True)

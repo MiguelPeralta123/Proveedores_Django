@@ -8,8 +8,12 @@
         <h1 class="text-center display-5 py-4">Solicitudes de proveedores, materiales y servicios</h1>
       {% elif user.puede_crear_cliente and user.puede_crear_material %}
         <h1 class="text-center display-5 py-4">Solicitudes de clientes, materiales y servicios</h1>
-      {% else %}
+      {% elif user.puede_crear_cliente and user.puede_crear_proveedor %}
+        <h1 class="text-center display-5 py-4">Solicitudes de clientes y proveedores</h1>
+      {% elif user.puede_crear_material %}
         <h1 class="text-center display-5 py-4">Solicitudes de materiales y servicios</h1>
+      {% else %}
+        <h1 class="text-center display-5 py-4">Solicitudes</h1>
       {% endif %}
 
       {% if user.puede_crear_proveedor %}

@@ -291,7 +291,7 @@ def material_detail(request, material_id):
                         request.POST, instance=solicitud)
                     destinatario_correo = ['compras@ricofarms.com']
 
-                material_forms = [MaterialForm(
+                material_forms = [MaterialDetailForm(
                     request.POST, request.FILES, instance=material, prefix=f'material-{material.id}') for material in materiales]
                 
                 historial_form = HistorialForm(request.POST)
@@ -301,7 +301,9 @@ def material_detail(request, material_id):
 
                     if solicitud.es_migracion == False:
                         if all(form.is_valid() for form in material_forms):
+                            materialesAprobados = ''
                             for form in material_forms:
+                                materialesAprobados += '\n' + form.cleaned_data.get('codigo') + ' - ' + form.cleaned_data.get('nombre_producto')
                                 form.save()
                     
                     # Guardar la modificación de la solicitud en el historial de cambios
@@ -318,7 +320,7 @@ def material_detail(request, material_id):
                         action = 'eliminado'
                     elif solicitud.sistemas:
                         historial.accion = 'aprobada'
-                        action = 'abrobado'
+                        action = 'aprobado'
                     historial.usuario = request.user
                     historial.save()
 
@@ -332,7 +334,7 @@ def material_detail(request, material_id):
                             material.rechazado = False
                             material.id_solicitud = id_solicitud
                             material.save()
-                            material_form = MaterialForm(
+                            material_form = MaterialDetailForm(
                                 request.POST, instance=material, prefix=f'material-{material.id}'
                             )
                             material_rechazado_forms.append(material_form)
@@ -393,13 +395,20 @@ def material_detail(request, material_id):
                             #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     # Enviar correo electrónico
-                    subject = 'Solicitud de material modificada'
+                    if action == 'rechazado':
+                        subject = 'Solicitud de material rechazada'
+                    elif action == 'aprobado':
+                        subject = 'Solicitud de material aprobada'
+                    else:
+                        subject = 'Solicitud de material modificada'
                     if action == 'rechazado':
                         message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
+                    if action == 'aprobado':
+                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/\n\nMateriales / servicios aprobados:' + materialesAprobados
                     else:
                         message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/'
                     from_email = 'altaproveedoresricofarms@gmail.com'
-                    if action == 'rechazado':
+                    if action == 'rechazado' or action == 'aprobado':
                         recipient_list = [solicitud.usuario.email]
                     else:
                         recipient_list = destinatario_correo

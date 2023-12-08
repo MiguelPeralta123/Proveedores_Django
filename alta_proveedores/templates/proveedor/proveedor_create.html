@@ -889,15 +889,22 @@
           errorContribuyente.style.display = 'none'
 
           // La curp es obligatoria solo para personas físicas
+          // El régimen de capital no es necesario para personas físicas
           if(contribuyente.value == 'Persona física') {
             curp.required = true
             curp.disabled = false
+            regimenCapital.required = false
+            regimenCapital.disabled = true
+            regimenCapital.value = ''
+            errorRegimenCapital.style.display = 'none'
           }
           else {
             curp.required = false
             curp.disabled = true
             curp.value = ''
             errorCurp.style.display = 'none'
+            regimenCapital.required = true
+            regimenCapital.disabled = false
           }
         }
         enableSaveButton()
@@ -984,7 +991,7 @@
       }
       nombreFiscal.addEventListener('focus', validateNombreFiscal)
       nombreFiscal.addEventListener('input', validateNombreFiscal)
-      nombreFiscal.addEventListener('change', validateNombreFiscalOnChange)
+      //nombreFiscal.addEventListener('change', validateNombreFiscalOnChange)
       
       // Validación regimen de capital
       const validateRegimenCapital = () => {
@@ -1023,7 +1030,7 @@
       }
       nombreComercial.addEventListener('focus', validateNombreComercial)
       nombreComercial.addEventListener('input', validateNombreComercial)
-      nombreComercial.addEventListener('change', validateNombreComercialOnChange)
+      //nombreComercial.addEventListener('change', validateNombreComercialOnChange)
       
       // Validación regimen fiscal
       const validateRegimenFiscal = () => {
@@ -1656,7 +1663,9 @@
         if (contribuyente.value == 'Persona física') {
           curp.removeAttribute('disabled')
         }
-        regimenCapital.removeAttribute('disabled')
+        if (contribuyente.value == 'Persona moral') {
+          regimenCapital.removeAttribute('disabled')
+        }
         nombreFiscal.removeAttribute('disabled')
         nombreComercial.removeAttribute('disabled')
         regimenFiscal.removeAttribute('disabled')

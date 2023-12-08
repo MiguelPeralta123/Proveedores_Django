@@ -28,7 +28,12 @@
             {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
                 <div id="filtrar-solicitudes-container_aprobador" class="mt-5">
                     <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Pendientes</button>
-                    <button id="btn-filtrar-mis-proveedores" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
+                    {% if current_user.puede_crear_proveedor %}
+                        <button id="btn-filtrar-mis-proveedores" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
+                    {% endif %}
+                    {% if current_user.is_superuser %}
+                        <button id="btn-filtrar-all-proveedores" class="btn btn-secondary btn-filtrar">Todas las solicitudes</button>
+                    {% endif %}
                 </div>
             {% endif %}
 
@@ -91,7 +96,7 @@
                 {% endfor %}
             </ul>
 
-            {% if current_user.compras == True or current_user.finanzas == True or current_user.sistemas == True %}
+            {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
                 {% if current_user.puede_crear_proveedor %}
                     <ul id="mis-proveedores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                         {% for proveedor in mis_proveedores %}
@@ -152,6 +157,67 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
+            {% endif %}
+
+            {% if current_user.is_superuser %}
+                <ul id="all-proveedores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
+                    {% for proveedor in all_proveedores %}
+                        <a class="list-group-item my-3 border rounded provider-card" 
+                            href="{% url 'proveedor_detail' proveedor.id %}"
+                            style="transition: 0.2s ease-in-out;">
+                            <div class="d-flex justify-content-between gap-3 my-2">
+                                {% if not proveedor.es_migracion and proveedor.nombre_comercial %}
+                                    <h4 class="my-0">{{proveedor.nombre_comercial}}</h4>
+                                {% elif not proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Borrador - {{proveedor.tipo_alta}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.rfc_migracion %}
+                                    <h4 class="my-0">Migración - {{proveedor.rfc_migracion}}</h4>
+                                {% elif proveedor.es_migracion and proveedor.borrador %}
+                                    <h4 class="my-0">Migración - {{proveedor.tipo_alta}}</h4>
+                                {% endif %}
+                                <p class="mt-1"><b>Folio solicitud:</b> {{proveedor.id}}</p>
+                            </div>
+                            <p><b>Solicitante:</b> {{proveedor.usuario.get_full_name}}</p>
+                            <div class="d-flex justify-content-between gap-3">
+                                {% if proveedor.es_migracion %}
+                                    <p><b>Empresa:</b> {{proveedor.empresa_destino}}</p>
+                                {% else %}
+                                    <p><b>Empresa:</b> {{proveedor.empresa}}</p>
+                                {% endif %}
+                                <p><b>Fecha:</b> {{proveedor.fecha}}</p>
+                            </div>
+                            
+                            {% if proveedor.borrador %}
+                                <p class="text-success">✎ Guardado como borrador</p>
+                            {% elif proveedor.pendiente %}
+                                <p class="text-success">🕐 Pendiente compras</p>
+                            {% elif proveedor.compras %}
+                                <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% elif proveedor.rechazado_compras %}
+                                <p class="text-success">❌ Rechazado por compras</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.finanzas %}
+                                <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% elif proveedor.rechazado_finanzas %}
+                                <p class="text-success">❌ Rechazado por finanzas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.sistemas %}
+                                <p class="text-success">✅ Aprobado</p>
+                            {% elif proveedor.rechazado_sistemas %}
+                                <p class="text-success">❌ Rechazado por sistemas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{proveedor.comentarios}}</p>
+                            {% elif proveedor.eliminado %}
+                                <p class="text-success">🗑 Solicitud eliminada</p>
+                            {% endif %}
+
+                            {% for cambio in historial %}
+                                {% if proveedor.id == cambio.id_proveedor %}
+                                    <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                                {% endif %}
+                            {% endfor %}
+                        </a>
+                    {% endfor %}
+                </ul>
             {% endif %}
 
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
@@ -480,6 +546,7 @@
         // Containers
         const proveedoresList = document.getElementById("proveedores-list")
         const misProveedoresList = document.getElementById("mis-proveedores-list")
+        const allProveedoresList = document.getElementById("all-proveedores-list")
         const proveedoresBorradoresList = document.getElementById("proveedores-borradores-list")
         const proveedoresPendientesList = document.getElementById("proveedores-pendientes-list")
         const proveedoresRechazadosList = document.getElementById("proveedores-rechazados-list")
@@ -489,13 +556,14 @@
         // Buttons
         const btnTodas = document.getElementById('btn-filtrar-todas')
         const btnMisProveedores = document.getElementById('btn-filtrar-mis-proveedores')
+        const btnAllProveedores = document.getElementById('btn-filtrar-all-proveedores')
         const btnBorradores = document.getElementById('btn-filtrar-borradores')
         const btnPendientes = document.getElementById('btn-filtrar-pendientes')
         const btnRechazadas = document.getElementById('btn-filtrar-rechazadas')
         const btnAprobadas = document.getElementById('btn-filtrar-aprobadas')
         const btnEliminadas = document.getElementById('btn-filtrar-eliminadas')
 
-        // List all requests from newest to oldest
+        // List requests from newest to oldest
         if (proveedoresList) {
             const proveedoresItems = Array.from(proveedoresList.children).reverse()
             proveedoresList.innerHTML = ""
@@ -519,6 +587,19 @@
                 });
             } else {
                 misProveedoresList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no cuenta con ninguna solicitud</p>"
+            }
+        }
+
+        // List all requests from newest to oldest
+        if (allProveedoresList) {
+            const allProveedoresItems = Array.from(allProveedoresList.children).reverse()
+            allProveedoresList.innerHTML = ""
+            if (allProveedoresItems.length > 0) {
+                allProveedoresItems.forEach(item => {
+                    allProveedoresList.appendChild(item)
+                });
+            } else {
+                allProveedoresList.innerHTML = "<p class='ningun-proveedor-text'>Actualmente no existe ninguna solicitud</p>"
             }
         }
 
@@ -594,7 +675,10 @@
                 if (misProveedoresList) {
                     misProveedoresList.style.display = 'none'
                 }
-                else {
+                if (allProveedoresList) {
+                    allProveedoresList.style.display = 'none'
+                }
+                if (proveedoresBorradoresList) {
                     proveedoresBorradoresList.style.display = 'none'
                     proveedoresPendientesList.style.display = 'none'
                     proveedoresRechazadosList.style.display = 'none'
@@ -609,7 +693,28 @@
                 if (misProveedoresList) {
                     misProveedoresList.style.display = 'block'
                 }
-                else {
+                if (allProveedoresList) {
+                    allProveedoresList.style.display = 'none'
+                }
+                if (proveedoresBorradoresList) {
+                    proveedoresBorradoresList.style.display = 'none'
+                    proveedoresPendientesList.style.display = 'none'
+                    proveedoresRechazadosList.style.display = 'none'
+                    proveedoresAprobadosList.style.display = 'none'
+                    proveedoresEliminadosList.style.display = 'none'
+                }
+            })
+        }
+        if (btnAllProveedores) {
+            btnAllProveedores.addEventListener('click', () => {
+                proveedoresList.style.display = 'none'
+                if (misProveedoresList) {
+                    misProveedoresList.style.display = 'none'
+                }
+                if (allProveedoresList) {
+                    allProveedoresList.style.display = 'block'
+                }
+                if (proveedoresBorradoresList) {
                     proveedoresBorradoresList.style.display = 'none'
                     proveedoresPendientesList.style.display = 'none'
                     proveedoresRechazadosList.style.display = 'none'
@@ -624,7 +729,10 @@
                 if (misProveedoresList) {
                     misProveedoresList.style.display = 'none'
                 }
-                else {
+                if (allProveedoresList) {
+                    allProveedoresList.style.display = 'none'
+                }
+                if (proveedoresBorradoresList) {
                     proveedoresBorradoresList.style.display = 'block'
                     proveedoresPendientesList.style.display = 'none'
                     proveedoresRechazadosList.style.display = 'none'
@@ -639,7 +747,10 @@
                 if (misProveedoresList) {
                     misProveedoresList.style.display = 'none'
                 }
-                else {
+                if (allProveedoresList) {
+                    allProveedoresList.style.display = 'none'
+                }
+                if (proveedoresBorradoresList) {
                     proveedoresBorradoresList.style.display = 'none'
                     proveedoresPendientesList.style.display = 'block'
                     proveedoresRechazadosList.style.display = 'none'
@@ -654,7 +765,10 @@
                 if (misProveedoresList) {
                     misProveedoresList.style.display = 'none'
                 }
-                else {
+                if (allProveedoresList) {
+                    allProveedoresList.style.display = 'none'
+                }
+                if (proveedoresBorradoresList) {
                     proveedoresBorradoresList.style.display = 'none'
                     proveedoresPendientesList.style.display = 'none'
                     proveedoresRechazadosList.style.display = 'block'
@@ -669,7 +783,10 @@
                 if (misProveedoresList) {
                     misProveedoresList.style.display = 'none'
                 }
-                else {
+                if (allProveedoresList) {
+                    allProveedoresList.style.display = 'none'
+                }
+                if (proveedoresBorradoresList) {
                     proveedoresBorradoresList.style.display = 'none'
                     proveedoresPendientesList.style.display = 'none'
                     proveedoresRechazadosList.style.display = 'none'
@@ -684,7 +801,10 @@
                 if (misProveedoresList) {
                     misProveedoresList.style.display = 'none'
                 }
-                else {
+                if (allProveedoresList) {
+                    allProveedoresList.style.display = 'none'
+                }
+                if (proveedoresBorradoresList) {
                     proveedoresBorradoresList.style.display = 'none'
                     proveedoresPendientesList.style.display = 'none'
                     proveedoresRechazadosList.style.display = 'none'

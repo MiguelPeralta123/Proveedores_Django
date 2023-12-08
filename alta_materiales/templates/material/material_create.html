@@ -1921,6 +1921,9 @@
           if (alto.value == '') {
             errorAlto.style.display = 'block'
           }
+          if (umLargo.value == '' || umAncho.value == '' || umAlto.value == '') {
+            errorUnidadesMedida.style.display = 'block'
+          }
           if (material.value == '') {
             errorMaterial.style.display = 'block'
           }
@@ -1940,37 +1943,27 @@
           return
         }
 
-        if (tipoAlta.value == 'Almacén' && (subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block')) {
-          mostrarErrores()
-          return
-        }
-
-        // Si tipo de alta es Servicio, las medidas, material y color no son obligatorios
-        if (tipoAlta.value == 'Servicio' && (subfamilia.value == '' || nombreProducto.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block')) {
-          mostrarErrores()
-          return
-        }
-
         // Validamos las medidas para cada unidad
-        if (tipoAlta == 'Almacén') {
+        if (tipoAlta.value == 'Almacén') {
           if (largo.value != 'N/A' && umLargo.value == '') {
             errorUnidadesMedida.style.display = 'block'
-            window.alert('Debe seleccionar una unidad para "Largo"')
+            window.alert('Debe seleccionar una unidad para Largo')
             return
           }
           if (ancho.value != 'N/A' && umAncho.value == '') {
             errorUnidadesMedida.style.display = 'block'
-            window.alert('Debe seleccionar una unidad para "Ancho"')
+            window.alert('Debe seleccionar una unidad para Ancho')
             return
           }
           if (alto.value != 'N/A' && umAlto.value == '') {
             errorUnidadesMedida.style.display = 'block'
-            window.alert('Debe seleccionar una unidad para "Alto"')
+            window.alert('Debe seleccionar una unidad para Alto')
             return
           }
         }
         // Si todas las medidas tienen una unidad, se oculta el error
         errorUnidadesMedida.style.display = 'none'
+        // La unidad de medida no aplica cuando el valor es N/A
         if (largo.value == 'N/A') {
           umLargo.value = ''
         }
@@ -1991,6 +1984,17 @@
           umAlto.value = ''
           material.value = ''
           color.value = ''
+        }
+
+        if (tipoAlta.value == 'Almacén' && (subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block')) {
+          mostrarErrores()
+          return
+        }
+
+        // Si tipo de alta es Servicio, las medidas, material y color no son obligatorios
+        if (tipoAlta.value == 'Servicio' && (subfamilia.value == '' || nombreProducto.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block')) {
+          mostrarErrores()
+          return
         }
         
         // Si todos los campos están correctos, llenar la tabla y crear un nuevo formulario

@@ -88,6 +88,17 @@ def permissions(request):
 def proveedor(request, tipo):
     try:
         if request.user.puede_crear_proveedor or request.user.puede_crear_cliente or request.user.compras or request.user.finanzas or request.user.sistemas:
+            if request.user.is_superuser:
+                if tipo == 'proveedores':
+                    all_proveedores = Proveedor.objects.filter(
+                        Q(tipo_alta='Proveedor') |
+                        Q(tipo_alta='')
+                    ).order_by('id')
+                if tipo == 'clientes':
+                    all_proveedores = Proveedor.objects.filter(
+                        Q(tipo_alta='Cliente') |
+                        Q(tipo_alta='')
+                    ).order_by('id')
             if request.user.compras:
                 if tipo == 'proveedores':
                     proveedores = Proveedor.objects.filter(
@@ -200,20 +211,39 @@ def proveedor(request, tipo):
                 historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id).order_by('id')
 
             if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
-                return render(request, 'proveedor/proveedor.html', {
-                    'tipo': tipo,
-                    'proveedores': proveedores,
-                    'mis_proveedores': mis_proveedores,
-                    'historial': historial,
-                    'current_user': request.user
-                })
+                if request.user.is_superuser:
+                    return render(request, 'proveedor/proveedor.html', {
+                        'tipo': tipo,
+                        'proveedores': proveedores,
+                        'mis_proveedores': mis_proveedores,
+                        'all_proveedores': all_proveedores,
+                        'historial': historial,
+                        'current_user': request.user
+                    })
+                else:
+                    return render(request, 'proveedor/proveedor.html', {
+                        'tipo': tipo,
+                        'proveedores': proveedores,
+                        'mis_proveedores': mis_proveedores,
+                        'historial': historial,
+                        'current_user': request.user
+                    })
             else:
-                return render(request, 'proveedor/proveedor.html', {
-                    'tipo': tipo,
-                    'proveedores': proveedores,
-                    'historial': historial,
-                    'current_user': request.user
-                })
+                if request.user.is_superuser:
+                    return render(request, 'proveedor/proveedor.html', {
+                        'tipo': tipo,
+                        'proveedores': proveedores,
+                        'all_proveedores': all_proveedores,
+                        'historial': historial,
+                        'current_user': request.user
+                    })
+                else:
+                    return render(request, 'proveedor/proveedor.html', {
+                        'tipo': tipo,
+                        'proveedores': proveedores,
+                        'historial': historial,
+                        'current_user': request.user
+                    })
         else:
             return redirect('home')
 
@@ -313,7 +343,7 @@ def proveedor_create(request):
 @login_required
 def proveedor_detail(request, proveedor_id):
     try:
-        if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+        if request.user.puede_crear_proveedor or request.user.puede_crear_cliente or request.user.compras or request.user.finanzas or request.user.sistemas:
             proveedor = get_object_or_404(Proveedor, pk=proveedor_id)
 
             if request.method == 'GET':

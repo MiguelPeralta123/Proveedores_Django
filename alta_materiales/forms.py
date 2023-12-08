@@ -84,9 +84,10 @@ class SolicitudDetailForm(forms.ModelForm):
 class MaterialDetailForm(forms.ModelForm):
     class Meta:
         model = Material
-        fields = ['tipo_alta', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'um_largo', 'um_ancho', 'um_alto', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_mezcla', 'ing_activo', 'porcentaje_iva', 'alias', 'unidad_medida', 'codigo_sat', 'es_material_empaque', 'es_prod_terminado', 'foto_producto', 'ficha_tecnica', 'rechazado']
+        fields = ['tipo_alta', 'codigo', 'subfamilia', 'nombre_producto', 'largo', 'ancho', 'alto', 'um_largo', 'um_ancho', 'um_alto', 'material', 'color', 'marca', 'parte_modelo', 'nombre_comun', 'es_mezcla', 'ing_activo', 'porcentaje_iva', 'alias', 'unidad_medida', 'codigo_sat', 'es_material_empaque', 'es_prod_terminado', 'foto_producto', 'ficha_tecnica', 'rechazado']
         widgets = {
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control material-tipo-alta select-tipo-alta', 'initial':''}),
+            'codigo': forms.TextInput(attrs={'class':'form-control material-codigo', 'minlength': '8'}),
             'subfamilia': forms.Select(choices=SUBFAMILIA_LIST, attrs={'class':'form-control material-subfamilia select-subfamilia', 'initial':''}),
             'nombre_producto': forms.TextInput(attrs={'class':'form-control material-nombre'}),
             'largo': forms.TextInput(attrs={'class':'form-control material-largo'}),

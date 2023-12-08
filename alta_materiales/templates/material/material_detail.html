@@ -80,6 +80,9 @@
               <table id="materials-table" class="table table-bordered table-sm">
                 <thead class="text-center">
                   <tr>
+                    {% if current_user.sistemas and solicitud.finanzas or solicitud.sistemas %}
+                      <th scope="col" style="min-width: 6rem;">Código</th>
+                    {% endif %}
                     <th scope="col" style="min-width: 6rem;">Tipo alta</th>
                     <th scope="col" style="min-width: 6rem;">Subfamilia</th>
                     <th scope="col" style="min-width: 6rem;">Nombre</th>
@@ -113,11 +116,22 @@
               {% for form in material_forms %}
                 <div id="material-form-{{ forloop.counter0 }}" class="material-form" style="display:none;">
                   
-                  <!-- Tipo alta field -->
-                  <div class="tipo-alta-container" style="margin-bottom:1rem;">
-                    <p class="m-0">{{ form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-                    {{ form.tipo_alta }}
-                    <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                  <div style="display: flex; gap: 1rem; margin-bottom:1rem;">
+                    <!-- Tipo alta field -->
+                    <div class="tipo-alta-container" style="width: 100%;">
+                      <p class="m-0">{{ form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                      {{ form.tipo_alta }}
+                      <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                    </div>
+
+                    <!-- Código field -->
+                    {% if current_user.sistemas and solicitud.finanzas or solicitud.sistemas %}
+                      <div class="codigo-container" style="width: 100%;">
+                        <p class="m-0">Código<span style="color: rgb(192, 0, 0);">*</span></p>
+                        {{ form.codigo }}
+                        <p id="error-codigo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El código debe tener al menos 8 caracteres</p>
+                      </div>
+                    {% endif %}
                   </div>
 
                   <!-- Subfamilia field -->
@@ -411,7 +425,7 @@
 
               {% if solicitud.finanzas and current_user.sistemas and not solicitud.borrador %}
                 <!--{{ solicitud_form.rechazado_sistemas }}-->
-                <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
+                <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Guardar</button>
                 <button id="btn-decline" class="btn btn-reject w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
               {% endif %}
 
@@ -509,6 +523,14 @@
       var subfamiliasServicioList = {{ subfamilia_servicio_list|safe }}
       var unidadesMedidaList = {{ unidad_medida_list|safe }}
 
+      var sistemas = JSON.parse("{{ solicitud.sistemas|yesno:'true,false' }}");
+      if (sistemas) {
+        var codigoInputs = document.querySelectorAll('.material-codigo')
+        codigoInputs.forEach(input => {
+            input.setAttribute('readonly', true)
+        })
+      }
+
       if (nombreProductoMigracion) {
         nombreProductoMigracion.setAttribute('list', 'opciones_material')
       }
@@ -558,6 +580,7 @@
           if (event.target && event.target.classList.contains('btn-save-changes')) {
             const form = event.target.closest('.material-form')
             const tipoAlta = form.querySelector('.material-tipo-alta')
+            const codigo = form.querySelector('.material-codigo')
             const subfamilia = form.querySelector('.material-subfamilia')
             const nombreProducto = form.querySelector('.material-nombre')
             const errorNombreProducto2 = form.querySelector('#error-nombre-producto-2')
@@ -575,6 +598,7 @@
 
             // Errores
             const errorTipoAlta = form.querySelector('#error-tipo-alta')
+            const errorCodigo = form.querySelector('#error-codigo')
             const errorSubfamilia = form.querySelector('#error-subfamilia')
             const errorNombreProducto = form.querySelector('#error-nombre')
             const errorLargo = form.querySelector('#error-largo')
@@ -632,6 +656,9 @@
               if (tipoAlta.value == '') {
                 errorTipoAlta.style.display = 'block'
               }
+              if (codigo && codigo.value.length < 8) {
+                errorCodigo.style.display = 'block'
+              }
               if (subfamilia.value == '') {
                 errorSubfamilia.style.display = 'block'
               }
@@ -667,12 +694,12 @@
               return
             }
             // Si el tipo de alta es 'Almacén', se requieren todos los campos obligatorios
-            if (tipoAlta.value == 'Almacén' && (subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || largo.value == '' || ancho.value == '' || alto.value == '' || errorUnidadesMedida.style.display == 'block' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '')) {
+            if (tipoAlta.value == 'Almacén' && (codigo.value.length < 8 || subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || largo.value == '' || ancho.value == '' || alto.value == '' || errorUnidadesMedida.style.display == 'block' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '')) {
               mostrarErrores()
               return
             }
             // Si el tipo de alta es 'Servicio', no requiere largo, ancho, alto, material ni color
-            if (tipoAlta.value == 'Servicio' && (subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || porcentajeIva.value == '' || unidadMedida.value == '')) {
+            if (tipoAlta.value == 'Servicio' && (codigo.value.length < 8 || subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || porcentajeIva.value == '' || unidadMedida.value == '')) {
               mostrarErrores()
               return
             }
@@ -718,6 +745,14 @@
               comentarios.removeAttribute('required')
               comentarios.value = ''
             }
+            const forms = materialFormsContainer.querySelectorAll('.material-form');
+            forms.forEach(form => {
+              codigo = form.querySelector('.material-codigo')
+              if (codigo && codigo.value.length < 8) {
+                window.alert(`Debe añadir el código a "${form.querySelector('.material-nombre').value}"`)
+                event.preventDefault()
+              }
+            })
           }
         });
       }
@@ -996,6 +1031,24 @@
               }
             }
             validateTipoAltaOnLoad()
+        })
+
+        // Validación código
+        var codigoInputs = document.querySelectorAll('.material-codigo')
+        codigoInputs.forEach(input => {
+            const validateCodigo = () => {
+                var codigoValue = input.value
+                var container = input.closest('.codigo-container')
+                var errorCodigo = container.querySelector('#error-codigo')
+                // Verificar si el campo tiene menos de 8 caracteres
+                if (codigoValue.length < 8) {
+                  errorCodigo.style.display = 'block'
+                } else {
+                  errorCodigo.style.display = 'none'
+                }
+            }
+            input.addEventListener('focus', validateCodigo)
+            input.addEventListener('input', validateCodigo)
         })
 
         // Validación subfamilia
@@ -1785,6 +1838,7 @@
         bodyMaterials.innerHTML = ''
         const materialForms = document.querySelectorAll('.material-form')
         materialForms.forEach((materialForm, index) => {
+          const codigo = materialForm.querySelector('.material-codigo')
           const tipoAlta = materialForm.querySelector('.material-tipo-alta')
           const subfamilia = materialForm.querySelector('.material-subfamilia')
           const nombre = materialForm.querySelector('.material-nombre')
@@ -1834,7 +1888,13 @@
             }
 
             newRow.id = `table-row-${index}`
-            newRow.innerHTML = `
+            if (codigo) {
+              newRow.innerHTML = `<td>${codigo.value}</td>`
+            }
+            else {
+              newRow.innerHTML = ``
+            }
+            newRow.innerHTML += `
             <td>${tipoAlta.value}</td>
             <td>${subfamilia.value}</td>
             <td>${nombre.value}</td>`
