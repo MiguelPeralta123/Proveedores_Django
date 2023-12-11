@@ -391,14 +391,14 @@
               <div style="width: 40%; margin-bottom:1rem;">
                 <p class="m-0">{{ form.cuenta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.cuenta }}
-                <p id="error-cuenta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 10 dígitos</p>
+                <p id="error-cuenta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta válido</p>
               </div>
 
               <!-- Clabe field -->
               <div style="width: 40%; margin-bottom:1rem;">
                 <p class="m-0">{{ form.clabe.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.clabe }}
-                <p id="error-clabe" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 18 dígitos</p>
+                <p id="error-clabe" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta válido</p>
               </div>
 
               <!-- Moneda field -->
@@ -440,14 +440,14 @@
                 <div style="width: 40%; margin-bottom:1rem;">
                   <label for="id_cuenta_2">Cuenta:<span style="color: rgb(192, 0, 0);">*</span></label>
                   {{ form.cuenta_2 }}
-                  <p id="error-cuenta-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 10 dígitos</p>
+                  <p id="error-cuenta-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta válido</p>
                 </div>
 
                 <!-- Clabe 2 field -->
                 <div style="width: 40%; margin-bottom:1rem;">
                   <label for="id_clabe_2">Clabe:<span style="color: rgb(192, 0, 0);">*</span></label>
                   {{ form.clabe_2 }}
-                  <p id="error-clabe-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta a 18 dígitos</p>
+                  <p id="error-clabe-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ingrese un número de cuenta válido</p>
                 </div>
 
                 <!-- Moneda 2 field -->
@@ -922,23 +922,45 @@
 
         // Filtrando las opciones del catálogo que empiecen con el valor de rfc
         datalist.innerHTML = ''
-        for (var i = 0; i < catalogoProveedor.length; i++) {
-          if (catalogoProveedor[i].value.toUpperCase().startsWith(rfc.value.toUpperCase())) {
-            const option = document.createElement('option')
-            option.value = catalogoProveedor[i].value
-            option.innerText = catalogoProveedor[i].text
-            datalist.appendChild(option)
-          }
-          if (catalogoProveedor[i].value.toUpperCase() == rfc.value.toUpperCase() && rfc.value != '') {
-            errorRfc2.style.display = 'block'
-            disableAllFields(rfc)
-            return
-          }
-          else {
-            errorRfc2.style.display = 'none'
-            enableAllFields()
+
+        // Clientes extranjeros tienen un RFC genérico
+        if (rfc.value.toUpperCase() == 'XAX010101000') {
+          const option = document.createElement('option')
+          option.value = 'XAX010101000'
+          option.innerText = 'XAX010101000 - Cliente extranjero'
+          datalist.appendChild(option)
+          // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
+          clabe.required = false
+          errorClabe.style.display = 'none'
+          if (clabe2) {
+            clabe2.required = false
+            errorClabe2.style.display = 'none'
           }
         }
+        else {
+          for (var i = 0; i < catalogoProveedor.length; i++) {
+            if (catalogoProveedor[i].value.toUpperCase().startsWith(rfc.value.toUpperCase())) {
+              const option = document.createElement('option')
+              option.value = catalogoProveedor[i].value
+              option.innerText = catalogoProveedor[i].text
+              datalist.appendChild(option)
+            }
+            if (catalogoProveedor[i].value.toUpperCase() == rfc.value.toUpperCase() && rfc.value != '') {
+              errorRfc2.style.display = 'block'
+              disableAllFields(rfc)
+              return
+            }
+            else {
+              errorRfc2.style.display = 'none'
+              enableAllFields()
+            }
+          }
+          clabe.required = true
+          if (clabe2) {
+            clabe2.required = false
+          }
+        }
+
         enableSaveButton()
       }
       const validateRfcOnChange = () => {

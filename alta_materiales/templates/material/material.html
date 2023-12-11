@@ -7,7 +7,19 @@
         <div style="max-width: 40rem;">
             <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de material / servicio</h1>
 
-            {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
+            {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
+                <div id="filtrar-solicitudes-container_aprobador" class="mt-5">
+                    <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Pendientes</button>
+                    {% if current_user.puede_crear_material %}
+                        <button id="btn-filtrar-mis-solicitudes" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
+                    {% endif %}
+                    {% if current_user.is_superuser %}
+                        <button id="btn-filtrar-all-materiales" class="btn btn-secondary btn-filtrar">Todas las solicitudes</button>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if not current_user.compras and not current_user.finanzas and not current_user.sistemas %}
                 <div id="filtrar-solicitudes-container" class="mt-5">
                     <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Todas</button>
                     <button id="btn-filtrar-borradores" class="btn btn-secondary btn-filtrar">Borradores</button>
@@ -15,13 +27,6 @@
                     <button id="btn-filtrar-rechazadas" class="btn btn-secondary btn-filtrar">Rechazadas</button>
                     <button id="btn-filtrar-aprobadas" class="btn btn-secondary btn-filtrar">Aprobadas</button>
                     <button id="btn-filtrar-eliminadas" class="btn btn-secondary btn-filtrar">Eliminadas</button>
-                </div>
-            {% endif %}
-
-            {% if current_user.compras == True or current_user.finanzas == True or current_user.sistemas == True %}
-                <div id="filtrar-solicitudes-container_aprobador" class="mt-5">
-                    <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Pendientes</button>
-                    <button id="btn-filtrar-mis-solicitudes" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
                 </div>
             {% endif %}
 

@@ -14,17 +14,6 @@
                 <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de clientes</h1>
             {% endif %}
 
-            {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
-                <div id="filtrar-solicitudes-container" class="mt-5">
-                    <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Todas</button>
-                    <button id="btn-filtrar-borradores" class="btn btn-secondary btn-filtrar">Borradores</button>
-                    <button id="btn-filtrar-pendientes" class="btn btn-secondary btn-filtrar">Pendientes</button>
-                    <button id="btn-filtrar-rechazadas" class="btn btn-secondary btn-filtrar">Rechazadas</button>
-                    <button id="btn-filtrar-aprobadas" class="btn btn-secondary btn-filtrar">Aprobadas</button>
-                    <button id="btn-filtrar-eliminadas" class="btn btn-secondary btn-filtrar">Eliminadas</button>
-                </div>
-            {% endif %}
-
             {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
                 <div id="filtrar-solicitudes-container_aprobador" class="mt-5">
                     <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Pendientes</button>
@@ -34,6 +23,17 @@
                     {% if current_user.is_superuser %}
                         <button id="btn-filtrar-all-proveedores" class="btn btn-secondary btn-filtrar">Todas las solicitudes</button>
                     {% endif %}
+                </div>
+            {% endif %}
+
+            {% if not current_user.compras and not current_user.finanzas and not current_user.sistemas %}
+                <div id="filtrar-solicitudes-container" class="mt-5">
+                    <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Todas</button>
+                    <button id="btn-filtrar-borradores" class="btn btn-secondary btn-filtrar">Borradores</button>
+                    <button id="btn-filtrar-pendientes" class="btn btn-secondary btn-filtrar">Pendientes</button>
+                    <button id="btn-filtrar-rechazadas" class="btn btn-secondary btn-filtrar">Rechazadas</button>
+                    <button id="btn-filtrar-aprobadas" class="btn btn-secondary btn-filtrar">Aprobadas</button>
+                    <button id="btn-filtrar-eliminadas" class="btn btn-secondary btn-filtrar">Eliminadas</button>
                 </div>
             {% endif %}
 
