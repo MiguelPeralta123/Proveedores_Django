@@ -35,6 +35,10 @@ def home(request):
 def material(request):
     try:
         if request.user.puede_crear_material or request.user.compras or request.user.finanzas or request.user.sistemas:
+            # Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
+            if request.user.is_superuser:
+                all_solicitudes = MaterialSolicitud.objects.all().order_by('id')
+
             if request.user.compras:
                 solicitudes = MaterialSolicitud.objects.filter(pendiente=True).order_by('id')
                 if request.user.puede_crear_material:
@@ -86,18 +90,35 @@ def material(request):
                 historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id).order_by('id')
 
             if request.user.puede_crear_material:
-                return render(request, 'material/material.html', {
-                    'solicitudes': solicitudes,
-                    'mis_solicitudes': mis_solicitudes,
-                    'historial': historial,
-                    'current_user': request.user
-                })
+                if request.user.is_superuser:
+                    return render(request, 'material/material.html', {
+                        'solicitudes': solicitudes,
+                        'mis_solicitudes': mis_solicitudes,
+                        'all_solicitudes': all_solicitudes,
+                        'historial': historial,
+                        'current_user': request.user
+                    })
+                else:
+                    return render(request, 'material/material.html', {
+                        'solicitudes': solicitudes,
+                        'mis_solicitudes': mis_solicitudes,
+                        'historial': historial,
+                        'current_user': request.user
+                    })
             else:
-                return render(request, 'material/material.html', {
-                    'solicitudes': solicitudes,
-                    'historial': historial,
-                    'current_user': request.user
-                })
+                if request.user.is_superuser:
+                    return render(request, 'material/material.html', {
+                        'solicitudes': solicitudes,
+                        'all_solicitudes': all_solicitudes,
+                        'historial': historial,
+                        'current_user': request.user
+                    })
+                else:
+                    return render(request, 'material/material.html', {
+                        'solicitudes': solicitudes,
+                        'historial': historial,
+                        'current_user': request.user
+                    })
         else:
             return redirect('home')
     

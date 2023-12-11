@@ -152,6 +152,67 @@
                 {% endif %}
             {% endif %}
 
+            {% if current_user.is_superuser %}
+                <ul id="all-solicitudes-list" style="list-style-type: none; display: none;" class="list-group mt-4">
+                    {% for solicitud in all_solicitudes %}
+                        <a class="list-group-item my-3 border rounded material-card"
+                            href="{% url 'material_detail' solicitud.id %}"
+                            style="transition: 0.2s ease-in-out;">
+                            <div class="d-flex justify-content-between gap-3 my-2">
+                                {% if not solicitud.es_migracion and solicitud.justificacion %}
+                                    <h4 class="my-0">{{solicitud.justificacion}}</h4>
+                                {% elif not solicitud.es_migracion and solicitud.borrador %}
+                                    <h4 class="my-0">Borrador</h4>
+                                {% elif solicitud.es_migracion and solicitud.nombre_producto_migracion %}
+                                    <h4 class="my-0">Migración - {{solicitud.nombre_producto_migracion}}</h4>
+                                {% elif solicitud.es_migracion and solicitud.borrador %}
+                                    <h4 class="my-0">Migración - Borrador</h4>
+                                {% endif %}
+                                <p class="mt-1"><b>Folio solicitud:</b> {{solicitud.id}}</p>
+                            </div>
+                            <p><b>Solicitante:</b> {{solicitud.usuario.get_full_name}}</p>
+                            <div class="d-flex justify-content-between gap-3">
+                                {% if solicitud.es_migracion %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa_destino}}</p>
+                                {% else %}
+                                    <p><b>Empresa:</b> {{solicitud.empresa}}</p>
+                                {% endif %}
+                                <p><b>Fecha:</b> {{solicitud.fecha}}</p>
+                            </div>
+
+                            {% if solicitud.borrador %}
+                                <p class="text-success">✎ Guardado como borrador</p>
+                            {% elif solicitud.pendiente %}
+                                <p class="text-success">🕐 Pendiente compras</p>
+                            {% elif solicitud.compras %}
+                                <p class="text-success">🕐 Pendiente finanzas</p>
+                            {% elif solicitud.rechazado_compras %}
+                                <p class="text-danger">❌ Rechazado por compras</p>
+                                <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% elif solicitud.finanzas %}
+                                <p class="text-success">🕐 Pendiente sistemas</p>
+                            {% elif solicitud.rechazado_finanzas %}
+                                <p class="text-danger">❌ Rechazado por finanzas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% elif solicitud.sistemas %}
+                                <p class="text-success">✅ Aprobado</p>
+                            {% elif solicitud.rechazado_sistemas %}
+                                <p class="text-danger">❌ Rechazado por sistemas</p>
+                                <p class="text-danger"><b>Comentario:</b> {{solicitud.comentarios}}</p>
+                            {% elif solicitud.eliminado %}
+                                <p class="text-success">🗑 Solicitud eliminada</p>
+                            {% endif %}
+
+                            {% for cambio in historial %}
+                                {% if solicitud.id == cambio.id_solicitud %}
+                                    <p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸{{cambio}}</span><span>{{cambio.fecha}}</span></i></p>
+                                {% endif %}
+                            {% endfor %}
+                        </a>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
             {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
                 <ul id="solicitudes-borradores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_borradores %}
@@ -498,6 +559,7 @@
         // Containers
         const solicitudesList = document.getElementById("solicitudes-list")
         const misSolicitudesList = document.getElementById("mis-solicitudes-list")
+        const allSolicitudesList = document.getElementById("all-solicitudes-list")
         const solicitudesBorradoresList = document.getElementById("solicitudes-borradores-list")
         const solicitudesPendientesList = document.getElementById("solicitudes-pendientes-list")
         const solicitudesRechazadasList = document.getElementById("solicitudes-rechazadas-list")
@@ -506,6 +568,7 @@
         // Buttons
         const btnTodas = document.getElementById('btn-filtrar-todas')
         const btnMisSolicitudes = document.getElementById('btn-filtrar-mis-solicitudes')
+        const btnAllSolicitudes = document.getElementById('btn-filtrar-all-solicitudes')
         const btnBorradores = document.getElementById('btn-filtrar-borradores')
         const btnPendientes = document.getElementById('btn-filtrar-pendientes')
         const btnRechazadas = document.getElementById('btn-filtrar-rechazadas')
@@ -535,7 +598,20 @@
                     misSolicitudesList.appendChild(item)
                 });
             } else {
-                misSolicitudesList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ningún borrador de solicitud</p>"
+                misSolicitudesList.innerHTML = "<p class='ningun-material-text'>Actualmente no cuenta con ninguna solicitud</p>"
+            }
+        }
+
+        // List all requests from newest to oldest
+        if (allSolicitudesList) {
+            const allSolicitudesItems = Array.from(allSolicitudesList.children).reverse()
+            allSolicitudesList.innerHTML = ""
+            if (allSolicitudesItems.length > 0) {
+                allSolicitudesItems.forEach(item => {
+                    allSolicitudesList.appendChild(item)
+                });
+            } else {
+                allSolicitudesList.innerHTML = "<p class='ningun-material-text'>Actualmente no existe ninguna solicitud</p>"
             }
         }
 
@@ -611,6 +687,9 @@
                 if (misSolicitudesList) {
                     misSolicitudesList.style.display = 'none'
                 }
+                if (allSolicitudesList) {
+                    allSolicitudesList.style.display = 'none'
+                }
                 else {
                     solicitudesBorradoresList.style.display = 'none'
                     solicitudesPendientesList.style.display = 'none'
@@ -625,6 +704,27 @@
                 solicitudesList.style.display = 'none'
                 if (misSolicitudesList) {
                     misSolicitudesList.style.display = 'block'
+                }
+                if (allSolicitudesList) {
+                    allSolicitudesList.style.display = 'none'
+                }
+                else {
+                    solicitudesBorradoresList.style.display = 'none'
+                    solicitudesPendientesList.style.display = 'none'
+                    solicitudesRechazadasList.style.display = 'none'
+                    solicitudesAprobadasList.style.display = 'none'
+                    solicitudesEliminadasList.style.display = 'none'
+                }
+            })
+        }
+        if (btnAllSolicitudes) {
+            btnAllSolicitudes.addEventListener('click', () => {
+                solicitudesList.style.display = 'none'
+                if (misSolicitudesList) {
+                    misSolicitudesList.style.display = 'none'
+                }
+                if (allSolicitudesList) {
+                    allSolicitudesList.style.display = 'block'
                 }
                 else {
                     solicitudesBorradoresList.style.display = 'none'
@@ -641,6 +741,9 @@
                 if (misSolicitudesList) {
                     misSolicitudesList.style.display = 'none'
                 }
+                if (allSolicitudesList) {
+                    allSolicitudesList.style.display = 'none'
+                }
                 else {
                     solicitudesBorradoresList.style.display = 'block'
                     solicitudesPendientesList.style.display = 'none'
@@ -655,6 +758,9 @@
                 solicitudesList.style.display = 'none'
                 if (misSolicitudesList) {
                     misSolicitudesList.style.display = 'none'
+                }
+                if (allSolicitudesList) {
+                    allSolicitudesList.style.display = 'none'
                 }
                 else {
                     solicitudesBorradoresList.style.display = 'none'
@@ -671,6 +777,9 @@
                 if (misSolicitudesList) {
                     misSolicitudesList.style.display = 'none'
                 }
+                if (allSolicitudesList) {
+                    allSolicitudesList.style.display = 'none'
+                }
                 else {
                     solicitudesBorradoresList.style.display = 'none'
                     solicitudesPendientesList.style.display = 'none'
@@ -686,6 +795,9 @@
                 if (misSolicitudesList) {
                     misSolicitudesList.style.display = 'none'
                 }
+                if (allSolicitudesList) {
+                    allSolicitudesList.style.display = 'none'
+                }
                 else {
                     solicitudesBorradoresList.style.display = 'none'
                     solicitudesPendientesList.style.display = 'none'
@@ -700,6 +812,9 @@
                 solicitudesList.style.display = 'none'
                 if (misSolicitudesList) {
                     misSolicitudesList.style.display = 'none'
+                }
+                if (allSolicitudesList) {
+                    allSolicitudesList.style.display = 'none'
                 }
                 else {
                     solicitudesBorradoresList.style.display = 'none'

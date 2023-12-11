@@ -923,11 +923,16 @@
         // Filtrando las opciones del catálogo que empiecen con el valor de rfc
         datalist.innerHTML = ''
 
-        // Clientes extranjeros tienen un RFC genérico
-        if (rfc.value.toUpperCase() == 'XAX010101000') {
+        // Clientes y proveedores extranjeros tienen un RFC genérico
+        if (rfc.value.toUpperCase() == 'XAX010101000' || rfc.value.toUpperCase() == 'XEXX010101000') {
           const option = document.createElement('option')
-          option.value = 'XAX010101000'
-          option.innerText = 'XAX010101000 - Cliente extranjero'
+          option.value = rfc.value.toUpperCase()
+          if (rfc.value.toUpperCase() == 'XAX010101000') {
+            option.innerText = `${rfc.value.toUpperCase()} - Cliente extranjero`
+          }
+          else {
+            option.innerText = `${rfc.value.toUpperCase()} - Proveedor extranjero`
+          }
           datalist.appendChild(option)
           // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
           clabe.required = false
@@ -938,6 +943,10 @@
           }
         }
         else {
+          clabe.required = true
+          if (clabe2) {
+            clabe2.required = true
+          }
           for (var i = 0; i < catalogoProveedor.length; i++) {
             if (catalogoProveedor[i].value.toUpperCase().startsWith(rfc.value.toUpperCase())) {
               const option = document.createElement('option')
@@ -954,10 +963,6 @@
               errorRfc2.style.display = 'none'
               enableAllFields()
             }
-          }
-          clabe.required = true
-          if (clabe2) {
-            clabe2.required = false
           }
         }
 
@@ -1490,6 +1495,9 @@
       
       // Validación clabe
       const validateClabe = () => {
+        if (rfc.value.toUpperCase() == 'XAX010101000' || rfc.value.toUpperCase() == 'XEXX010101000') {
+          return
+        }
         if (clabePattern.test(clabe.value)) {
           errorClabe.style.display = 'none'
         } else {
@@ -1573,6 +1581,9 @@
       
       // Validación clabe 2
       const validateClabe2 = () => {
+        if (rfc.value.toUpperCase() == 'XAX010101000' || rfc.value.toUpperCase() == 'XEXX010101000') {
+          return
+        }
         if (clabePattern.test(clabe2.value)) {
           errorClabe2.style.display = 'none'
         } else {

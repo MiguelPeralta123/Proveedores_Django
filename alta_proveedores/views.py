@@ -88,6 +88,7 @@ def permissions(request):
 def proveedor(request, tipo):
     try:
         if request.user.puede_crear_proveedor or request.user.puede_crear_cliente or request.user.compras or request.user.finanzas or request.user.sistemas:
+            # Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
             if request.user.is_superuser:
                 if tipo == 'proveedores':
                     all_proveedores = Proveedor.objects.filter(
@@ -99,6 +100,7 @@ def proveedor(request, tipo):
                         Q(tipo_alta='Cliente') |
                         Q(tipo_alta='')
                     ).order_by('id')
+            
             if request.user.compras:
                 if tipo == 'proveedores':
                     proveedores = Proveedor.objects.filter(
