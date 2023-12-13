@@ -413,7 +413,7 @@ def proveedor_detail(request, proveedor_id):
                         destinatario_correo = [proveedor.usuario.email]
                     else:
                         proveedor_form = ProveedorDetailForm(
-                            request.POST, instance=proveedor)
+                            request.POST, request.FILES, instance=proveedor)
                         destinatario_correo = ['compras@ricofarms.com']
                     
                     historial_form = HistorialForm(request.POST)

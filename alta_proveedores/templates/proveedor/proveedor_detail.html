@@ -4,7 +4,7 @@
   <main class="pt-5 m-5">
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
-        <form class="card card-body" method="POST" style="background-color: rgb(255, 255, 255, 0.8);">
+        <form class="card card-body" method="POST" enctype="multipart/form-data" style="background-color: rgb(255, 255, 255, 0.8);">
 
           {% if proveedor.es_migracion %}
             <h1 class="mb-4">Detalle del registro</h1>
@@ -491,8 +491,24 @@
           {% endif %}
 
           <!-- Documentos -->
+          {% if not current_user.compras and not current_user.finanzas and not current_user.sistemas %}
+            <!-- Constancia situación fiscal field -->
+            <div style="margin-bottom:1rem;">
+              <label for="id_constancia_situacion_fiscal" style="display: block;"><span id="constancia-situacion-fiscal-label">Constancia de situación fiscal:</span><span style="color: rgb(192, 0, 0);">*</span></label>
+              {{ form.constancia_situacion_fiscal }}
+              <p id="error-constancia-situacion-fiscal" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+
+            <!-- Estado cuenta bancario field -->
+            <div style="margin-bottom:1rem;">
+              <label for="id_estado_cuenta_bancario" style="display: block;"><span id="estado-cuenta-bancario-label">Estado de cuenta bancario:</span><span style="color: rgb(192, 0, 0);">*</span></label>
+              {{ form.estado_cuenta_bancario }}
+              <p id="error-estado-cuenta-bancario" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+          {% endif %}
+
           {% if proveedor.es_migracion %}
-            <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block my-2" style="width:fit-content;" download="">Descargar constancia de situación fiscal actualizada</a>
+            <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block" style="width:fit-content;" download="">Descargar constancia de situación fiscal actualizada</a>
             <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block mt-2 mb-3" style="width:fit-content;" download="">Descargar estado de cuenta bancario actualizado</a>
           {% else %}
             <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block my-2" style="width:fit-content;" download="">Descargar constancia de situación fiscal</a>
