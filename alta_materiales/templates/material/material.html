@@ -14,7 +14,7 @@
                         <button id="btn-filtrar-mis-solicitudes" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
                     {% endif %}
                     {% if current_user.is_superuser %}
-                        <button id="btn-filtrar-all-materiales" class="btn btn-secondary btn-filtrar">Todas las solicitudes</button>
+                        <button id="btn-filtrar-all-solicitudes" class="btn btn-secondary btn-filtrar">Todas las solicitudes</button>
                     {% endif %}
                 </div>
             {% endif %}
@@ -213,7 +213,7 @@
                 </ul>
             {% endif %}
 
-            {% if current_user.compras == False and current_user.finanzas == False and current_user.sistemas == False %}
+            {% if not current_user.compras and not current_user.finanzas and not current_user.sistemas %}
                 <ul id="solicitudes-borradores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_borradores %}
                         <a class="list-group-item my-3 border rounded material-card"
@@ -690,7 +690,7 @@
                 if (allSolicitudesList) {
                     allSolicitudesList.style.display = 'none'
                 }
-                else {
+                if (solicitudesBorradoresList) {
                     solicitudesBorradoresList.style.display = 'none'
                     solicitudesPendientesList.style.display = 'none'
                     solicitudesRechazadasList.style.display = 'none'
@@ -708,7 +708,7 @@
                 if (allSolicitudesList) {
                     allSolicitudesList.style.display = 'none'
                 }
-                else {
+                if (solicitudesBorradoresList) {
                     solicitudesBorradoresList.style.display = 'none'
                     solicitudesPendientesList.style.display = 'none'
                     solicitudesRechazadasList.style.display = 'none'
@@ -726,7 +726,7 @@
                 if (allSolicitudesList) {
                     allSolicitudesList.style.display = 'block'
                 }
-                else {
+                if (solicitudesBorradoresList) {
                     solicitudesBorradoresList.style.display = 'none'
                     solicitudesPendientesList.style.display = 'none'
                     solicitudesRechazadasList.style.display = 'none'
@@ -744,7 +744,7 @@
                 if (allSolicitudesList) {
                     allSolicitudesList.style.display = 'none'
                 }
-                else {
+                if (solicitudesBorradoresList) {
                     solicitudesBorradoresList.style.display = 'block'
                     solicitudesPendientesList.style.display = 'none'
                     solicitudesRechazadasList.style.display = 'none'
@@ -762,7 +762,7 @@
                 if (allSolicitudesList) {
                     allSolicitudesList.style.display = 'none'
                 }
-                else {
+                if (solicitudesBorradoresList) {
                     solicitudesBorradoresList.style.display = 'none'
                     solicitudesPendientesList.style.display = 'block'
                     solicitudesRechazadasList.style.display = 'none'
@@ -780,7 +780,7 @@
                 if (allSolicitudesList) {
                     allSolicitudesList.style.display = 'none'
                 }
-                else {
+                if (solicitudesBorradoresList) {
                     solicitudesBorradoresList.style.display = 'none'
                     solicitudesPendientesList.style.display = 'none'
                     solicitudesRechazadasList.style.display = 'block'
@@ -798,7 +798,7 @@
                 if (allSolicitudesList) {
                     allSolicitudesList.style.display = 'none'
                 }
-                else {
+                if (solicitudesBorradoresList) {
                     solicitudesBorradoresList.style.display = 'none'
                     solicitudesPendientesList.style.display = 'none'
                     solicitudesRechazadasList.style.display = 'none'
@@ -816,7 +816,7 @@
                 if (allSolicitudesList) {
                     allSolicitudesList.style.display = 'none'
                 }
-                else {
+                if (solicitudesBorradoresList) {
                     solicitudesBorradoresList.style.display = 'none'
                     solicitudesPendientesList.style.display = 'none'
                     solicitudesRechazadasList.style.display = 'none'

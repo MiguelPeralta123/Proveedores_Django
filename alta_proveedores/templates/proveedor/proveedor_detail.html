@@ -1177,10 +1177,10 @@
             // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
             clabe.required = false
             errorClabe.style.display = 'none'
-            if (clabe2) {
+            /*if (clabe2) {
               clabe2.required = false
               errorClabe2.style.display = 'none'
-            }
+            }*/
           }
           else {
             for (var i = 0; i < catalogoProveedor.length; i++) {
@@ -1201,9 +1201,9 @@
               }
             }
             clabe.required = true
-            if (clabe2) {
+            /*if (clabe2) {
               clabe2.required = true
-            }
+            }*/
           }
 
           enableSaveButton()
