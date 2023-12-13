@@ -693,16 +693,32 @@
               mostrarErrores()
               return
             }
-            // Si el tipo de alta es 'Almacén', se requieren todos los campos obligatorios
-            if (tipoAlta.value == 'Almacén' && (codigo.value.length < 8 || subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || largo.value == '' || ancho.value == '' || alto.value == '' || errorUnidadesMedida.style.display == 'block' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '')) {
-              mostrarErrores()
-              return
+
+            if (codigo) {
+              // Si el tipo de alta es 'Almacén', se requieren todos los campos obligatorios
+              if (tipoAlta.value == 'Almacén' && (codigo.value.length < 8 || subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || largo.value == '' || ancho.value == '' || alto.value == '' || errorUnidadesMedida.style.display == 'block' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '')) {
+                mostrarErrores()
+                return
+              }
+              // Si el tipo de alta es 'Servicio', no requiere largo, ancho, alto, material ni color
+              if (tipoAlta.value == 'Servicio' && (codigo.value.length < 8 || subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || porcentajeIva.value == '' || unidadMedida.value == '')) {
+                mostrarErrores()
+                return
+              }
             }
-            // Si el tipo de alta es 'Servicio', no requiere largo, ancho, alto, material ni color
-            if (tipoAlta.value == 'Servicio' && (codigo.value.length < 8 || subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || porcentajeIva.value == '' || unidadMedida.value == '')) {
-              mostrarErrores()
-              return
+            else {
+              // Si el tipo de alta es 'Almacén', se requieren todos los campos obligatorios
+              if (tipoAlta.value == 'Almacén' && (subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || largo.value == '' || ancho.value == '' || alto.value == '' || errorUnidadesMedida.style.display == 'block' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '')) {
+                mostrarErrores()
+                return
+              }
+              // Si el tipo de alta es 'Servicio', no requiere largo, ancho, alto, material ni color
+              if (tipoAlta.value == 'Servicio' && (subfamilia.value == '' || nombreProducto.value == '' || errorNombreProducto2.style.display == 'block' || porcentajeIva.value == '' || unidadMedida.value == '')) {
+                mostrarErrores()
+                return
+              }
             }
+            
             // Si todos los campos están correctos, oculta el formulario y actualiza la tabla
             const forms = materialFormsContainer.querySelectorAll('.material-form');
             forms.forEach(form => {

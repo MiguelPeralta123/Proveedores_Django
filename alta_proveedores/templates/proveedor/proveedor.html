@@ -7,7 +7,7 @@
         <div style="max-width: 40rem;">
             
             {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
-                <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de {{tipo}}</h1>
+                <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de {{ tipo }}</h1>
             {% elif current_user.puede_crear_proveedor %}
                 <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de proveedores</h1>
             {% else %}
@@ -15,19 +15,31 @@
             {% endif %}
 
             {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
-                <div id="filtrar-solicitudes-container_aprobador" class="mt-5">
-                    <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Pendientes</button>
-                    {% if current_user.puede_crear_proveedor %}
+                {% if current_user.puede_crear_proveedor and current_user.is_superuser %}
+                    <div id="filtrar-solicitudes-container_aprobador-3" class="mt-5">
+                        <button id="btn-filtrar-todas-aprobador" class="btn btn-secondary btn-filtrar">Pendientes</button>
                         <button id="btn-filtrar-mis-proveedores" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
-                    {% endif %}
-                    {% if current_user.is_superuser %}
                         <button id="btn-filtrar-all-proveedores" class="btn btn-secondary btn-filtrar">Todas las solicitudes</button>
-                    {% endif %}
-                </div>
+                    </div>
+                {% elif current_user.puede_crear_proveedor %}
+                    <div id="filtrar-solicitudes-container_aprobador-2" class="mt-5">
+                        <button id="btn-filtrar-todas-aprobador" class="btn btn-secondary btn-filtrar">Pendientes</button>
+                        <button id="btn-filtrar-mis-proveedores" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
+                    </div>
+                {% elif current_user.is_superuser %}
+                    <div id="filtrar-solicitudes-container_aprobador-2" class="mt-5">
+                        <button id="btn-filtrar-todas-aprobador" class="btn btn-secondary btn-filtrar">Pendientes</button>
+                        <button id="btn-filtrar-all-proveedores" class="btn btn-secondary btn-filtrar">Todas las solicitudes</button>
+                    </div>
+                {% endif %}
             {% endif %}
 
-            {% if not current_user.compras and not current_user.finanzas and not current_user.sistemas %}
-                <div id="filtrar-solicitudes-container" class="mt-5">
+            {% if current_user.puede_crear_cliente or current_user.puede_crear_proveedor %}
+                {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
+                    <div id="filtrar-solicitudes-container" class="mt-5" style="display: none;">
+                {% else %}
+                    <div id="filtrar-solicitudes-container" class="mt-5">
+                {% endif %}
                     <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Todas</button>
                     <button id="btn-filtrar-borradores" class="btn btn-secondary btn-filtrar">Borradores</button>
                     <button id="btn-filtrar-pendientes" class="btn btn-secondary btn-filtrar">Pendientes</button>
@@ -506,11 +518,16 @@
         gap: 0.5rem;
     }
     @media (max-width: 640px) {
-        #filtrar-solicitudes-container {
+        #filtrar-solicitudes-container-4 {
             grid-template-columns: repeat(3, 1fr);
         }
     }
-    #filtrar-solicitudes-container_aprobador {
+    #filtrar-solicitudes-container_aprobador-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+    #filtrar-solicitudes-container_aprobador-2 {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
@@ -554,9 +571,10 @@
         const proveedoresEliminadosList = document.getElementById("proveedores-eliminados-list")
 
         // Buttons
-        const btnTodas = document.getElementById('btn-filtrar-todas')
+        const btnTodasAprobador = document.getElementById('btn-filtrar-todas-aprobador')
         const btnMisProveedores = document.getElementById('btn-filtrar-mis-proveedores')
         const btnAllProveedores = document.getElementById('btn-filtrar-all-proveedores')
+        const btnTodas = document.getElementById('btn-filtrar-todas')
         const btnBorradores = document.getElementById('btn-filtrar-borradores')
         const btnPendientes = document.getElementById('btn-filtrar-pendientes')
         const btnRechazadas = document.getElementById('btn-filtrar-rechazadas')
@@ -668,9 +686,16 @@
             }
         }
 
+        // Botones para filtrar borradores, pendientes, rechazadas, aprobadas y eliminadas
+        filtrarSolicitudesContainer = document.querySelector('#filtrar-solicitudes-container')
+
         // Filter items by status
-        if (btnTodas) {
-            btnTodas.addEventListener('click', () => {
+        if (btnTodasAprobador) {
+            btnTodasAprobador.addEventListener('click', () => {
+                // Ocultar los botones para filtrar las solicitudes
+                if (filtrarSolicitudesContainer) {
+                    filtrarSolicitudesContainer.style.display = 'none'
+                }
                 proveedoresList.style.display = 'block'
                 if (misProveedoresList) {
                     misProveedoresList.style.display = 'none'
@@ -689,6 +714,10 @@
         }
         if (btnMisProveedores) {
             btnMisProveedores.addEventListener('click', () => {
+                // Mostrar los botones para filtrar las solicitudes
+                if (filtrarSolicitudesContainer) {
+                    filtrarSolicitudesContainer.style.display = 'block'
+                }
                 proveedoresList.style.display = 'none'
                 if (misProveedoresList) {
                     misProveedoresList.style.display = 'block'
@@ -707,12 +736,34 @@
         }
         if (btnAllProveedores) {
             btnAllProveedores.addEventListener('click', () => {
+                // Ocultar los botones para filtrar las solicitudes
+                if (filtrarSolicitudesContainer) {
+                    filtrarSolicitudesContainer.style.display = 'none'
+                }
                 proveedoresList.style.display = 'none'
                 if (misProveedoresList) {
                     misProveedoresList.style.display = 'none'
                 }
                 if (allProveedoresList) {
                     allProveedoresList.style.display = 'block'
+                }
+                if (proveedoresBorradoresList) {
+                    proveedoresBorradoresList.style.display = 'none'
+                    proveedoresPendientesList.style.display = 'none'
+                    proveedoresRechazadosList.style.display = 'none'
+                    proveedoresAprobadosList.style.display = 'none'
+                    proveedoresEliminadosList.style.display = 'none'
+                }
+            })
+        }
+        if (btnTodas) {
+            btnTodas.addEventListener('click', () => {
+                proveedoresList.style.display = 'block'
+                if (misProveedoresList) {
+                    misProveedoresList.style.display = 'none'
+                }
+                if (allProveedoresList) {
+                    allProveedoresList.style.display = 'none'
                 }
                 if (proveedoresBorradoresList) {
                     proveedoresBorradoresList.style.display = 'none'
