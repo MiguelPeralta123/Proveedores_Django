@@ -890,21 +890,27 @@
 
           // La curp es obligatoria solo para personas físicas
           // El régimen de capital no es necesario para personas físicas
-          if(contribuyente.value == 'Persona física') {
+          if (contribuyente.value == 'Persona física') {
             curp.required = true
             curp.disabled = false
             regimenCapital.required = false
             regimenCapital.disabled = true
             regimenCapital.value = ''
             errorRegimenCapital.style.display = 'none'
+            // Si es persona física, la primera letra de cada palabra será mayúscula
+            nombreFiscal.value = nombreFiscal.value != '' ? firstLetterOfEachWordCapitalized(nombreFiscal.value) : ''
+            nombreComercial.value = nombreComercial.value != '' ? firstLetterOfEachWordCapitalized(nombreComercial.value) : ''
           }
-          else {
+          if (contribuyente.value == 'Persona moral') {
             curp.required = false
             curp.disabled = true
             curp.value = ''
             errorCurp.style.display = 'none'
             regimenCapital.required = true
             regimenCapital.disabled = false
+            // Si es persona moral, solo la primera letra será mayúscula
+            nombreFiscal.value = nombreFiscal.value != '' ? firstLetterCapitalized(nombreFiscal.value) : ''
+            nombreComercial.value = nombreComercial.value != '' ? firstLetterCapitalized(nombreComercial.value) : ''
           }
         }
         enableSaveButton()
@@ -1013,12 +1019,18 @@
         enableSaveButton()
       }
       const validateNombreFiscalOnChange = () => {
-        // Solo la primera letra será mayúscula
-        nombreFiscal.value = nombreFiscal.value != '' ? firstLetterCapitalized(nombreFiscal.value) : ''
+        // Si es persona física, la primera letra de cada palabra será mayúscula
+        if (contribuyente.value == 'Persona física') {
+          nombreFiscal.value = nombreFiscal.value != '' ? firstLetterOfEachWordCapitalized(nombreFiscal.value) : ''
+        }
+        // Si es persona moral, solo la primera letra será mayúscula
+        if (contribuyente.value == 'Persona moral') {
+          nombreFiscal.value = nombreFiscal.value != '' ? firstLetterCapitalized(nombreFiscal.value) : ''
+        }
       }
       nombreFiscal.addEventListener('focus', validateNombreFiscal)
       nombreFiscal.addEventListener('input', validateNombreFiscal)
-      //nombreFiscal.addEventListener('change', validateNombreFiscalOnChange)
+      nombreFiscal.addEventListener('change', validateNombreFiscalOnChange)
       
       // Validación regimen de capital
       const validateRegimenCapital = () => {
@@ -1052,12 +1064,18 @@
         enableSaveButton()
       }
       const validateNombreComercialOnChange = () => {
-        // Solo la primera letra será mayúscula
-        nombreComercial.value = nombreComercial.value != '' ? firstLetterCapitalized(nombreComercial.value) : ''
+        // Si es persona física, solo la primera letra de cada palabra será mayúscula
+        if (contribuyente.value == 'Persona física') {
+          nombreComercial.value = nombreComercial.value != '' ? firstLetterOfEachWordCapitalized(nombreComercial.value) : ''
+        }
+        // Si es persona moral, solo la primera letra será mayúscula
+        if (contribuyente.value == 'Persona moral') {
+          nombreComercial.value = nombreComercial.value != '' ? firstLetterCapitalized(nombreComercial.value) : ''
+        }
       }
       nombreComercial.addEventListener('focus', validateNombreComercial)
       nombreComercial.addEventListener('input', validateNombreComercial)
-      //nombreComercial.addEventListener('change', validateNombreComercialOnChange)
+      nombreComercial.addEventListener('change', validateNombreComercialOnChange)
       
       // Validación regimen fiscal
       const validateRegimenFiscal = () => {
