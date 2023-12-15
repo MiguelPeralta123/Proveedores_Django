@@ -5,22 +5,35 @@
 <main class="py-5 m-5">
     <div class="row mt-5 justify-content-center">
         <div style="max-width: 40rem;">
+
             <h1 class="text-center font-weight-bold text-green" style="color: white;">Solicitudes de material / servicio</h1>
 
             {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
-                <div id="filtrar-solicitudes-container_aprobador" class="mt-5">
-                    <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Pendientes</button>
-                    {% if current_user.puede_crear_material %}
+                {% if current_user.puede_crear_material and current_user.is_superuser %}
+                    <div id="filtrar-solicitudes-container_aprobador-3" class="mt-5">
+                        <button id="btn-filtrar-todas-aprobador" class="btn btn-secondary btn-filtrar">Pendientes</button>
                         <button id="btn-filtrar-mis-solicitudes" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
-                    {% endif %}
-                    {% if current_user.is_superuser %}
                         <button id="btn-filtrar-all-solicitudes" class="btn btn-secondary btn-filtrar">Todas las solicitudes</button>
-                    {% endif %}
-                </div>
+                    </div>
+                {% elif current_user.puede_crear_material %}
+                    <div id="filtrar-solicitudes-container_aprobador-2" class="mt-5">
+                        <button id="btn-filtrar-todas-aprobador" class="btn btn-secondary btn-filtrar">Pendientes</button>
+                        <button id="btn-filtrar-mis-solicitudes" class="btn btn-secondary btn-filtrar">Mis solicitudes</button>
+                    </div>
+                {% elif current_user.is_superuser %}
+                    <div id="filtrar-solicitudes-container_aprobador-2" class="mt-5">
+                        <button id="btn-filtrar-todas-aprobador" class="btn btn-secondary btn-filtrar">Pendientes</button>
+                        <button id="btn-filtrar-all-solicitudes" class="btn btn-secondary btn-filtrar">Todas las solicitudes</button>
+                    </div>
+                {% endif %}
             {% endif %}
 
-            {% if not current_user.compras and not current_user.finanzas and not current_user.sistemas %}
-                <div id="filtrar-solicitudes-container" class="mt-5">
+            {% if current_user.puede_crear_material %}
+                {% if current_user.compras or current_user.finanzas or current_user.sistemas %}
+                    <div id="filtrar-solicitudes-container" class="mt-5" style="display: none;">
+                {% else %}
+                    <div id="filtrar-solicitudes-container" class="mt-5">
+                {% endif %}
                     <button id="btn-filtrar-todas" class="btn btn-secondary btn-filtrar">Todas</button>
                     <button id="btn-filtrar-borradores" class="btn btn-secondary btn-filtrar">Borradores</button>
                     <button id="btn-filtrar-pendientes" class="btn btn-secondary btn-filtrar">Pendientes</button>
@@ -213,7 +226,7 @@
                 </ul>
             {% endif %}
 
-            {% if not current_user.compras and not current_user.finanzas and not current_user.sistemas %}
+            {% if current_user.puede_crear_material %}
                 <ul id="solicitudes-borradores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
                     {% for solicitud in solicitudes_borradores %}
                         <a class="list-group-item my-3 border rounded material-card"
@@ -524,7 +537,12 @@
             grid-template-columns: repeat(3, 1fr);
         }
     }
-    #filtrar-solicitudes-container_aprobador {
+    #filtrar-solicitudes-container_aprobador-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+    #filtrar-solicitudes-container_aprobador-2 {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
@@ -556,6 +574,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+
         // Containers
         const solicitudesList = document.getElementById("solicitudes-list")
         const misSolicitudesList = document.getElementById("mis-solicitudes-list")
@@ -565,10 +584,12 @@
         const solicitudesRechazadasList = document.getElementById("solicitudes-rechazadas-list")
         const solicitudesAprobadasList = document.getElementById("solicitudes-aprobadas-list")
         const solicitudesEliminadasList = document.getElementById("solicitudes-eliminadas-list")
+
         // Buttons
-        const btnTodas = document.getElementById('btn-filtrar-todas')
+        const btnTodasAprobador = document.getElementById('btn-filtrar-todas-aprobador')
         const btnMisSolicitudes = document.getElementById('btn-filtrar-mis-solicitudes')
         const btnAllSolicitudes = document.getElementById('btn-filtrar-all-solicitudes')
+        const btnTodas = document.getElementById('btn-filtrar-todas')
         const btnBorradores = document.getElementById('btn-filtrar-borradores')
         const btnPendientes = document.getElementById('btn-filtrar-pendientes')
         const btnRechazadas = document.getElementById('btn-filtrar-rechazadas')
@@ -680,9 +701,16 @@
             }
         }
 
+        // Botones para filtrar borradores, pendientes, rechazadas, aprobadas y eliminadas
+        filtrarSolicitudesContainer = document.querySelector('#filtrar-solicitudes-container')
+
         // Filter items by status
-        if (btnTodas) {
-            btnTodas.addEventListener('click', () => {
+        if (btnTodasAprobador) {
+            btnTodasAprobador.addEventListener('click', () => {
+                // Ocultar los botones para filtrar las solicitudes
+                if (filtrarSolicitudesContainer) {
+                    filtrarSolicitudesContainer.style.display = 'none'
+                }
                 solicitudesList.style.display = 'block'
                 if (misSolicitudesList) {
                     misSolicitudesList.style.display = 'none'
@@ -699,8 +727,13 @@
                 }
             })
         }
+
         if (btnMisSolicitudes) {
             btnMisSolicitudes.addEventListener('click', () => {
+                // Mostrar los botones para filtrar las solicitudes
+                if (filtrarSolicitudesContainer) {
+                    filtrarSolicitudesContainer.style.display = 'block'
+                }
                 solicitudesList.style.display = 'none'
                 if (misSolicitudesList) {
                     misSolicitudesList.style.display = 'block'
@@ -717,8 +750,13 @@
                 }
             })
         }
+
         if (btnAllSolicitudes) {
             btnAllSolicitudes.addEventListener('click', () => {
+                // Ocultar los botones para filtrar las solicitudes
+                if (filtrarSolicitudesContainer) {
+                    filtrarSolicitudesContainer.style.display = 'none'
+                }
                 solicitudesList.style.display = 'none'
                 if (misSolicitudesList) {
                     misSolicitudesList.style.display = 'none'
@@ -735,6 +773,28 @@
                 }
             })
         }
+
+        if (btnTodas) {
+            btnTodas.addEventListener('click', () => {
+                if (!misSolicitudesList) {
+                    solicitudesList.style.display = 'block'
+                }
+                else {
+                    misSolicitudesList.style.display = 'block'
+                }
+                if (allSolicitudesList) {
+                    allSolicitudesList.style.display = 'none'
+                }
+                if (solicitudesBorradoresList) {
+                    solicitudesBorradoresList.style.display = 'none'
+                    solicitudesPendientesList.style.display = 'none'
+                    solicitudesRechazadasList.style.display = 'none'
+                    solicitudesAprobadasList.style.display = 'none'
+                    solicitudesEliminadasList.style.display = 'none'
+                }
+            })
+        }
+
         if (btnBorradores) {
             btnBorradores.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
@@ -753,6 +813,7 @@
                 }
             })
         }
+
         if (btnPendientes) {
             btnPendientes.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
@@ -771,6 +832,7 @@
                 }
             })
         }
+
         if (btnRechazadas) {
             btnRechazadas.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
@@ -789,6 +851,7 @@
                 }
             })
         }
+
         if (btnAprobadas) {
             btnAprobadas.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'
@@ -807,6 +870,7 @@
                 }
             })
         }
+
         if (btnEliminadas) {
             btnEliminadas.addEventListener('click', () => {
                 solicitudesList.style.display = 'none'

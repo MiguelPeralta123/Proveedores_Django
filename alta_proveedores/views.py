@@ -87,7 +87,8 @@ def permissions(request):
 @login_required
 def proveedor(request, tipo):
     try:
-        if request.user.puede_crear_proveedor or request.user.puede_crear_cliente or request.user.compras or request.user.finanzas or request.user.sistemas:
+        if tipo == 'proveedores' and request.user.puede_crear_proveedor or tipo == 'clientes' and request.user.puede_crear_cliente or request.user.compras or request.user.finanzas or request.user.sistemas:
+            
             # Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
             if request.user.is_superuser:
                 if tipo == 'proveedores':
@@ -101,23 +102,26 @@ def proveedor(request, tipo):
                         Q(tipo_alta='')
                     ).order_by('id')
             
+            # Inicializar la lista de mis_proveedores
+            mis_proveedores = []
+            
             if request.user.compras:
                 if tipo == 'proveedores':
                     proveedores = Proveedor.objects.filter(
                         Q(pendiente=True, tipo_alta='Proveedor') |
                         Q(pendiente=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.compras or request.user.finanzas or request.user.sistemas:
+                    if request.user.puede_crear_proveedor:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Proveedor') |
                             Q(usuario=request.user, tipo_alta='')
                         ).order_by('id')
-                if tipo == 'clientes':
+                elif tipo == 'clientes':
                     proveedores = Proveedor.objects.filter(
                         Q(pendiente=True, tipo_alta='Cliente') |
                         Q(pendiente=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.compras or request.user.finanzas or request.user.sistemas:
+                    if request.user.puede_crear_cliente:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Cliente') |
                             Q(usuario=request.user, tipo_alta='')
@@ -128,17 +132,17 @@ def proveedor(request, tipo):
                         Q(compras=True, tipo_alta='Proveedor') |
                         Q(compras=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.compras or request.user.finanzas or request.user.sistemas:
+                    if request.user.puede_crear_proveedor:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Proveedor') |
                             Q(usuario=request.user, tipo_alta='')
                         ).order_by('id')
-                if tipo == 'clientes':
+                elif tipo == 'clientes':
                     proveedores = Proveedor.objects.filter(
                         Q(compras=True, tipo_alta='Cliente') |
                         Q(compras=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.compras or request.user.finanzas or request.user.sistemas:
+                    if request.user.puede_crear_cliente:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Cliente') |
                             Q(usuario=request.user, tipo_alta='')
@@ -149,17 +153,17 @@ def proveedor(request, tipo):
                         Q(finanzas=True, tipo_alta='Proveedor') |
                         Q(finanzas=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.compras or request.user.finanzas or request.user.sistemas:
+                    if request.user.puede_crear_proveedor:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Proveedor') |
                             Q(usuario=request.user, tipo_alta='')
                         ).order_by('id')
-                if tipo == 'clientes':
+                elif tipo == 'clientes':
                     proveedores = Proveedor.objects.filter(
                         Q(finanzas=True, tipo_alta='Cliente') |
                         Q(finanzas=True, tipo_alta='')
                     ).order_by('id')
-                    if request.user.compras or request.user.finanzas or request.user.sistemas:
+                    if request.user.puede_crear_cliente:
                         mis_proveedores = Proveedor.objects.filter(
                             Q(usuario=request.user, tipo_alta='Cliente') |
                             Q(usuario=request.user, tipo_alta='')
@@ -205,6 +209,22 @@ def proveedor(request, tipo):
                     'current_user': request.user
                 })
 
+            # Si el usuario es autorizador y puede crear solicitudes, incluir las listas para los filtros
+            if tipo == 'proveedores' and request.user.puede_crear_proveedor or tipo == 'clientes' and request.user.puede_crear_cliente:
+                proveedores_borradores = mis_proveedores.filter(borrador=True).order_by('id')
+                proveedores_pendientes = mis_proveedores.filter(
+                    Q(pendiente=True) | 
+                    Q(compras=True) | 
+                    Q(finanzas=True)
+                ).order_by('id')
+                proveedores_rechazados = mis_proveedores.filter(
+                    Q(rechazado_compras=True) | 
+                    Q(rechazado_finanzas=True) | 
+                    Q(rechazado_sistemas=True)
+                ).order_by('id')
+                proveedores_aprobados = mis_proveedores.filter(sistemas=True).order_by('id')
+                proveedores_eliminados = mis_proveedores.filter(eliminado=True).order_by('id')
+
             historial = []
             for proveedor in proveedores:
                 if proveedor not in mis_proveedores:
@@ -212,12 +232,17 @@ def proveedor(request, tipo):
             for proveedor in mis_proveedores:
                 historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id).order_by('id')
 
-            if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
+            if tipo == 'proveedores' and request.user.puede_crear_proveedor or tipo == 'clientes' and request.user.puede_crear_cliente:
                 if request.user.is_superuser:
                     return render(request, 'proveedor/proveedor.html', {
                         'tipo': tipo,
                         'proveedores': proveedores,
                         'mis_proveedores': mis_proveedores,
+                        'proveedores_borradores': proveedores_borradores,
+                        'proveedores_pendientes': proveedores_pendientes,
+                        'proveedores_rechazados': proveedores_rechazados,
+                        'proveedores_aprobados': proveedores_aprobados,
+                        'proveedores_eliminados': proveedores_eliminados,
                         'all_proveedores': all_proveedores,
                         'historial': historial,
                         'current_user': request.user
@@ -227,6 +252,11 @@ def proveedor(request, tipo):
                         'tipo': tipo,
                         'proveedores': proveedores,
                         'mis_proveedores': mis_proveedores,
+                        'proveedores_borradores': proveedores_borradores,
+                        'proveedores_pendientes': proveedores_pendientes,
+                        'proveedores_rechazados': proveedores_rechazados,
+                        'proveedores_aprobados': proveedores_aprobados,
+                        'proveedores_eliminados': proveedores_eliminados,
                         'historial': historial,
                         'current_user': request.user
                     })

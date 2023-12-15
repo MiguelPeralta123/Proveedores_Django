@@ -35,9 +35,13 @@ def home(request):
 def material(request):
     try:
         if request.user.puede_crear_material or request.user.compras or request.user.finanzas or request.user.sistemas:
+            
             # Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
             if request.user.is_superuser:
                 all_solicitudes = MaterialSolicitud.objects.all().order_by('id')
+            
+            # Inicializar la lista de mis_solicitudes
+            mis_solicitudes = []
 
             if request.user.compras:
                 solicitudes = MaterialSolicitud.objects.filter(pendiente=True).order_by('id')
@@ -82,6 +86,22 @@ def material(request):
                     'current_user': request.user
                 })
 
+            # Si el usuario es autorizador y puede crear solicitudes, incluir las listas para los filtros
+            if request.user.puede_crear_material:
+                solicitudes_borradores = mis_solicitudes.filter(borrador=True).order_by('id')
+                solicitudes_pendientes = mis_solicitudes.filter(
+                    Q(pendiente=True) | 
+                    Q(compras=True) | 
+                    Q(finanzas=True)
+                ).order_by('id')
+                solicitudes_rechazadas = mis_solicitudes.filter(
+                    Q(rechazado_compras=True) | 
+                    Q(rechazado_finanzas=True) | 
+                    Q(rechazado_sistemas=True)
+                ).order_by('id')
+                solicitudes_aprobadas = mis_solicitudes.filter(sistemas=True).order_by('id')
+                solicitudes_eliminadas = mis_solicitudes.filter(eliminado=True).order_by('id')
+
             historial = []
             for solicitud in solicitudes:
                 if solicitud not in mis_solicitudes:
@@ -94,6 +114,11 @@ def material(request):
                     return render(request, 'material/material.html', {
                         'solicitudes': solicitudes,
                         'mis_solicitudes': mis_solicitudes,
+                        'solicitudes_borradores': solicitudes_borradores,
+                        'solicitudes_pendientes': solicitudes_pendientes,
+                        'solicitudes_rechazadas': solicitudes_rechazadas,
+                        'solicitudes_aprobadas': solicitudes_aprobadas,
+                        'solicitudes_eliminadas': solicitudes_eliminadas,
                         'all_solicitudes': all_solicitudes,
                         'historial': historial,
                         'current_user': request.user
@@ -102,6 +127,11 @@ def material(request):
                     return render(request, 'material/material.html', {
                         'solicitudes': solicitudes,
                         'mis_solicitudes': mis_solicitudes,
+                        'solicitudes_borradores': solicitudes_borradores,
+                        'solicitudes_pendientes': solicitudes_pendientes,
+                        'solicitudes_rechazadas': solicitudes_rechazadas,
+                        'solicitudes_aprobadas': solicitudes_aprobadas,
+                        'solicitudes_eliminadas': solicitudes_eliminadas,
                         'historial': historial,
                         'current_user': request.user
                     })
@@ -187,7 +217,7 @@ def material_create(request):
                         if solicitud.es_migracion == False:
                             if material_formset.is_valid():
                                 for material_form in material_formset:
-                                    if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('unidad_medida'):
+                                    if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('porcentaje_iva') or not material_form.cleaned_data.get('unidad_medida'):
                                         continue  # Saltar formularios con campos requeridos vacíos
                                     material = material_form.save(commit=False)
                                     material.id_solicitud = id_solicitud
