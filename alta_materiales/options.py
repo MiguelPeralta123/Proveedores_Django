@@ -58,7 +58,7 @@ with open(subfamilia_csv_path, 'r') as csv_file:
         else:
             SUBFAMILIA_SERVICIO_LIST.append((nombre, nombre))
 
-# Ordenar la lista alfabéticamente en función de las etiquetas
+# Ordenar la lista alfabéticamente
 SUBFAMILIA_LIST = sorted(SUBFAMILIA_LIST, key=lambda item: item[1])
 SUBFAMILIA_PRODUCTO_LIST = sorted(SUBFAMILIA_PRODUCTO_LIST, key=lambda item: item[1])
 SUBFAMILIA_SERVICIO_LIST = sorted(SUBFAMILIA_SERVICIO_LIST, key=lambda item: item[1])

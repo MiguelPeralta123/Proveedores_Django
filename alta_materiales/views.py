@@ -6,6 +6,7 @@ from django.db.models import Q
 import json
 from django.http import JsonResponse
 from threading import Timer
+from datetime import datetime, time
 import csv
 import os
 from .forms import *
@@ -103,11 +104,14 @@ def material(request):
                 solicitudes_eliminadas = mis_solicitudes.filter(eliminado=True).order_by('id')
 
             historial = []
-            for solicitud in solicitudes:
-                if solicitud not in mis_solicitudes:
+            if request.user.is_superuser:  
+                historial = MaterialHistorial.objects.all()
+            else:
+                for solicitud in solicitudes:
+                    if solicitud not in mis_solicitudes:
+                        historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id).order_by('id')
+                for solicitud in mis_solicitudes:
                     historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id).order_by('id')
-            for solicitud in mis_solicitudes:
-                historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id).order_by('id')
 
             if request.user.puede_crear_material:
                 if request.user.is_superuser:
@@ -503,39 +507,49 @@ def enviarCorreo(departamento, elementos, folios):
     #send_mail(subject, message, from_email, email, fail_silently=True)
 
 def solicitudesPendientes():
-    # Revisar si hay solicitudes de material pendientes de aprobar por compras
-    solicitudes_compras = MaterialSolicitud.objects.filter(pendiente=True)
-    if len(solicitudes_compras) > 0:
-        folios = []
-        for solicitud in solicitudes_compras:
-            if solicitud.justificacion != '':
-                folios.append(str(solicitud.id) + ' - ' + solicitud.justificacion)
-            else:
-                folios.append(str(solicitud.id) + ' - ' + solicitud.nombre_producto_migracion)
-        enviarCorreo('compras', len(solicitudes_compras), folios)
+    current_day = datetime.now().weekday()
+    current_time = datetime.now().time()
+    start_time = time(7, 0)
+    end_time = time(19, 0)
+    end_time_saturday = time(15, 0)
 
-    # Revisar si hay solicitudes de material pendientes de aprobar por finanzas
-    solicitudes_finanzas = MaterialSolicitud.objects.filter(compras=True)
-    if len(solicitudes_finanzas) > 0:
-        folios = []
-        for solicitud in solicitudes_finanzas:
-            if solicitud.justificacion != '':
-                folios.append(str(solicitud.id) + ' - ' + solicitud.justificacion)
-            else:
-                folios.append(str(solicitud.id) + ' - ' + solicitud.nombre_producto_migracion)
-        enviarCorreo('finanzas', len(solicitudes_finanzas), folios)
+    # Los correos de recordatorio solo se envían de lunes a viernes entre 7am y 7pm y los sabados entre 7am y 3pm
+    if 0 <= current_day <= 4 and start_time <= current_time <= end_time or current_day == 5 and start_time <= current_time <= end_time_saturday:
 
-    # Revisar si hay solicitudes de cliente / solicitud pendientes de aprobar por sistemas
-    solicitudes_sistemas = MaterialSolicitud.objects.filter(finanzas=True)
-    if len(solicitudes_sistemas) > 0:
-        folios = []
-        for solicitud in solicitudes_sistemas:
-            if solicitud.justificacion != '':
-                folios.append(str(solicitud.id) + ' - ' + solicitud.justificacion)
-            else:
-                folios.append(str(solicitud.id) + ' - ' + solicitud.nombre_producto_migracion)
-        enviarCorreo('sistemas', len(solicitudes_sistemas), folios)
+        # Revisar si hay solicitudes de material pendientes de aprobar por compras
+        solicitudes_compras = MaterialSolicitud.objects.filter(pendiente=True)
+        if len(solicitudes_compras) > 0:
+            folios = []
+            for solicitud in solicitudes_compras:
+                if solicitud.justificacion != '':
+                    folios.append(str(solicitud.id) + ' - ' + solicitud.justificacion)
+                else:
+                    folios.append(str(solicitud.id) + ' - ' + solicitud.nombre_producto_migracion)
+            enviarCorreo('compras', len(solicitudes_compras), folios)
 
-    Timer(1800, solicitudesPendientes).start()
+        # Revisar si hay solicitudes de material pendientes de aprobar por finanzas
+        solicitudes_finanzas = MaterialSolicitud.objects.filter(compras=True)
+        if len(solicitudes_finanzas) > 0:
+            folios = []
+            for solicitud in solicitudes_finanzas:
+                if solicitud.justificacion != '':
+                    folios.append(str(solicitud.id) + ' - ' + solicitud.justificacion)
+                else:
+                    folios.append(str(solicitud.id) + ' - ' + solicitud.nombre_producto_migracion)
+            enviarCorreo('finanzas', len(solicitudes_finanzas), folios)
+
+        # Revisar si hay solicitudes de cliente / solicitud pendientes de aprobar por sistemas
+        solicitudes_sistemas = MaterialSolicitud.objects.filter(finanzas=True)
+        if len(solicitudes_sistemas) > 0:
+            folios = []
+            for solicitud in solicitudes_sistemas:
+                if solicitud.justificacion != '':
+                    folios.append(str(solicitud.id) + ' - ' + solicitud.justificacion)
+                else:
+                    folios.append(str(solicitud.id) + ' - ' + solicitud.nombre_producto_migracion)
+            enviarCorreo('sistemas', len(solicitudes_sistemas), folios)
+
+    # El correo de recordatorio debe enviarse cada 2 horas
+    Timer(7200, solicitudesPendientes).start()
 
 #solicitudesPendientes()

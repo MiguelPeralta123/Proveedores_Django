@@ -5,6 +5,7 @@ from django.db.models import Q
 import json
 from django.http import JsonResponse
 from threading import Timer
+from datetime import datetime, time
 from .forms import *
 from .models import *
 
@@ -226,11 +227,14 @@ def proveedor(request, tipo):
                 proveedores_eliminados = mis_proveedores.filter(eliminado=True).order_by('id')
 
             historial = []
-            for proveedor in proveedores:
-                if proveedor not in mis_proveedores:
+            if request.user.is_superuser:
+                historial = ProveedorHistorial.objects.all()
+            else:
+                for proveedor in proveedores:
+                    if proveedor not in mis_proveedores:
+                        historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id).order_by('id')
+                for proveedor in mis_proveedores:
                     historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id).order_by('id')
-            for proveedor in mis_proveedores:
-                historial += ProveedorHistorial.objects.filter(id_proveedor=proveedor.id).order_by('id')
 
             if tipo == 'proveedores' and request.user.puede_crear_proveedor or tipo == 'clientes' and request.user.puede_crear_cliente:
                 if request.user.is_superuser:
@@ -522,39 +526,49 @@ def enviarCorreo(departamento, elementos, folios):
     #send_mail(subject, message, from_email, email, fail_silently=True)
 
 def solicitudesPendientes():
-    # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por compras
-    proveedores_compras = Proveedor.objects.filter(pendiente=True)
-    if len(proveedores_compras) > 0:
-        folios = []
-        for proveedor in proveedores_compras:
-            if proveedor.rfc != '':
-                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
-            else:
-                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
-        enviarCorreo('compras', len(proveedores_compras), folios)
+    current_day = datetime.now().weekday()
+    current_time = datetime.now().time()
+    start_time = time(7, 0)
+    end_time = time(19, 0)
+    end_time_saturday = time(15, 0)
+    
+    # Los correos de recordatorio solo se envían de lunes a viernes entre 7am y 7pm y los sabados entre 7am y 3pm
+    if 0 <= current_day <= 4 and start_time <= current_time <= end_time or current_day == 5 and start_time <= current_time <= end_time_saturday:
 
-    # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por finanzas
-    proveedores_finanzas = Proveedor.objects.filter(compras=True)
-    if len(proveedores_finanzas) > 0:
-        folios = []
-        for proveedor in proveedores_finanzas:
-            if proveedor.rfc != '':
-                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
-            else:
-                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
-        enviarCorreo('finanzas', len(proveedores_finanzas), folios)
+        # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por compras
+        proveedores_compras = Proveedor.objects.filter(pendiente=True)
+        if len(proveedores_compras) > 0:
+            folios = []
+            for proveedor in proveedores_compras:
+                if proveedor.rfc != '':
+                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+                else:
+                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+            enviarCorreo('compras', len(proveedores_compras), folios)
 
-    # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por sistemas
-    proveedores_sistemas = Proveedor.objects.filter(finanzas=True)
-    if len(proveedores_sistemas) > 0:
-        folios = []
-        for proveedor in proveedores_sistemas:
-            if proveedor.rfc != '':
-                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
-            else:
-                folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
-        enviarCorreo('sistemas', len(proveedores_sistemas), folios)
+        # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por finanzas
+        proveedores_finanzas = Proveedor.objects.filter(compras=True)
+        if len(proveedores_finanzas) > 0:
+            folios = []
+            for proveedor in proveedores_finanzas:
+                if proveedor.rfc != '':
+                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+                else:
+                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+            enviarCorreo('finanzas', len(proveedores_finanzas), folios)
 
-    Timer(1800, solicitudesPendientes).start()
+        # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por sistemas
+        proveedores_sistemas = Proveedor.objects.filter(finanzas=True)
+        if len(proveedores_sistemas) > 0:
+            folios = []
+            for proveedor in proveedores_sistemas:
+                if proveedor.rfc != '':
+                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+                else:
+                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+            enviarCorreo('sistemas', len(proveedores_sistemas), folios)
+
+    # El correo de recordatorio debe enviarse cada 2 horas
+    Timer(7200, solicitudesPendientes).start()
 
 #solicitudesPendientes()
