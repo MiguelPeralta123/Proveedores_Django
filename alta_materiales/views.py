@@ -218,7 +218,7 @@ def material_create(request):
                         solicitud.usuario = request.user
                         solicitud.save()
 
-                        if solicitud.es_migracion == False:
+                        if not solicitud.es_migracion:
                             if material_formset.is_valid():
                                 for material_form in material_formset:
                                     if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('porcentaje_iva') or not material_form.cleaned_data.get('unidad_medida'):
@@ -274,22 +274,27 @@ def material_detail(request, material_id):
     try:
         solicitud = get_object_or_404(MaterialSolicitud, pk=material_id)
         materiales = Material.objects.filter(id_solicitud=solicitud.id_solicitud)
+        
+        MaterialFormSet = formset_factory(MaterialForm, extra=0)
 
         if request.method == 'GET':
             default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
                             'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
-            if request.user.compras:
+            
+            if request.user.compras and solicitud.compras:
                 solicitud_form = SolicitudFormForCompras(
                     instance=solicitud, initial=default_values)
-            elif request.user.finanzas:
+            elif request.user.finanzas and solicitud.finanzas:
                 solicitud_form = SolicitudFormForFinanzas(
                     instance=solicitud, initial=default_values)
-            elif request.user.sistemas:
+            elif request.user.sistemas and solicitud.sistemas:
                 solicitud_form = SolicitudFormForSistemas(
                     instance=solicitud, initial=default_values)
             else:
                 solicitud_form = SolicitudDetailForm(
                     instance=solicitud, initial=default_values)
+                
+            material_formset = MaterialFormSet(prefix='material', initial=[{}])
 
             material_forms = [MaterialDetailForm(
                 instance=material, prefix=f'material-{material.id}') for material in materiales]
@@ -316,11 +321,13 @@ def material_detail(request, material_id):
                     # Agrega la tupla a la lista
                     catalogo_material.append({'value': nombre_producto, 'text': formato})
 
+            # Si la solicitud está rechazada, el solicitante podrá añadir nuevos elementos
             return render(request, 'material/material_detail.html', {
                 'solicitud': solicitud,
                 'solicitud_form': solicitud_form,
                 'materiales': materiales,
                 'material_forms': material_forms,
+                'material_formset': material_formset,
                 'catalogo_material': catalogo_material,
                 'subfamilia_producto_list': SUBFAMILIA_PRODUCTO_LIST,
                 'subfamilia_servicio_list': SUBFAMILIA_SERVICIO_LIST,
@@ -329,15 +336,15 @@ def material_detail(request, material_id):
             })
         else:
             try:
-                if request.user.compras:
+                if request.user.compras and solicitud.compras:
                     solicitud_form = SolicitudFormForCompras(
                         request.POST, instance=solicitud)
                     destinatario_correo = [solicitud.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
-                elif request.user.finanzas:
+                elif request.user.finanzas and solicitud.finanzas:
                     solicitud_form = SolicitudFormForFinanzas(
                         request.POST, instance=solicitud)
                     destinatario_correo = [solicitud.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
-                elif request.user.sistemas:
+                elif request.user.sistemas and solicitud.sistemas:
                     solicitud_form = SolicitudFormForSistemas(
                         request.POST, instance=solicitud)
                     destinatario_correo = [solicitud.usuario.email]
@@ -345,6 +352,8 @@ def material_detail(request, material_id):
                     solicitud_form = SolicitudDetailForm(
                         request.POST, instance=solicitud)
                     destinatario_correo = ['compras@ricofarms.com']
+                    # Solo el solicitante podrá añadir más elementos a la solicitud
+                    material_formset = MaterialFormSet(request.POST, request.FILES, prefix='material')
 
                 material_forms = [MaterialDetailForm(
                     request.POST, request.FILES, instance=material, prefix=f'material-{material.id}') for material in materiales]
@@ -354,12 +363,27 @@ def material_detail(request, material_id):
                 if solicitud_form.is_valid() and historial_form.is_valid():
                     solicitud_form.save()
 
-                    if solicitud.es_migracion == False:
+                    if not solicitud.es_migracion:
+                        # Guardando los materiales que ya estaban
                         if all(form.is_valid() for form in material_forms):
                             materialesAprobados = ''
                             for form in material_forms:
                                 materialesAprobados += '\n' + form.cleaned_data.get('codigo') + ' - ' + form.cleaned_data.get('nombre_producto')
                                 form.save()
+
+                        # Guardando los materiales que se hayan añadido a la solicitud
+                        if not solicitud.es_migracion:
+                            if material_formset.is_valid():
+                                for material_form in material_formset:
+                                    if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('porcentaje_iva') or not material_form.cleaned_data.get('unidad_medida'):
+                                        continue  # Saltar formularios con campos requeridos vacíos
+                                    material = material_form.save(commit=False)
+                                    material.id_solicitud = solicitud.id_solicitud
+                                    material.save()
+                            else:
+                                for form in material_formset:
+                                    if form.errors:
+                                        print(form.errors)
                     
                     # Guardar la modificación de la solicitud en el historial de cambios
                     historial = historial_form.save(commit=False)
