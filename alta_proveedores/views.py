@@ -348,7 +348,7 @@ def proveedor_create(request):
                         # Enviar correo electrónico
                         if not proveedor.borrador:
                             subject = 'Nueva solicitud de proveedor'
-                            message = str(request.user.get_full_name()) + ' ha solicitado un alta de proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
+                            message = str(request.user.get_full_name()) + ' ha solicitado un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
                             from_email = 'altaproveedoresricofarms@gmail.com'
                             if proveedor.es_migracion:
                                 recipient_list = ['edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
@@ -469,19 +469,23 @@ def proveedor_detail(request, proveedor_id):
                             action = 'eliminado'
                         elif proveedor.sistemas:
                             historial.accion = 'aprobada'
-                            action = 'abrobado'
+                            action = 'aprobado'
                         historial.usuario = request.user
                         historial.save()
 
                         # Enviar correo electrónico
                         subject = 'Solicitud de proveedor modificada'
                         if action == 'rechazado':
-                            message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
+                            message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
                         else:
-                            message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
+                            message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
                         from_email = 'altaproveedoresricofarms@gmail.com'
+                        # Si se rechaza la solicitud, se envía un correo al solicitante
                         if action == 'rechazado':
                             recipient_list = [proveedor.usuario.email]
+                        # Si se aprueba, se envía un correo al solicitante y a contabilidad
+                        elif action == 'aprobado':
+                            recipient_list = [proveedor.usuario.email, 'contadorsr@ricofarms.com']
                         else:
                             recipient_list = destinatario_correo
                         #if not proveedor.eliminado:

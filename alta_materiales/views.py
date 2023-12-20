@@ -241,7 +241,7 @@ def material_create(request):
                         # Enviar correo electrónico
                         if not solicitud.borrador:
                             subject = 'Nueva solicitud de material'
-                            message = str(request.user.get_full_name()) + ' ha solicitado un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/'
+                            message = str(request.user.get_full_name()) + ' ha solicitado un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/'
                             from_email = 'altaproveedoresricofarms@gmail.com'
                             if solicitud.es_migracion:
                                 recipient_list = ['edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
@@ -468,7 +468,7 @@ def material_detail(request, material_id):
 
                             # Enviar correo electrónico para materiales rechazados
                             subject = 'Solicitud de material modificada'
-                            message = str(request.user.get_full_name()) + ' ha rechazado un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
+                            message = str(request.user.get_full_name()) + ' ha rechazado un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
                             from_email = 'altaproveedoresricofarms@gmail.com'
                             recipient_list = [solicitud.usuario.email]
                             #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
@@ -481,14 +481,18 @@ def material_detail(request, material_id):
                     else:
                         subject = 'Solicitud de material modificada'
                     if action == 'rechazado':
-                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
+                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
                     if action == 'aprobado':
-                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/\n\nMateriales / servicios aprobados:' + materialesAprobados
+                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/\n\nMateriales / servicios aprobados:' + materialesAprobados
                     else:
-                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material, favor de revisar en http://23.19.74.40:8001/materiales/'
+                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/'
                     from_email = 'altaproveedoresricofarms@gmail.com'
-                    if action == 'rechazado' or action == 'aprobado':
+                    # Si se rechaza la solicitud, se envía un correo al solicitante
+                    if action == 'rechazado':
                         recipient_list = [solicitud.usuario.email]
+                    # Si se aprueba, se envía un correo al solicitante y a contabilidad
+                    elif action == 'aprobado':
+                        recipient_list = [solicitud.usuario.email, 'contadorsr@ricofarms.com']
                     else:
                         recipient_list = destinatario_correo
                     #if not solicitud.eliminado:
