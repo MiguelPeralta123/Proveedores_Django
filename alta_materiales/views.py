@@ -339,19 +339,15 @@ def material_detail(request, material_id):
                 if request.user.compras and solicitud.compras:
                     solicitud_form = SolicitudFormForCompras(
                         request.POST, instance=solicitud)
-                    destinatario_correo = [solicitud.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
                 elif request.user.finanzas and solicitud.finanzas:
                     solicitud_form = SolicitudFormForFinanzas(
                         request.POST, instance=solicitud)
-                    destinatario_correo = [solicitud.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
                 elif request.user.sistemas and solicitud.sistemas:
                     solicitud_form = SolicitudFormForSistemas(
                         request.POST, instance=solicitud)
-                    destinatario_correo = [solicitud.usuario.email]
                 else:
                     solicitud_form = SolicitudDetailForm(
                         request.POST, instance=solicitud)
-                    destinatario_correo = ['compras@ricofarms.com']
                     # Solo el solicitante podrá añadir más elementos a la solicitud
                     material_formset = MaterialFormSet(request.POST, request.FILES, prefix='material')
 
@@ -360,6 +356,8 @@ def material_detail(request, material_id):
                 
                 historial_form = HistorialForm(request.POST)
 
+                notificarContabilidad = False
+
                 if solicitud_form.is_valid() and historial_form.is_valid():
                     solicitud_form.save()
 
@@ -367,23 +365,35 @@ def material_detail(request, material_id):
                         # Guardando los materiales que ya estaban
                         if all(form.is_valid() for form in material_forms):
                             materialesAprobados = ''
+                            serviciosAprobados = ''
                             for form in material_forms:
-                                materialesAprobados += '\n' + form.cleaned_data.get('codigo') + ' - ' + form.cleaned_data.get('nombre_producto')
+                                # Saltar formularios con campos requeridos vacíos
+                                if not form.cleaned_data.get('tipo_alta') or not form.cleaned_data.get('subfamilia') or not form.cleaned_data.get('nombre_producto') or not form.cleaned_data.get('porcentaje_iva') or not form.cleaned_data.get('unidad_medida'):
+                                    continue
+                                if form.cleaned_data.get('tipo_alta') == 'Almacén':
+                                    materialesAprobados += '\n' + form.cleaned_data.get('codigo') + ' - ' + form.cleaned_data.get('nombre_producto')
+                                if form.cleaned_data.get('tipo_alta') == 'Servicio':
+                                    serviciosAprobados += '\n' + form.cleaned_data.get('codigo') + ' - ' + form.cleaned_data.get('nombre_producto')
+                                    # Si la solicitud aprobada incluye un servicio, se debe notificar a contabilidad
+                                    notificarContabilidad = True
                                 form.save()
 
                         # Guardando los materiales que se hayan añadido a la solicitud
-                        if not solicitud.es_migracion:
-                            if material_formset.is_valid():
-                                for material_form in material_formset:
-                                    if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('porcentaje_iva') or not material_form.cleaned_data.get('unidad_medida'):
-                                        continue  # Saltar formularios con campos requeridos vacíos
-                                    material = material_form.save(commit=False)
-                                    material.id_solicitud = solicitud.id_solicitud
-                                    material.save()
-                            else:
-                                for form in material_formset:
-                                    if form.errors:
-                                        print(form.errors)
+                        if material_formset.is_valid():
+                            for material_form in material_formset:
+                                # Saltar formularios con campos requeridos vacíos
+                                if not material_form.cleaned_data.get('tipo_alta') or not material_form.cleaned_data.get('subfamilia') or not material_form.cleaned_data.get('nombre_producto') or not material_form.cleaned_data.get('porcentaje_iva') or not material_form.cleaned_data.get('unidad_medida'):
+                                    continue
+                                if material_form.cleaned_data.get('tipo_alta') == 'Servicio':
+                                    # Si la solicitud aprobada incluye un servicio, se debe notificar a contabilidad
+                                    notificarContabilidad = True
+                                material = material_form.save(commit=False)
+                                material.id_solicitud = solicitud.id_solicitud
+                                material.save()
+                        else:
+                            for form in material_formset:
+                                if form.errors:
+                                    print(form.errors)
                     
                     # Guardar la modificación de la solicitud en el historial de cambios
                     historial = historial_form.save(commit=False)
@@ -474,27 +484,47 @@ def material_detail(request, material_id):
                             #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
                     # Enviar correo electrónico
+                    # Asunto
                     if action == 'rechazado':
                         subject = 'Solicitud de material rechazada'
                     elif action == 'aprobado':
                         subject = 'Solicitud de material aprobada'
                     else:
                         subject = 'Solicitud de material modificada'
+
+                    # Mensaje
                     if action == 'rechazado':
                         message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
                     if action == 'aprobado':
-                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/\n\nMateriales / servicios aprobados:' + materialesAprobados
+                        message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/\n\nMateriales aprobados:' + materialesAprobados + '\n\nServicios aprobados:' + serviciosAprobados
                     else:
                         message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/'
+
+                    # Remitente
                     from_email = 'altaproveedoresricofarms@gmail.com'
+
+                    # Destinatario
                     # Si se rechaza la solicitud, se envía un correo al solicitante
                     if action == 'rechazado':
                         recipient_list = [solicitud.usuario.email]
-                    # Si se aprueba, se envía un correo al solicitante y a contabilidad
+                    # Si se aprueba, se envía un correo al solicitante
                     elif action == 'aprobado':
-                        recipient_list = [solicitud.usuario.email, 'contadorsr@ricofarms.com']
+                        # Si la solicitud contiene algún servicio, se notifica también a contabilidad
+                        if notificarContabilidad:
+                            recipient_list = [solicitud.usuario.email, 'contadorsr@ricofarms.com']
+                        else:
+                            recipient_list = [solicitud.usuario.email]
                     else:
-                        recipient_list = destinatario_correo
+                        if request.user.compras:
+                            recipient_list = [solicitud.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
+                        elif request.user.finanzas:
+                            recipient_list = [solicitud.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
+                        elif request.user.sistemas:
+                            recipient_list = [solicitud.usuario.email]
+                        else:
+                            recipient_list = ['compras@ricofarms.com']
+
+                    # Enviar correo
                     #if not solicitud.eliminado:
                         #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 

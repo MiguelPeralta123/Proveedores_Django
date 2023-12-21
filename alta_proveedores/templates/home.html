@@ -48,7 +48,7 @@
         </div>
       {% endif %}
 
-      {% if user.puede_crear_cliente or user.compras or user.sistemas %}
+      {% if user.puede_crear_cliente or user.finanzas or user.sistemas %}
         <div class="d-flex align-items-center justify-content-between gap-4 mt-2 mb-4" style="max-width: 55rem;">
           <p class="ms-3 my-auto fw-bold">Seleccione la siguiente opción para ver sus solicitudes de alta de cliente</p>
           <a class="btn" href="clientes" style="width: 10rem; margin-right: 1rem; background-color: #008841; color: white; font-weight: bold;">Ver solicitudes</a>

@@ -347,15 +347,29 @@ def proveedor_create(request):
 
                         # Enviar correo electrónico
                         if not proveedor.borrador:
+                            # Asunto
                             subject = 'Nueva solicitud de proveedor'
-                            message = str(request.user.get_full_name()) + ' ha solicitado un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
+
+                            # Mensaje
+                            if proveedor.tipo_alta == 'Proveedor':
+                                message = str(request.user.get_full_name()) + ' ha solicitado un alta de proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
+                            elif proveedor.tipo_alta == 'Cliente':
+                                message = str(request.user.get_full_name()) + ' ha solicitado un alta de cliente, favor de revisar en http://23.19.74.40:8001/clientes/'
+                            else:
+                                message = str(request.user.get_full_name()) + ' ha solicitado un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
+                            
+                            # Remitente
                             from_email = 'altaproveedoresricofarms@gmail.com'
+
+                            # Destinatario
                             if proveedor.es_migracion:
                                 recipient_list = ['edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
                             elif proveedor.tipo_alta == 'Cliente':
                                 recipient_list = ['fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
                             else:
                                 recipient_list = ['compras@ricofarms.com']
+                            
+                            # Enviar correo
                             #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
                         return redirect('proveedor')
@@ -433,22 +447,18 @@ def proveedor_detail(request, proveedor_id):
                 })
             else:
                 try:
-                    if request.user.compras:
+                    if request.user.compras and proveedor.pendiente:
                         proveedor_form = ProveedorFormForCompras(
                             request.POST, instance=proveedor)
-                        destinatario_correo = [proveedor.usuario.email, 'fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
-                    elif request.user.finanzas:
+                    elif request.user.finanzas and proveedor.compras:
                         proveedor_form = ProveedorFormForFinanzas(
                             request.POST, instance=proveedor)
-                        destinatario_correo = [proveedor.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
-                    elif request.user.sistemas:
+                    elif request.user.sistemas and proveedor.finanzas:
                         proveedor_form = ProveedorFormForSistemas(
                             request.POST, instance=proveedor)
-                        destinatario_correo = [proveedor.usuario.email]
                     else:
                         proveedor_form = ProveedorDetailForm(
                             request.POST, request.FILES, instance=proveedor)
-                        destinatario_correo = ['compras@ricofarms.com']
                     
                     historial_form = HistorialForm(request.POST)
                                 
@@ -474,20 +484,49 @@ def proveedor_detail(request, proveedor_id):
                         historial.save()
 
                         # Enviar correo electrónico
+                        # Asunto
                         subject = 'Solicitud de proveedor modificada'
+
+                        # Mensaje
                         if action == 'rechazado':
-                            message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
+                            if proveedor.tipo_alta == 'Proveedor':
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
+                            elif proveedor.tipo_alta == 'Cliente':
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente, favor de revisar en http://23.19.74.40:8001/clientes/\nComentario: ' + proveedor.comentarios
+                            else:
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
                         else:
-                            message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
+                            if proveedor.tipo_alta == 'Proveedor':
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
+                            elif proveedor.tipo_alta == 'Cliente':
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente, favor de revisar en http://23.19.74.40:8001/clientes/'
+                            else:
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
+
+                        # Remitente
                         from_email = 'altaproveedoresricofarms@gmail.com'
+
+                        # Destinatario
                         # Si se rechaza la solicitud, se envía un correo al solicitante
                         if action == 'rechazado':
                             recipient_list = [proveedor.usuario.email]
                         # Si se aprueba, se envía un correo al solicitante y a contabilidad
                         elif action == 'aprobado':
-                            recipient_list = [proveedor.usuario.email, 'contadorsr@ricofarms.com']
+                            if proveedor.tipo_alta == 'Proveedor':
+                                recipient_list = [proveedor.usuario.email, 'contadorsr@ricofarms.com']
+                            else:
+                                recipient_list = [proveedor.usuario.email]
                         else:
-                            recipient_list = destinatario_correo
+                            if request.user.compras:
+                                recipient_list = [proveedor.usuario.email, 'fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
+                            elif request.user.finanzas:
+                                recipient_list = [proveedor.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
+                            elif request.user.sistemas:
+                                recipient_list = [proveedor.usuario.email]
+                            else:
+                                recipient_list = ['compras@ricofarms.com']
+
+                        # Enviar correo
                         #if not proveedor.eliminado:
                             #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
