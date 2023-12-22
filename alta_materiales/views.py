@@ -247,7 +247,7 @@ def material_create(request):
                                 recipient_list = ['edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
                             else:
                                 recipient_list = ['compras@ricofarms.com']
-                            #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                            #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
                         return redirect('material')
                     
@@ -481,7 +481,7 @@ def material_detail(request, material_id):
                             message = str(request.user.get_full_name()) + ' ha rechazado un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
                             from_email = 'altaproveedoresricofarms@gmail.com'
                             recipient_list = [solicitud.usuario.email]
-                            #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                            #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
                     # Enviar correo electrónico
                     # Asunto
@@ -526,7 +526,7 @@ def material_detail(request, material_id):
 
                     # Enviar correo
                     #if not solicitud.eliminado:
-                        #send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+                        #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
                     return redirect('material')
 
