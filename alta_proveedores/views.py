@@ -399,13 +399,16 @@ def proveedor_detail(request, proveedor_id):
             if request.method == 'GET':
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
                                 'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
-                if request.user.compras:
+                if proveedor.usuario.id == request.user.id:
+                    proveedor_form = ProveedorDetailForm(
+                        instance=proveedor, initial=default_values)
+                elif proveedor.pendiente and request.user.compras:
                     proveedor_form = ProveedorFormForCompras(
                         instance=proveedor, initial=default_values)
-                elif request.user.finanzas:
+                elif proveedor.compras and request.user.finanzas:
                     proveedor_form = ProveedorFormForFinanzas(
                         instance=proveedor, initial=default_values)
-                elif request.user.sistemas:
+                elif proveedor.finanzas and request.user.sistemas:
                     proveedor_form = ProveedorFormForSistemas(
                         instance=proveedor, initial=default_values)
                 else:
@@ -447,13 +450,16 @@ def proveedor_detail(request, proveedor_id):
                 })
             else:
                 try:
-                    if request.user.compras and proveedor.pendiente:
+                    if proveedor.usuario.id == request.user.id:
+                        proveedor_form = ProveedorDetailForm(
+                            request.POST, request.FILES, instance=proveedor)
+                    elif proveedor.pendiente and request.user.compras:
                         proveedor_form = ProveedorFormForCompras(
                             request.POST, instance=proveedor)
-                    elif request.user.finanzas and proveedor.compras:
+                    elif proveedor.compras and request.user.finanzas:
                         proveedor_form = ProveedorFormForFinanzas(
                             request.POST, instance=proveedor)
-                    elif request.user.sistemas and proveedor.finanzas:
+                    elif proveedor.finanzas and request.user.sistemas:
                         proveedor_form = ProveedorFormForSistemas(
                             request.POST, instance=proveedor)
                     else:

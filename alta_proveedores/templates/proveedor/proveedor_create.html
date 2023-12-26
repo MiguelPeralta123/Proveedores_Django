@@ -940,19 +940,8 @@
             option.innerText = `${rfc.value.toUpperCase()} - Proveedor extranjero`
           }
           datalist.appendChild(option)
-          // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
-          clabe.required = false
-          errorClabe.style.display = 'none'
-          /*if (clabe2) {
-            clabe2.required = false
-            errorClabe2.style.display = 'none'
-          }*/
         }
         else {
-          clabe.required = true
-          /*if (clabe2) {
-            clabe2.required = true
-          }*/
           for (var i = 0; i < catalogoProveedor.length; i++) {
             if (catalogoProveedor[i].value.toUpperCase().startsWith(rfc.value.toUpperCase())) {
               const option = document.createElement('option')
@@ -1505,6 +1494,14 @@
           errorMoneda.style.display = 'block'
         } else {
           errorMoneda.style.display = 'none'
+          // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
+          if (moneda.value != 'MXP') {
+            clabe.required = false
+            errorClabe.style.display = 'none'
+          }
+          else {
+            clabe.required = true
+          }
         }
         enableSaveButton()
       }
@@ -1513,7 +1510,7 @@
       
       // Validación clabe
       const validateClabe = () => {
-        if (rfc.value.toUpperCase() == 'XAX010101000' || rfc.value.toUpperCase() == 'XEXX010101000') {
+        if (rfc.value.toUpperCase() == 'XAX010101000' || rfc.value.toUpperCase() == 'XEXX010101000' || (moneda.value != 'MXP' && moneda.value != '')) {
           return
         }
         if (clabePattern.test(clabe.value)) {
@@ -1589,8 +1586,17 @@
       const validateMoneda2 = () => {
         if (moneda2.value == '') {
           errorMoneda2.style.display = 'block'
-        } else {
+        }
+        else {
           errorMoneda2.style.display = 'none'
+          // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
+          if (moneda2.value != 'MXP') {
+            clabe2.required = false
+            errorClabe2.style.display = 'none'
+          }
+          else {
+            clabe2.required = true
+          }
         }
         enableSaveButton()
       }

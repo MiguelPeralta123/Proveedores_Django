@@ -465,23 +465,23 @@
 
             <button class="btn btn-secondary mb-3" type="button" id="add-banco-2">Agregar otro banco</button>
 
-            <div id="checkbox-container" style="display: flex; justify-content: space-between; gap: 2rem;">
+            <div id="checkbox-container" style="display: flex; justify-content: space-between; gap: 2rem; margin-bottom:1rem;">
               <!-- Usar en portal proveedores field -->
-              <div style="margin-bottom:1rem;">
+              <div>
                 <label for="id_usar_en_portal_proveedores">¿Usar en portal de prov.?</label>
                 {{ form.usar_en_portal_proveedores }}
                 <p id="error-usar-en-portal-proveedores" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- No aplica para rafaga field -->
-              <div style="margin-bottom:1rem;">
+              <div>
                 <label for="id_no_aplica_para_rafaga">No aplica para ráfaga:</label>
                 {{ form.no_aplica_para_rafaga }}
                 <p id="error-no-aplica-para-rafaga" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
 
               <!-- No relacionar OC field -->
-              <div style="margin-bottom:1rem;">
+              <div>
                 {{ form.no_relacionar_OC.label_tag }}
                 {{ form.no_relacionar_OC }}
                 <p id="error-no-relacionar-OC" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
@@ -491,28 +491,29 @@
           {% endif %}
 
           <!-- Documentos -->
-          {% if not current_user.compras and not current_user.finanzas and not current_user.sistemas %}
+          {% if proveedor.rechazado_compras or proveedor.rechazado_finanzas or proveedor.rechazado_sistemas or proveedor.pendiente and current_user.compras and proveedor.usuario.id == current_user.id or proveedor.compras and current_user.finanzas and proveedor.usuario.id == current_user.id or proveedor.finanzas and current_user.sistemas and proveedor.usuario.id == current_user.id %}
             <!-- Constancia situación fiscal field -->
             <div style="margin-bottom:1rem;">
-              <label for="id_constancia_situacion_fiscal" style="display: block;"><span id="constancia-situacion-fiscal-label">Constancia de situación fiscal:</span><span style="color: rgb(192, 0, 0);">*</span></label>
+              <label for="id_constancia_situacion_fiscal" style="display: block;"><span id="constancia-situacion-fiscal-label">{{ form.constancia_situacion_fiscal.label_tag }}</span></label>
               {{ form.constancia_situacion_fiscal }}
               <p id="error-constancia-situacion-fiscal" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
 
             <!-- Estado cuenta bancario field -->
             <div style="margin-bottom:1rem;">
-              <label for="id_estado_cuenta_bancario" style="display: block;"><span id="estado-cuenta-bancario-label">Estado de cuenta bancario:</span><span style="color: rgb(192, 0, 0);">*</span></label>
+              <label for="id_estado_cuenta_bancario" style="display: block;"><span id="estado-cuenta-bancario-label">{{ form.estado_cuenta_bancario.label_tag }}</span></label>
               {{ form.estado_cuenta_bancario }}
               <p id="error-estado-cuenta-bancario" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
             </div>
           {% endif %}
 
+          <!-- Descargar documentos -->
           {% if proveedor.es_migracion %}
-            <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block" style="width:fit-content;" download="">Descargar constancia de situación fiscal actualizada</a>
-            <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block mt-2 mb-3" style="width:fit-content;" download="">Descargar estado de cuenta bancario actualizado</a>
+            <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block mb-3" style="width:fit-content;" download="">Descargar constancia de situación fiscal actualizada</a>
+            <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block mb-3" style="width:fit-content;" download="">Descargar estado de cuenta bancario actualizado</a>
           {% else %}
-            <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block my-2" style="width:fit-content;" download="">Descargar constancia de situación fiscal</a>
-            <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block mt-2 mb-3" style="width:fit-content;" download="">Descargar estado de cuenta bancario</a>
+            <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block mb-3" style="width:fit-content;" download="">Descargar constancia de situación fiscal</a>
+            <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block mb-3" style="width:fit-content;" download="">Descargar estado de cuenta bancario</a>
           {% endif %}
 
           <!-- Comentarios field -->
@@ -535,17 +536,17 @@
               <button id="btn-delete" class="btn btn-delete w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="eliminado" value="True">Eliminar solicitud</button>
             {% endif %}
 
-            {% if proveedor.pendiente and current_user.compras and proveedor.borrador == False %}
+            {% if proveedor.pendiente and current_user.compras and not proveedor.borrador %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="compras" value="True">Aprobar</button>
               <button id="btn-decline" class="btn btn-decline w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_compras" value="True">Rechazar</button>
             {% endif %}
 
-            {% if proveedor.compras and current_user.finanzas and proveedor.borrador == False %}
+            {% if proveedor.compras and current_user.finanzas and not proveedor.borrador %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="finanzas" value="True">Aprobar</button>
               <button id="btn-decline" class="btn btn-decline w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_finanzas" value="True">Rechazar</button>
             {% endif %}
 
-            {% if proveedor.finanzas and current_user.sistemas and proveedor.borrador == False %}
+            {% if proveedor.finanzas and current_user.sistemas and not proveedor.borrador %}
               <button id="btn-approve" class="btn btn-approve w-100" style="margin-top: 0.5rem; background-color: #008841; color: white; font-weight: bold;" type="submit" name="sistemas" value="True">Aprobar</button>
               <button id="btn-decline" class="btn btn-decline w-100" style="margin-top: 0.5rem; background-color: tomato; color: white; font-weight: bold;" type="submit" name="rechazado_sistemas" value="True">Rechazar</button>
             {% endif %}
@@ -1196,13 +1197,6 @@
               option.innerText = `${rfc.value.toUpperCase()} - Proveedor extranjero`
             }
             datalist.appendChild(option)
-            // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
-            clabe.required = false
-            errorClabe.style.display = 'none'
-            /*if (clabe2) {
-              clabe2.required = false
-              errorClabe2.style.display = 'none'
-            }*/
           }
           else {
             for (var i = 0; i < catalogoProveedor.length; i++) {
@@ -1222,10 +1216,6 @@
                 enableAllFields()
               }
             }
-            clabe.required = true
-            /*if (clabe2) {
-              clabe2.required = true
-            }*/
           }
 
           enableSaveButton()
@@ -1828,6 +1818,14 @@
             errorMoneda.style.display = 'block'
           } else {
             errorMoneda.style.display = 'none'
+            // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
+            if (moneda.value != 'MXP') {
+              clabe.required = false
+              errorClabe.style.display = 'none'
+            }
+            else {
+              clabe.required = true
+            }
           }
           enableSaveButton()
         }
@@ -1919,6 +1917,14 @@
             errorMoneda2.style.display = 'block'
           } else {
             errorMoneda2.style.display = 'none'
+            // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
+            if (moneda2.value != 'MXP') {
+              clabe2.required = false
+              errorClabe2.style.display = 'none'
+            }
+            else {
+              clabe2.required = true
+            }
           }
           enableSaveButton()
         }
