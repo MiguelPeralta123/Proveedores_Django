@@ -321,7 +321,7 @@ def material_detail(request, material_id):
                     # Agrega la tupla a la lista
                     catalogo_material.append({'value': nombre_producto, 'text': formato})
 
-            # Si la solicitud está rechazada, el solicitante podrá añadir nuevos elementos
+            # Si la solicitud está rechazada o es un borrador, el solicitante podrá añadir nuevos elementos
             return render(request, 'material/material_detail.html', {
                 'solicitud': solicitud,
                 'solicitud_form': solicitud_form,
@@ -389,6 +389,7 @@ def material_detail(request, material_id):
                                     notificarContabilidad = True
                                 material = material_form.save(commit=False)
                                 material.id_solicitud = solicitud.id_solicitud
+                                print('Guardando ' + form.cleaned_data.get('nombre_producto'))
                                 material.save()
                         else:
                             for form in material_formset:
@@ -408,8 +409,8 @@ def material_detail(request, material_id):
                         historial.accion = 'eliminada'
                         action = 'eliminado'
                     elif solicitud.sistemas:
-                        historial.accion = 'aprobada'
-                        action = 'aprobado'
+                        historial.accion = 'registrada'
+                        action = 'registrado'
                     historial.usuario = request.user
                     historial.save()
 
@@ -487,15 +488,15 @@ def material_detail(request, material_id):
                     # Asunto
                     if action == 'rechazado':
                         subject = 'Solicitud de material rechazada'
-                    elif action == 'aprobado':
-                        subject = 'Solicitud de material aprobada'
+                    elif action == 'registrado':
+                        subject = 'Solicitud de material registrada'
                     else:
                         subject = 'Solicitud de material modificada'
 
                     # Mensaje
                     if action == 'rechazado':
                         message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/\nComentario: ' + solicitud.comentarios
-                    if action == 'aprobado':
+                    if action == 'registrado':
                         message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/\n\nMateriales aprobados:' + materialesAprobados + '\n\nServicios aprobados:' + serviciosAprobados
                     else:
                         message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de material / servicio, favor de revisar en http://23.19.74.40:8001/materiales/'
@@ -508,7 +509,7 @@ def material_detail(request, material_id):
                     if action == 'rechazado':
                         recipient_list = [solicitud.usuario.email]
                     # Si se aprueba, se envía un correo al solicitante
-                    elif action == 'aprobado':
+                    elif action == 'registrado':
                         # Si la solicitud contiene algún servicio, se notifica también a contabilidad
                         if notificarContabilidad:
                             recipient_list = [solicitud.usuario.email, 'contadorsr@ricofarms.com']

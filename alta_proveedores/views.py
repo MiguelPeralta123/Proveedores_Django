@@ -484,8 +484,8 @@ def proveedor_detail(request, proveedor_id):
                             historial.accion = 'eliminada'
                             action = 'eliminado'
                         elif proveedor.sistemas:
-                            historial.accion = 'aprobada'
-                            action = 'aprobado'
+                            historial.accion = 'registrada'
+                            action = 'registrado'
                         historial.usuario = request.user
                         historial.save()
 
@@ -517,7 +517,7 @@ def proveedor_detail(request, proveedor_id):
                         if action == 'rechazado':
                             recipient_list = [proveedor.usuario.email]
                         # Si se aprueba, se envía un correo al solicitante y a contabilidad
-                        elif action == 'aprobado':
+                        elif action == 'registrado':
                             if proveedor.tipo_alta == 'Proveedor':
                                 recipient_list = [proveedor.usuario.email, 'contadorsr@ricofarms.com']
                             else:

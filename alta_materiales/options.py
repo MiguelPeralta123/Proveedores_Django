@@ -14,6 +14,7 @@ EMPRESA_LIST = [
 
 EMPRESA_MIGRACION_ORIGEN_LIST = [
     ('', ' Seleccione una opción'),
+    ('Sonorg', 'Sonorg'),
     ('Moonrise', 'Moonrise'),
     ('Wellin', 'Wellin'),
 ]

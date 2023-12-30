@@ -394,7 +394,7 @@
               {% endfor %}
 
               <!-- Formset de materiales -->
-              {% if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas %}
+              {% if solicitud.borrador or solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas %}
                 {% for material_form in material_formset %}
                   <div id="material-form-0" class="material-form material-form-0">
 
@@ -626,8 +626,8 @@
                   </div>
                 {% endfor %}
 
-                <!-- Botón para añadir más materiales a una solicitud rechazada -->
-                {% if solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas %}
+                <!-- Botón para añadir más materiales si la solicitud está rechazada o es un borrador -->
+                {% if solicitud.borrador or solicitud.rechazado_compras or solicitud.rechazado_finanzas or solicitud.rechazado_sistemas %}
                   <button id="add-material" class="btn btn-secondary mt-1 mb-3" type="button" style="background-color: #008841; color: white; font-weight: bold; display: none;">Agregar Material / servicio</button>
                 {% endif %}
               {% endif %}
@@ -1000,7 +1000,7 @@
           const materialForms = document.querySelectorAll('.material-form')
           materialForms.forEach(materialForm => {
             materialForm.style.display = 'none'
-            formCount++
+            //formCount++
           })
           
           const formHtml = `
@@ -1240,6 +1240,7 @@
           form.innerHTML = formHtml.replace(/__prefix__/g, formCount)
           materialFormsContainer.insertBefore(form, btnAddMaterial)
 
+          formCount++;
           document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
           materialCounter++
 
