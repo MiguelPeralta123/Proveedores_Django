@@ -49,6 +49,14 @@ def permissions(request):
                                 usuario.finanzas = True
                             if request.user.sistemas:
                                 usuario.sistemas = True
+
+                            # Enviar correo electrónico al usuario para notificarle los cambios
+                            subject = 'Se han actualizado sus permisos de autorización'
+                            message =  'El usuario ' + str(request.user.get_full_name()) + ' le ha otorgado permisos para autorizar solicitudes de altas'
+                            from_email = 'altaproveedoresricofarms@gmail.com'
+                            recipient_list = [autorizador.email]
+                            #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+
                         elif autorizador.autorizador_sustituto and not request.POST.get(str(autorizador.id)):
                             if request.user.compras:
                                 usuario.compras = False
@@ -56,15 +64,8 @@ def permissions(request):
                                 usuario.finanzas = False
                             if request.user.sistemas:
                                 usuario.sistemas = False
+
                         usuario.save()
-
-                        # Enviar correo electrónico al usuario para notificarle los cambios
-                        subject = 'Se han actualizado sus permisos de autorización'
-                        message =  'El usuario ' + str(request.user.get_full_name()) + ' le ha otorgado permisos para autorizar solicitudes de altas'
-                        from_email = 'altaproveedoresricofarms@gmail.com'
-                        recipient_list = [autorizador.email]
-                        #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
-
                     return redirect('home')
                     
                 except ValueError as e:
@@ -362,13 +363,17 @@ def proveedor_create(request):
                             from_email = 'altaproveedoresricofarms@gmail.com'
 
                             # Destinatario
+                            recipient_list = []
                             if proveedor.es_migracion:
-                                recipient_list = ['edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
+                                autorizadores = CustomUser.objects.filter(sistemas = True)
                             elif proveedor.tipo_alta == 'Cliente':
-                                recipient_list = ['fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
+                                autorizadores = CustomUser.objects.filter(finanzas = True)
                             else:
-                                recipient_list = ['compras@ricofarms.com']
-                            
+                                autorizadores = CustomUser.objects.filter(compras = True)
+
+                            for autorizador in autorizadores:
+                                recipient_list.append(autorizador.email)
+
                             # Enviar correo
                             #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
@@ -513,24 +518,21 @@ def proveedor_detail(request, proveedor_id):
                         from_email = 'altaproveedoresricofarms@gmail.com'
 
                         # Destinatario
-                        # Si se rechaza la solicitud, se envía un correo al solicitante
-                        if action == 'rechazado':
-                            recipient_list = [proveedor.usuario.email]
-                        # Si se aprueba, se envía un correo al solicitante y a contabilidad
-                        elif action == 'registrado':
-                            if proveedor.tipo_alta == 'Proveedor':
-                                recipient_list = [proveedor.usuario.email, 'contadorsr@ricofarms.com']
-                            else:
-                                recipient_list = [proveedor.usuario.email]
-                        else:
+                        recipient_list = [proveedor.usuario.email]
+                        # Si se registra un proveedor en Agrosmart, se notifica a contabilidad
+                        if action == 'registrado' and proveedor.tipo_alta == 'Proveedor':
+                            recipient_list.append('contadorsr@ricofarms.com')
+                        # Si se aprueba, se manda correo al solicitante y al siguiente aprobador
+                        elif action != 'rechazado':
                             if request.user.compras:
-                                recipient_list = [proveedor.usuario.email, 'fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
+                                autorizadores = CustomUser.objects.filter(finanzas = True)
                             elif request.user.finanzas:
-                                recipient_list = [proveedor.usuario.email, 'edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
-                            elif request.user.sistemas:
-                                recipient_list = [proveedor.usuario.email]
-                            else:
-                                recipient_list = ['compras@ricofarms.com']
+                                autorizadores = CustomUser.objects.filter(sistemas = True)
+                            elif not request.user.sistemas:
+                                recipient_list = []
+                                autorizadores = CustomUser.objects.filter(compras = True)
+                            for autorizador in autorizadores:
+                                recipient_list.append(autorizador.email)
 
                         # Enviar correo
                         #if not proveedor.eliminado:
@@ -565,14 +567,18 @@ def enviarCorreo(departamento, elementos, folios):
 
     from_email = 'altaproveedoresricofarms@gmail.com'
     
+    recipient_list = []
     if departamento == 'compras':
-        email = ['compras@ricofarms.com']
-    if departamento == 'finanzas':
-        email = ['fiscal@ricofarms.com', 'contabilidadgral@ricofarms.com']
-    if departamento == 'sistemas':
-        email = ['edurazo@ricofarms.com', 'sistemaserp@ricofarms.com', 'erp@ricofarms.com']
+        autorizadores = CustomUser.objects.filter(compras = True)
+    elif departamento == 'finanzas':
+        autorizadores = CustomUser.objects.filter(finanzas = True)
+    elif departamento == 'sistemas':
+        autorizadores = CustomUser.objects.filter(sistemas = True)
+        
+    for autorizador in autorizadores:
+        recipient_list.append(autorizador.email)
 
-    #send_mail(subject, message, from_email, email, fail_silently=True)
+    #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
 def solicitudesPendientes():
     current_day = datetime.now().weekday()
