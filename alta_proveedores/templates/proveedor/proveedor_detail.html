@@ -214,7 +214,7 @@
               <div style="width: 100%; margin-bottom:1rem;">
                 <p class="m-0">{{ form.tipo_tercero.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
                 {{ form.tipo_tercero }}
-                <p id="error-tipo-tipo-tercero" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                <p id="error-tipo-tercero" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
               </div>
             </div>
 
@@ -676,6 +676,7 @@
       const errorSitioWeb = document.getElementById('error-sitio-web')
       const errorRubro = document.getElementById('error-rubro')
       const errorTipoOperacion = document.getElementById('error-tipo-operacion')
+      const errorTipoTercero = document.getElementById('error-tipo-tercero')
       const errorIdFiscal = document.getElementById('error-id-fiscal')
       const errorAgenteAduanal = document.getElementById('error-agente-aduanal')
       const errorFairTrade = document.getElementById('error-fair-trade')
@@ -773,19 +774,19 @@
     
       // La curp es obligatoria solo para personas físicas
       if (contribuyente && contribuyente.value == 'Persona moral') {
-        curp.required = false
-        curp.disabled = true
-        regimenCapital.required = false
-        regimenCapital.disabled = true
+        curp.removeAttribute('required')
+        curp.setAttribute('disabled', true)
+        regimenCapital.removeAttribute('required')
+        regimenCapital.setAttribute('disabled', true)
       }
     
       // Si se añadió un segundo banco, mostrar el elemento "banco-2-container"
       if (banco2 && banco2.value != '') {
         banco2Container.style.display = 'block'
-        banco2.required = true
-        cuenta2.required = true
-        moneda2.required = true
-        clabe2.required = true
+        banco2.setAttribute('required', true)
+        cuenta2.setAttribute('required', true)
+        moneda2.setAttribute('required', true)
+        clabe2.setAttribute('required', true)
         btnAddBanco.textContent = 'Eliminar banco'
       }
 
@@ -1145,10 +1146,11 @@
             // La curp es obligatoria solo para personas físicas
             // El régimen de capital no es necesario para personas físicas
             if (contribuyente.value == 'Persona física') {
-              curp.required = true
-              curp.disabled = false
-              regimenCapital.required = false
-              regimenCapital.disabled = true
+              curp.setAttribute('required', true)
+              curp.removeAttribute('disabled')
+              curp.removeAttribute('placeholder')
+              regimenCapital.removeAttribute('required')
+              regimenCapital.setAttribute('disabled', true)
               regimenCapital.value = ''
               errorRegimenCapital.style.display = 'none'
               // Si es persona física, la primera letra de cada palabra será mayúscula
@@ -1156,12 +1158,13 @@
               nombreComercial.value = nombreComercial.value != '' ? firstLetterOfEachWordCapitalized(nombreComercial.value) : ''
             }
             if (contribuyente.value == 'Persona moral') {
-              curp.required = false
-              curp.disabled = true
+              curp.removeAttribute('required')
+              curp.setAttribute('disabled', true)
+              curp.setAttribute('placeholder', 'persona moral no requiere CURP')
               curp.value = ''
               errorCurp.style.display = 'none'
-              regimenCapital.required = true
-              regimenCapital.disabled = false
+              regimenCapital.setAttribute('required', true)
+              regimenCapital.removeAttribute('disabled')
               // Si es persona moral, solo la primera letra será mayúscula
               nombreFiscal.value = nombreFiscal.value != '' ? firstLetterCapitalized(nombreFiscal.value) : ''
               nombreComercial.value = nombreComercial.value != '' ? firstLetterCapitalized(nombreComercial.value) : ''
@@ -1487,6 +1490,30 @@
         }
         tipoOperacion.addEventListener('focus', validateTipoOperacion)
         tipoOperacion.addEventListener('change', validateTipoOperacion)
+      }
+
+      // Validación tipo tercero
+      if (tipoTercero) {
+        const validateTipoTercero = () => {
+          if (tipoTercero.value == '') {
+            errorTipoTercero.style.display = 'block'
+          } else {
+            errorTipoTercero.style.display = 'none'
+            // ID fiscal es obligatorio para proveedores y clientes extranjeros
+            if (tipoTercero.value.toLowerCase() == 'extranjero' || tipoTercero.value.toLowerCase() == 'extranjero relacionado') {
+              idFiscal.setAttribute('required', true)
+              idFiscal.removeAttribute('disabled')
+            }
+            else {
+              idFiscal.setAttribute('disabled', true)
+              idFiscal.removeAttribute('required')
+            }
+          }
+          enableSaveButton()
+        }
+        tipoTercero.addEventListener('focus', validateTipoTercero)
+        tipoTercero.addEventListener('change', validateTipoTercero)
+        validateTipoTercero()
       }
       
       // Validación agente aduanal
@@ -1820,11 +1847,11 @@
             errorMoneda.style.display = 'none'
             // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
             if (moneda.value != 'MXP') {
-              clabe.required = false
+              clabe.removeAttribute('required')
               errorClabe.style.display = 'none'
             }
             else {
-              clabe.required = true
+              clabe.setAttribute('required', true)
             }
           }
           enableSaveButton()
@@ -1862,20 +1889,20 @@
             errorClabe2.style.display = 'none'
             banco2Container.style.display = 'block'
             
-            banco2.required = true
-            cuenta2.required = true
-            moneda2.required = true
-            clabe2.required = true
+            banco2.setAttribute('required', true)
+            cuenta2.setAttribute('required', true)
+            moneda2.setAttribute('required', true)
+            clabe2.setAttribute('required', true)
             
             btnAddBanco.textContent = 'Eliminar banco'
           }
           else {
             banco2Container.style.display = 'none'
             
-            banco2.required = false
-            cuenta2.required = false
-            moneda2.required = false
-            clabe2.required = false
+            banco2.removeAttribute('required')
+            cuenta2.removeAttribute('required')
+            moneda2.removeAttribute('required')
+            clabe2.removeAttribute('required')
             
             btnAddBanco.textContent = 'Agregar otro banco'
           }
@@ -1919,11 +1946,11 @@
             errorMoneda2.style.display = 'none'
             // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
             if (moneda2.value != 'MXP') {
-              clabe2.required = false
+              clabe2.removeAttribute('required')
               errorClabe2.style.display = 'none'
             }
             else {
-              clabe2.required = true
+              clabe2.setAttribute('required', true)
             }
           }
           enableSaveButton()
@@ -2115,26 +2142,26 @@
         if(errorEmpresaOrigen) {
           if (errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorEmpresasMigracion.style.display == 'block' || errorRfcMigracion.style.display == 'block' || errorRfcMigracion2.style.display == 'block') {
             if(btnSave) {
-              btnSave.disabled = true
-              btnDelete.disabled = true
+              btnSave.setAttribute('disabled', true)
+              btnDelete.setAttribute('disabled', true)
             }
             else {
               if (btnApprove) {
-                btnApprove.disabled = true
-                btnDecline.disabled = true
+                btnApprove.setAttribute('disabled', true)
+                btnDecline.setAttribute('disabled', true)
               }
             }
           }
           else {
             if(btnSave) {
-              btnSave.disabled = false
-              btnDelete.disabled = false
+              btnSave.removeAttribute('disabled')
+              btnDelete.removeAttribute('disabled')
             }
             else {
               if (btnApprove) {
                 if (btnApprove) {
-                  btnApprove.disabled = false
-                  btnDecline.disabled = false
+                  btnApprove.removeAttribute('disabled')
+                  btnDecline.removeAttribute('disabled')
                 }
               }
             }
@@ -2144,26 +2171,26 @@
           if (errorEmpresa.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCreditoMn.style.display == 'block' || errorMontoCreditoMe.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
             if (errorFairTrade && errorFairTrade.style.display == 'none') {
               if(btnSave) {
-                btnSave.disabled = true
-                btnDelete.disabled = true
+                btnSave.setAttribute('disabled', true)
+                btnDelete.setAttribute('disabled', true)
               }
               else {
                 if (btnApprove) {
-                  btnApprove.disabled = true
-                  btnDecline.disabled = true
+                  btnApprove.setAttribute('disabled', true)
+                  btnDecline.setAttribute('disabled', true)
                 }
               }
             }
           }
           else {
             if(btnSave) {
-              btnSave.disabled = false
-              btnDelete.disabled = false
+              btnSave.removeAttribute('disabled')
+              btnDelete.removeAttribute('disabled')
             }
             else {
               if (btnApprove) {
-                btnApprove.disabled = false
-                btnDecline.disabled = false
+                btnApprove.removeAttribute('disabled')
+                btnDecline.removeAttribute('disabled')
               }
             }
           }

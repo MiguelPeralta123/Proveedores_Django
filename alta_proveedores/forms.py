@@ -322,7 +322,7 @@ class ProveedorFormForSistemas(forms.ModelForm):
             'tipo_alta': forms.Select(choices=TIPO_ALTA_LIST, attrs={'class':'form-control', 'initial':''}),
             'contribuyente': forms.Select(choices=CONTRIBUYENTE_LIST, attrs={'class':'form-control', 'initial':''}),
             'rfc': forms.TextInput(attrs={'class':'form-control'}),
-            'curp': forms.TextInput(attrs={'class':'form-control'}),
+            'curp': forms.TextInput(attrs={'class':'form-control', 'placeholder':'para personas físicas'}),
             'regimen_capital': forms.Select(choices=REGIMEN_CAPITAL_LIST, attrs={'class':'form-control', 'initial':''}),
             'nombre_fiscal': forms.TextInput(attrs={'class':'form-control'}),
             'nombre_comercial': forms.TextInput(attrs={'class':'form-control'}),
