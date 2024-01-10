@@ -96,12 +96,12 @@ def proveedor(request, tipo):
                 if tipo == 'proveedores':
                     all_proveedores = Proveedor.objects.filter(
                         Q(tipo_alta='Proveedor') |
-                        Q(tipo_alta='')
+                        Q(tipo_alta='', usuario__puede_crear_proveedor=True)
                     ).order_by('id')
                 if tipo == 'clientes':
                     all_proveedores = Proveedor.objects.filter(
                         Q(tipo_alta='Cliente') |
-                        Q(tipo_alta='')
+                        Q(tipo_alta='', usuario__puede_crear_cliente=True)
                     ).order_by('id')
             
             # Inicializar la lista de mis_proveedores

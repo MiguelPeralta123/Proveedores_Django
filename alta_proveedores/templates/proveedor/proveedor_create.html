@@ -866,14 +866,14 @@
         tipoAlta.setAttribute('disabled', true)
         const fairTradeContainer = document.querySelector('#fair_trade_container')
         {% if current_user.puede_crear_proveedor %}
-          tipoAlta.value = "Proveedor";
+          tipoAlta.selectedIndex = 1;
           idFiscal.setAttribute('placeholder', 'para proveedores extranjeros')
           fairTradeContainer.style.display = 'none'
           fairTrade.removeAttribute('required')
         {% endif %}
 
         {% if current_user.puede_crear_cliente %}
-          tipoAlta.value = "Cliente";
+          tipoAlta.selectedIndex = 2;
           idFiscal.setAttribute('placeholder', 'para clientes extranjeros')
           fairTradeContainer.style.display = 'block'
           fairTrade.setAttribute('required', true)
