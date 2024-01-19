@@ -41,12 +41,12 @@ urlpatterns = [
 
     # URL para proveedores (get all, create, detail)
     path('proveedores/', views_proveedores.proveedor, {'tipo': 'proveedores'}, name='proveedor'),
-    path('proveedores/crear/', views_proveedores.proveedor_create, name='proveedor_create'),
+    path('proveedores/crear/', views_proveedores.proveedor_create, {'tipo': 'proveedor'}, name='proveedor_create'),
     path('proveedores/<int:proveedor_id>/', views_proveedores.proveedor_detail, name='proveedor_detail'),
 
     # URL para clientes (get all, create, detail)
     path('clientes/', views_proveedores.proveedor, {'tipo': 'clientes'}, name='cliente'),
-    path('clientes/crear/', views_proveedores.proveedor_create, name='cliente_create'),
+    path('clientes/crear/', views_proveedores.proveedor_create, {'tipo': 'cliente'}, name='cliente_create'),
     path('clientes/<int:cliente_id>/', views_proveedores.proveedor_detail, name='cliente_detail'),
 
     # URL para materiales

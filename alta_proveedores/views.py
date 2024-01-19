@@ -290,7 +290,7 @@ def proveedor(request, tipo):
 
 
 @login_required
-def proveedor_create(request):
+def proveedor_create(request, tipo):
     try:
         if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
             if request.method == 'GET':
@@ -325,6 +325,7 @@ def proveedor_create(request):
                         catalogo_proveedor.append({'value': rfc, 'text': formato})
                 
                 return render(request, 'proveedor/proveedor_create.html', {
+                    'tipo': tipo,
                     'form': ProveedorForm(initial=default_values),
                     'catalogo_proveedor': catalogo_proveedor,
                     'current_user': request.user,
@@ -501,18 +502,18 @@ def proveedor_detail(request, proveedor_id):
                         # Mensaje
                         if action == 'rechazado':
                             if proveedor.tipo_alta == 'Proveedor':
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
                             elif proveedor.tipo_alta == 'Cliente':
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente, favor de revisar en http://23.19.74.40:8001/clientes/\nComentario: ' + proveedor.comentarios
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/clientes/\nComentario: ' + proveedor.comentarios
                             else:
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
                         else:
                             if proveedor.tipo_alta == 'Proveedor':
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/proveedores/'
                             elif proveedor.tipo_alta == 'Cliente':
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente, favor de revisar en http://23.19.74.40:8001/clientes/'
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/clientes/'
                             else:
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor, favor de revisar en http://23.19.74.40:8001/proveedores/'
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/proveedores/'
 
                         # Remitente
                         from_email = 'altaproveedoresricofarms@gmail.com'
@@ -557,13 +558,17 @@ def proveedor_detail(request, proveedor_id):
 
 # ENVIANDO UN CORREO DE RECORDATORIO CADA 30 MINUTOS
 
-def enviarCorreo(departamento, elementos, folios):
-    cadenaFolios = ''
-    for folio in folios:
-        cadenaFolios += '\n' + folio
+def enviarCorreo(departamento, elementos, clientes, proveedores):
+    cadenaClientes = ''
+
+    for cliente in clientes:
+        cadenaClientes += '\n' + cliente
+        
+    for proveedor in proveedores:
+        cadenaProveedores += '\n' + proveedor
 
     subject = 'Recordatorio de solicitudes por aprobar'
-    message = 'Tiene ' + str(elementos) + ' solicitudes de alta de proveedor pendientes de aprobación. Por favor ingrese a http://23.19.74.40:8001/proveedores/ para revisarlas.' + cadenaFolios
+    message = 'Tiene ' + str(elementos) + ' solicitudes de alta de cliente / proveedor pendientes de aprobación. Por favor ingrese a http://23.19.74.40:8001/proveedores/ para revisarlas.' + cadenaClientes if len(clientes) > 0 else '' + cadenaProveedores if len(proveedores) > 0 else ''
 
     from_email = 'altaproveedoresricofarms@gmail.com'
     
@@ -593,35 +598,59 @@ def solicitudesPendientes():
         # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por compras
         proveedores_compras = Proveedor.objects.filter(pendiente=True)
         if len(proveedores_compras) > 0:
-            folios = []
+            clientes = []
+            proveedores = []
             for proveedor in proveedores_compras:
-                if proveedor.rfc != '':
-                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
-                else:
-                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
-            enviarCorreo('compras', len(proveedores_compras), folios)
+                if proveedor.tipo_alta == 'Cliente':
+                    if proveedor.rfc != '':
+                        clientes.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+                    else:
+                        clientes.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+                if proveedor.tipo_alta == 'Proveedor':
+                    if proveedor.rfc != '':
+                        proveedores.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+                    else:
+                        proveedores.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+
+            enviarCorreo('compras', len(proveedores_compras), clientes, proveedores)
 
         # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por finanzas
         proveedores_finanzas = Proveedor.objects.filter(compras=True)
         if len(proveedores_finanzas) > 0:
-            folios = []
+            clientes = []
+            proveedores = []
             for proveedor in proveedores_finanzas:
-                if proveedor.rfc != '':
-                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
-                else:
-                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
-            enviarCorreo('finanzas', len(proveedores_finanzas), folios)
+                if proveedor.tipo_alta == 'Cliente':
+                    if proveedor.rfc != '':
+                        clientes.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+                    else:
+                        clientes.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+                if proveedor.tipo_alta == 'Proveedor':
+                    if proveedor.rfc != '':
+                        proveedores.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+                    else:
+                        proveedores.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+
+            enviarCorreo('finanzas', len(proveedores_finanzas), clientes, proveedores)
 
         # Revisar si hay solicitudes de cliente / proveedor pendientes de aprobar por sistemas
         proveedores_sistemas = Proveedor.objects.filter(finanzas=True)
         if len(proveedores_sistemas) > 0:
-            folios = []
+            clientes = []
+            proveedores = []
             for proveedor in proveedores_sistemas:
-                if proveedor.rfc != '':
-                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc)
-                else:
-                    folios.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
-            enviarCorreo('sistemas', len(proveedores_sistemas), folios)
+                if proveedor.tipo_alta == 'Cliente':
+                    if proveedor.rfc != '':
+                        clientes.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+                    else:
+                        clientes.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+                if proveedor.tipo_alta == 'Proveedor':
+                    if proveedor.rfc != '':
+                        proveedores.append(str(proveedor.id) + ' - ' + proveedor.rfc)
+                    else:
+                        proveedores.append(str(proveedor.id) + ' - ' + proveedor.rfc_migracion)
+
+            enviarCorreo('sistemas', len(proveedores_sistemas), clientes, proveedores)
 
     # El correo de recordatorio debe enviarse cada 2 horas
     Timer(7200, solicitudesPendientes).start()

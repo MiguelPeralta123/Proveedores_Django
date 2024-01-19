@@ -6,15 +6,10 @@
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" enctype="multipart/form-data" style="background-color: rgb(255, 255, 255, 0.8);">
           
-          {% if current_user.puede_crear_proveedor %}
-            <h1 class="mb-4">Registrar proveedor</h1>
-          {% endif %}
-
-          {% if current_user.puede_crear_cliente %}
-            <h1 class="mb-4">Registrar cliente</h1>
-          {% endif %}
+          <h1 class="mb-4">Registrar {{ tipo }}</h1>
 
           {{ error }}
+          
 
           {% csrf_token %}
 
@@ -865,14 +860,14 @@
       const validateTipoAlta = () => {
         tipoAlta.setAttribute('disabled', true)
         const fairTradeContainer = document.querySelector('#fair_trade_container')
-        {% if current_user.puede_crear_proveedor %}
+        {% if tipo == 'proveedor' %}
           tipoAlta.selectedIndex = 1;
           idFiscal.setAttribute('placeholder', 'para proveedores extranjeros')
           fairTradeContainer.style.display = 'none'
           fairTrade.removeAttribute('required')
         {% endif %}
 
-        {% if current_user.puede_crear_cliente %}
+        {% if tipo == 'cliente' %}
           tipoAlta.selectedIndex = 2;
           idFiscal.setAttribute('placeholder', 'para clientes extranjeros')
           fairTradeContainer.style.display = 'block'
