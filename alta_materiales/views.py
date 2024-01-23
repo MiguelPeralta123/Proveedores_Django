@@ -28,7 +28,9 @@ def generar_codigo_unico():
 # Decorator to force login. The return route is defined in proveedores/settings.py
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html', {
+        'current_user': request.user,
+    })
 
 
 # VISTAS DE MATERIAL (GET ALL, CREATE, DETAIL)
@@ -205,6 +207,7 @@ def material_create(request):
                     'subfamilia_producto_list': SUBFAMILIA_PRODUCTO_LIST,
                     'subfamilia_servicio_list': SUBFAMILIA_SERVICIO_LIST,
                     'unidad_medida_list': UNIDAD_MEDIDA_LIST,
+                    'current_user': request.user,
                 })
             else:
                 try:
@@ -263,7 +266,10 @@ def material_create(request):
                     material_formset = MaterialFormSet(prefix='material', initial=[{}])
 
                     return render(request, 'material/material_create.html', {
-                        'solicitud_form': solicitud_form, 'material_formset': material_formset, 'error': str(e)
+                        'solicitud_form': solicitud_form,
+                        'material_formset': material_formset,
+                        'error': str(e),
+                        'current_user': request.user,
                     })
         else:
             return redirect('material')
@@ -533,7 +539,8 @@ def material_detail(request, material_id):
                 return render(request, 'material/material_detail.html', {
                     'solicitud': solicitud,
                     'form': solicitud_form,
-                    'error': 'Se produjo un error al actualizar, intente de nuevo'
+                    'error': 'Se produjo un error al actualizar, intente de nuevo',
+                    'current_user': request.user,
                 })
     
     except Exception as e:

@@ -13,13 +13,17 @@ from .models import *
 # Decorador para obligar a iniciar sesión. La ruta a la que devuelve está definida en settings.py
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html', {
+        'current_user': request.user,
+    })
 
 # VISTAS DE CONFIGURACIÓN
 @login_required
 def settings(request):
     if request.user.compras or request.user.finanzas or request.user.sistemas:
-        return render(request, 'settings/settings.html')
+        return render(request, 'settings/settings.html', {
+            'current_user': request.user,
+        })
     else:
         return redirect('home')
 
@@ -386,7 +390,8 @@ def proveedor_create(request, tipo):
 
                     return render(request, 'proveedor/proveedor_create.html', {
                         'form': ProveedorForm(initial=default_values),
-                        'error': str(e)
+                        'error': str(e),
+                        'current_user': request.user,
                     })
         else:
             return redirect('home')
@@ -546,7 +551,8 @@ def proveedor_detail(request, proveedor_id):
                     return render(request, 'proveedor/proveedor_detail.html', {
                         'proveedor': proveedor,
                         'form': proveedor_form,
-                        'error': 'Se produjo un error al actualizar, intente de nuevo'
+                        'error': 'Se produjo un error al actualizar, intente de nuevo',
+                        'current_user': request.user,
                     })
         else:
             return redirect('home')
