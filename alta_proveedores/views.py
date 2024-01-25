@@ -566,6 +566,7 @@ def proveedor_detail(request, proveedor_id):
 
 def enviarCorreo(departamento, elementos, clientes, proveedores):
     cadenaClientes = ''
+    cadenaProveedores = ''
 
     for cliente in clientes:
         cadenaClientes += '\n' + cliente
