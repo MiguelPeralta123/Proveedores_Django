@@ -29,16 +29,61 @@
             <!-- Si el usuario está autenticado, mostramos las siguientes opciones -->
             {% if user.is_authenticated %}
 
-            <p class="text-white mb-0 me-3">{{ current_user.get_full_name }}</p>
+              <li class="nav-item" style="margin-right: 1rem;">
+                <a class="nav-link active" aria-current="page" href="/">
+                  Inicio
+                </a>
+              </li>
+              {% if user.puede_crear_proveedor or user.compras or user.finanzas or user.sistemas %}
+                <li class="nav-item" style="margin-right: 1rem;">
+                  <a class="nav-link active" aria-current="page" href="/proveedores">
+                    Proveedores
+                  </a>
+                </li>
+              {% endif %}
+              {% if user.puede_crear_cliente or user.finanzas or user.sistemas %}
+                <li class="nav-item" style="margin-right: 1rem;">
+                  <a class="nav-link active" aria-current="page" href="/clientes">
+                    Clientes
+                  </a>
+                </li>
+              {% endif %}
+              {% if user.puede_crear_material or user.compras or user.sistemas %}
+                <li class="nav-item" style="margin-right: 1rem;">
+                  <a class="nav-link active" aria-current="page" href="/materiales">
+                    Materiales / servicios
+                  </a>
+                </li>
+              {% endif %}
+              {% if user.compras or user.finanzas or user.sistemas %}
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/settings">
+                    Configuración
+                  </a>
+                </li>
+              {% endif %}
+              <li class="nav-item" style="margin-right: 1rem;">
+                <a class="nav-link active" aria-current="page" href="/signout">
+                  Cerrar sesión
+                </a>
+              </li>
 
-            <div class="position-relative">
+            <!--<p class="text-white mb-0 me-3">{{ current_user.get_full_name }}</p>-->
+
+            <!--<div class="position-relative">-->
               <!-- Menu button -->
-              <div id="option-button">
+              <!--<div id="option-button">
                 <i class="fa fa-sort-desc text-white" aria-hidden="true" onclick="showHideOptions()"></i>
-              </div>
+              </div>-->
 
               <!-- Menu options -->
-              <div id="options-container" class="card shadow-lg position-absolute top-2 end-0 bg-dark rounded" style="display: none; width: 180px; padding: 0.5rem;">
+              <!--<div id="options-container" class="card shadow-lg position-absolute top-2 end-0 bg-dark rounded" style="display: none; width: 180px; padding: 0.5rem;">
+                <li class="nav-item" style="margin-right: 1rem;">
+                  <a class="nav-link active" aria-current="page" href="/">
+                    <i class="fa fa-home me-2" aria-hidden="true"></i>
+                    Inicio
+                  </a>
+                </li>
                 {% if user.puede_crear_proveedor or user.compras or user.finanzas or user.sistemas %}
                   <li class="nav-item" style="margin-right: 1rem;">
                     <a class="nav-link active" aria-current="page" href="/proveedores">
@@ -77,9 +122,10 @@
                     Cerrar sesión
                   </a>
                 </li>
-              </div>
-            </div>
-              <!-- Si no, solo mostramos las opciones "Iniciar sesión" y "Crear cuenta" -->
+              </div>->
+            <!--</div>-->
+
+            <!-- Si no, solo mostramos las opciones "Iniciar sesión" y "Crear cuenta" -->
             {% else %}
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="/signin">Iniciar sesión</a>
@@ -124,17 +170,18 @@
 
 <script>
 
-function showHideOptions() {
-  const buttonContainer = document.getElementById('option-button');
-  const optionsContainer = document.getElementById('options-container');
-  if (optionsContainer.style.display == 'none') {
-    optionsContainer.style.display = 'block'
-    buttonContainer.innerHTML = '<i class="fa fa-sort-asc text-white" aria-hidden="true" onclick="showHideOptions()"></i>';
-  }
-  else {
-    optionsContainer.style.display = 'none'
-    buttonContainer.innerHTML = '<i class="fa fa-sort-desc text-white" aria-hidden="true" onclick="showHideOptions()"></i>';
-  }
+  /*function showHideOptions() {
+    const buttonContainer = document.getElementById('option-button');
+    const optionsContainer = document.getElementById('options-container');
+    if (optionsContainer.style.display == 'none') {
+      optionsContainer.style.display = 'block'
+      buttonContainer.innerHTML = '<i class="fa fa-sort-asc text-white" aria-hidden="true" onclick="showHideOptions()"></i>';
+    }
+    else {
+      optionsContainer.style.display = 'none'
+      buttonContainer.innerHTML = '<i class="fa fa-sort-desc text-white" aria-hidden="true" onclick="showHideOptions()"></i>';
+    }
+  }*/
 
   const links = document.querySelectorAll('.nav-link')
   links.forEach(link => {
@@ -147,6 +194,5 @@ function showHideOptions() {
       link.classList.add('text-white')
     })
   })
-}
 
 </script>
