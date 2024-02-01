@@ -505,20 +505,26 @@ def proveedor_detail(request, proveedor_id):
                         subject = 'Solicitud de proveedor modificada'
 
                         # Mensaje
+                        # Obteniendo el RFC para concatenarlo
+                        if proveedor.rfc != '':
+                            rfc = proveedor.rfc
+                        else:
+                            rfc = proveedor.rfc_migracion
+
                         if action == 'rechazado':
                             if proveedor.tipo_alta == 'Proveedor':
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor con RFC ' + rfc + ', favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
                             elif proveedor.tipo_alta == 'Cliente':
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/clientes/\nComentario: ' + proveedor.comentarios
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente con RFC ' + rfc + ', favor de revisar en http://23.19.74.40:8001/clientes/\nComentario: ' + proveedor.comentarios
                             else:
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor con RFC ' + rfc + ', favor de revisar en http://23.19.74.40:8001/proveedores/\nComentario: ' + proveedor.comentarios
                         else:
                             if proveedor.tipo_alta == 'Proveedor':
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/proveedores/'
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de proveedor con RFC ' + rfc + ', favor de revisar en http://23.19.74.40:8001/proveedores/'
                             elif proveedor.tipo_alta == 'Cliente':
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/clientes/'
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente con RFC ' + rfc + ', favor de revisar en http://23.19.74.40:8001/clientes/'
                             else:
-                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor con RFC ' + proveedor.rfc if proveedor.rfc != '' else proveedor.rfc_migracion + ', favor de revisar en http://23.19.74.40:8001/proveedores/'
+                                message = str(request.user.get_full_name()) + ' ha ' + action + ' un alta de cliente / proveedor con RFC ' + rfc + ', favor de revisar en http://23.19.74.40:8001/proveedores/'
 
                         # Remitente
                         from_email = 'altaproveedoresricofarms@gmail.com'
