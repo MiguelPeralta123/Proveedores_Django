@@ -2,6 +2,49 @@
 
 {% block content %}
   <main class="pt-5 m-5">
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="modalId"
+      tabindex="-1"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      
+      role="dialog"
+      aria-labelledby="modalTitleId"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
+        role="document"
+      >
+        <div class="modal-content">
+          <div class="modal-header bg-success">
+            <h5 id="modalTitleId" class="modal-title text-white" style="font-weight: bold;">Agregar Material / Servicio</h5>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button 
+              type="button" 
+              id="btn-save-modal"
+              class="btn btn-success"
+              onclick="updateForm(event)"
+            >
+              <b>Guardar</b>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Optional: Place to the bottom of scripts -->
+    <script>
+      const myModal = new bootstrap.Modal(
+        document.getElementById("modalId"),
+      );
+    </script>
+
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" enctype="multipart/form-data" style="background-color: rgb(255, 255, 255, 0.8);">
@@ -109,7 +152,7 @@
             {{ material_formset.management_form }}
             <div id="material-forms">
               {% for material_form in material_formset %}
-                <div id="material-form-0" class="material-form material-form-0">
+                <div id="material-form-0" class="material-form material-form-0" style="display: none;">
 
                   <!-- Tipo alta field -->
                   <div class="tipo-alta-container" style="margin-bottom:1rem;">
@@ -339,7 +382,7 @@
               {% endfor %}
             </div>
 
-            <button id="add-material" class="btn btn-secondary mb-3" type="button" style="background-color: #008841; color: white; font-weight: bold;">Agregar Material / servicio</button>
+            <button id="add-material" class="btn btn-success mb-3" type="button" style="font-weight: bold;" data-bs-toggle="modal" data-bs-target="#modalId">Agregar Material / servicio</button>
           </div>
 
           <div class="d-flex gap-3">
@@ -379,6 +422,7 @@
       const materialMigracionFields = document.getElementById('material-migracion-fields')
       const materialFormsContainer = document.getElementById('material-forms')
       const datalist = document.getElementById("opciones_material")
+      const modalBody = $('.modal-body');
 
       // Table
       const tableMaterials = document.getElementById('table-materials')
@@ -1840,6 +1884,15 @@
       }
     
       btnAddMaterial.addEventListener('click', () => {
+        if (tableMaterials.style.display == 'none') {
+          const form = $(materialFormsContainer).find('.material-form');
+          form.show();
+          modalBody.append(form);
+          return
+        }
+      });
+
+      const updateForm = event => {
         // Inputs
         var tipoAlta
         var subfamilia
@@ -2003,7 +2056,7 @@
         btnAddMaterial.innerHTML = 'Agregar Material / servicio'
         medidasIguales = false
         enableSaveButton()
-      });
+      }
 
       tableMaterials.addEventListener('click', function(event) {
         // If the edit button is clicked, display the corresponding form

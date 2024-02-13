@@ -1143,12 +1143,12 @@
           } else {
             errorContribuyente.style.display = 'none'
             
-            // La curp es obligatoria solo para personas físicas
-            // El régimen de capital no es necesario para personas físicas
             if (contribuyente.value == 'Persona física') {
+              // La curp es obligatoria solo para personas físicas
               curp.setAttribute('required', true)
               curp.removeAttribute('disabled')
               curp.removeAttribute('placeholder')
+              // El régimen de capital no es necesario para personas físicas
               regimenCapital.removeAttribute('required')
               regimenCapital.setAttribute('disabled', true)
               regimenCapital.value = ''
@@ -1163,8 +1163,11 @@
               curp.setAttribute('placeholder', 'persona moral no requiere CURP')
               curp.value = ''
               errorCurp.style.display = 'none'
-              regimenCapital.setAttribute('required', true)
-              regimenCapital.removeAttribute('disabled')
+              // Si el proveedor es nacional, el régimen de capital será obligatorio
+              if (tipoTercero.value.toUpperCase() != 'EXTRANJERO' && tipoTercero.value.toUpperCase() != 'EXTRANJERO RELACIONADO') {
+                regimenCapital.setAttribute('required', true)
+                regimenCapital.removeAttribute('disabled')
+              }
               // Si es persona moral, solo la primera letra será mayúscula
               nombreFiscal.value = nombreFiscal.value != '' ? firstLetterCapitalized(nombreFiscal.value) : ''
               nombreComercial.value = nombreComercial.value != '' ? firstLetterCapitalized(nombreComercial.value) : ''
@@ -1500,13 +1503,23 @@
           } else {
             errorTipoTercero.style.display = 'none'
             // ID fiscal es obligatorio para proveedores y clientes extranjeros
-            if (tipoTercero.value.toLowerCase() == 'extranjero' || tipoTercero.value.toLowerCase() == 'extranjero relacionado') {
+            if (tipoTercero.value.toUpperCase() == 'EXTRANJERO' || tipoTercero.value.toUpperCase() == 'EXTRANJERO RELACIONADO') {
               idFiscal.setAttribute('required', true)
               idFiscal.removeAttribute('disabled')
+              // Régimen de capital no es obligatorio para proveedores y clientes extranjeros
+              regimenCapital.removeAttribute('required')
+              regimenCapital.setAttribute('disabled', true)
+              regimenCapital.value = ''
+              errorRegimenCapital.style.display = 'none'
             }
             else {
               idFiscal.setAttribute('disabled', true)
               idFiscal.removeAttribute('required')
+              // Régimen de capital es obligatorio para proveedores y clientes nacionales (solo para personas morales)
+              if (contribuyente.value.toUpperCase() == 'PERSONA MORAL') {
+                regimenCapital.setAttribute('required', true)
+                regimenCapital.removeAttribute('disabled')
+              }
             }
           }
           enableSaveButton()
@@ -1825,15 +1838,19 @@
       }
       
       // Validación cuenta
-      if (cuenta) {
-        const validateCuenta = () => {
-          if (cuentaPattern.test(cuenta.value)) {
-            errorCuenta.style.display = 'none'
-          } else {
-            errorCuenta.style.display = 'block'
-          }
-          enableSaveButton()
+      const validateCuenta = () => {
+        // Si es extranjero, no se hace la validación
+        if (moneda.value.toUpperCase() == 'USD') {
+          return
         }
+        if (cuentaPattern.test(cuenta.value)) {
+          errorCuenta.style.display = 'none'
+        } else {
+          errorCuenta.style.display = 'block'
+        }
+        enableSaveButton()
+      }
+      if (cuenta) {
         cuenta.addEventListener('focus', validateCuenta)
         cuenta.addEventListener('input', validateCuenta)
       }
@@ -1846,30 +1863,42 @@
           } else {
             errorMoneda.style.display = 'none'
             // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
-            if (moneda.value != 'MXP') {
+            if (moneda.value.toUpperCase() == 'USD') {
+              cuenta.removeAttribute('required')
+              errorCuenta.style.display = 'none'
               clabe.removeAttribute('required')
               errorClabe.style.display = 'none'
             }
             else {
+              cuenta.setAttribute('required', true)
               clabe.setAttribute('required', true)
+              setTimeout(() => {
+                validateCuenta()
+                validateClabe()
+              }, 3000)
             }
           }
           enableSaveButton()
         }
         moneda.addEventListener('focus', validateMoneda)
         moneda.addEventListener('change', validateMoneda)
+        validateMoneda()
       }
       
       // Validación clabe
-      if (clabe) {
-        const validateClabe = () => {
-          if (clabePattern.test(clabe.value)) {
-            errorClabe.style.display = 'none'
-          } else {
-            errorClabe.style.display = 'block'
-          }
-          enableSaveButton()
+      const validateClabe = () => {
+        // Si es extranjero, no se hace la validación
+        if (moneda.value.toUpperCase() == 'USD') {
+          return
         }
+        if (clabePattern.test(clabe.value)) {
+          errorClabe.style.display = 'none'
+        } else {
+          errorClabe.style.display = 'block'
+        }
+        enableSaveButton()
+      }
+      if (clabe) {
         clabe.addEventListener('focus', validateClabe)
         clabe.addEventListener('input', validateClabe)
       }
@@ -1924,15 +1953,19 @@
       }
       
       // Validación cuenta 2
-      if (cuenta2) {
-        const validateCuenta2 = () => {
-          if (cuentaPattern.test(cuenta2.value)) {
-            errorCuenta2.style.display = 'none'
-          } else {
-            errorCuenta2.style.display = 'block'
-          }
-          enableSaveButton()
+      const validateCuenta2 = () => {
+        // Si es extranjero, no se hace la validación
+        if (moneda2.value.toUpperCase() == 'USD') {
+          return
         }
+        if (cuentaPattern.test(cuenta2.value)) {
+          errorCuenta2.style.display = 'none'
+        } else {
+          errorCuenta2.style.display = 'block'
+        }
+        enableSaveButton()
+      }
+      if (cuenta2) {
         cuenta2.addEventListener('focus', validateCuenta2)
         cuenta2.addEventListener('input', validateCuenta2)
       }
@@ -1945,30 +1978,42 @@
           } else {
             errorMoneda2.style.display = 'none'
             // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
-            if (moneda2.value != 'MXP') {
+            if (moneda2.value.toUpperCase() == 'USD') {
+              cuenta2.removeAttribute('required')
+              errorCuenta2.style.display = 'none'
               clabe2.removeAttribute('required')
               errorClabe2.style.display = 'none'
             }
             else {
+              cuenta2.setAttribute('required', true)
               clabe2.setAttribute('required', true)
+              setTimeout(() => {
+                validateCuenta2()
+                validateClabe2()
+              }, 3000)
             }
           }
           enableSaveButton()
         }
         moneda2.addEventListener('focus', validateMoneda2)
         moneda2.addEventListener('change', validateMoneda2)
+        validateMoneda2()
       }
       
       // Validación clabe 2
-      if (clabe2) {
-        const validateClabe2 = () => {
-          if (clabePattern.test(clabe2.value)) {
-            errorClabe2.style.display = 'none'
-          } else {
-            errorClabe2.style.display = 'block'
-          }
-          enableSaveButton()
+      const validateClabe2 = () => {
+        // Si es extranjero, no se hace la validación
+        if (moneda2.value.toUpperCase() == 'USD') {
+          return
         }
+        if (clabePattern.test(clabe2.value)) {
+          errorClabe2.style.display = 'none'
+        } else {
+          errorClabe2.style.display = 'block'
+        }
+        enableSaveButton()
+      }
+      if (clabe2) {
         clabe2.addEventListener('focus', validateClabe2)
         clabe2.addEventListener('input', validateClabe2)
       }

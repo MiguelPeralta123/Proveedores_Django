@@ -35,14 +35,54 @@ def home(request):
 
 # VISTAS DE MATERIAL (GET ALL, CREATE, DETAIL)
 
+# Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
+def get_all_material_requests(request):
+    if request.user.is_superuser:
+        historial = MaterialHistorial.objects.all()
+        all_solicitudes = MaterialSolicitud.objects.all().order_by('id').reverse()
+        data = [
+            {
+                'id': solicitud.id,
+                'id_solicitud': solicitud.id_solicitud,
+                'es_migracion': solicitud.es_migracion,
+                'empresa_origen': solicitud.empresa_origen,
+                'empresa_destino': solicitud.empresa_destino,
+                'nombre_producto_migracion': solicitud.nombre_producto_migracion,
+                'empresa': solicitud.empresa,
+                'justificacion': solicitud.justificacion,
+                'fecha': solicitud.fecha,
+                'usuario': solicitud.usuario.get_full_name() if solicitud.usuario else None,
+                'comentarios': solicitud.comentarios,
+                'pendiente': solicitud.pendiente,
+                'compras': solicitud.compras,
+                'finanzas': solicitud.finanzas,
+                'sistemas': solicitud.sistemas,
+                'aprobadas': solicitud.aprobadas,
+                'rechazado_compras': solicitud.rechazado_compras,
+                'rechazado_finanzas': solicitud.rechazado_finanzas,
+                'rechazado_sistemas': solicitud.rechazado_sistemas,
+                'eliminado': solicitud.eliminado,
+                'borrador': solicitud.borrador,
+            } for solicitud in all_solicitudes
+        ]
+        historialData = [
+            {
+                'id_solicitud': registro.id_solicitud,
+                'message': "Solicitud " + registro.accion + " por " + registro.usuario.get_full_name(),
+                'fecha': registro.fecha,
+            } for registro in historial
+        ]
+        return JsonResponse({'all_solicitudes': data, 'historial': historialData})
+
+
 @login_required
 def material(request):
     try:
         if request.user.puede_crear_material or request.user.compras or request.user.finanzas or request.user.sistemas:
             
             # Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
-            if request.user.is_superuser:
-                all_solicitudes = MaterialSolicitud.objects.all().order_by('id')
+            #if request.user.is_superuser:
+            #    all_solicitudes = MaterialSolicitud.objects.all().order_by('id')
             
             # Inicializar la lista de mis_solicitudes
             mis_solicitudes = []
@@ -107,14 +147,14 @@ def material(request):
                 solicitudes_eliminadas = mis_solicitudes.filter(eliminado=True).order_by('id')
 
             historial = []
-            if request.user.is_superuser:  
-                historial = MaterialHistorial.objects.all()
-            else:
-                for solicitud in solicitudes:
-                    if solicitud not in mis_solicitudes:
-                        historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id).order_by('id')
-                for solicitud in mis_solicitudes:
+            #if request.user.is_superuser:  
+            #    historial = MaterialHistorial.objects.all()
+            #else:
+            for solicitud in solicitudes:
+                if solicitud not in mis_solicitudes:
                     historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id).order_by('id')
+            for solicitud in mis_solicitudes:
+                historial += MaterialHistorial.objects.filter(id_solicitud=solicitud.id).order_by('id')
 
             if request.user.puede_crear_material:
                 if request.user.is_superuser:
@@ -126,7 +166,7 @@ def material(request):
                         'solicitudes_rechazadas': solicitudes_rechazadas,
                         'solicitudes_aprobadas': solicitudes_aprobadas,
                         'solicitudes_eliminadas': solicitudes_eliminadas,
-                        'all_solicitudes': all_solicitudes,
+                        #'all_solicitudes': all_solicitudes,
                         'historial': historial,
                         'current_user': request.user
                     })
@@ -146,7 +186,7 @@ def material(request):
                 if request.user.is_superuser:
                     return render(request, 'material/material.html', {
                         'solicitudes': solicitudes,
-                        'all_solicitudes': all_solicitudes,
+                        #'all_solicitudes': all_solicitudes,
                         'historial': historial,
                         'current_user': request.user
                     })
@@ -521,10 +561,10 @@ def material_detail(request, material_id):
                         recipient_list.append('contadorsr@ricofarms.com')
                     elif action != 'rechazado':
                         if request.user.compras or request.user.finanzas:
-                            autorizadores = CustomUser.objects.filter(sistemas = True)
-                        elif not request.user.sistemas:
+                            autorizadores = CustomUser.objects.filter(sistemas=True)
+                        else:
                             recipient_list = []
-                            autorizadores = CustomUser.objects.filter(compras = True)
+                            autorizadores = CustomUser.objects.filter(compras=True)
                         for autorizador in autorizadores:
                             recipient_list.append(autorizador.email)
 

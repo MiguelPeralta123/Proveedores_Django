@@ -53,6 +53,7 @@ urlpatterns = [
     path('materiales/', views_materiales.material, name='material'),
     path('materiales/crear/', views_materiales.material_create, name='material_create'),
     path('materiales/<int:material_id>/', views_materiales.material_detail, name='material_detail'),
+    path('get_all_material_requests/', views_materiales.get_all_material_requests, name='get_all_material_requests'),
 ]
 
 if settings.DEBUG:

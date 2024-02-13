@@ -883,12 +883,12 @@
         } else {
           errorContribuyente.style.display = 'none'
 
-          // La curp es obligatoria solo para personas físicas
-          // El régimen de capital no es necesario para personas físicas
           if (contribuyente.value == 'Persona física') {
+            // La curp es obligatoria solo para personas físicas
             curp.setAttribute('required', true)
             curp.removeAttribute('disabled')
             curp.removeAttribute('placeholder')
+            // El régimen de capital no es necesario para personas físicas
             regimenCapital.removeAttribute('required')
             regimenCapital.setAttribute('disabled', true)
             regimenCapital.value = ''
@@ -903,8 +903,11 @@
             curp.setAttribute('placeholder', 'persona moral no requiere CURP')
             curp.value = ''
             errorCurp.style.display = 'none'
-            regimenCapital.setAttribute('required', true)
-            regimenCapital.removeAttribute('disabled')
+            // Si el proveedor es nacional, el régimen de capital será obligatorio
+            if (tipoTercero.value.toUpperCase() != 'EXTRANJERO' && tipoTercero.value.toUpperCase() != 'EXTRANJERO RELACIONADO') {
+              regimenCapital.setAttribute('required', true)
+              regimenCapital.removeAttribute('disabled')
+            }
             // Si es persona moral, solo la primera letra será mayúscula
             nombreFiscal.value = nombreFiscal.value != '' ? firstLetterCapitalized(nombreFiscal.value) : ''
             nombreComercial.value = nombreComercial.value != '' ? firstLetterCapitalized(nombreComercial.value) : ''
@@ -1205,14 +1208,24 @@
           errorTipoTercero.style.display = 'block'
         } else {
           errorTipoTercero.style.display = 'none'
-          // ID fiscal es obligatorio para proveedores y clientes extranjeros
           if (tipoTercero.value.toLowerCase() == 'extranjero' || tipoTercero.value.toLowerCase() == 'extranjero relacionado') {
+            // ID fiscal es obligatorio para proveedores y clientes extranjeros
             idFiscal.setAttribute('required', true)
             idFiscal.removeAttribute('disabled')
+            // Régimen de capital no es obligatorio para proveedores y clientes extranjeros
+            regimenCapital.removeAttribute('required')
+            regimenCapital.setAttribute('disabled', true)
+            regimenCapital.value = ''
+            errorRegimenCapital.style.display = 'none'
           }
           else {
             idFiscal.setAttribute('disabled', true)
             idFiscal.removeAttribute('required')
+            // Régimen de capital es obligatorio para proveedores y clientes nacionales (solo para personas morales)
+            if (contribuyente.value.toUpperCase() == 'PERSONA MORAL') {
+              regimenCapital.setAttribute('required', true)
+              regimenCapital.removeAttribute('disabled')
+            }
           }
         }
         enableSaveButton()
@@ -1496,6 +1509,10 @@
       
       // Validación cuenta
       const validateCuenta = () => {
+        // Si es extranjero, no se hace la validación
+        if (moneda.value.toUpperCase() == 'USD') {
+          return
+        }
         if (cuentaPattern.test(cuenta.value)) {
           errorCuenta.style.display = 'none'
         } else {
@@ -1512,13 +1529,18 @@
           errorMoneda.style.display = 'block'
         } else {
           errorMoneda.style.display = 'none'
-          // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
-          if (moneda.value != 'MXP') {
+          // La cuenta y clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
+          if (moneda.value.toUpperCase() == 'USD') {
+            cuenta.removeAttribute('required')
+            errorCuenta.style.display = 'none'
             clabe.removeAttribute('required')
             errorClabe.style.display = 'none'
           }
           else {
+            cuenta.setAttribute('required', true)
             clabe.setAttribute('required', true)
+            validateCuenta()
+            validateClabe()
           }
         }
         enableSaveButton()
@@ -1528,7 +1550,8 @@
       
       // Validación clabe
       const validateClabe = () => {
-        if (rfc.value.toUpperCase() == 'XAX010101000' || rfc.value.toUpperCase() == 'XEXX010101000' || (moneda.value != 'MXP' && moneda.value != '')) {
+        // Si es extranjero, no se hace la validación
+        if (moneda.value.toUpperCase() == 'USD') {
           return
         }
         if (clabePattern.test(clabe.value)) {
@@ -1590,6 +1613,10 @@
       
       // Validación cuenta 2
       const validateCuenta2 = () => {
+        // Si es extranjero, no se hace la validación
+        if (moneda2.value.toUpperCase() == 'USD') {
+          return
+        }
         if (cuentaPattern.test(cuenta2.value)) {
           errorCuenta2.style.display = 'none'
         } else {
@@ -1608,12 +1635,17 @@
         else {
           errorMoneda2.style.display = 'none'
           // La clabe interbancaria no es obligatoria para clientes y proveedores extranjeros
-          if (moneda2.value != 'MXP') {
+          if (moneda2.value.toUpperCase() == 'USD') {
+            cuenta2.removeAttribute('required')
+            errorCuenta2.style.display = 'none'
             clabe2.removeAttribute('required')
             errorClabe2.style.display = 'none'
           }
           else {
+            cuenta2.setAttribute('required', true)
             clabe2.setAttribute('required', true)
+            validateCuenta2()
+            validateClabe2()
           }
         }
         enableSaveButton()
@@ -1623,7 +1655,8 @@
       
       // Validación clabe 2
       const validateClabe2 = () => {
-        if (rfc.value.toUpperCase() == 'XAX010101000' || rfc.value.toUpperCase() == 'XEXX010101000') {
+        // Si es extranjero, no se hace la validación
+        if (moneda2.value.toUpperCase() == 'USD') {
           return
         }
         if (clabePattern.test(clabe2.value)) {
