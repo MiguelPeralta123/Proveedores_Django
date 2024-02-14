@@ -141,8 +141,7 @@
                     <th scope="col" style="min-width: 6rem;">¿Es mezcla?</th>
                     <th scope="col" style="min-width: 6rem;">¿Es material empaque?</th>
                     <th scope="col" style="min-width: 6rem;">¿Es prod. terminado?</th>
-                    <th scope="col" style="min-width: 4rem;"></th>
-                    <th scope="col" style="min-width: 4rem;"></th>
+                    <th scope="col" style="min-width: 4rem;">Acciones</th>
                   </tr>
                 </thead>
                 <tbody id="tbody-materials"></tbody>
@@ -416,430 +415,381 @@
   </style>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Containers
-      const materialNuevoFields = document.getElementById('material-nuevo-fields')
-      const materialMigracionFields = document.getElementById('material-migracion-fields')
-      const materialFormsContainer = document.getElementById('material-forms')
-      const datalist = document.getElementById("opciones_material")
-      const modalBody = $('.modal-body');
 
-      // Table
-      const tableMaterials = document.getElementById('table-materials')
-      const bodyMaterials = document.getElementById('tbody-materials')
+    // Containers
+    const materialNuevoFields = document.getElementById('material-nuevo-fields')
+    const materialMigracionFields = document.getElementById('material-migracion-fields')
+    const materialFormsContainer = document.getElementById('material-forms')
+    const datalist = document.getElementById("opciones_material")
+    const modal = $('#modalId');
+    const modalBody = $('.modal-body');
 
-      // Inputs
-      const esMigracion = document.getElementById('id_es_migracion')
-      const empresaOrigen = document.getElementById('id_empresa_origen')
-      const empresaDestino = document.getElementById('id_empresa_destino')
-      const nombreProductoMigracion = document.getElementById('id_nombre_producto_migracion')
-      const empresa = document.getElementById('id_empresa')
-      const justificacion = document.getElementById('id_justificacion')
+    // Table
+    const tableMaterials = document.getElementById('table-materials')
+    const bodyMaterials = document.getElementById('tbody-materials')
 
-      // Buttons
-      const btnAddMaterial = document.getElementById('add-material');
-      const btnSave = document.getElementById('btn-save')
-      const btnSaveDraft = document.getElementById('btn-save-draft')
-      const btnBack = document.getElementById('btn-back')
+    // Inputs
+    const esMigracion = document.getElementById('id_es_migracion')
+    const empresaOrigen = document.getElementById('id_empresa_origen')
+    const empresaDestino = document.getElementById('id_empresa_destino')
+    const nombreProductoMigracion = document.getElementById('id_nombre_producto_migracion')
+    const empresa = document.getElementById('id_empresa')
+    const justificacion = document.getElementById('id_justificacion')
 
-      // Error messages
-      const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
-      const errorEmpresaDestino = document.getElementById('error-empresa-destino')
-      const errorEmpresasMigracion = document.getElementById('error-empresas-migracion')
-      const errorNombreProductoMigracion = document.getElementById('error-nombre-producto-migracion')
-      const errorNombreProductoMigracion2 = document.getElementById('error-nombre-producto-migracion-2')
-      const errorEmpresa = document.getElementById('error-empresa')
-      const errorJustificacion = document.getElementById('error-justificacion')
-      
-      // Regular expressions
-      const fraccionPattern = /^(\d+(\.\d+)?\/\d+(\.\d+)?)$/;
+    // Buttons
+    const btnAddMaterial = document.getElementById('add-material');
+    const btnSave = document.getElementById('btn-save')
+    const btnSaveDraft = document.getElementById('btn-save-draft')
+    const btnBack = document.getElementById('btn-back')
 
-      // Counters and bands
-      let formCount = {{ material_formset.total_form_count }};
-      let materialCounter = 0
-      let addMaterialBand = true
-      let editingBand = false
-      let editingId = 0
-      let medidasIguales = false
-
-      // Catálogo de materiales existentes
-      var catalogoMaterial = {{ catalogo_material|safe }}
-      nombreProductoMigracion.setAttribute('list', 'opciones_material')
-
-      // Catálogos de subfamilia y unidad de medida
-      var subfamiliasProductoList = {{ subfamilia_producto_list|safe }}
-      var subfamiliasServicioList = {{ subfamilia_servicio_list|safe }}
-      var unidadesMedidaList = {{ unidad_medida_list|safe }}
-
-      btnBack.addEventListener('click', () => {
-        window.history.back()
-      })
-
-      const handleEsMigracion = (esMigracionValue) => {
-        if(esMigracionValue) {
-          materialNuevoFields.style.display = 'none'
-          materialMigracionFields.style.display = 'block'
-        }
-        else {
-          materialMigracionFields.style.display = 'none'
-          materialNuevoFields.style.display = 'block'
-        }
-
-        empresaOrigen.required = esMigracionValue
-        empresaDestino.required = esMigracionValue
-        nombreProductoMigracion.required = esMigracionValue
-
-        empresa.required = !esMigracionValue
-        justificacion.required = !esMigracionValue
-      }
-
-      // Handling EsMigracion state change
-      esMigracion.addEventListener('change', () => {
-        handleEsMigracion(esMigracion.checked)
-        enableSaveButton()
-      })
-      
-      handleEsMigracion(esMigracion.checked)
-
-      // FIELD VALIDATION
-
-      const firstLetterCapitalized = str => {
-        return str[0].toUpperCase() + str.slice(1).toLowerCase()
-      }
-
-      const firstLetterOfEachWordCapitalized = str => {
-        return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
-      }
+    // Error messages
+    const errorEmpresaOrigen = document.getElementById('error-empresa-origen')
+    const errorEmpresaDestino = document.getElementById('error-empresa-destino')
+    const errorEmpresasMigracion = document.getElementById('error-empresas-migracion')
+    const errorNombreProductoMigracion = document.getElementById('error-nombre-producto-migracion')
+    const errorNombreProductoMigracion2 = document.getElementById('error-nombre-producto-migracion-2')
+    const errorEmpresa = document.getElementById('error-empresa')
+    const errorJustificacion = document.getElementById('error-justificacion')
     
-      // Validación empresa origen
-      const validateEmpresaOrigen = () => {
-        if (empresaOrigen.value == '') {
-          errorEmpresaOrigen.style.display = 'block'
+    // Regular expressions
+    const fraccionPattern = /^(\d+(\.\d+)?\/\d+(\.\d+)?)$/;
+
+    // Counters and bands
+    let formCount = {{ material_formset.total_form_count }};
+    let materialCounter = 0
+    let addMaterialBand = true
+    let editingBand = false
+    let editingId = 0
+    let medidasIguales = false
+
+    // Catálogo de materiales existentes
+    var catalogoMaterial = {{ catalogo_material|safe }}
+    nombreProductoMigracion.setAttribute('list', 'opciones_material')
+
+    // Catálogos de subfamilia y unidad de medida
+    var subfamiliasProductoList = {{ subfamilia_producto_list|safe }}
+    var subfamiliasServicioList = {{ subfamilia_servicio_list|safe }}
+    var unidadesMedidaList = {{ unidad_medida_list|safe }}
+
+    btnBack.addEventListener('click', () => {
+      window.history.back()
+    })
+
+    const handleEsMigracion = (esMigracionValue) => {
+      if(esMigracionValue) {
+        materialNuevoFields.style.display = 'none'
+        materialMigracionFields.style.display = 'block'
+      }
+      else {
+        materialMigracionFields.style.display = 'none'
+        materialNuevoFields.style.display = 'block'
+      }
+
+      empresaOrigen.required = esMigracionValue
+      empresaDestino.required = esMigracionValue
+      nombreProductoMigracion.required = esMigracionValue
+
+      empresa.required = !esMigracionValue
+      justificacion.required = !esMigracionValue
+    }
+
+    // Handling EsMigracion state change
+    esMigracion.addEventListener('change', () => {
+      handleEsMigracion(esMigracion.checked)
+      enableSaveButton()
+    })
+    
+    handleEsMigracion(esMigracion.checked)
+
+    // FIELD VALIDATION
+
+    const firstLetterCapitalized = str => {
+      return str[0].toUpperCase() + str.slice(1).toLowerCase()
+    }
+
+    const firstLetterOfEachWordCapitalized = str => {
+      return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+    }
+  
+    // Validación empresa origen
+    const validateEmpresaOrigen = () => {
+      if (empresaOrigen.value == '') {
+        errorEmpresaOrigen.style.display = 'block'
+        errorEmpresasMigracion.style.display = 'none'
+      } else {
+        errorEmpresaOrigen.style.display = 'none'
+        // No se puede seleccionar la misma opción que en "Empresa destino"
+        if (empresaOrigen.value == empresaDestino.value) {
+          errorEmpresasMigracion.style.display = 'block'
+        } else {
           errorEmpresasMigracion.style.display = 'none'
-        } else {
-          errorEmpresaOrigen.style.display = 'none'
-          // No se puede seleccionar la misma opción que en "Empresa destino"
-          if (empresaOrigen.value == empresaDestino.value) {
-            errorEmpresasMigracion.style.display = 'block'
-          } else {
-            errorEmpresasMigracion.style.display = 'none'
-          }
         }
-        enableSaveButton()
       }
-      empresaOrigen.addEventListener('focus', validateEmpresaOrigen)
-      empresaOrigen.addEventListener('change', validateEmpresaOrigen)
-      
-      // Validación empresa destino
-      const validateEmpresaDestino = () => {
-        if (empresaDestino.value == '') {
-          errorEmpresaDestino.style.display = 'block'
+      enableSaveButton()
+    }
+    empresaOrigen.addEventListener('focus', validateEmpresaOrigen)
+    empresaOrigen.addEventListener('change', validateEmpresaOrigen)
+    
+    // Validación empresa destino
+    const validateEmpresaDestino = () => {
+      if (empresaDestino.value == '') {
+        errorEmpresaDestino.style.display = 'block'
+        errorEmpresasMigracion.style.display = 'none'
+      } else {
+        errorEmpresaDestino.style.display = 'none'
+        // No se puede seleccionar la misma opción que en "Empresa origen"
+        if (empresaOrigen.value == empresaDestino.value) {
+          errorEmpresasMigracion.style.display = 'block'
+        } else {
           errorEmpresasMigracion.style.display = 'none'
-        } else {
-          errorEmpresaDestino.style.display = 'none'
-          // No se puede seleccionar la misma opción que en "Empresa origen"
-          if (empresaOrigen.value == empresaDestino.value) {
-            errorEmpresasMigracion.style.display = 'block'
-          } else {
-            errorEmpresasMigracion.style.display = 'none'
-          }
         }
-        enableSaveButton()
       }
-      empresaDestino.addEventListener('focus', validateEmpresaDestino)
-      empresaDestino.addEventListener('change', validateEmpresaDestino)
-      
-      // Validación nombre producto migración
-      const validateNombreProductoMigracion = () => {
-        if (nombreProductoMigracion.value == '') {
-          errorNombreProductoMigracion.style.display = 'block'
-        }
-        else {
-          errorNombreProductoMigracion.style.display = 'none'
-        }
-
-        // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
-        datalist.innerHTML = ''
-        for (var i = 0; i < catalogoMaterial.length; i++) {
-          if (catalogoMaterial[i].value.toUpperCase().startsWith(nombreProductoMigracion.value.toUpperCase())) {
-            const option = document.createElement('option')
-            option.value = catalogoMaterial[i].value
-            option.innerText = catalogoMaterial[i].text
-            datalist.appendChild(option)
-          }
-        }
-        if (datalist.childElementCount == 0) {
-          errorNombreProductoMigracion2.style.display = 'block'
-          disableAllFieldsForMigracion()
-        } else {
-          errorNombreProductoMigracion2.style.display = 'none'
-          enableAllFieldsForMigracion()
-        }
-        enableSaveButton()
-
-        // Change
-        let showError = true
-        for (var i = 0; i < catalogoMaterial.length; i++) {
-          if (catalogoMaterial[i].value.toUpperCase() == nombreProductoMigracion.value.toUpperCase()) {
-            showError = false
-            break
-          }
-        }
-        if (showError) {
-          errorNombreProductoMigracion2.style.display = 'block'
-          disableAllFieldsForMigracion()
-        } else {
-          errorNombreProductoMigracion2.style.display = 'none'
-          enableAllFieldsForMigracion()
-        }
-        enableSaveButton()
+      enableSaveButton()
+    }
+    empresaDestino.addEventListener('focus', validateEmpresaDestino)
+    empresaDestino.addEventListener('change', validateEmpresaDestino)
+    
+    // Validación nombre producto migración
+    const validateNombreProductoMigracion = () => {
+      if (nombreProductoMigracion.value == '') {
+        errorNombreProductoMigracion.style.display = 'block'
+      }
+      else {
+        errorNombreProductoMigracion.style.display = 'none'
       }
 
-      const validateNombreProductoMigracionOnChange = () => {
-        if (nombreProductoMigracion.value == '') {
-          errorNombreProductoMigracion.style.display = 'block'
+      // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
+      datalist.innerHTML = ''
+      for (var i = 0; i < catalogoMaterial.length; i++) {
+        if (catalogoMaterial[i].value.toUpperCase().startsWith(nombreProductoMigracion.value.toUpperCase())) {
+          const option = document.createElement('option')
+          option.value = catalogoMaterial[i].value
+          option.innerText = catalogoMaterial[i].text
+          datalist.appendChild(option)
         }
-        else {
-          errorNombreProductoMigracion.style.display = 'none'
-        }
-
-        // Solo la primera letra será mayúscula
-        nombreProductoMigracion.value = nombreProductoMigracion.value != '' ? firstLetterCapitalized(nombreProductoMigracion.value) : ''
-
-        // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
-        datalist.innerHTML = ''
-        for (var i = 0; i < catalogoMaterial.length; i++) {
-          if (catalogoMaterial[i].value.toUpperCase().startsWith(nombreProductoMigracion.value.toUpperCase())) {
-            const option = document.createElement('option')
-            option.value = catalogoMaterial[i].value
-            option.innerText = catalogoMaterial[i].text
-            datalist.appendChild(option)
-          }
-        }
-        if (datalist.childElementCount == 0) {
-          errorNombreProductoMigracion2.style.display = 'block'
-          disableAllFieldsForMigracion()
-        } else {
-          errorNombreProductoMigracion2.style.display = 'none'
-          enableAllFieldsForMigracion()
-        }
-        enableSaveButton()
-
-        // Change
-        let showError = true
-        for (var i = 0; i < catalogoMaterial.length; i++) {
-          if (catalogoMaterial[i].value.toUpperCase() == nombreProductoMigracion.value.toUpperCase()) {
-            showError = false
-            break
-          }
-        }
-        if (showError) {
-          errorNombreProductoMigracion2.style.display = 'block'
-          disableAllFieldsForMigracion()
-        } else {
-          errorNombreProductoMigracion2.style.display = 'none'
-          enableAllFieldsForMigracion()
-        }
-        enableSaveButton()
       }
-      nombreProductoMigracion.addEventListener('focus', validateNombreProductoMigracion)
-      nombreProductoMigracion.addEventListener('input', validateNombreProductoMigracion)
-      nombreProductoMigracion.addEventListener('change', validateNombreProductoMigracionOnChange)
+      if (datalist.childElementCount == 0) {
+        errorNombreProductoMigracion2.style.display = 'block'
+        disableAllFieldsForMigracion()
+      } else {
+        errorNombreProductoMigracion2.style.display = 'none'
+        enableAllFieldsForMigracion()
+      }
+      enableSaveButton()
 
-      // Validación empresa
-      const validateEmpresa = () => {
-        if (empresa.value == '') {
-          errorEmpresa.style.display = 'block'
-        } else {
-          errorEmpresa.style.display = 'none'
+      // Change
+      let showError = true
+      for (var i = 0; i < catalogoMaterial.length; i++) {
+        if (catalogoMaterial[i].value.toUpperCase() == nombreProductoMigracion.value.toUpperCase()) {
+          showError = false
+          break
         }
-        enableSaveButton()
       }
-      empresa.addEventListener('focus', validateEmpresa)
-      empresa.addEventListener('change', validateEmpresa)
-      
-      // Validación justificación
-      const validateJustificacion = () => {
-        if (justificacion.value == '') {
-          errorJustificacion.style.display = 'block'
-        } else {
-          errorJustificacion.style.display = 'none'
+      if (showError) {
+        errorNombreProductoMigracion2.style.display = 'block'
+        disableAllFieldsForMigracion()
+      } else {
+        errorNombreProductoMigracion2.style.display = 'none'
+        enableAllFieldsForMigracion()
+      }
+      enableSaveButton()
+    }
+
+    const validateNombreProductoMigracionOnChange = () => {
+      if (nombreProductoMigracion.value == '') {
+        errorNombreProductoMigracion.style.display = 'block'
+      }
+      else {
+        errorNombreProductoMigracion.style.display = 'none'
+      }
+
+      // Solo la primera letra será mayúscula
+      nombreProductoMigracion.value = nombreProductoMigracion.value != '' ? firstLetterCapitalized(nombreProductoMigracion.value) : ''
+
+      // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
+      datalist.innerHTML = ''
+      for (var i = 0; i < catalogoMaterial.length; i++) {
+        if (catalogoMaterial[i].value.toUpperCase().startsWith(nombreProductoMigracion.value.toUpperCase())) {
+          const option = document.createElement('option')
+          option.value = catalogoMaterial[i].value
+          option.innerText = catalogoMaterial[i].text
+          datalist.appendChild(option)
         }
-        enableSaveButton()
       }
-      const validateJustificacionOnChange = () => {
-        // Solo la primera letra será mayúscula
-        justificacion.value = justificacion.value != '' ? firstLetterCapitalized(justificacion.value) : ''
+      if (datalist.childElementCount == 0) {
+        errorNombreProductoMigracion2.style.display = 'block'
+        disableAllFieldsForMigracion()
+      } else {
+        errorNombreProductoMigracion2.style.display = 'none'
+        enableAllFieldsForMigracion()
       }
-      justificacion.addEventListener('focus', validateJustificacion)
-      justificacion.addEventListener('input', validateJustificacion)
-      justificacion.addEventListener('change', validateJustificacionOnChange)
-      
-      const validarCamposMaterial = () => {
+      enableSaveButton()
 
-        // Validación tipo alta
-        var tipoAltaInputs = document.querySelectorAll('.material-tipo-alta')
-        tipoAltaInputs.forEach(input => {
-            input.addEventListener('focus', () => {
-                var tipoAltaValue = input.value
-                var container = input.closest('.tipo-alta-container')
-                var errorTipoAlta = container.querySelector('#error-tipo-alta')
-                // Verificar si el campo está vacío
-                if (tipoAltaValue == '') {
-                  errorTipoAlta.style.display = 'block'
-                } else {
-                  errorTipoAlta.style.display = 'none'
-                }
-            })
-            input.addEventListener('change', () => {
-                var tipoAltaValue = input.value
-                var container = input.closest('.tipo-alta-container')
-                var errorTipoAlta = container.querySelector('#error-tipo-alta')
-                // Verificar si el campo está vacío
-                if (tipoAltaValue == '') {
-                  errorTipoAlta.style.display = 'block'
-                } else {
-                  errorTipoAlta.style.display = 'none'
-                  // Filtrar las subfamilias y unidades de medida dependiendo del tipo de alta
-                  const form = input.closest('.material-form')
-                  const subfamilia = form.querySelector('.select-subfamilia')
-                  const unidadMedida = form.querySelector('.select-unidad-medida')
-                  var cadenaSubfamilias = ''
-                  var cadenaUnidadesMedida = ''
-                  // Medidas, material y color no serán visibles para clientes
-                  const medidasContainer = form.querySelector('#medidas-container')
-                  const materialColorContainer = form.querySelector('#material-color-container')
+      // Change
+      let showError = true
+      for (var i = 0; i < catalogoMaterial.length; i++) {
+        if (catalogoMaterial[i].value.toUpperCase() == nombreProductoMigracion.value.toUpperCase()) {
+          showError = false
+          break
+        }
+      }
+      if (showError) {
+        errorNombreProductoMigracion2.style.display = 'block'
+        disableAllFieldsForMigracion()
+      } else {
+        errorNombreProductoMigracion2.style.display = 'none'
+        enableAllFieldsForMigracion()
+      }
+      enableSaveButton()
+    }
+    nombreProductoMigracion.addEventListener('focus', validateNombreProductoMigracion)
+    nombreProductoMigracion.addEventListener('input', validateNombreProductoMigracion)
+    nombreProductoMigracion.addEventListener('change', validateNombreProductoMigracionOnChange)
 
-                  if (tipoAltaValue === 'Almacén') {
-                    subfamiliasProductoList.forEach(item => {
-                      if (item === ' Seleccione una opción') {
-                        cadenaSubfamilias += `<option value selected>${item}</option>`
-                        return
-                      }
-                      cadenaSubfamilias += `<option value="${item}">${item}</option>`
-                    })
-                    unidadesMedidaList.forEach(item => {
-                      if (item === ' Seleccione una opción') {
-                        cadenaUnidadesMedida += `<option value selected>${item}</option>`
-                        return
-                      }
-                      if (item === 'Servicio') {
-                        return
-                      }
-                      cadenaUnidadesMedida += `<option value="${item}">${item}</option>`
-                    })
-                    // Mostrando las medidas, material y color
-                    medidasContainer.style.display = 'block'
-                    materialColorContainer.style.display = 'flex'
-                  }
-                  if (tipoAltaValue === 'Servicio') {
-                    subfamiliasServicioList.forEach(item => {
-                      if (item === ' Seleccione una opción') {
-                        cadenaSubfamilias += `<option value selected>${item}</option>`
-                        return
-                      }
-                      cadenaSubfamilias += `<option value="${item}">${item}</option>`
-                    })
-                    cadenaUnidadesMedida = `<option value selected>Selecciona una opción</option>
-                    <option value="Servicio">Servicio</option>`
-                    // Ocultando las medidas, material y color
-                    medidasContainer.style.display = 'none'
-                    materialColorContainer.style.display = 'none'
-                  }
-                  subfamilia.innerHTML = cadenaSubfamilias
-                  unidadMedida.innerHTML = cadenaUnidadesMedida
+    // Validación empresa
+    const validateEmpresa = () => {
+      if (empresa.value == '') {
+        errorEmpresa.style.display = 'block'
+      } else {
+        errorEmpresa.style.display = 'none'
+      }
+      enableSaveButton()
+    }
+    empresa.addEventListener('focus', validateEmpresa)
+    empresa.addEventListener('change', validateEmpresa)
+    
+    // Validación justificación
+    const validateJustificacion = () => {
+      if (justificacion.value == '') {
+        errorJustificacion.style.display = 'block'
+      } else {
+        errorJustificacion.style.display = 'none'
+      }
+      enableSaveButton()
+    }
+    const validateJustificacionOnChange = () => {
+      // Solo la primera letra será mayúscula
+      justificacion.value = justificacion.value != '' ? firstLetterCapitalized(justificacion.value) : ''
+    }
+    justificacion.addEventListener('focus', validateJustificacion)
+    justificacion.addEventListener('input', validateJustificacion)
+    justificacion.addEventListener('change', validateJustificacionOnChange)
+    
+    const validarCamposMaterial = () => {
 
-                  // Mostrando los errores de subfamilia y unidad de medida
-                  const errorSubfamilia = form.querySelector('#error-subfamilia')
-                  const errorUnidadMedida = form.querySelector('#error-unidad-medida')
-                  errorSubfamilia.style.display = 'block'
-                  errorUnidadMedida.style.display = 'block'
-                }
-            })
-        })
+      // Validación tipo alta
+      var tipoAltaInputs = document.querySelectorAll('.material-tipo-alta')
+      tipoAltaInputs.forEach(input => {
+          input.addEventListener('focus', () => {
+              var tipoAltaValue = input.value
+              var container = input.closest('.tipo-alta-container')
+              var errorTipoAlta = container.querySelector('#error-tipo-alta')
+              // Verificar si el campo está vacío
+              if (tipoAltaValue == '') {
+                errorTipoAlta.style.display = 'block'
+              } else {
+                errorTipoAlta.style.display = 'none'
+              }
+          })
+          input.addEventListener('change', () => {
+              var tipoAltaValue = input.value
+              var container = input.closest('.tipo-alta-container')
+              var errorTipoAlta = container.querySelector('#error-tipo-alta')
+              // Verificar si el campo está vacío
+              if (tipoAltaValue == '') {
+                errorTipoAlta.style.display = 'block'
+              } else {
+                errorTipoAlta.style.display = 'none'
+                // Filtrar las subfamilias y unidades de medida dependiendo del tipo de alta
+                const form = input.closest('.material-form')
+                const subfamilia = form.querySelector('.select-subfamilia')
+                const unidadMedida = form.querySelector('.select-unidad-medida')
+                var cadenaSubfamilias = ''
+                var cadenaUnidadesMedida = ''
+                // Medidas, material y color no serán visibles para clientes
+                const medidasContainer = form.querySelector('#medidas-container')
+                const materialColorContainer = form.querySelector('#material-color-container')
 
-        // Validación subfamilia
-        var subfamiliaInputs = document.querySelectorAll('.material-subfamilia')
-        subfamiliaInputs.forEach(function(input) {
-            input.addEventListener('focus', function() {
-                var subfamiliaValue = input.value
-                var container = input.closest('.subfamilia-container')
-                var errorSubfamilia = container.querySelector('#error-subfamilia')
-                // Verificar si el campo está vacío
-                if (subfamiliaValue == '') {
-                  errorSubfamilia.style.display = 'block'
-                } else {
-                  errorSubfamilia.style.display = 'none'
+                if (tipoAltaValue === 'Almacén') {
+                  subfamiliasProductoList.forEach(item => {
+                    if (item === ' Seleccione una opción') {
+                      cadenaSubfamilias += `<option value selected>${item}</option>`
+                      return
+                    }
+                    cadenaSubfamilias += `<option value="${item}">${item}</option>`
+                  })
+                  unidadesMedidaList.forEach(item => {
+                    if (item === ' Seleccione una opción') {
+                      cadenaUnidadesMedida += `<option value selected>${item}</option>`
+                      return
+                    }
+                    if (item === 'Servicio') {
+                      return
+                    }
+                    cadenaUnidadesMedida += `<option value="${item}">${item}</option>`
+                  })
+                  // Mostrando las medidas, material y color
+                  medidasContainer.style.display = 'block'
+                  materialColorContainer.style.display = 'flex'
                 }
-            })
-            input.addEventListener('change', function() {
-                var subfamiliaValue = input.value
-                var container = input.closest('.subfamilia-container')
-                var errorSubfamilia = container.querySelector('#error-subfamilia')
-                // Verificar si el campo está vacío
-                if (subfamiliaValue == '') {
-                  errorSubfamilia.style.display = 'block'
-                } else {
-                  errorSubfamilia.style.display = 'none'
+                if (tipoAltaValue === 'Servicio') {
+                  subfamiliasServicioList.forEach(item => {
+                    if (item === ' Seleccione una opción') {
+                      cadenaSubfamilias += `<option value selected>${item}</option>`
+                      return
+                    }
+                    cadenaSubfamilias += `<option value="${item}">${item}</option>`
+                  })
+                  cadenaUnidadesMedida = `<option value selected>Selecciona una opción</option>
+                  <option value="Servicio">Servicio</option>`
+                  // Ocultando las medidas, material y color
+                  medidasContainer.style.display = 'none'
+                  materialColorContainer.style.display = 'none'
                 }
-            })
-        })
+                subfamilia.innerHTML = cadenaSubfamilias
+                unidadMedida.innerHTML = cadenaUnidadesMedida
 
-        // Validación nombre producto
-        var nombreProductoInputs = document.querySelectorAll('.material-nombre')
-        nombreProductoInputs.forEach(function(input) {
-            input.setAttribute('list', 'opciones_material')
-            const validateNombreProducto = () => {
-                // Focus
-                var nombreProductoValue = input.value
-                var container = input.closest('.nombre-producto-container')
-                var errorNombreProducto = container.querySelector('#error-nombre-producto')
-                // Verificar si el campo está vacío
-                if (nombreProductoValue == '') {
-                  errorNombreProducto.style.display = 'block'
-                } else {
-                  errorNombreProducto.style.display = 'none'
-                }
+                // Mostrando los errores de subfamilia y unidad de medida
+                const errorSubfamilia = form.querySelector('#error-subfamilia')
+                const errorUnidadMedida = form.querySelector('#error-unidad-medida')
+                errorSubfamilia.style.display = 'block'
+                errorUnidadMedida.style.display = 'block'
+              }
+          })
+      })
 
-                // Input
-                // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
-                const nombreProductoContainer = input.closest('.nombre-producto-container')
-                const errorNombreProducto2 = nombreProductoContainer.querySelector('#error-nombre-producto-2')
-                datalist.innerHTML = ''
-                for (var i = 0; i < catalogoMaterial.length; i++) {
-                  if (catalogoMaterial[i].value.toUpperCase().startsWith(input.value.toUpperCase())) {
-                    const option = document.createElement('option')
-                    option.value = catalogoMaterial[i].value
-                    option.innerText = catalogoMaterial[i].text
-                    datalist.appendChild(option)
-                  }
-                }
-                if (datalist.childElementCount == 0) {
-                  errorNombreProducto2.style.display = 'none'
-                  enableAllFields(input)
-                } else {
-                  errorNombreProducto2.style.display = 'block'
-                  disableAllFields(input)
-                }
+      // Validación subfamilia
+      var subfamiliaInputs = document.querySelectorAll('.material-subfamilia')
+      subfamiliaInputs.forEach(function(input) {
+          input.addEventListener('focus', function() {
+              var subfamiliaValue = input.value
+              var container = input.closest('.subfamilia-container')
+              var errorSubfamilia = container.querySelector('#error-subfamilia')
+              // Verificar si el campo está vacío
+              if (subfamiliaValue == '') {
+                errorSubfamilia.style.display = 'block'
+              } else {
+                errorSubfamilia.style.display = 'none'
+              }
+          })
+          input.addEventListener('change', function() {
+              var subfamiliaValue = input.value
+              var container = input.closest('.subfamilia-container')
+              var errorSubfamilia = container.querySelector('#error-subfamilia')
+              // Verificar si el campo está vacío
+              if (subfamiliaValue == '') {
+                errorSubfamilia.style.display = 'block'
+              } else {
+                errorSubfamilia.style.display = 'none'
+              }
+          })
+      })
 
-                // Change
-                let showError = false
-                for (var i = 0; i < catalogoMaterial.length; i++) {
-                  if (catalogoMaterial[i].value.toUpperCase() == input.value.toUpperCase()) {
-                    showError = true
-                    break
-                  }
-                }
-                if (showError) {
-                  errorNombreProducto2.style.display = 'block'
-                  disableAllFields(input)
-                } else {
-                  errorNombreProducto2.style.display = 'none'
-                  enableAllFields(input)
-                }
-            }
-
-            const validateNombreProductoOnChange = () => {
+      // Validación nombre producto
+      var nombreProductoInputs = document.querySelectorAll('.material-nombre')
+      nombreProductoInputs.forEach(function(input) {
+          input.setAttribute('list', 'opciones_material')
+          const validateNombreProducto = () => {
               // Focus
               var nombreProductoValue = input.value
               var container = input.closest('.nombre-producto-container')
@@ -850,9 +800,6 @@
               } else {
                 errorNombreProducto.style.display = 'none'
               }
-              
-              // Solo la primera letra será mayúscula
-              input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
 
               // Input
               // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
@@ -890,134 +837,156 @@
                 errorNombreProducto2.style.display = 'none'
                 enableAllFields(input)
               }
-            }
-            input.addEventListener('focus', validateNombreProducto)
-            input.addEventListener('input', validateNombreProducto)
-            input.addEventListener('change', validateNombreProductoOnChange)
-        })
+          }
 
-        // Validación foto producto
-        var fotoProductoInputs = document.querySelectorAll('.material-foto-producto')
-        fotoProductoInputs.forEach(input => {
-            const validateFotoProducto = () => {
-                const fotoProductoContainer = input.closest('.foto-producto-container')
-                const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
-                const deleteImagePreview = fotoProductoContainer.querySelector('#id_btn_delete_foto_producto')
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader()
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                    imagePreview.style.display = 'block'
-                    deleteImagePreview.style.display = 'block'
-                }
-                else {
-                    imagePreview.src = ''
-                    imagePreview.style.display = 'none'
-                    deleteImagePreview.style.display = 'none'
-                }
+          const validateNombreProductoOnChange = () => {
+            // Focus
+            var nombreProductoValue = input.value
+            var container = input.closest('.nombre-producto-container')
+            var errorNombreProducto = container.querySelector('#error-nombre-producto')
+            // Verificar si el campo está vacío
+            if (nombreProductoValue == '') {
+              errorNombreProducto.style.display = 'block'
+            } else {
+              errorNombreProducto.style.display = 'none'
             }
-            input.addEventListener('change', validateFotoProducto)
-        })
+            
+            // Solo la primera letra será mayúscula
+            input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
 
-        // Validación eliminar foto producto
-        var deleteFotoProductoButtons = document.querySelectorAll('.btn-delete-foto-producto')
-        deleteFotoProductoButtons.forEach(input => {
-            const deleteFotoProducto = () => {
-                const fotoProductoContainer = input.closest('.foto-producto-container')
-                const fotoProducto = fotoProductoContainer.querySelector('.material-foto-producto')
-                const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
-                const deleteImagePreview = fotoProductoContainer.querySelector('#id_btn_delete_foto_producto')
-                fotoProducto.value = ''
-                imagePreview.src = ''
-                imagePreview.style.display = 'none'
-                deleteImagePreview.style.display = 'none'
+            // Input
+            // Filtrando las opciones del catálogo que empiecen con el valor de nombre producto
+            const nombreProductoContainer = input.closest('.nombre-producto-container')
+            const errorNombreProducto2 = nombreProductoContainer.querySelector('#error-nombre-producto-2')
+            datalist.innerHTML = ''
+            for (var i = 0; i < catalogoMaterial.length; i++) {
+              if (catalogoMaterial[i].value.toUpperCase().startsWith(input.value.toUpperCase())) {
+                const option = document.createElement('option')
+                option.value = catalogoMaterial[i].value
+                option.innerText = catalogoMaterial[i].text
+                datalist.appendChild(option)
+              }
             }
-            input.addEventListener('click', deleteFotoProducto)
-        })
+            if (datalist.childElementCount == 0) {
+              errorNombreProducto2.style.display = 'none'
+              enableAllFields(input)
+            } else {
+              errorNombreProducto2.style.display = 'block'
+              disableAllFields(input)
+            }
 
-        // Validación ficha técnica
-        var fichaTecnicaInputs = document.querySelectorAll('.material-ficha-tecnica')
-        fichaTecnicaInputs.forEach(input => {
-            const validateFichaTecnica = () => {
-                const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
-                const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
-                const deleteImagePreview = fichaTecnicaContainer.querySelector('#id_btn_delete_ficha_tecnica')
-                if (input.files && input.files[0]) {
-                  if (input.files[0].type.startsWith('image/')) {
-                      var reader = new FileReader()
-                      reader.onload = function(e) {
-                          imagePreview.src = e.target.result
-                      }
-                      reader.readAsDataURL(input.files[0])
-                  }
-                  else {
-                      imagePreview.src = '../../../static/images/pdf-default.png'
-                  }
+            // Change
+            let showError = false
+            for (var i = 0; i < catalogoMaterial.length; i++) {
+              if (catalogoMaterial[i].value.toUpperCase() == input.value.toUpperCase()) {
+                showError = true
+                break
+              }
+            }
+            if (showError) {
+              errorNombreProducto2.style.display = 'block'
+              disableAllFields(input)
+            } else {
+              errorNombreProducto2.style.display = 'none'
+              enableAllFields(input)
+            }
+          }
+          input.addEventListener('focus', validateNombreProducto)
+          input.addEventListener('input', validateNombreProducto)
+          input.addEventListener('change', validateNombreProductoOnChange)
+      })
+
+      // Validación foto producto
+      var fotoProductoInputs = document.querySelectorAll('.material-foto-producto')
+      fotoProductoInputs.forEach(input => {
+          const validateFotoProducto = () => {
+              const fotoProductoContainer = input.closest('.foto-producto-container')
+              const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
+              const deleteImagePreview = fotoProductoContainer.querySelector('#id_btn_delete_foto_producto')
+              if (input.files && input.files[0]) {
+                  var reader = new FileReader()
+                  reader.onload = function(e) {
+                      imagePreview.src = e.target.result;
+                  };
+                  reader.readAsDataURL(input.files[0]);
                   imagePreview.style.display = 'block'
                   deleteImagePreview.style.display = 'block'
+              }
+              else {
+                  imagePreview.src = ''
+                  imagePreview.style.display = 'none'
+                  deleteImagePreview.style.display = 'none'
+              }
+          }
+          input.addEventListener('change', validateFotoProducto)
+      })
+
+      // Validación eliminar foto producto
+      var deleteFotoProductoButtons = document.querySelectorAll('.btn-delete-foto-producto')
+      deleteFotoProductoButtons.forEach(input => {
+          const deleteFotoProducto = () => {
+              const fotoProductoContainer = input.closest('.foto-producto-container')
+              const fotoProducto = fotoProductoContainer.querySelector('.material-foto-producto')
+              const imagePreview = fotoProductoContainer.querySelector('#id_foto_producto_img')
+              const deleteImagePreview = fotoProductoContainer.querySelector('#id_btn_delete_foto_producto')
+              fotoProducto.value = ''
+              imagePreview.src = ''
+              imagePreview.style.display = 'none'
+              deleteImagePreview.style.display = 'none'
+          }
+          input.addEventListener('click', deleteFotoProducto)
+      })
+
+      // Validación ficha técnica
+      var fichaTecnicaInputs = document.querySelectorAll('.material-ficha-tecnica')
+      fichaTecnicaInputs.forEach(input => {
+          const validateFichaTecnica = () => {
+              const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
+              const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
+              const deleteImagePreview = fichaTecnicaContainer.querySelector('#id_btn_delete_ficha_tecnica')
+              if (input.files && input.files[0]) {
+                if (input.files[0].type.startsWith('image/')) {
+                    var reader = new FileReader()
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result
+                    }
+                    reader.readAsDataURL(input.files[0])
                 }
                 else {
-                    imagePreview.src = ''
-                    imagePreview.style.display = 'none'
-                    deleteImagePreview.style.display = 'none'
+                    imagePreview.src = '../../../static/images/pdf-default.png'
                 }
-            }
-            input.addEventListener('change', validateFichaTecnica)
-        })
+                imagePreview.style.display = 'block'
+                deleteImagePreview.style.display = 'block'
+              }
+              else {
+                  imagePreview.src = ''
+                  imagePreview.style.display = 'none'
+                  deleteImagePreview.style.display = 'none'
+              }
+          }
+          input.addEventListener('change', validateFichaTecnica)
+      })
 
-        // Validación eliminar ficha técnica
-        var deleteFichaTecnicaButtons = document.querySelectorAll('.btn-delete-ficha-tecnica')
-        deleteFichaTecnicaButtons.forEach(input => {
-            const deleteFichaTecnica = () => {
-                const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
-                const fichaTecnica = fichaTecnicaContainer.querySelector('.material-ficha-tecnica')
-                const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
-                const deleteImagePreview = fichaTecnicaContainer.querySelector('#id_btn_delete_ficha_tecnica')
-                fichaTecnica.value = ''
-                imagePreview.src = ''
-                imagePreview.style.display = 'none'
-                deleteImagePreview.style.display = 'none'
-            }
-            input.addEventListener('click', deleteFichaTecnica)
-        })
+      // Validación eliminar ficha técnica
+      var deleteFichaTecnicaButtons = document.querySelectorAll('.btn-delete-ficha-tecnica')
+      deleteFichaTecnicaButtons.forEach(input => {
+          const deleteFichaTecnica = () => {
+              const fichaTecnicaContainer = input.closest('.ficha-tecnica-container')
+              const fichaTecnica = fichaTecnicaContainer.querySelector('.material-ficha-tecnica')
+              const imagePreview = fichaTecnicaContainer.querySelector('#id_ficha_tecnica_img')
+              const deleteImagePreview = fichaTecnicaContainer.querySelector('#id_btn_delete_ficha_tecnica')
+              fichaTecnica.value = ''
+              imagePreview.src = ''
+              imagePreview.style.display = 'none'
+              deleteImagePreview.style.display = 'none'
+          }
+          input.addEventListener('click', deleteFichaTecnica)
+      })
 
-        // Validación largo
-        var largoInputs = document.querySelectorAll('.material-largo')
-        largoInputs.forEach(input => {
-            input.addEventListener('input', () => {
-                var largoValue = input.value
-                var container = input.closest('.largo-container')
-                var errorLargo = container.querySelector('#error-largo')
-                // Verificar si el valor es "N/A", numérico o fracción
-                if (largoValue === 'N/A' || 
-                  !isNaN(parseFloat(largoValue)) && isFinite(largoValue) || 
-                  fraccionPattern.test(largoValue)) {
-                    errorLargo.style.display = 'none'
-                    enableAllFields(input)
-                    if (largoValue === 'N/A') {
-                      const medidasContainer = input.closest('#medidas-container')
-                      const medidaLargo = medidasContainer.querySelector('.select-um-largo')
-                      const labelLargo = medidasContainer.querySelector('#label-largo')
-                      medidaLargo.value = ''
-                      labelLargo.style.display = 'block'
-                      labelLargo.innerHTML = 'No aplica'
-                    }
-                } else {
-                    errorLargo.style.display = 'block'
-                    disableAllFields(input)
-                }
-            })
-            input.addEventListener('focus', () => {
-              var medidasContainer = input.closest('#medidas-container')
-              var selectLargo = medidasContainer.querySelector('#select-largo')
-              var selectAncho = medidasContainer.querySelector('#select-ancho')
-              var selectAlto = medidasContainer.querySelector('#select-alto')
-              selectLargo.style.display = 'block'
-              selectAncho.style.display = 'none'
-              selectAlto.style.display = 'none'
-              
+      // Validación largo
+      var largoInputs = document.querySelectorAll('.material-largo')
+      largoInputs.forEach(input => {
+          input.addEventListener('input', () => {
               var largoValue = input.value
               var container = input.closest('.largo-container')
               var errorLargo = container.querySelector('#error-largo')
@@ -1027,597 +996,1250 @@
                 fraccionPattern.test(largoValue)) {
                   errorLargo.style.display = 'none'
                   enableAllFields(input)
+                  if (largoValue === 'N/A') {
+                    const medidasContainer = input.closest('#medidas-container')
+                    const medidaLargo = medidasContainer.querySelector('.select-um-largo')
+                    const labelLargo = medidasContainer.querySelector('#label-largo')
+                    medidaLargo.value = ''
+                    labelLargo.style.display = 'block'
+                    labelLargo.innerHTML = 'No aplica'
+                  }
               } else {
                   errorLargo.style.display = 'block'
                   disableAllFields(input)
               }
-            })
-            input.addEventListener('change', () => {
-              input.value = input.value.toUpperCase()
-            })
-        })
-
-        // Validación ancho
-        var anchoInputs = document.querySelectorAll('.material-ancho')
-        anchoInputs.forEach(function(input) {
-            input.addEventListener('input', function() {
-                var anchoValue = input.value
-                var container = input.closest('.ancho-container')
-                var errorAncho = container.querySelector('#error-ancho')
-                // Verificar si el valor es "N/A", numérico o fracción
-                if (anchoValue === 'N/A' || 
-                  !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue) || 
-                  fraccionPattern.test(anchoValue)) {
-                    errorAncho.style.display = 'none'
-                    enableAllFields(input)
-                    const medidasContainer = input.closest('#medidas-container')
-                    const medidaAncho = medidasContainer.querySelector('.select-um-ancho')
-                    const labelAncho = medidasContainer.querySelector('#label-ancho')
-                    labelAncho.style.display = 'block'
-                    if (anchoValue === 'N/A') {
-                      medidaAncho.value = ''
-                      labelAncho.innerHTML = 'No aplica'
-                    }
-                    else {
-                      if (medidasIguales) {
-                        const medidaLargo = medidasContainer.querySelector('.select-um-largo')
-                        medidaAncho.value = medidaLargo.value
-                        labelAncho.innerHTML = medidaAncho.value
-                      }
-                    }
-                } else {
-                    errorAncho.style.display = 'block'
-                    disableAllFields(input)
-                }
-            })
-            input.addEventListener('focus', () => {
-              if (!medidasIguales) {
-                var medidasContainer = input.closest('#medidas-container')
-                var selectLargo = medidasContainer.querySelector('#select-largo')
-                var selectAncho = medidasContainer.querySelector('#select-ancho')
-                var selectAlto = medidasContainer.querySelector('#select-alto')
-                selectLargo.style.display = 'none'
-                selectAncho.style.display = 'block'
-                selectAlto.style.display = 'none'
-                
-                var anchoValue = input.value
-                var container = input.closest('.ancho-container')
-                var errorAncho = container.querySelector('#error-ancho')
-                // Verificar si el valor es "N/A", numérico o fracción
-                if (anchoValue === 'N/A' || 
-                  !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue) || 
-                  fraccionPattern.test(anchoValue)) {
-                    errorAncho.style.display = 'none'
-                    enableAllFields(input)
-                } else {
-                    errorAncho.style.display = 'block'
-                    disableAllFields(input)
-                }
-              }
-            })
-            input.addEventListener('change', () => {
-              input.value = input.value.toUpperCase()
-            })
-        })
-
-        // Validación alto
-        var altoInputs = document.querySelectorAll('.material-alto')
-        altoInputs.forEach(function(input) {
-            input.addEventListener('input', function() {
-                var altoValue = input.value
-                var container = input.closest('.alto-container')
-                var errorAlto = container.querySelector('#error-alto')
-                // Verificar si el valor es "N/A", numérico o fracción
-                if (altoValue === 'N/A' || 
-                  !isNaN(parseFloat(altoValue)) && isFinite(altoValue) || 
-                  fraccionPattern.test(altoValue)) {
-                    errorAlto.style.display = 'none'
-                    enableAllFields(input)
-                    const medidasContainer = input.closest('#medidas-container')
-                    const medidaAlto = medidasContainer.querySelector('.select-um-alto')
-                    const labelAlto = medidasContainer.querySelector('#label-alto')
-                    labelAlto.style.display = 'block'
-                    if (altoValue === 'N/A') {
-                      medidaAlto.value = ''
-                      labelAlto.innerHTML = 'No aplica'
-                    }
-                    else {
-                      if (medidasIguales) {
-                        const medidaLargo = medidasContainer.querySelector('.select-um-largo')
-                        medidaAlto.value = medidaLargo.value
-                        labelAlto.innerHTML = medidaAlto.value
-                      }
-                    }
-                } else {
-                    errorAlto.style.display = 'block'
-                    disableAllFields(input)
-                }
-            })
-            input.addEventListener('focus', () => {
-              if (!medidasIguales) {
-                var medidasContainer = input.closest('#medidas-container')
-                var selectLargo = medidasContainer.querySelector('#select-largo')
-                var selectAncho = medidasContainer.querySelector('#select-ancho')
-                var selectAlto = medidasContainer.querySelector('#select-alto')
-                selectLargo.style.display = 'none'
-                selectAncho.style.display = 'none'
-                selectAlto.style.display = 'block'
-
-                var altoValue = input.value
-                var container = input.closest('.alto-container')
-                var errorAlto = container.querySelector('#error-alto')
-                // Verificar si el valor es "N/A", numérico o fracción
-                if (altoValue === 'N/A' || 
-                  !isNaN(parseFloat(altoValue)) && isFinite(altoValue) || 
-                  fraccionPattern.test(altoValue)) {
-                    errorAlto.style.display = 'none'
-                    enableAllFields(input)
-                } else {
-                    errorAlto.style.display = 'block'
-                    disableAllFields(input)
-                }
-              }
-            })
-            input.addEventListener('change', () => {
-              input.value = input.value.toUpperCase()
-            })
-        })
-
-        // Validación medidas iguales
-        var mismaMedidaInputs = document.querySelectorAll('.medidas-iguales')
-        mismaMedidaInputs.forEach(input => {
-          input.addEventListener('change', () => {
-            if (input.checked) {
-              var unidadesMedidaContainer = input.closest('#id-unidades-medida')
-              var largo = unidadesMedidaContainer.querySelector('.select-um-largo')
-              var ancho = unidadesMedidaContainer.querySelector('.select-um-ancho')
-              var alto = unidadesMedidaContainer.querySelector('.select-um-alto')
-              ancho.value = largo.value
-              alto.value = largo.value
-              unidadesMedidaContainer.querySelector('#select-largo').style.display = 'block'
-              unidadesMedidaContainer.querySelector('#select-ancho').style.display = 'none'
-              unidadesMedidaContainer.querySelector('#select-alto').style.display = 'none'
-              medidasIguales = true
-            }
-            else {
-              medidasIguales = false
-            }
           })
-        })
-
-        // Validación unidad de medida para largo
-        var umLargoInputs = document.querySelectorAll('.select-um-largo')
-        umLargoInputs.forEach(input => {
-          input.addEventListener('change', () => {
-            const medidasContainer = input.closest('#medidas-container')
-            const largo = medidasContainer.querySelector('.material-largo')
-            const labelLargo = medidasContainer.querySelector('#label-largo')
-            labelLargo.style.display = 'block'
-            if (largo.value === 'N/A') {
-              labelLargo.innerText = 'No aplica'
+          input.addEventListener('focus', () => {
+            var medidasContainer = input.closest('#medidas-container')
+            var selectLargo = medidasContainer.querySelector('#select-largo')
+            var selectAncho = medidasContainer.querySelector('#select-ancho')
+            var selectAlto = medidasContainer.querySelector('#select-alto')
+            selectLargo.style.display = 'block'
+            selectAncho.style.display = 'none'
+            selectAlto.style.display = 'none'
+            
+            var largoValue = input.value
+            var container = input.closest('.largo-container')
+            var errorLargo = container.querySelector('#error-largo')
+            // Verificar si el valor es "N/A", numérico o fracción
+            if (largoValue === 'N/A' || 
+              !isNaN(parseFloat(largoValue)) && isFinite(largoValue) || 
+              fraccionPattern.test(largoValue)) {
+                errorLargo.style.display = 'none'
+                enableAllFields(input)
             } else {
-              labelLargo.innerText = input.value
+                errorLargo.style.display = 'block'
+                disableAllFields(input)
             }
-            if (medidasIguales) {
-              const ancho = medidasContainer.querySelector('.material-ancho')
-              const alto = medidasContainer.querySelector('.material-alto')
-              const umAncho = medidasContainer.querySelector('.select-um-ancho')
-              const umAlto = medidasContainer.querySelector('.select-um-alto')
-              umAncho.value = input.value
-              umAlto.value = input.value
-              
-              const labelAncho = medidasContainer.querySelector('#label-ancho')
-              labelAncho.style.display = 'block'
-              if (ancho.value === 'N/A') {
-                labelAncho.innerText = 'No aplica'
+          })
+          input.addEventListener('change', () => {
+            input.value = input.value.toUpperCase()
+          })
+      })
+
+      // Validación ancho
+      var anchoInputs = document.querySelectorAll('.material-ancho')
+      anchoInputs.forEach(function(input) {
+          input.addEventListener('input', function() {
+              var anchoValue = input.value
+              var container = input.closest('.ancho-container')
+              var errorAncho = container.querySelector('#error-ancho')
+              // Verificar si el valor es "N/A", numérico o fracción
+              if (anchoValue === 'N/A' || 
+                !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue) || 
+                fraccionPattern.test(anchoValue)) {
+                  errorAncho.style.display = 'none'
+                  enableAllFields(input)
+                  const medidasContainer = input.closest('#medidas-container')
+                  const medidaAncho = medidasContainer.querySelector('.select-um-ancho')
+                  const labelAncho = medidasContainer.querySelector('#label-ancho')
+                  labelAncho.style.display = 'block'
+                  if (anchoValue === 'N/A') {
+                    medidaAncho.value = ''
+                    labelAncho.innerHTML = 'No aplica'
+                  }
+                  else {
+                    if (medidasIguales) {
+                      const medidaLargo = medidasContainer.querySelector('.select-um-largo')
+                      medidaAncho.value = medidaLargo.value
+                      labelAncho.innerHTML = medidaAncho.value
+                    }
+                  }
               } else {
-                labelAncho.innerText = umAncho.value
+                  errorAncho.style.display = 'block'
+                  disableAllFields(input)
               }
+          })
+          input.addEventListener('focus', () => {
+            if (!medidasIguales) {
+              var medidasContainer = input.closest('#medidas-container')
+              var selectLargo = medidasContainer.querySelector('#select-largo')
+              var selectAncho = medidasContainer.querySelector('#select-ancho')
+              var selectAlto = medidasContainer.querySelector('#select-alto')
+              selectLargo.style.display = 'none'
+              selectAncho.style.display = 'block'
+              selectAlto.style.display = 'none'
               
-              const labelAlto = medidasContainer.querySelector('#label-alto')
-              labelAlto.style.display = 'block'
-              if (alto.value === 'N/A') {
-                labelAlto.innerText = 'No aplica'
+              var anchoValue = input.value
+              var container = input.closest('.ancho-container')
+              var errorAncho = container.querySelector('#error-ancho')
+              // Verificar si el valor es "N/A", numérico o fracción
+              if (anchoValue === 'N/A' || 
+                !isNaN(parseFloat(anchoValue)) && isFinite(anchoValue) || 
+                fraccionPattern.test(anchoValue)) {
+                  errorAncho.style.display = 'none'
+                  enableAllFields(input)
               } else {
-                labelAlto.innerText = umAlto.value
+                  errorAncho.style.display = 'block'
+                  disableAllFields(input)
               }
             }
           })
-        })
-
-        // Validación unidad de medida para ancho
-        var umAnchoInputs = document.querySelectorAll('.select-um-ancho')
-        umAnchoInputs.forEach(input => {
           input.addEventListener('change', () => {
-            const medidasContainer = input.closest('#medidas-container')
+            input.value = input.value.toUpperCase()
+          })
+      })
+
+      // Validación alto
+      var altoInputs = document.querySelectorAll('.material-alto')
+      altoInputs.forEach(function(input) {
+          input.addEventListener('input', function() {
+              var altoValue = input.value
+              var container = input.closest('.alto-container')
+              var errorAlto = container.querySelector('#error-alto')
+              // Verificar si el valor es "N/A", numérico o fracción
+              if (altoValue === 'N/A' || 
+                !isNaN(parseFloat(altoValue)) && isFinite(altoValue) || 
+                fraccionPattern.test(altoValue)) {
+                  errorAlto.style.display = 'none'
+                  enableAllFields(input)
+                  const medidasContainer = input.closest('#medidas-container')
+                  const medidaAlto = medidasContainer.querySelector('.select-um-alto')
+                  const labelAlto = medidasContainer.querySelector('#label-alto')
+                  labelAlto.style.display = 'block'
+                  if (altoValue === 'N/A') {
+                    medidaAlto.value = ''
+                    labelAlto.innerHTML = 'No aplica'
+                  }
+                  else {
+                    if (medidasIguales) {
+                      const medidaLargo = medidasContainer.querySelector('.select-um-largo')
+                      medidaAlto.value = medidaLargo.value
+                      labelAlto.innerHTML = medidaAlto.value
+                    }
+                  }
+              } else {
+                  errorAlto.style.display = 'block'
+                  disableAllFields(input)
+              }
+          })
+          input.addEventListener('focus', () => {
+            if (!medidasIguales) {
+              var medidasContainer = input.closest('#medidas-container')
+              var selectLargo = medidasContainer.querySelector('#select-largo')
+              var selectAncho = medidasContainer.querySelector('#select-ancho')
+              var selectAlto = medidasContainer.querySelector('#select-alto')
+              selectLargo.style.display = 'none'
+              selectAncho.style.display = 'none'
+              selectAlto.style.display = 'block'
+
+              var altoValue = input.value
+              var container = input.closest('.alto-container')
+              var errorAlto = container.querySelector('#error-alto')
+              // Verificar si el valor es "N/A", numérico o fracción
+              if (altoValue === 'N/A' || 
+                !isNaN(parseFloat(altoValue)) && isFinite(altoValue) || 
+                fraccionPattern.test(altoValue)) {
+                  errorAlto.style.display = 'none'
+                  enableAllFields(input)
+              } else {
+                  errorAlto.style.display = 'block'
+                  disableAllFields(input)
+              }
+            }
+          })
+          input.addEventListener('change', () => {
+            input.value = input.value.toUpperCase()
+          })
+      })
+
+      // Validación medidas iguales
+      var mismaMedidaInputs = document.querySelectorAll('.medidas-iguales')
+      mismaMedidaInputs.forEach(input => {
+        input.addEventListener('change', () => {
+          if (input.checked) {
+            var unidadesMedidaContainer = input.closest('#id-unidades-medida')
+            var largo = unidadesMedidaContainer.querySelector('.select-um-largo')
+            var ancho = unidadesMedidaContainer.querySelector('.select-um-ancho')
+            var alto = unidadesMedidaContainer.querySelector('.select-um-alto')
+            ancho.value = largo.value
+            alto.value = largo.value
+            unidadesMedidaContainer.querySelector('#select-largo').style.display = 'block'
+            unidadesMedidaContainer.querySelector('#select-ancho').style.display = 'none'
+            unidadesMedidaContainer.querySelector('#select-alto').style.display = 'none'
+            medidasIguales = true
+          }
+          else {
+            medidasIguales = false
+          }
+        })
+      })
+
+      // Validación unidad de medida para largo
+      var umLargoInputs = document.querySelectorAll('.select-um-largo')
+      umLargoInputs.forEach(input => {
+        input.addEventListener('change', () => {
+          const medidasContainer = input.closest('#medidas-container')
+          const largo = medidasContainer.querySelector('.material-largo')
+          const labelLargo = medidasContainer.querySelector('#label-largo')
+          labelLargo.style.display = 'block'
+          if (largo.value === 'N/A') {
+            labelLargo.innerText = 'No aplica'
+          } else {
+            labelLargo.innerText = input.value
+          }
+          if (medidasIguales) {
             const ancho = medidasContainer.querySelector('.material-ancho')
+            const alto = medidasContainer.querySelector('.material-alto')
+            const umAncho = medidasContainer.querySelector('.select-um-ancho')
+            const umAlto = medidasContainer.querySelector('.select-um-alto')
+            umAncho.value = input.value
+            umAlto.value = input.value
+            
             const labelAncho = medidasContainer.querySelector('#label-ancho')
             labelAncho.style.display = 'block'
             if (ancho.value === 'N/A') {
               labelAncho.innerText = 'No aplica'
             } else {
-              labelAncho.innerText = input.value
+              labelAncho.innerText = umAncho.value
             }
-          })
-        })
-
-        // Validación unidad de medida para alto
-        var umAltoInputs = document.querySelectorAll('.select-um-alto')
-        umAltoInputs.forEach(input => {
-          input.addEventListener('change', () => {
-            const medidasContainer = input.closest('#medidas-container')
-            const alto = medidasContainer.querySelector('.material-alto')
+            
             const labelAlto = medidasContainer.querySelector('#label-alto')
             labelAlto.style.display = 'block'
             if (alto.value === 'N/A') {
               labelAlto.innerText = 'No aplica'
             } else {
-              labelAlto.innerText = input.value
+              labelAlto.innerText = umAlto.value
             }
-          })
+          }
         })
+      })
 
-        // Validación material
-        const validateMaterial = input => {
-          var materialValue = input.value
-          var container = input.closest('.material-container')
-          var errorMaterial = container.querySelector('#error-material')
-          if (materialValue == '') {
-              errorMaterial.style.display = 'block'
-              disableAllFields(input)
+      // Validación unidad de medida para ancho
+      var umAnchoInputs = document.querySelectorAll('.select-um-ancho')
+      umAnchoInputs.forEach(input => {
+        input.addEventListener('change', () => {
+          const medidasContainer = input.closest('#medidas-container')
+          const ancho = medidasContainer.querySelector('.material-ancho')
+          const labelAncho = medidasContainer.querySelector('#label-ancho')
+          labelAncho.style.display = 'block'
+          if (ancho.value === 'N/A') {
+            labelAncho.innerText = 'No aplica'
           } else {
-              errorMaterial.style.display = 'none'
-              enableAllFields(input)
+            labelAncho.innerText = input.value
           }
-        }
-        const validateMaterialOnChange = input => {
-          // Solo la primera letra será mayúscula
-          input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
-        }
-        var materialInputs = document.querySelectorAll('.material-material')
-        materialInputs.forEach(input => {
-            input.addEventListener('focus', () => validateMaterial(input))
-            input.addEventListener('input', () => validateMaterial(input))
-            input.addEventListener('change', () => validateMaterialOnChange(input))
         })
+      })
 
-        // Validación color
-        const validateColor = input => {
-          var colorValue = input.value
-          var container = input.closest('.color-container')
-          var errorColor = container.querySelector('#error-color')
-          if (colorValue == '') {
-              errorColor.style.display = 'block'
-              disableAllFields(input)
+      // Validación unidad de medida para alto
+      var umAltoInputs = document.querySelectorAll('.select-um-alto')
+      umAltoInputs.forEach(input => {
+        input.addEventListener('change', () => {
+          const medidasContainer = input.closest('#medidas-container')
+          const alto = medidasContainer.querySelector('.material-alto')
+          const labelAlto = medidasContainer.querySelector('#label-alto')
+          labelAlto.style.display = 'block'
+          if (alto.value === 'N/A') {
+            labelAlto.innerText = 'No aplica'
           } else {
-              errorColor.style.display = 'none'
-              enableAllFields(input)
+            labelAlto.innerText = input.value
           }
+        })
+      })
+
+      // Validación material
+      const validateMaterial = input => {
+        var materialValue = input.value
+        var container = input.closest('.material-container')
+        var errorMaterial = container.querySelector('#error-material')
+        if (materialValue == '') {
+            errorMaterial.style.display = 'block'
+            disableAllFields(input)
+        } else {
+            errorMaterial.style.display = 'none'
+            enableAllFields(input)
         }
-        const validateColorOnChange = input => {
-          // Solo la primera letra será mayúscula
-          input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+      }
+      const validateMaterialOnChange = input => {
+        // Solo la primera letra será mayúscula
+        input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+      }
+      var materialInputs = document.querySelectorAll('.material-material')
+      materialInputs.forEach(input => {
+          input.addEventListener('focus', () => validateMaterial(input))
+          input.addEventListener('input', () => validateMaterial(input))
+          input.addEventListener('change', () => validateMaterialOnChange(input))
+      })
+
+      // Validación color
+      const validateColor = input => {
+        var colorValue = input.value
+        var container = input.closest('.color-container')
+        var errorColor = container.querySelector('#error-color')
+        if (colorValue == '') {
+            errorColor.style.display = 'block'
+            disableAllFields(input)
+        } else {
+            errorColor.style.display = 'none'
+            enableAllFields(input)
         }
-        var colorInputs = document.querySelectorAll('.material-color')
-        colorInputs.forEach(input => {
-            input.addEventListener('focus', () => validateColor(input))
-            input.addEventListener('input', () => validateColor(input))
-            input.addEventListener('change', () => validateColorOnChange(input))
-        })
+      }
+      const validateColorOnChange = input => {
+        // Solo la primera letra será mayúscula
+        input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+      }
+      var colorInputs = document.querySelectorAll('.material-color')
+      colorInputs.forEach(input => {
+          input.addEventListener('focus', () => validateColor(input))
+          input.addEventListener('input', () => validateColor(input))
+          input.addEventListener('change', () => validateColorOnChange(input))
+      })
 
-        // Validación marca
-        const validateMarca = input => {
-          // Solo la primera letra será mayúscula
-          input.value = input.value != '' ? firstLetterOfEachWordCapitalized(input.value) : ''
-        }
-        var marcaInputs = document.querySelectorAll('.material-marca')
-        marcaInputs.forEach(input => {
-            input.addEventListener('change', () => validateMarca(input))
-        })
+      // Validación marca
+      const validateMarca = input => {
+        // Solo la primera letra será mayúscula
+        input.value = input.value != '' ? firstLetterOfEachWordCapitalized(input.value) : ''
+      }
+      var marcaInputs = document.querySelectorAll('.material-marca')
+      marcaInputs.forEach(input => {
+          input.addEventListener('change', () => validateMarca(input))
+      })
 
-        // Validación nombre común
-        const validateNombreComun = input => {
-          // Solo la primera letra será mayúscula
-          input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
-        }
-        var nombreComunInputs = document.querySelectorAll('.material-nombre-comun')
-        nombreComunInputs.forEach(input => {
-            input.addEventListener('change', () => validateNombreComun(input))
-        })
+      // Validación nombre común
+      const validateNombreComun = input => {
+        // Solo la primera letra será mayúscula
+        input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+      }
+      var nombreComunInputs = document.querySelectorAll('.material-nombre-comun')
+      nombreComunInputs.forEach(input => {
+          input.addEventListener('change', () => validateNombreComun(input))
+      })
 
-        // Validación porcentaje de IVA
-        var porcentajeIvaInputs = document.querySelectorAll('.material-porcentaje-iva')
-        porcentajeIvaInputs.forEach(input => {
-            input.addEventListener('focus', () => {
-                var porcentajeIvaValue = input.value
-                var container = input.closest('.porcentaje-iva-container')
-                var errorPorcentajeIva = container.querySelector('#error-porcentaje-iva')
-                // Verificar si el campo está vacío
-                if (porcentajeIvaValue == '') {
-                  errorPorcentajeIva.style.display = 'block'
-                } else {
-                  errorPorcentajeIva.style.display = 'none'
-                }
-            })
-            input.addEventListener('change', () => {
-                var porcentajeIvaValue = input.value
-                var container = input.closest('.porcentaje-iva-container')
-                var errorPorcentajeIva = container.querySelector('#error-porcentaje-iva')
-                // Verificar si el campo está vacío
-                if (porcentajeIvaValue == '') {
-                  errorPorcentajeIva.style.display = 'block'
-                } else {
-                  errorPorcentajeIva.style.display = 'none'
-                }
-            })
-        })
-
-        // Validación alias
-        const validateAlias = input => {
-          // Solo la primera letra será mayúscula
-          input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
-        }
-        var aliasInputs = document.querySelectorAll('.material-alias')
-        aliasInputs.forEach(input => {
-            input.addEventListener('change', () => validateAlias(input))
-        })
-
-        // Validación unidad de medida
-        var unidadMedidaInputs = document.querySelectorAll('.material-unidad-medida')
-        unidadMedidaInputs.forEach(function(input) {
-            input.addEventListener('focus', function() {
-                var unidadMedidaValue = input.value
-                var container = input.closest('.unidad-medida-container')
-                var errorUnidadMedida = container.querySelector('#error-unidad-medida')
-                // Verificar si el campo está vacío
-                if (unidadMedidaValue == '') {
-                  errorUnidadMedida.style.display = 'block'
-                } else {
-                  errorUnidadMedida.style.display = 'none'
-                }
-            })
-            input.addEventListener('change', function() {
-                var unidadMedidaValue = input.value
-                var container = input.closest('.unidad-medida-container')
-                var errorUnidadMedida = container.querySelector('#error-unidad-medida')
-                // Verificar si el campo está vacío
-                if (unidadMedidaValue == '') {
-                  errorUnidadMedida.style.display = 'block'
-                } else {
-                  errorUnidadMedida.style.display = 'none'
-                }
-            })
-        })
-
-        const disableAllFields = input => {
-          const tableButtons = tableMaterials.querySelectorAll('a, button')
-          const form = input.closest('.material-form')
-          const tipoAlta = form.querySelector('.material-tipo-alta')
-          const subfamilia = form.querySelector('.material-subfamilia')
-          const nombre = form.querySelector('.material-nombre')
-          const fotoProductoInput = form.querySelector('.material-foto-producto')
-          const fotoProductoImg = form.querySelector('#id_foto_producto_img')
-          const fichaTecnicaInput = form.querySelector('.material-ficha-tecnica')
-          const fichaTecnicaImg = form.querySelector('#id_ficha_tecnica_img')
-          const largo = form.querySelector('.material-largo')
-          const ancho = form.querySelector('.material-ancho')
-          const alto = form.querySelector('.material-alto')
-          const medidasIguales = form.querySelector('.medidas-iguales')
-          const umLargo = form.querySelector('.material-um-largo')
-          const umAncho = form.querySelector('.material-um-ancho')
-          const umAlto = form.querySelector('.material-um-alto')
-          const material = form.querySelector('.material-material')
-          const color = form.querySelector('.material-color')
-          const marca = form.querySelector('.material-marca')
-          const parteModelo = form.querySelector('.material-parte-modelo')
-          const nombreComun = form.querySelector('.material-nombre-comun')
-          const ingActivo = form.querySelector('.material-ing-activo')
-          const porcentajeIva = form.querySelector('.material-porcentaje-iva')
-          const alias = form.querySelector('.material-alias')
-          const unidadMedida = form.querySelector('.material-unidad-medida')
-          const codigoSat = form.querySelector('.material-codigo-sat')
-          const esMezcla = form.querySelector('.material-es-mezcla')
-          const esMaterialEmpaque = form.querySelector('.material-es-material-empaque')
-          const esProdTerminado = form.querySelector('.material-es-prod-terminado')
-          const addMaterial = document.querySelector('#add-material')
-          
-          tableButtons.forEach(button => {
-            button.setAttribute('disabled', true)
+      // Validación porcentaje de IVA
+      var porcentajeIvaInputs = document.querySelectorAll('.material-porcentaje-iva')
+      porcentajeIvaInputs.forEach(input => {
+          input.addEventListener('focus', () => {
+              var porcentajeIvaValue = input.value
+              var container = input.closest('.porcentaje-iva-container')
+              var errorPorcentajeIva = container.querySelector('#error-porcentaje-iva')
+              // Verificar si el campo está vacío
+              if (porcentajeIvaValue == '') {
+                errorPorcentajeIva.style.display = 'block'
+              } else {
+                errorPorcentajeIva.style.display = 'none'
+              }
           })
-          tipoAlta.setAttribute('disabled', true)
-          subfamilia.setAttribute('disabled', true)
-          if (!input.classList.contains('material-nombre')) {
-            nombre.setAttribute('disabled', true)
-          }
-          fotoProductoInput.setAttribute('disabled', true)
-          fotoProductoImg.style.opacity = 0.5
-          fichaTecnicaInput.setAttribute('disabled', true)
-          fichaTecnicaImg.style.opacity = 0.5
-          if (!input.classList.contains('material-largo')) {
-            largo.setAttribute('disabled', true)
-          }
-          if (!input.classList.contains('material-ancho')) {
-            ancho.setAttribute('disabled', true)
-          }
-          if (!input.classList.contains('material-alto')) {
-            alto.setAttribute('disabled', true)
-          }
-          medidasIguales.setAttribute('disabled', true)
-          umLargo.setAttribute('disabled', true)
-          umAncho.setAttribute('disabled', true)
-          umAlto.setAttribute('disabled', true)
-          if (!input.classList.contains('material-material')) {
-            material.setAttribute('disabled', true)
-          }
-          if (!input.classList.contains('material-color')) {
-            color.setAttribute('disabled', true)
-          }
-          marca.setAttribute('disabled', true)
-          parteModelo.setAttribute('disabled', true)
-          nombreComun.setAttribute('disabled', true)
-          ingActivo.setAttribute('disabled', true)
-          porcentajeIva.setAttribute('disabled', true)
-          alias.setAttribute('disabled', true)
-          unidadMedida.setAttribute('disabled', true)
-          codigoSat.setAttribute('disabled', true)
-          esMezcla.setAttribute('disabled', true)
-          esMaterialEmpaque.setAttribute('disabled', true)
-          esProdTerminado.setAttribute('disabled', true)
-          addMaterial.setAttribute('disabled', true)
+          input.addEventListener('change', () => {
+              var porcentajeIvaValue = input.value
+              var container = input.closest('.porcentaje-iva-container')
+              var errorPorcentajeIva = container.querySelector('#error-porcentaje-iva')
+              // Verificar si el campo está vacío
+              if (porcentajeIvaValue == '') {
+                errorPorcentajeIva.style.display = 'block'
+              } else {
+                errorPorcentajeIva.style.display = 'none'
+              }
+          })
+      })
+
+      // Validación alias
+      const validateAlias = input => {
+        // Solo la primera letra será mayúscula
+        input.value = input.value != '' ? firstLetterCapitalized(input.value) : ''
+      }
+      var aliasInputs = document.querySelectorAll('.material-alias')
+      aliasInputs.forEach(input => {
+          input.addEventListener('change', () => validateAlias(input))
+      })
+
+      // Validación unidad de medida
+      var unidadMedidaInputs = document.querySelectorAll('.material-unidad-medida')
+      unidadMedidaInputs.forEach(function(input) {
+          input.addEventListener('focus', function() {
+              var unidadMedidaValue = input.value
+              var container = input.closest('.unidad-medida-container')
+              var errorUnidadMedida = container.querySelector('#error-unidad-medida')
+              // Verificar si el campo está vacío
+              if (unidadMedidaValue == '') {
+                errorUnidadMedida.style.display = 'block'
+              } else {
+                errorUnidadMedida.style.display = 'none'
+              }
+          })
+          input.addEventListener('change', function() {
+              var unidadMedidaValue = input.value
+              var container = input.closest('.unidad-medida-container')
+              var errorUnidadMedida = container.querySelector('#error-unidad-medida')
+              // Verificar si el campo está vacío
+              if (unidadMedidaValue == '') {
+                errorUnidadMedida.style.display = 'block'
+              } else {
+                errorUnidadMedida.style.display = 'none'
+              }
+          })
+      })
+
+      const disableAllFields = input => {
+        const tableButtons = tableMaterials.querySelectorAll('a, button')
+        const form = input.closest('.material-form')
+        const tipoAlta = form.querySelector('.material-tipo-alta')
+        const subfamilia = form.querySelector('.material-subfamilia')
+        const nombre = form.querySelector('.material-nombre')
+        const fotoProductoInput = form.querySelector('.material-foto-producto')
+        const fotoProductoImg = form.querySelector('#id_foto_producto_img')
+        const fichaTecnicaInput = form.querySelector('.material-ficha-tecnica')
+        const fichaTecnicaImg = form.querySelector('#id_ficha_tecnica_img')
+        const largo = form.querySelector('.material-largo')
+        const ancho = form.querySelector('.material-ancho')
+        const alto = form.querySelector('.material-alto')
+        const medidasIguales = form.querySelector('.medidas-iguales')
+        const umLargo = form.querySelector('.material-um-largo')
+        const umAncho = form.querySelector('.material-um-ancho')
+        const umAlto = form.querySelector('.material-um-alto')
+        const material = form.querySelector('.material-material')
+        const color = form.querySelector('.material-color')
+        const marca = form.querySelector('.material-marca')
+        const parteModelo = form.querySelector('.material-parte-modelo')
+        const nombreComun = form.querySelector('.material-nombre-comun')
+        const ingActivo = form.querySelector('.material-ing-activo')
+        const porcentajeIva = form.querySelector('.material-porcentaje-iva')
+        const alias = form.querySelector('.material-alias')
+        const unidadMedida = form.querySelector('.material-unidad-medida')
+        const codigoSat = form.querySelector('.material-codigo-sat')
+        const esMezcla = form.querySelector('.material-es-mezcla')
+        const esMaterialEmpaque = form.querySelector('.material-es-material-empaque')
+        const esProdTerminado = form.querySelector('.material-es-prod-terminado')
+        const addMaterial = document.querySelector('#add-material')
+        
+        tableButtons.forEach(button => {
+          button.setAttribute('disabled', true)
+        })
+        tipoAlta.setAttribute('disabled', true)
+        subfamilia.setAttribute('disabled', true)
+        if (!input.classList.contains('material-nombre')) {
+          nombre.setAttribute('disabled', true)
+        }
+        fotoProductoInput.setAttribute('disabled', true)
+        fotoProductoImg.style.opacity = 0.5
+        fichaTecnicaInput.setAttribute('disabled', true)
+        fichaTecnicaImg.style.opacity = 0.5
+        if (!input.classList.contains('material-largo')) {
+          largo.setAttribute('disabled', true)
+        }
+        if (!input.classList.contains('material-ancho')) {
+          ancho.setAttribute('disabled', true)
+        }
+        if (!input.classList.contains('material-alto')) {
+          alto.setAttribute('disabled', true)
+        }
+        medidasIguales.setAttribute('disabled', true)
+        umLargo.setAttribute('disabled', true)
+        umAncho.setAttribute('disabled', true)
+        umAlto.setAttribute('disabled', true)
+        if (!input.classList.contains('material-material')) {
+          material.setAttribute('disabled', true)
+        }
+        if (!input.classList.contains('material-color')) {
+          color.setAttribute('disabled', true)
+        }
+        marca.setAttribute('disabled', true)
+        parteModelo.setAttribute('disabled', true)
+        nombreComun.setAttribute('disabled', true)
+        ingActivo.setAttribute('disabled', true)
+        porcentajeIva.setAttribute('disabled', true)
+        alias.setAttribute('disabled', true)
+        unidadMedida.setAttribute('disabled', true)
+        codigoSat.setAttribute('disabled', true)
+        esMezcla.setAttribute('disabled', true)
+        esMaterialEmpaque.setAttribute('disabled', true)
+        esProdTerminado.setAttribute('disabled', true)
+        addMaterial.setAttribute('disabled', true)
+      }
+
+      const enableAllFields = input => {
+        const tableButtons = tableMaterials.querySelectorAll('a, button')
+        const form = input.closest('.material-form')
+        const tipoAlta = form.querySelector('.material-tipo-alta')
+        const subfamilia = form.querySelector('.material-subfamilia')
+        const nombre = form.querySelector('.material-nombre')
+        const fotoProductoInput = form.querySelector('.material-foto-producto')
+        const fotoProductoImg = form.querySelector('#id_foto_producto_img')
+        const fichaTecnicaInput = form.querySelector('.material-ficha-tecnica')
+        const fichaTecnicaImg = form.querySelector('#id_ficha_tecnica_img')
+        const largo = form.querySelector('.material-largo')
+        const ancho = form.querySelector('.material-ancho')
+        const alto = form.querySelector('.material-alto')
+        const medidasIguales = form.querySelector('.medidas-iguales')
+        const umLargo = form.querySelector('.material-um-largo')
+        const umAncho = form.querySelector('.material-um-ancho')
+        const umAlto = form.querySelector('.material-um-alto')
+        const material = form.querySelector('.material-material')
+        const color = form.querySelector('.material-color')
+        const marca = form.querySelector('.material-marca')
+        const parteModelo = form.querySelector('.material-parte-modelo')
+        const nombreComun = form.querySelector('.material-nombre-comun')
+        const ingActivo = form.querySelector('.material-ing-activo')
+        const porcentajeIva = form.querySelector('.material-porcentaje-iva')
+        const alias = form.querySelector('.material-alias')
+        const unidadMedida = form.querySelector('.material-unidad-medida')
+        const codigoSat = form.querySelector('.material-codigo-sat')
+        const esMezcla = form.querySelector('.material-es-mezcla')
+        const esMaterialEmpaque = form.querySelector('.material-es-material-empaque')
+        const esProdTerminado = form.querySelector('.material-es-prod-terminado')
+        const addMaterial = document.querySelector('#add-material')
+
+        tableButtons.forEach(button => {
+          button.removeAttribute('disabled')
+        })
+        tipoAlta.removeAttribute('disabled')
+        subfamilia.removeAttribute('disabled')
+        nombre.removeAttribute('disabled')
+        fotoProductoInput.removeAttribute('disabled')
+        fotoProductoImg.style.opacity = 1
+        fichaTecnicaInput.removeAttribute('disabled')
+        fichaTecnicaImg.style.opacity = 1
+        largo.removeAttribute('disabled')
+        ancho.removeAttribute('disabled')
+        alto.removeAttribute('disabled')
+        medidasIguales.removeAttribute('disabled')
+        umLargo.removeAttribute('disabled')
+        umAncho.removeAttribute('disabled')
+        umAlto.removeAttribute('disabled')
+        material.removeAttribute('disabled')
+        color.removeAttribute('disabled')
+        marca.removeAttribute('disabled')
+        parteModelo.removeAttribute('disabled')
+        nombreComun.removeAttribute('disabled')
+        ingActivo.removeAttribute('disabled')
+        porcentajeIva.removeAttribute('disabled')
+        alias.removeAttribute('disabled')
+        unidadMedida.removeAttribute('disabled')
+        codigoSat.removeAttribute('disabled')
+        esMezcla.removeAttribute('disabled')
+        esMaterialEmpaque.removeAttribute('disabled')
+        esProdTerminado.removeAttribute('disabled')
+        addMaterial.removeAttribute('disabled')
+      }
+    }
+
+    validarCamposMaterial()
+
+    const fillTable = () => {
+      const materialForms = document.querySelectorAll('.material-form')
+      tableMaterials.style.display = 'block'
+      bodyMaterials.innerHTML = ''
+      materialForms.forEach((materialForm, index) => {
+        const tipoAlta = materialForm.querySelector('.material-tipo-alta')
+        const subfamilia = materialForm.querySelector('.material-subfamilia')
+        const nombre = materialForm.querySelector('.material-nombre')
+        const fotoProducto = materialForm.querySelector('#id_foto_producto_img')
+        const fichaTecnica = materialForm.querySelector('#id_ficha_tecnica_img')
+        const largo = materialForm.querySelector('.material-largo')
+        const ancho = materialForm.querySelector('.material-ancho')
+        const alto = materialForm.querySelector('.material-alto')
+        const umLargo = materialForm.querySelector('.material-um-largo')
+        const umAncho = materialForm.querySelector('.material-um-ancho')
+        const umAlto = materialForm.querySelector('.material-um-alto')
+        const material = materialForm.querySelector('.material-material')
+        const color = materialForm.querySelector('.material-color')
+        const marca = materialForm.querySelector('.material-marca')
+        const parteModelo = materialForm.querySelector('.material-parte-modelo')
+        const nombreComun = materialForm.querySelector('.material-nombre-comun')
+        const esMezcla = materialForm.querySelector('.material-es-mezcla')
+        const ingActivo = materialForm.querySelector('.material-ing-activo')
+        const porcentajeIva = materialForm.querySelector('.material-porcentaje-iva')
+        const alias = materialForm.querySelector('.material-alias')
+        const unidadMedida = materialForm.querySelector('.material-unidad-medida')
+        const codigoSat = materialForm.querySelector('.material-codigo-sat')
+        const esMaterialEmpaque = materialForm.querySelector('.material-es-material-empaque')
+        const esProdTerminado = materialForm.querySelector('.material-es-prod-terminado')
+
+        esMezclaValue = esMezcla.checked == true ? 'Si' : 'No'
+        esMaterialEmpaqueValue = esMaterialEmpaque.checked == true ? 'Si' : 'No'
+        esProdTerminadoValue = esProdTerminado.checked == true ? 'Si' : 'No'
+
+        const isImage = url => {
+          return url.includes('image')
         }
 
-        const enableAllFields = input => {
-          const tableButtons = tableMaterials.querySelectorAll('a, button')
-          const form = input.closest('.material-form')
-          const tipoAlta = form.querySelector('.material-tipo-alta')
-          const subfamilia = form.querySelector('.material-subfamilia')
-          const nombre = form.querySelector('.material-nombre')
-          const fotoProductoInput = form.querySelector('.material-foto-producto')
-          const fotoProductoImg = form.querySelector('#id_foto_producto_img')
-          const fichaTecnicaInput = form.querySelector('.material-ficha-tecnica')
-          const fichaTecnicaImg = form.querySelector('#id_ficha_tecnica_img')
-          const largo = form.querySelector('.material-largo')
-          const ancho = form.querySelector('.material-ancho')
-          const alto = form.querySelector('.material-alto')
-          const medidasIguales = form.querySelector('.medidas-iguales')
-          const umLargo = form.querySelector('.material-um-largo')
-          const umAncho = form.querySelector('.material-um-ancho')
-          const umAlto = form.querySelector('.material-um-alto')
-          const material = form.querySelector('.material-material')
-          const color = form.querySelector('.material-color')
-          const marca = form.querySelector('.material-marca')
-          const parteModelo = form.querySelector('.material-parte-modelo')
-          const nombreComun = form.querySelector('.material-nombre-comun')
-          const ingActivo = form.querySelector('.material-ing-activo')
-          const porcentajeIva = form.querySelector('.material-porcentaje-iva')
-          const alias = form.querySelector('.material-alias')
-          const unidadMedida = form.querySelector('.material-unidad-medida')
-          const codigoSat = form.querySelector('.material-codigo-sat')
-          const esMezcla = form.querySelector('.material-es-mezcla')
-          const esMaterialEmpaque = form.querySelector('.material-es-material-empaque')
-          const esProdTerminado = form.querySelector('.material-es-prod-terminado')
-          const addMaterial = document.querySelector('#add-material')
+        if (tipoAlta.value == '' || subfamilia.value == '' || nombre.value == '' || porcentajeIva.value == '' || unidadMedida.value == '') {
+          return
+        }
 
-          tableButtons.forEach(button => {
-            button.removeAttribute('disabled')
-          })
-          tipoAlta.removeAttribute('disabled')
-          subfamilia.removeAttribute('disabled')
-          nombre.removeAttribute('disabled')
-          fotoProductoInput.removeAttribute('disabled')
-          fotoProductoImg.style.opacity = 1
-          fichaTecnicaInput.removeAttribute('disabled')
-          fichaTecnicaImg.style.opacity = 1
-          largo.removeAttribute('disabled')
-          ancho.removeAttribute('disabled')
-          alto.removeAttribute('disabled')
-          medidasIguales.removeAttribute('disabled')
-          umLargo.removeAttribute('disabled')
-          umAncho.removeAttribute('disabled')
-          umAlto.removeAttribute('disabled')
-          material.removeAttribute('disabled')
-          color.removeAttribute('disabled')
-          marca.removeAttribute('disabled')
-          parteModelo.removeAttribute('disabled')
-          nombreComun.removeAttribute('disabled')
-          ingActivo.removeAttribute('disabled')
-          porcentajeIva.removeAttribute('disabled')
-          alias.removeAttribute('disabled')
-          unidadMedida.removeAttribute('disabled')
-          codigoSat.removeAttribute('disabled')
-          esMezcla.removeAttribute('disabled')
-          esMaterialEmpaque.removeAttribute('disabled')
-          esProdTerminado.removeAttribute('disabled')
-          addMaterial.removeAttribute('disabled')
+        const newRow = bodyMaterials.insertRow()
+        newRow.classList.add('table-row')
+        newRow.id = `table-row-${index}`
+        newRow.innerHTML = `
+        <td>${tipoAlta.value}</td>
+        <td>${subfamilia.value}</td>
+        <td>${nombre.value}</td>`
+        if (isImage(fotoProducto.src)) {
+          newRow.innerHTML += `
+          <td class="p-0"><img style="width: auto; max-height: 4rem" src="${fotoProducto.src}" alt="Foto del producto"/></td>`
+        }
+        else {
+          newRow.innerHTML += `
+          <td class="p-0"><p>Sin imagen</p></td>`
+        }
+        if (isImage(fichaTecnica.src)) {
+          newRow.innerHTML += `
+          <td class="p-0"><img style="width: auto; max-height: 4rem" src="${fichaTecnica.src}" alt="Foto del producto"/></td>`
+        }
+        else {
+          newRow.innerHTML += `
+          <td class="p-0"><p>Sin imagen</p></td>`
+        }
+        newRow.innerHTML += `
+        <td>${largo.value}<br />${umLargo.value}</td>
+        <td>${ancho.value}<br />${umAncho.value}</td>
+        <td>${alto.value}<br />${umAlto.value}</td>
+        <td>${material.value}</td>
+        <td>${color.value}</td>
+        <td>${marca.value}</td>
+        <td>${parteModelo.value}</td>
+        <td>${nombreComun.value}</td>
+        <td>${ingActivo.value}</td>
+        <td>${porcentajeIva.value}</td>
+        <td>${alias.value}</td>
+        <td>${unidadMedida.value}</td>
+        <td>${codigoSat.value}</td>
+        <td>${esMezclaValue}</td>
+        <td>${esMaterialEmpaqueValue}</td>
+        <td>${esProdTerminadoValue}</td>
+        <td class="d-flex gap-2">
+          <button id="edit_material_${index}" class="btn btn-warning edit_material" type="button" style="font-size:0.8rem" data-bs-toggle="modal" data-bs-target="#modalId">
+            <i class="fa fa-pencil" id="icon-material-${index}" aria-hidden="true"></i>
+          </button>
+
+          <button id="remove_material_${index}" class="btn btn-danger remove_material" type="button" style="font-size:0.8rem">
+            <i class="fa fa-trash" id="r_icon_material-${index}" aria-hidden="true"></i>
+          </button>
+        </td>`
+
+        var deleteButtons = tableMaterials.getElementsByClassName('remove-material');
+        if (deleteButtons.length > 1) {
+          for(i=0; i<deleteButtons.length; i++) {
+            deleteButtons[i].disabled = false
+          }
+        }
+        else {
+          for(i=0; i<deleteButtons.length; i++) {
+            deleteButtons[i].disabled = true
+          }
+        }
+      })
+
+      addEventsToTableButtons()
+      disableRemoveButtons()
+    }
+
+    const addEventsToTableButtons = () => {
+      // Editar material
+      $('.edit_material, .edit_material i').click(event => {
+        editingId = event.target.id.substring(14, event.target.id.length)
+        const form = document.getElementById(`material-form-${editingId}`)
+        if (form) {
+          $('#modalTitleId').text(form.querySelector('.material-nombre').value);
+          modalBody.empty();
+          modalBody.append(form);
+          form.style.display = "block";
+          medidasIguales = false;
+        }
+        editingBand = true;
+      });
+
+      // Eliminar material
+      $('.remove_material, .remove_material i').click(event => {
+        removeId = event.target.id.substring(16, event.target.id.length)
+        const form = document.getElementById(`material-form-${removeId}`)
+        if (form) {
+          // Si el usuario es el solicitante, se elimina el producto de la tabla
+          {% if current_user.id == solicitud.usuario.id %}
+            form.remove()
+            // Recorre todos los formularios restantes y actualiza sus índices
+            const forms = materialFormsContainer.querySelectorAll('.material-form');
+            var counter = 0
+            forms.forEach(form => {
+              form.id = `material-form-${counter}`
+              const inputs = form.querySelectorAll('[id^=id_material-]');
+              for (let j = 0; j < inputs.length; j++) {
+                inputs[j].id = inputs[j].id.replace(/\d+/, i);
+              }
+              form.style.display = 'none'
+              counter++
+            })
+          // Si el usuario es aprobador, marcar el material/servicio como rechazado
+          {% else %}
+            const rechazado = form.querySelector('.material-rechazado')
+            rechazado.value = true
+            if (comentarios) {
+              comentarios.setAttribute('required', true)
+              comentarios.removeAttribute('readonly')
+              materialEliminado = true
+            }
+          {% endif %}
+        }
+
+        fillTable()
+      });
+    }
+
+    const disableRemoveButtons = () => {
+      const removeButtons = tableMaterials.getElementsByClassName('remove_material')
+      if (btnSave || btnRemove) {
+        if (materialCounter > 1) {
+          for (i=0; i<removeButtons.length; i++) {
+            removeButtons[i].removeAttribute('disabled')
+          }
+        }
+        else {
+          for (i=0; i<removeButtons.length; i++) {
+            removeButtons[i].setAttribute('disabled', true)
+          }
+        }
+      }
+      else {
+        for (i=0; i<removeButtons.length; i++) {
+          removeButtons[i].setAttribute('disabled', true)
+        }
+      }
+    }
+
+    const createMaterialForm = () => {
+      
+      const formHtml = `
+          <!-- Tipo alta field -->
+          <div class="tipo-alta-container" style="margin-bottom:1rem;">
+            <p class="m-0">{{ material_formset.empty_form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+            {{ material_formset.empty_form.tipo_alta }}
+            <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Subfamilia field -->
+          <div class="subfamilia-container" style="margin-bottom:1rem;">
+            <p class="m-0">{{ material_formset.empty_form.subfamilia.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+            {{ material_formset.empty_form.subfamilia }}
+            <p id="error-subfamilia" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Nombre producto field -->
+          <div class="nombre-producto-container" style="margin-bottom:1rem;">
+            <p class="m-0">{{ material_formset.empty_form.nombre_producto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+            {{ material_formset.empty_form.nombre_producto }}
+            <datalist id="opciones_material">
+            </datalist>
+            <p id="error-nombre-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un producto con ese nombre</p>
+          </div>
+
+          <!-- Documentos -->
+          <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+
+            <!-- Foto producto field -->
+            <div class="foto-producto-container d-flex" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-end;">
+
+              <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
+
+                <!-- Preview de la foto del producto -->
+                <img id="id_foto_producto_img" class="mb-2 rounded" src="" alt="Foto del producto" style="max-width: 80%; max-height: 10rem; display: none;" />
+
+                <!-- Botón para eliminar la foto del producto -->
+                <button id="id_btn_delete_foto_producto" class="btn btn-secondary btn-delete-foto-producto mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem; display: none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
+                </button>
+
+              </div>
+
+              <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
+              {{ material_formset.empty_form.foto_producto }}
+              <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+
+            <!-- Ficha técnica field -->
+            <div class="ficha-tecnica-container d-flex" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-end;">
+              <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
+
+                <!-- Preview de la ficha técnica -->
+                <img id="id_ficha_tecnica_img" class="mb-2 rounded" src="" alt="Ficha técnica" style="max-width: 80%; max-height: 10rem; display: none;" />
+                
+                <!-- Botón para eliminar la ficha técnica -->
+                <button id="id_btn_delete_ficha_tecnica" class="btn btn-secondary btn-delete-ficha-tecnica mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem; display: none;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
+                </button>
+              </div>
+
+              <label for="id_ficha_tecnica" class="mb-2" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
+              {{ material_formset.empty_form.ficha_tecnica }}
+              <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+
+          </div>
+
+          <div id="medidas-container">
+            <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico, fracción o N/A)</span></p>
+            
+            <div style="display: flex; gap: 1rem;">
+              <!-- Largo field -->
+              <div class="largo-container" style="width: 33%; margin-bottom:1rem;">
+                <p class="m-0">{{ material_formset.empty_form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ material_formset.empty_form.largo }}
+                <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                <p id="label-largo" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
+              </div>
+
+              <!-- Ancho field -->
+              <div class="ancho-container" style="width: 33%; margin-bottom:1rem;">
+                <p class="m-0">{{ material_formset.empty_form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ material_formset.empty_form.ancho }}
+                <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                <p id="label-ancho" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
+              </div>
+
+              <!-- Alto field -->
+              <div class="alto-container" style="width: 33%; margin-bottom:1rem;">
+                <p class="m-0">{{ material_formset.empty_form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+                {{ material_formset.empty_form.alto }}
+                <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
+                <p id="label-alto" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
+              </div>
+            </div>
+
+            <div id="id-unidades-medida" class="d-flex justify-content-between gap-3">
+              <div>
+                <label for="id-medidas-iguales">Todas las medidas tienen la misma unidad:</label>
+                <input type="checkbox" id="id-medidas-iguales" class="medidas-iguales">
+              </div>
+
+              <div class="mb-1" style="width: 12rem;">
+                <!-- UM Largo field -->
+                <div id="select-largo">
+                  {{ material_formset.empty_form.um_largo }}
+                  <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                </div>
+                <!-- UM Ancho field -->
+                <div id="select-ancho" style="display: none;">
+                  {{ material_formset.empty_form.um_ancho }}
+                  <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                </div>
+                <!-- UM Alto field -->
+                <div id="select-alto" style="display: none;">
+                  {{ material_formset.empty_form.um_alto }}
+                  <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+                </div>
+
+                <p id="error-unidades-medida" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una unidad para cada medida</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="material-color-container" style="display: flex; gap: 1rem;">
+            <!-- Material field -->
+            <div class="material-container" style="width: 50%; margin-bottom:1rem;">
+              <p class="m-0">{{ material_formset.empty_form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              {{ material_formset.empty_form.material }}
+              <p id="error-material" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+
+            <!-- Color field -->
+            <div class="color-container" style="width: 50%; margin-bottom:1rem;">
+              <p class="m-0">{{ material_formset.empty_form.color.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
+              {{ material_formset.empty_form.color }}
+              <p id="error-color" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <!-- Marca field -->
+            <div style="width: 50%; margin-bottom:1rem;">
+              {{ material_formset.empty_form.marca.label_tag }}
+              {{ material_formset.empty_form.marca }}
+              <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+
+            <!-- Parte/Modelo field -->
+            <div style="width: 50%; margin-bottom:1rem;">
+              <label for="id_parte_modelo">Parte / Modelo:</label>
+              {{ material_formset.empty_form.parte_modelo }}
+              <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <!-- Nombre común field -->
+            <div style="width: 50%; margin-bottom:1rem;">
+              <label for="id_nombre_comun">Nombre común:</label>
+              {{ material_formset.empty_form.nombre_comun }}
+              <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+
+            <!-- Ing activo field -->
+            <div style="width: 50%; margin-bottom:1rem;">
+              <label for="id_ing_activo">Ingrediente activo:</label>
+              {{ material_formset.empty_form.ing_activo }}
+              <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <!-- Porcentaje IVA field -->
+            <div class="porcentaje-iva-container" style="width: 50%; margin-bottom:1rem;">
+              <label for="id_porcentaje_iva">% de IVA:</label>
+              {{ material_formset.empty_form.porcentaje_iva }}
+              <p id="error-porcentaje-iva" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+
+            <!-- Alias field -->
+            <div style="width: 50%; margin-bottom:1rem;">
+              {{ material_formset.empty_form.alias.label_tag }}
+              {{ material_formset.empty_form.alias }}
+              <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <!-- Unidad de medida field -->
+            <div class="unidad-medida-container" style="width: 50%; margin-bottom:1rem;">
+              <label for="id_unidad_medida">Unidad de medida:<span style="color: rgb(192, 0, 0);">*</span></label>
+              {{ material_formset.empty_form.unidad_medida }}
+              <p id="error-unidad-medida" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+
+            <!-- Código SAT field -->
+            <div style="width: 50%; margin-bottom:1rem;">
+              <label for="id_codigo_sat">Código SAT:</label>
+              {{ material_formset.empty_form.codigo_sat }}
+              <p id="error-codigo-sat" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; gap: 2rem;">
+            <!-- Es mezcla field -->
+            <div style="margin-bottom:1rem;">
+              <label for="id_es_mezcla">¿Es mezcla?</label>
+              {{ material_formset.empty_form.es_mezcla }}
+              <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+
+            <!-- Es material empaque field -->
+            <div style="margin-bottom:1rem;">
+              <label for="id_es_material_empaque">¿Es material empaque?</label>
+              {{ material_formset.empty_form.es_material_empaque }}
+              <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+
+            <!-- Es prod terminado field -->
+            <div style="margin-bottom:1rem;">
+              <label for="id_es_prod_terminado">¿Es prod. terminado?</label>
+              {{ material_formset.empty_form.es_prod_terminado }}
+              <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+            </div>
+          </div>
+        `;
+      
+      const form = document.createElement('div');
+      form.id = `material-form-${formCount}`
+      form.classList.add('material-form')
+      form.classList.add(`material-form-${formCount}`)
+      form.style.display = 'none'
+      form.innerHTML = formHtml.replace(/__prefix__/g, formCount);
+      materialFormsContainer.appendChild(form);
+
+      formCount++;
+      document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
+      materialCounter++
+
+      // Todos los formularios deben validar las medidas
+      validarCamposMaterial()
+    }
+  
+    btnAddMaterial.addEventListener('click', () => {
+        const form = $(materialFormsContainer).find(`#material-form-${materialCounter}`);
+        console.log(materialCounter)
+        form.show();
+        modalBody.append(form);
+        editingBand = false;
+    });
+
+    const updateForm = event => {
+
+      const modalB = document.querySelector('.modal-body');
+      const form = modalB.querySelector('.material-form');
+      const tipoAlta = form.querySelector('.material-tipo-alta');
+      const subfamilia = form.querySelector('.material-subfamilia');
+      const nombreProducto = form.querySelector('.material-nombre');
+      const largo = form.querySelector('.material-largo');
+      const ancho = form.querySelector('.material-ancho');
+      const alto = form.querySelector('.material-alto');
+      const umLargo = form.querySelector('.material-um-largo');
+      const umAncho = form.querySelector('.material-um-ancho');
+      const umAlto = form.querySelector('.material-um-alto');
+      const material = form.querySelector('.material-material');
+      const color = form.querySelector('.material-color');
+      const porcentajeIva = form.querySelector('.material-porcentaje-iva');
+      const unidadMedida = form.querySelector('.material-unidad-medida');
+
+      // Inputs
+      /*var tipoAlta
+      var subfamilia
+      var nombreProducto
+      var largo
+      var ancho
+      var alto
+      var umLargo
+      var umAncho
+      var umAlto
+      var material
+      var color
+      var porcentajeIva
+      var unidadMedida
+
+      if (!editingBand) {
+        tipoAlta = document.getElementById(`id_material-${materialCounter}-tipo_alta`)
+        subfamilia = document.getElementById(`id_material-${materialCounter}-subfamilia`)
+        nombreProducto = document.getElementById(`id_material-${materialCounter}-nombre_producto`)
+        largo = document.getElementById(`id_material-${materialCounter}-largo`)
+        ancho = document.getElementById(`id_material-${materialCounter}-ancho`)
+        alto = document.getElementById(`id_material-${materialCounter}-alto`)
+        umLargo = document.getElementById(`id_material-${materialCounter}-um_largo`)
+        umAncho = document.getElementById(`id_material-${materialCounter}-um_ancho`)
+        umAlto = document.getElementById(`id_material-${materialCounter}-um_alto`)
+        material = document.getElementById(`id_material-${materialCounter}-material`)
+        color = document.getElementById(`id_material-${materialCounter}-color`)
+        porcentajeIva = document.getElementById(`id_material-${materialCounter}-porcentaje_iva`)
+        unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`)
+      }
+      else {
+        tipoAlta = document.getElementById(`id_material-${editingId}-tipo_alta`)
+        subfamilia = document.getElementById(`id_material-${editingId}-subfamilia`)
+        nombreProducto = document.getElementById(`id_material-${editingId}-nombre_producto`)
+        largo = document.getElementById(`id_material-${editingId}-largo`)
+        ancho = document.getElementById(`id_material-${editingId}-ancho`)
+        alto = document.getElementById(`id_material-${editingId}-alto`)
+        umLargo = document.getElementById(`id_material-${editingId}-um_largo`)
+        umAncho = document.getElementById(`id_material-${editingId}-um_ancho`)
+        umAlto = document.getElementById(`id_material-${editingId}-um_alto`)
+        material = document.getElementById(`id_material-${editingId}-material`)
+        color = document.getElementById(`id_material-${editingId}-color`)
+        porcentajeIva = document.getElementById(`id_material-${editingId}-porcentaje_iva`)
+        unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`)
+
+        editingBand = false
+      }*/
+
+      const errorTipoAlta = form.querySelector('#error-tipo-alta')
+      const errorSubfamilia = form.querySelector('#error-subfamilia')
+      const errorNombreProducto = form.querySelector('#error-nombre-producto')
+      const errorNombreProducto2 = form.querySelector('#error-nombre-producto-2')
+      const errorLargo = form.querySelector('#error-largo')
+      const errorAncho = form.querySelector('#error-ancho')
+      const errorAlto = form.querySelector('#error-alto')
+      const errorUnidadesMedida = form.querySelector('#error-unidades-medida')
+      const errorMaterial = form.querySelector('#error-material')
+      const errorColor = form.querySelector('#error-color')
+      const errorPorcentajeIva = form.querySelector('#error-porcentaje-iva')
+      const errorUnidadMedida = form.querySelector('#error-unidad-medida')
+
+      /*const errorTipoAlta = tipoAlta.closest('.tipo-alta-container').querySelector('#error-tipo-alta')
+      const errorSubfamilia = subfamilia.closest('.subfamilia-container').querySelector('#error-subfamilia')
+      const errorNombreProducto = nombreProducto.closest('.nombre-producto-container').querySelector('#error-nombre-producto')
+      const errorNombreProducto2 = nombreProducto.closest('.nombre-producto-container').querySelector('#error-nombre-producto-2')
+      const errorLargo = largo.closest('.largo-container').querySelector('#error-largo')
+      const errorAncho = ancho.closest('.ancho-container').querySelector('#error-ancho')
+      const errorAlto = alto.closest('.alto-container').querySelector('#error-alto')
+      const errorUnidadesMedida = largo.closest('#medidas-container').querySelector('#error-unidades-medida')
+      const errorMaterial = material.closest('.material-container').querySelector('#error-material')
+      const errorColor = color.closest('.color-container').querySelector('#error-color')
+      const errorPorcentajeIva = porcentajeIva.closest('.porcentaje-iva-container').querySelector('#error-porcentaje-iva')
+      const errorUnidadMedida = unidadMedida.closest('.unidad-medida-container').querySelector('#error-unidad-medida')*/
+
+      const mostrarErrores = () => {
+        window.alert('Algún campo está vacío o es incorrecto')
+        if (tipoAlta.value == '') {
+          errorTipoAlta.style.display = 'block'
+        }
+        if (subfamilia.value == '') {
+          errorSubfamilia.style.display = 'block'
+        }
+        if (nombreProducto.value == '') {
+          errorNombreProducto.style.display = 'block'
+        }
+        if (largo.value == '') {
+          errorLargo.style.display = 'block'
+        }
+        if (ancho.value == '') {
+          errorAncho.style.display = 'block'
+        }
+        if (alto.value == '') {
+          errorAlto.style.display = 'block'
+        }
+        if (umLargo.value == '' || umAncho.value == '' || umAlto.value == '') {
+          errorUnidadesMedida.style.display = 'block'
+        }
+        if (material.value == '') {
+          errorMaterial.style.display = 'block'
+        }
+        if (color.value == '') {
+          errorColor.style.display = 'block'
+        }
+        if (porcentajeIva.value == '') {
+          errorPorcentajeIva.style.display = 'block'
+        }
+        if (unidadMedida.value == '') {
+          errorUnidadMedida.style.display = 'block'
         }
       }
 
-      validarCamposMaterial()
+      // Si tipo de alta está vacío, mostrar los errores
+      if (tipoAlta.value == '') {
+        mostrarErrores()
+        return
+      }
 
-      const fillTable = () => {
-        const materialForms = document.querySelectorAll('.material-form')
-        tableMaterials.style.display = 'block'
-        bodyMaterials.innerHTML = ''
-        materialForms.forEach((materialForm, index) => {
-          const tipoAlta = materialForm.querySelector('.material-tipo-alta')
-          const subfamilia = materialForm.querySelector('.material-subfamilia')
-          const nombre = materialForm.querySelector('.material-nombre')
-          const fotoProducto = materialForm.querySelector('#id_foto_producto_img')
-          const fichaTecnica = materialForm.querySelector('#id_ficha_tecnica_img')
-          const largo = materialForm.querySelector('.material-largo')
-          const ancho = materialForm.querySelector('.material-ancho')
-          const alto = materialForm.querySelector('.material-alto')
-          const umLargo = materialForm.querySelector('.material-um-largo')
-          const umAncho = materialForm.querySelector('.material-um-ancho')
-          const umAlto = materialForm.querySelector('.material-um-alto')
-          const material = materialForm.querySelector('.material-material')
-          const color = materialForm.querySelector('.material-color')
-          const marca = materialForm.querySelector('.material-marca')
-          const parteModelo = materialForm.querySelector('.material-parte-modelo')
-          const nombreComun = materialForm.querySelector('.material-nombre-comun')
-          const esMezcla = materialForm.querySelector('.material-es-mezcla')
-          const ingActivo = materialForm.querySelector('.material-ing-activo')
-          const porcentajeIva = materialForm.querySelector('.material-porcentaje-iva')
-          const alias = materialForm.querySelector('.material-alias')
-          const unidadMedida = materialForm.querySelector('.material-unidad-medida')
-          const codigoSat = materialForm.querySelector('.material-codigo-sat')
-          const esMaterialEmpaque = materialForm.querySelector('.material-es-material-empaque')
-          const esProdTerminado = materialForm.querySelector('.material-es-prod-terminado')
+      // Si tipo de alta es Almacén, se validan todos los campos requeridos
+      if (tipoAlta.value == 'Almacén' && (subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block')) {
+        mostrarErrores()
+        return
+      }
 
-          esMezclaValue = esMezcla.checked == true ? 'Si' : 'No'
-          esMaterialEmpaqueValue = esMaterialEmpaque.checked == true ? 'Si' : 'No'
-          esProdTerminadoValue = esProdTerminado.checked == true ? 'Si' : 'No'
+      // Si tipo de alta es Servicio, las medidas, material y color no son obligatorios
+      if (tipoAlta.value == 'Servicio' && (subfamilia.value == '' || nombreProducto.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block')) {
+        mostrarErrores()
+        return
+      }
 
-          const isImage = url => {
-            return url.includes('image')
-          }
+      // Validamos las medidas para cada unidad
+      if (tipoAlta.value == 'Almacén') {
+        if (largo.value != 'N/A' && umLargo.value == '') {
+          errorUnidadesMedida.style.display = 'block'
+          window.alert('Debe seleccionar una unidad para Largo')
+          return
+        }
+        if (ancho.value != 'N/A' && umAncho.value == '') {
+          errorUnidadesMedida.style.display = 'block'
+          window.alert('Debe seleccionar una unidad para Ancho')
+          return
+        }
+        if (alto.value != 'N/A' && umAlto.value == '') {
+          errorUnidadesMedida.style.display = 'block'
+          window.alert('Debe seleccionar una unidad para Alto')
+          return
+        }
+        // Si todas las medidas tienen una unidad, se oculta el error
+        errorUnidadesMedida.style.display = 'none'
+      }
 
-          const newRow = bodyMaterials.insertRow()
-          newRow.classList.add('table-row')
-          newRow.id = `table-row-${index}`
-          newRow.innerHTML = `
-          <td>${tipoAlta.value}</td>
-          <td>${subfamilia.value}</td>
-          <td>${nombre.value}</td>`
-          if (isImage(fotoProducto.src)) {
-            newRow.innerHTML += `
-            <td class="p-0"><img style="width: auto; max-height: 4rem" src="${fotoProducto.src}" alt="Foto del producto"/></td>`
+      // La unidad de medida no aplica cuando el valor es N/A
+      if (largo.value == 'N/A') {
+        umLargo.value = ''
+      }
+      if (ancho.value == 'N/A') {
+        umAncho.value = ''
+      }
+      if (alto.value == 'N/A') {
+        umAlto.value = ''
+      }
+      
+      // Si tipoAlta es 'Servicio', no requiere largo, ancho, alto, material ni color
+      if (tipoAlta.value === 'Servicio') {
+        largo.value = ''
+        umLargo.value = ''
+        ancho.value = ''
+        umAncho.value = ''
+        alto.value = ''
+        umAlto.value = ''
+        material.value = ''
+        color.value = ''
+      }
+      
+      // Si todos los campos están correctos, ocultar el formulario y devolverlo a su contenedor
+      form.style.display = 'none';
+      const formsContainer = $('#material-forms');
+      formsContainer.append(form);
+
+      // Refrescar la tabla
+      fillTable();
+
+      // Crear un nuevo formulario oculto
+      if (!editingBand) {
+        createMaterialForm()
+      }
+      //btnAddMaterial.innerHTML = 'Agregar Material / servicio'
+      medidasIguales = false
+      enableSaveButton()
+
+      // Ocultar el modal
+      const modalInstance = bootstrap.Modal.getInstance(modal);
+      modalInstance.hide();
+    }
+
+    /*tableMaterials.addEventListener('click', function(event) {
+      // If the edit button is clicked, display the corresponding form
+      if (event.target && event.target.classList.contains('edit-material')) {
+        // Disable edit buttons
+        const editButtons = tableMaterials.getElementsByClassName('edit-material');
+          for (let i = 0; i < editButtons.length; i++) {
+            editButtons[i].disabled = true
           }
-          else {
-            newRow.innerHTML += `
-            <td class="p-0"><p>Sin imagen</p></td>`
+        // Show the selected form
+        editingBand = true
+        editingId = event.target.id.substring(14, event.target.id.length)
+        const form = document.getElementById(`material-form-${editingId}`)
+        if (form) {
+          form.style.display = "block"
+          // Se elimina el ultimo formulario creado
+          const lastForm = document.getElementById(`material-form-${formCount - 1}`);
+          if (lastForm) {
+            lastForm.remove();
+            // Recorre todos los formularios restantes y actualiza sus índices
+            const forms = materialFormsContainer.getElementsByClassName('material-form');
+            for (let i = 0; i < forms.length; i++) {
+              const inputs = forms[i].querySelectorAll('[name^=material-]');
+              for (let j = 0; j < inputs.length; j++) {
+                inputs[j].name = inputs[j].name.replace(/\d+/, i);
+              }
+            }
+            materialCounter--
+            formCount--;
+            document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
           }
-          if (isImage(fichaTecnica.src)) {
-            newRow.innerHTML += `
-            <td class="p-0"><img style="width: auto; max-height: 4rem" src="${fichaTecnica.src}" alt="Foto del producto"/></td>`
+          //btnAddMaterial.innerHTML = 'Guardar Cambios'
+          medidasIguales = false
+        }
+      }
+
+      // If the delete button is clicked, remove the row and the form
+      if (event.target && event.target.classList.contains('remove-material')) {
+        const row = event.target.closest('.table-row')
+        if (row) {
+          row.remove();
+          // Recorre todos las filas restantes y actualiza sus índices
+          const rows = tableMaterials.getElementsByClassName('table-row');
+          for (let i = 0; i < rows.length; i++) {
+            rows[i].id = `table-row-${i}`
           }
-          else {
-            newRow.innerHTML += `
-            <td class="p-0"><p>Sin imagen</p></td>`
+          // Recorre todos los botones restantes y actualiza sus índices
+          const editButtons = tableMaterials.getElementsByClassName('edit-material');
+          for (let i = 0; i < editButtons.length; i++) {
+            editButtons[i].id = `edit-material-${i}`
           }
-          newRow.innerHTML += `
-          <td>${largo.value}<br />${umLargo.value}</td>
-          <td>${ancho.value}<br />${umAncho.value}</td>
-          <td>${alto.value}<br />${umAlto.value}</td>
-          <td>${material.value}</td>
-          <td>${color.value}</td>
-          <td>${marca.value}</td>
-          <td>${parteModelo.value}</td>
-          <td>${nombreComun.value}</td>
-          <td>${ingActivo.value}</td>
-          <td>${porcentajeIva.value}</td>
-          <td>${alias.value}</td>
-          <td>${unidadMedida.value}</td>
-          <td>${codigoSat.value}</td>
-          <td>${esMezclaValue}</td>
-          <td>${esMaterialEmpaqueValue}</td>
-          <td>${esProdTerminadoValue}</td>
-          <td>
-            <button id="edit-material-${index}" class="btn btn-primary edit-material" type="button" style="font-size:0.8rem">Editar</button>
-          </td>
-          <td>
-            <button id="remove-material-${index}" class="btn btn-danger remove-material" type="button" style="font-size:0.8rem">Eliminar</button>
-          </td>`
+          const removeButtons = tableMaterials.getElementsByClassName('remove-material');
+          for (let i = 0; i < removeButtons.length; i++) {
+            removeButtons[i].id = `remove-material-${i}`
+          }
+          // Enable edit buttons
+          for (let i = 0; i < editButtons.length; i++) {
+            editButtons[i].disabled = false
+          }
 
           var deleteButtons = tableMaterials.getElementsByClassName('remove-material');
           if (deleteButtons.length > 1) {
@@ -1630,472 +2252,71 @@
               deleteButtons[i].disabled = true
             }
           }
-        })
+        }
+
+        const removeId = event.target.id.substring(16, event.target.id.length)
+        const form = document.getElementById(`material-form-${removeId}`)
+        if (form) {
+          form.remove();
+          // Recorre todos los formularios restantes y actualiza sus índices
+          const forms = materialFormsContainer.getElementsByClassName('material-form');
+          for (let i = 0; i < forms.length; i++) {
+            forms[i].id = `material-form-${i}`
+            const inputs = forms[i].querySelectorAll('[id^=id_material-]');
+            for (let j = 0; j < inputs.length; j++) {
+              inputs[j].id = inputs[j].id.replace(/\d+/, i);
+            }
+          }
+          materialCounter--
+          addMaterialBand = false
+          formCount--;
+          document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
+        }
+
+        if (materialCounter == 1) {
+          var deleteButtons = document.getElementsByClassName('remove-material');
+          for(i=0; i<deleteButtons.length-1; i++) {
+            deleteButtons[i].disabled = true
+          }
+        }
       }
+    })*/
 
-      const createMaterialForm = () => {
-        // Hiding all material forms
-        const materialForms = document.querySelectorAll('.material-form')
-        materialForms.forEach(materialForm => {
-          materialForm.style.display = 'none'
-        })
-        
-        const formHtml = `
-            <!-- Tipo alta field -->
-            <div class="tipo-alta-container" style="margin-bottom:1rem;">
-              <p class="m-0">{{ material_formset.empty_form.tipo_alta.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-              {{ material_formset.empty_form.tipo_alta }}
-              <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>
-
-            <!-- Subfamilia field -->
-            <div class="subfamilia-container" style="margin-bottom:1rem;">
-              <p class="m-0">{{ material_formset.empty_form.subfamilia.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-              {{ material_formset.empty_form.subfamilia }}
-              <p id="error-subfamilia" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-            </div>
-
-            <!-- Nombre producto field -->
-            <div class="nombre-producto-container" style="margin-bottom:1rem;">
-              <p class="m-0">{{ material_formset.empty_form.nombre_producto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-              {{ material_formset.empty_form.nombre_producto }}
-              <datalist id="opciones_material">
-              </datalist>
-              <p id="error-nombre-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              <p id="error-nombre-producto-2" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Ya existe un producto con ese nombre</p>
-            </div>
-
-            <!-- Documentos -->
-            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-
-              <!-- Foto producto field -->
-              <div class="foto-producto-container d-flex" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-end;">
-
-                <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
-
-                  <!-- Preview de la foto del producto -->
-                  <img id="id_foto_producto_img" class="mb-2 rounded" src="" alt="Foto del producto" style="max-width: 80%; max-height: 10rem; display: none;" />
-
-                  <!-- Botón para eliminar la foto del producto -->
-                  <button id="id_btn_delete_foto_producto" class="btn btn-secondary btn-delete-foto-producto mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem; display: none;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
-                  </button>
-
-                </div>
-
-                <label for="id_foto_producto" class="mb-2" style="display: block;"><span id="foto-producto-label">Foto del producto: <span style="font-size: 0.8rem; font-style: italic;">(solo imágenes)</span></span></label>
-                {{ material_formset.empty_form.foto_producto }}
-                <p id="error-foto-producto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-              </div>
-
-              <!-- Ficha técnica field -->
-              <div class="ficha-tecnica-container d-flex" style="width: 50%; flex-direction: column; align-items: center; justify-content: flex-end;">
-                <div style="display: flex; align-items: flex-end; gap: 0.5rem;">
-
-                  <!-- Preview de la ficha técnica -->
-                  <img id="id_ficha_tecnica_img" class="mb-2 rounded" src="" alt="Ficha técnica" style="max-width: 80%; max-height: 10rem; display: none;" />
-                  
-                  <!-- Botón para eliminar la ficha técnica -->
-                  <button id="id_btn_delete_ficha_tecnica" class="btn btn-secondary btn-delete-ficha-tecnica mb-2" type="button" style="background-color: #B22222; color: white; font-size: 0.8rem; display: none;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"> <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/> <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/> </svg>
-                  </button>
-                </div>
-
-                <label for="id_ficha_tecnica" class="mb-2" style="display: block;"><span id="ficha-tecnica-label">Ficha técnica:</span></label>
-                {{ material_formset.empty_form.ficha_tecnica }}
-                <p id="error-ficha-tecnica" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-              </div>
-
-            </div>
-
-            <div id="medidas-container">
-              <p class="m-0">Medidas <span style="font-size: 0.8rem; font-style: italic;">(El valor debe ser numérico, fracción o N/A)</span></p>
-              
-              <div style="display: flex; gap: 1rem;">
-                <!-- Largo field -->
-                <div class="largo-container" style="width: 33%; margin-bottom:1rem;">
-                  <p class="m-0">{{ material_formset.empty_form.largo.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-                  {{ material_formset.empty_form.largo }}
-                  <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
-                  <p id="label-largo" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
-                </div>
-
-                <!-- Ancho field -->
-                <div class="ancho-container" style="width: 33%; margin-bottom:1rem;">
-                  <p class="m-0">{{ material_formset.empty_form.ancho.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-                  {{ material_formset.empty_form.ancho }}
-                  <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
-                  <p id="label-ancho" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
-                </div>
-
-                <!-- Alto field -->
-                <div class="alto-container" style="width: 33%; margin-bottom:1rem;">
-                  <p class="m-0">{{ material_formset.empty_form.alto.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-                  {{ material_formset.empty_form.alto }}
-                  <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">El valor debe ser numérico, fracción o N/A</p>
-                  <p id="label-alto" style="margin-bottom:0; margin-left: 0.2rem; font-size: 0.8rem; font-style: italic; color: 'gray'; display:none;"></p>
-                </div>
-              </div>
-
-              <div id="id-unidades-medida" class="d-flex justify-content-between gap-3">
-                <div>
-                  <label for="id-medidas-iguales">Todas las medidas tienen la misma unidad:</label>
-                  <input type="checkbox" id="id-medidas-iguales" class="medidas-iguales">
-                </div>
-
-                <div class="mb-1" style="width: 12rem;">
-                  <!-- UM Largo field -->
-                  <div id="select-largo">
-                    {{ material_formset.empty_form.um_largo }}
-                    <p id="error-largo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                  </div>
-                  <!-- UM Ancho field -->
-                  <div id="select-ancho" style="display: none;">
-                    {{ material_formset.empty_form.um_ancho }}
-                    <p id="error-ancho" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                  </div>
-                  <!-- UM Alto field -->
-                  <div id="select-alto" style="display: none;">
-                    {{ material_formset.empty_form.um_alto }}
-                    <p id="error-alto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-                  </div>
-
-                  <p id="error-unidades-medida" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una unidad para cada medida</p>
-                </div>
-              </div>
-            </div>
-
-            <div id="material-color-container" style="display: flex; gap: 1rem;">
-              <!-- Material field -->
-              <div class="material-container" style="width: 50%; margin-bottom:1rem;">
-                <p class="m-0">{{ material_formset.empty_form.material.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-                {{ material_formset.empty_form.material }}
-                <p id="error-material" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-
-              <!-- Color field -->
-              <div class="color-container" style="width: 50%; margin-bottom:1rem;">
-                <p class="m-0">{{ material_formset.empty_form.color.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
-                {{ material_formset.empty_form.color }}
-                <p id="error-color" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 1rem;">
-              <!-- Marca field -->
-              <div style="width: 50%; margin-bottom:1rem;">
-                {{ material_formset.empty_form.marca.label_tag }}
-                {{ material_formset.empty_form.marca }}
-                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-
-              <!-- Parte/Modelo field -->
-              <div style="width: 50%; margin-bottom:1rem;">
-                <label for="id_parte_modelo">Parte / Modelo:</label>
-                {{ material_formset.empty_form.parte_modelo }}
-                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 1rem;">
-              <!-- Nombre común field -->
-              <div style="width: 50%; margin-bottom:1rem;">
-                <label for="id_nombre_comun">Nombre común:</label>
-                {{ material_formset.empty_form.nombre_comun }}
-                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-
-              <!-- Ing activo field -->
-              <div style="width: 50%; margin-bottom:1rem;">
-                <label for="id_ing_activo">Ingrediente activo:</label>
-                {{ material_formset.empty_form.ing_activo }}
-                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 1rem;">
-              <!-- Porcentaje IVA field -->
-              <div class="porcentaje-iva-container" style="width: 50%; margin-bottom:1rem;">
-                <label for="id_porcentaje_iva">% de IVA:</label>
-                {{ material_formset.empty_form.porcentaje_iva }}
-                <p id="error-porcentaje-iva" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-
-              <!-- Alias field -->
-              <div style="width: 50%; margin-bottom:1rem;">
-                {{ material_formset.empty_form.alias.label_tag }}
-                {{ material_formset.empty_form.alias }}
-                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-            </div>
-
-            <div style="display: flex; gap: 1rem;">
-              <!-- Unidad de medida field -->
-              <div class="unidad-medida-container" style="width: 50%; margin-bottom:1rem;">
-                <label for="id_unidad_medida">Unidad de medida:<span style="color: rgb(192, 0, 0);">*</span></label>
-                {{ material_formset.empty_form.unidad_medida }}
-                <p id="error-unidad-medida" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
-              </div>
-
-              <!-- Código SAT field -->
-              <div style="width: 50%; margin-bottom:1rem;">
-                <label for="id_codigo_sat">Código SAT:</label>
-                {{ material_formset.empty_form.codigo_sat }}
-                <p id="error-codigo-sat" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; gap: 2rem;">
-              <!-- Es mezcla field -->
-              <div style="margin-bottom:1rem;">
-                <label for="id_es_mezcla">¿Es mezcla?</label>
-                {{ material_formset.empty_form.es_mezcla }}
-                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-
-              <!-- Es material empaque field -->
-              <div style="margin-bottom:1rem;">
-                <label for="id_es_material_empaque">¿Es material empaque?</label>
-                {{ material_formset.empty_form.es_material_empaque }}
-                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-
-              <!-- Es prod terminado field -->
-              <div style="margin-bottom:1rem;">
-                <label for="id_es_prod_terminado">¿Es prod. terminado?</label>
-                {{ material_formset.empty_form.es_prod_terminado }}
-                <p id="error-tipo-alta" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
-              </div>
-            </div>
-          `;
-        const form = document.createElement('div');
-        form.id = `material-form-${formCount}`
-        form.classList.add('material-form')
-        form.classList.add(`material-form-${formCount}`)
-        form.innerHTML = formHtml.replace(/__prefix__/g, formCount);
-        materialFormsContainer.appendChild(form);
-
-        formCount++;
-        document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
-        materialCounter++
-
-        // Todos los formularios deben validar las medidas
-        validarCamposMaterial()
-      }
-    
-      btnAddMaterial.addEventListener('click', () => {
-        if (tableMaterials.style.display == 'none') {
-          const form = $(materialFormsContainer).find('.material-form');
-          form.show();
-          modalBody.append(form);
-          return
-        }
-      });
-
-      const updateForm = event => {
-        // Inputs
-        var tipoAlta
-        var subfamilia
-        var nombreProducto
-        var largo
-        var ancho
-        var alto
-        var umLargo
-        var umAncho
-        var umAlto
-        var material
-        var color
-        var porcentajeIva
-        var unidadMedida
-
-        if (!editingBand) {
-          tipoAlta = document.getElementById(`id_material-${materialCounter}-tipo_alta`)
-          subfamilia = document.getElementById(`id_material-${materialCounter}-subfamilia`)
-          nombreProducto = document.getElementById(`id_material-${materialCounter}-nombre_producto`)
-          largo = document.getElementById(`id_material-${materialCounter}-largo`)
-          ancho = document.getElementById(`id_material-${materialCounter}-ancho`)
-          alto = document.getElementById(`id_material-${materialCounter}-alto`)
-          umLargo = document.getElementById(`id_material-${materialCounter}-um_largo`)
-          umAncho = document.getElementById(`id_material-${materialCounter}-um_ancho`)
-          umAlto = document.getElementById(`id_material-${materialCounter}-um_alto`)
-          material = document.getElementById(`id_material-${materialCounter}-material`)
-          color = document.getElementById(`id_material-${materialCounter}-color`)
-          porcentajeIva = document.getElementById(`id_material-${materialCounter}-porcentaje_iva`)
-          unidadMedida = document.getElementById(`id_material-${materialCounter}-unidad_medida`)
-        }
-        else {
-          tipoAlta = document.getElementById(`id_material-${editingId}-tipo_alta`)
-          subfamilia = document.getElementById(`id_material-${editingId}-subfamilia`)
-          nombreProducto = document.getElementById(`id_material-${editingId}-nombre_producto`)
-          largo = document.getElementById(`id_material-${editingId}-largo`)
-          ancho = document.getElementById(`id_material-${editingId}-ancho`)
-          alto = document.getElementById(`id_material-${editingId}-alto`)
-          umLargo = document.getElementById(`id_material-${editingId}-um_largo`)
-          umAncho = document.getElementById(`id_material-${editingId}-um_ancho`)
-          umAlto = document.getElementById(`id_material-${editingId}-um_alto`)
-          material = document.getElementById(`id_material-${editingId}-material`)
-          color = document.getElementById(`id_material-${editingId}-color`)
-          porcentajeIva = document.getElementById(`id_material-${editingId}-porcentaje_iva`)
-          unidadMedida = document.getElementById(`id_material-${editingId}-unidad_medida`)
-
-          editingBand = false
-        }
-
-        const errorTipoAlta = tipoAlta.closest('.tipo-alta-container').querySelector('#error-tipo-alta')
-        const errorSubfamilia = subfamilia.closest('.subfamilia-container').querySelector('#error-subfamilia')
-        const errorNombreProducto = nombreProducto.closest('.nombre-producto-container').querySelector('#error-nombre-producto')
-        const errorNombreProducto2 = nombreProducto.closest('.nombre-producto-container').querySelector('#error-nombre-producto-2')
-        const errorLargo = largo.closest('.largo-container').querySelector('#error-largo')
-        const errorAncho = ancho.closest('.ancho-container').querySelector('#error-ancho')
-        const errorAlto = alto.closest('.alto-container').querySelector('#error-alto')
-        const errorUnidadesMedida = largo.closest('#medidas-container').querySelector('#error-unidades-medida')
-        const errorMaterial = material.closest('.material-container').querySelector('#error-material')
-        const errorColor = color.closest('.color-container').querySelector('#error-color')
-        const errorPorcentajeIva = porcentajeIva.closest('.porcentaje-iva-container').querySelector('#error-porcentaje-iva')
-        const errorUnidadMedida = unidadMedida.closest('.unidad-medida-container').querySelector('#error-unidad-medida')
-
-        const mostrarErrores = () => {
-          window.alert('Algún campo está vacío o es incorrecto')
-          if (tipoAlta.value == '') {
-            errorTipoAlta.style.display = 'block'
+    /*materialFormsContainer.addEventListener('click', function(event) {
+      // If the delete button is clicked, remove the whole parent node
+      if (event.target && event.target.classList.contains('remove-material')) {
+        const form = event.target.closest('.material-form');
+        if (form) {
+          form.remove();
+          // Recorre todos los formularios restantes y actualiza sus índices
+          const forms = materialFormsContainer.getElementsByClassName('material-form');
+          for (let i = 0; i < forms.length; i++) {
+            forms[i].id = `material-form-${i}`
+            const inputs = forms[i].querySelectorAll('[id^=id_material-]');
+            for (let j = 0; j < inputs.length; j++) {
+              inputs[j].id = inputs[j].id.replace(/\d+/, i);
+            }
           }
-          if (subfamilia.value == '') {
-            errorSubfamilia.style.display = 'block'
-          }
-          if (nombreProducto.value == '') {
-            errorNombreProducto.style.display = 'block'
-          }
-          if (largo.value == '') {
-            errorLargo.style.display = 'block'
-          }
-          if (ancho.value == '') {
-            errorAncho.style.display = 'block'
-          }
-          if (alto.value == '') {
-            errorAlto.style.display = 'block'
-          }
-          if (umLargo.value == '' || umAncho.value == '' || umAlto.value == '') {
-            errorUnidadesMedida.style.display = 'block'
-          }
-          if (material.value == '') {
-            errorMaterial.style.display = 'block'
-          }
-          if (color.value == '') {
-            errorColor.style.display = 'block'
-          }
-          if (porcentajeIva.value == '') {
-            errorPorcentajeIva.style.display = 'block'
-          }
-          if (unidadMedida.value == '') {
-            errorUnidadMedida.style.display = 'block'
-          }
-        }
+          materialCounter--
+          addMaterialBand = false
+          formCount--;
+          document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
 
-        if (tipoAlta.value == '') {
-          mostrarErrores()
-          return
-        }
-
-        // Validamos las medidas para cada unidad
-        if (tipoAlta.value == 'Almacén') {
-          if (largo.value != 'N/A' && umLargo.value == '') {
-            errorUnidadesMedida.style.display = 'block'
-            window.alert('Debe seleccionar una unidad para Largo')
-            return
-          }
-          if (ancho.value != 'N/A' && umAncho.value == '') {
-            errorUnidadesMedida.style.display = 'block'
-            window.alert('Debe seleccionar una unidad para Ancho')
-            return
-          }
-          if (alto.value != 'N/A' && umAlto.value == '') {
-            errorUnidadesMedida.style.display = 'block'
-            window.alert('Debe seleccionar una unidad para Alto')
-            return
-          }
-        }
-        // Si todas las medidas tienen una unidad, se oculta el error
-        errorUnidadesMedida.style.display = 'none'
-        // La unidad de medida no aplica cuando el valor es N/A
-        if (largo.value == 'N/A') {
-          umLargo.value = ''
-        }
-        if (ancho.value == 'N/A') {
-          umAncho.value = ''
-        }
-        if (alto.value == 'N/A') {
-          umAlto.value = ''
-        }
-        
-        // Si tipoAlta es 'Servicio', no requiere largo, ancho, alto, material ni color
-        if (tipoAlta.value === 'Servicio') {
-          largo.value = ''
-          umLargo.value = ''
-          ancho.value = ''
-          umAncho.value = ''
-          alto.value = ''
-          umAlto.value = ''
-          material.value = ''
-          color.value = ''
-        }
-
-        if (tipoAlta.value == 'Almacén' && (subfamilia.value == '' || nombreProducto.value == '' || largo.value == '' || ancho.value == '' || alto.value == '' || largo.value != 'N/A' && umLargo.value == '' || ancho.value != 'N/A' && umAncho.value == '' || alto.value != 'N/A' && umAlto.value == '' || material.value == '' || color.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block' || errorLargo.style.display == 'block' || errorAncho.style.display == 'block' || errorAlto.style.display == 'block')) {
-          mostrarErrores()
-          return
-        }
-
-        // Si tipo de alta es Servicio, las medidas, material y color no son obligatorios
-        if (tipoAlta.value == 'Servicio' && (subfamilia.value == '' || nombreProducto.value == '' || porcentajeIva.value == '' || unidadMedida.value == '' || errorNombreProducto2.style.display == 'block')) {
-          mostrarErrores()
-          return
-        }
-        
-        // Si todos los campos están correctos, llenar la tabla y crear un nuevo formulario
-        fillTable()
-        createMaterialForm()
-        btnAddMaterial.innerHTML = 'Agregar Material / servicio'
-        medidasIguales = false
-        enableSaveButton()
-      }
-
-      tableMaterials.addEventListener('click', function(event) {
-        // If the edit button is clicked, display the corresponding form
-        if (event.target && event.target.classList.contains('edit-material')) {
-          // Disable edit buttons
+          // Enable edit buttons
           const editButtons = tableMaterials.getElementsByClassName('edit-material');
-            for (let i = 0; i < editButtons.length; i++) {
-              editButtons[i].disabled = true
+          for (let i = 0; i < editButtons.length; i++) {
+            editButtons[i].disabled = false
+          }
+
+          if (materialCounter == 1) {
+            var deleteButtons = document.getElementsByClassName('remove-material');
+            for(i=0; i<deleteButtons.length-1; i++) {
+              deleteButtons[i].disabled = true
             }
-          // Show the selected form
-          editingBand = true
-          editingId = event.target.id.substring(14, event.target.id.length)
-          const form = document.getElementById(`material-form-${editingId}`)
-          if (form) {
-            form.style.display = "block"
-            // Se elimina el ultimo formulario creado
-            const lastForm = document.getElementById(`material-form-${formCount - 1}`);
-            if (lastForm) {
-              lastForm.remove();
-              // Recorre todos los formularios restantes y actualiza sus índices
-              const forms = materialFormsContainer.getElementsByClassName('material-form');
-              for (let i = 0; i < forms.length; i++) {
-                const inputs = forms[i].querySelectorAll('[name^=material-]');
-                for (let j = 0; j < inputs.length; j++) {
-                  inputs[j].name = inputs[j].name.replace(/\d+/, i);
-                }
-              }
-              materialCounter--
-              formCount--;
-              document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
-            }
-            btnAddMaterial.innerHTML = 'Guardar Cambios'
-            medidasIguales = false
           }
         }
-
-        // If the delete button is clicked, remove the row and the form
-        if (event.target && event.target.classList.contains('remove-material')) {
-          const row = event.target.closest('.table-row')
+        if(editingBand) {
+          const row = document.getElementById(`table-row-${editingId}`);
           if (row) {
             row.remove();
             // Recorre todos las filas restantes y actualiza sus índices
@@ -2108,173 +2329,75 @@
             for (let i = 0; i < editButtons.length; i++) {
               editButtons[i].id = `edit-material-${i}`
             }
-            const removeButtons = tableMaterials.getElementsByClassName('remove-material');
-            for (let i = 0; i < removeButtons.length; i++) {
-              removeButtons[i].id = `remove-material-${i}`
-            }
-            // Enable edit buttons
-            for (let i = 0; i < editButtons.length; i++) {
-              editButtons[i].disabled = false
-            }
-
-            var deleteButtons = tableMaterials.getElementsByClassName('remove-material');
-            if (deleteButtons.length > 1) {
-              for(i=0; i<deleteButtons.length; i++) {
-                deleteButtons[i].disabled = false
-              }
-            }
-            else {
-              for(i=0; i<deleteButtons.length; i++) {
-                deleteButtons[i].disabled = true
-              }
-            }
-          }
-
-          const removeId = event.target.id.substring(16, event.target.id.length)
-          const form = document.getElementById(`material-form-${removeId}`)
-          if (form) {
-            form.remove();
-            // Recorre todos los formularios restantes y actualiza sus índices
-            const forms = materialFormsContainer.getElementsByClassName('material-form');
-            for (let i = 0; i < forms.length; i++) {
-              forms[i].id = `material-form-${i}`
-              const inputs = forms[i].querySelectorAll('[id^=id_material-]');
-              for (let j = 0; j < inputs.length; j++) {
-                inputs[j].id = inputs[j].id.replace(/\d+/, i);
-              }
-            }
-            materialCounter--
-            addMaterialBand = false
-            formCount--;
-            document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
-          }
-
-          if (materialCounter == 1) {
-            var deleteButtons = document.getElementsByClassName('remove-material');
-            for(i=0; i<deleteButtons.length-1; i++) {
-              deleteButtons[i].disabled = true
-            }
           }
         }
-      })
-
-      materialFormsContainer.addEventListener('click', function(event) {
-        // If the delete button is clicked, remove the whole parent node
-        if (event.target && event.target.classList.contains('remove-material')) {
-          const form = event.target.closest('.material-form');
-          if (form) {
-            form.remove();
-            // Recorre todos los formularios restantes y actualiza sus índices
-            const forms = materialFormsContainer.getElementsByClassName('material-form');
-            for (let i = 0; i < forms.length; i++) {
-              forms[i].id = `material-form-${i}`
-              const inputs = forms[i].querySelectorAll('[id^=id_material-]');
-              for (let j = 0; j < inputs.length; j++) {
-                inputs[j].id = inputs[j].id.replace(/\d+/, i);
-              }
-            }
-            materialCounter--
-            addMaterialBand = false
-            formCount--;
-            document.querySelector("#id_material-TOTAL_FORMS").value = formCount;
-
-            // Enable edit buttons
-            const editButtons = tableMaterials.getElementsByClassName('edit-material');
-            for (let i = 0; i < editButtons.length; i++) {
-              editButtons[i].disabled = false
-            }
-
-            if (materialCounter == 1) {
-              var deleteButtons = document.getElementsByClassName('remove-material');
-              for(i=0; i<deleteButtons.length-1; i++) {
-                deleteButtons[i].disabled = true
-              }
-            }
-          }
-          if(editingBand) {
-            const row = document.getElementById(`table-row-${editingId}`);
-            if (row) {
-              row.remove();
-              // Recorre todos las filas restantes y actualiza sus índices
-              const rows = tableMaterials.getElementsByClassName('table-row');
-              for (let i = 0; i < rows.length; i++) {
-                rows[i].id = `table-row-${i}`
-              }
-              // Recorre todos los botones restantes y actualiza sus índices
-              const editButtons = tableMaterials.getElementsByClassName('edit-material');
-              for (let i = 0; i < editButtons.length; i++) {
-                editButtons[i].id = `edit-material-${i}`
-              }
-            }
-          }
-          createMaterialForm()
-        }
-      });
-
-      const disableAllFieldsForMigracion = () => {
-        esMigracion.setAttribute('disabled', true)
-        empresaOrigen.setAttribute('disabled', true)
-        empresaDestino.setAttribute('disabled', true)
+        createMaterialForm()
       }
+    });*/
 
-      const enableAllFieldsForMigracion = () => {
-        esMigracion.removeAttribute('disabled')
-        empresaOrigen.removeAttribute('disabled')
-        empresaDestino.removeAttribute('disabled')
-      }
+    const disableAllFieldsForMigracion = () => {
+      esMigracion.setAttribute('disabled', true)
+      empresaOrigen.setAttribute('disabled', true)
+      empresaDestino.setAttribute('disabled', true)
+    }
 
-      function enableSaveButton() {
-        if(esMigracion.checked) {
-          if(errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorEmpresasMigracion.style.display == 'block' || errorNombreProductoMigracion.style.display == 'block' || errorNombreProductoMigracion2.style.display == 'block') {
-            btnSave.disabled = true
-            btnSaveDraft.disabled = true
-          }
-          else {
-            btnSave.disabled = false
-            btnSaveDraft.disabled = false
-          }
+    const enableAllFieldsForMigracion = () => {
+      esMigracion.removeAttribute('disabled')
+      empresaOrigen.removeAttribute('disabled')
+      empresaDestino.removeAttribute('disabled')
+    }
+
+    function enableSaveButton() {
+      if(esMigracion.checked) {
+        if(errorEmpresaOrigen.style.display == 'block' || errorEmpresaDestino.style.display == 'block' || errorEmpresasMigracion.style.display == 'block' || errorNombreProductoMigracion.style.display == 'block' || errorNombreProductoMigracion2.style.display == 'block') {
+          btnSave.disabled = true
+          btnSaveDraft.disabled = true
         }
         else {
-          if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block' || tableMaterials.style.display == 'none') {
-            btnSave.disabled = true
-            btnSaveDraft.disabled = true
-          }
-          else {
-            btnSave.disabled = false
-            btnSaveDraft.disabled = false
-          }
+          btnSave.disabled = false
+          btnSaveDraft.disabled = false
         }
       }
-
-      const handleBorradorSubmit = () => {
-        empresaOrigen.removeAttribute('required')
-        empresaDestino.removeAttribute('required')
-        nombreProductoMigracion.removeAttribute('required')
-        empresa.removeAttribute('required')
-        justificacion.removeAttribute('required')
+      else {
+        if(errorEmpresa.style.display == 'block' || errorJustificacion.style.display == 'block' || tableMaterials.style.display == 'none') {
+          btnSave.disabled = true
+          btnSaveDraft.disabled = true
+        }
+        else {
+          btnSave.disabled = false
+          btnSaveDraft.disabled = false
+        }
       }
+    }
 
-      btnSaveDraft.addEventListener('click', () => {// Si no se ha añadido ningún material, no se envía la solicitud
-        if (!esMigracion.checked && tableMaterials.style.display != 'block') {
-          window.alert('Por favor añada al menos un producto');
-          event.preventDefault();
-        }
-        handleBorradorSubmit()
-      })
+    const handleBorradorSubmit = () => {
+      empresaOrigen.removeAttribute('required')
+      empresaDestino.removeAttribute('required')
+      nombreProductoMigracion.removeAttribute('required')
+      empresa.removeAttribute('required')
+      justificacion.removeAttribute('required')
+    }
 
-      btnSave.addEventListener('click', (event) => {
-        // Si no se ha añadido ningún material, no se envía la solicitud
-        if (!esMigracion.checked && tableMaterials.style.display != 'block') {
-          window.alert('Por favor añada al menos un producto');
-          event.preventDefault();
-        }
-        // Si el registro ya existe en otra empresa, se envia directo a sistemas
-        if (esMigracion.checked) {
-          btnSave.setAttribute('name', 'finanzas');
-        } else {
-          btnSave.setAttribute('name', 'pendiente');
-        }
-      })
-    });
+    btnSaveDraft.addEventListener('click', () => {// Si no se ha añadido ningún material, no se envía la solicitud
+      if (!esMigracion.checked && tableMaterials.style.display != 'block') {
+        window.alert('Por favor añada al menos un producto');
+        event.preventDefault();
+      }
+      handleBorradorSubmit()
+    })
+
+    btnSave.addEventListener('click', (event) => {
+      // Si no se ha añadido ningún material, no se envía la solicitud
+      if (!esMigracion.checked && tableMaterials.style.display != 'block') {
+        window.alert('Por favor añada al menos un producto');
+        event.preventDefault();
+      }
+      // Si el registro ya existe en otra empresa, se envia directo a sistemas
+      if (esMigracion.checked) {
+        btnSave.setAttribute('name', 'finanzas');
+      } else {
+        btnSave.setAttribute('name', 'pendiente');
+      }
+    })
   </script>
 {% endblock %}
