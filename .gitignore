@@ -2,3 +2,4 @@
 static/proveedores/
 static/materiales/
 csv_files/
+.env

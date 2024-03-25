@@ -43,6 +43,8 @@ with open(csv_path_regimen_capital, 'r') as csv_file:
     REGIMEN_CAPITAL_LIST = [
         ('', ' Seleccione una opción')
     ]
+
+    REGIMEN_CAPITAL_LIST.append(('No aplica', 'No aplica'))
     
     # Itera sobre cada fila del archivo CSV
     for row in csv_reader:
@@ -123,6 +125,8 @@ with open(csv_path_rubro, 'r') as csv_file:
     RUBRO_LIST = [
         ('', ' Seleccione una opción')
     ]
+
+    RUBRO_LIST.append(('Otro', 'Otro'))
     
     # Itera sobre cada fila del archivo CSV
     for row in csv_reader:

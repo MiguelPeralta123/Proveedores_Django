@@ -41,7 +41,7 @@ class Proveedor(models.Model):
     calle = models.CharField(max_length=50, blank=True)
     numero_exterior = models.CharField(max_length=10, blank=True)
     numero_interior = models.CharField(max_length=10, blank=True)
-    codigo_postal = models.CharField(max_length=5, blank=True)
+    codigo_postal = models.CharField(max_length=20, blank=True)
     colonia = models.CharField(max_length=50, blank=True)
     localidad = models.CharField(max_length=50, blank=True)
     municipio = models.CharField(max_length=30, blank=True)

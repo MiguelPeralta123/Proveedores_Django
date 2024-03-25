@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
 from django.core.mail import send_mail
 from django.db.models import Q
-import json
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from threading import Timer
 from datetime import datetime, time
 import csv
@@ -34,46 +34,6 @@ def home(request):
 
 
 # VISTAS DE MATERIAL (GET ALL, CREATE, DETAIL)
-
-# Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
-def get_all_material_requests(request):
-    if request.user.is_superuser:
-        historial = MaterialHistorial.objects.all()
-        all_solicitudes = MaterialSolicitud.objects.all().order_by('id').reverse()
-        data = [
-            {
-                'id': solicitud.id,
-                'id_solicitud': solicitud.id_solicitud,
-                'es_migracion': solicitud.es_migracion,
-                'empresa_origen': solicitud.empresa_origen,
-                'empresa_destino': solicitud.empresa_destino,
-                'nombre_producto_migracion': solicitud.nombre_producto_migracion,
-                'empresa': solicitud.empresa,
-                'justificacion': solicitud.justificacion,
-                'fecha': solicitud.fecha,
-                'usuario': solicitud.usuario.get_full_name() if solicitud.usuario else None,
-                'comentarios': solicitud.comentarios,
-                'pendiente': solicitud.pendiente,
-                'compras': solicitud.compras,
-                'finanzas': solicitud.finanzas,
-                'sistemas': solicitud.sistemas,
-                'aprobadas': solicitud.aprobadas,
-                'rechazado_compras': solicitud.rechazado_compras,
-                'rechazado_finanzas': solicitud.rechazado_finanzas,
-                'rechazado_sistemas': solicitud.rechazado_sistemas,
-                'eliminado': solicitud.eliminado,
-                'borrador': solicitud.borrador,
-            } for solicitud in all_solicitudes
-        ]
-        historialData = [
-            {
-                'id_solicitud': registro.id_solicitud,
-                'message': "Solicitud " + registro.accion + " por " + registro.usuario.get_full_name(),
-                'fecha': registro.fecha,
-            } for registro in historial
-        ]
-        return JsonResponse({'all_solicitudes': data, 'historial': historialData})
-
 
 @login_required
 def material(request):
@@ -202,21 +162,191 @@ def material(request):
     except Exception as e:
         print(f"Se produjo un error al cargar los materiales: {str(e)}")
         return redirect('home')
+
+
+# Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
+def get_all_material_requests(request):
+    if request.user.is_superuser:
+        historial = MaterialHistorial.objects.all()
+        all_solicitudes = MaterialSolicitud.objects.all().order_by('id').reverse()
+        data = [
+            {
+                'id': solicitud.id,
+                'id_solicitud': solicitud.id_solicitud,
+                'es_migracion': solicitud.es_migracion,
+                'empresa_origen': solicitud.empresa_origen,
+                'empresa_destino': solicitud.empresa_destino,
+                'nombre_producto_migracion': solicitud.nombre_producto_migracion,
+                'empresa': solicitud.empresa,
+                'justificacion': solicitud.justificacion,
+                'fecha': solicitud.fecha,
+                'usuario': solicitud.usuario.get_full_name() if solicitud.usuario else None,
+                'comentarios': solicitud.comentarios,
+                'pendiente': solicitud.pendiente,
+                'compras': solicitud.compras,
+                'finanzas': solicitud.finanzas,
+                'sistemas': solicitud.sistemas,
+                'aprobadas': solicitud.aprobadas,
+                'rechazado_compras': solicitud.rechazado_compras,
+                'rechazado_finanzas': solicitud.rechazado_finanzas,
+                'rechazado_sistemas': solicitud.rechazado_sistemas,
+                'eliminado': solicitud.eliminado,
+                'borrador': solicitud.borrador,
+            } for solicitud in all_solicitudes
+        ]
+        historialData = [
+            {
+                'id_solicitud': registro.id_solicitud,
+                'message': "Solicitud " + registro.accion + " por " + registro.usuario.get_full_name(),
+                'fecha': registro.fecha,
+            } for registro in historial
+        ]
+        return JsonResponse({'all_solicitudes': data, 'historial': historialData})
+
+
+
+@login_required
+def create_material_form(request):
+    try:
+        material_form = MaterialForm()
+        # Renderiza el formulario como HTML
+        material_form_html = material_form.as_p()
+        # Devuelve el HTML del formulario en la respuesta JSON
+        return JsonResponse({'material_form': material_form_html})
+    
+    except Exception as e:
+        print(f"Se produjo un error al crear el formulario de material: {str(e)}")
+        return redirect('home')
+
+
+@login_required
+@require_POST
+def save_material_form(request):
+    if request.method == 'POST':
+        # Obtén los datos del formulario del cuerpo de la solicitud
+        id_solicitud = request.POST.get('id_solicitud')
+        tipo_alta = request.POST.get('tipo_alta')
+        subfamilia = request.POST.get('subfamilia')
+        nombre_producto = request.POST.get('nombre_producto')
+        largo = request.POST.get('largo')
+        ancho = request.POST.get('ancho')
+        alto = request.POST.get('alto')
+        um_largo = request.POST.get('um_largo')
+        um_ancho = request.POST.get('um_ancho')
+        um_alto = request.POST.get('um_alto')
+        material = request.POST.get('material')
+        color = request.POST.get('color')
+        marca = request.POST.get('marca')
+        parte_modelo = request.POST.get('parte_modelo')
+        nombre_comun = request.POST.get('nombre_comun')
+        es_mezcla = True if request.POST.get('es_mezcla') == 'on' else False
+        ing_activo = request.POST.get('ing_activo')
+        porcentaje_iva = request.POST.get('porcentaje_iva')
+        alias = request.POST.get('alias')
+        unidad_medida = request.POST.get('unidad_medida')
+        codigo_sat = request.POST.get('codigo_sat')
+        es_material_empaque = True if request.POST.get('es_material_empaque') == 'on' else False
+        es_prod_terminado = True if request.POST.get('es_prod_terminado') == 'on' else False
         
+        # Obtener la imagen y ficha técnica del formulario
+        foto_producto = request.FILES.get('foto_producto')
+        ficha_tecnica = request.FILES.get('ficha_tecnica')
+
+        # Crea y guarda una instancia de Material
+        material_servicio = Material(id_solicitud=id_solicitud, tipo_alta=tipo_alta, subfamilia=subfamilia, nombre_producto=nombre_producto, largo=largo, ancho=ancho, alto=alto, um_largo=um_largo, um_ancho=um_ancho, um_alto=um_alto, material=material, color=color, marca=marca, parte_modelo=parte_modelo, nombre_comun=nombre_comun, es_mezcla=es_mezcla, ing_activo=ing_activo, porcentaje_iva=porcentaje_iva, alias=alias, unidad_medida=unidad_medida, codigo_sat=codigo_sat, es_material_empaque=es_material_empaque, es_prod_terminado=es_prod_terminado)
+
+        # Añadir los archivos a la instancia de material
+        material_servicio.foto_producto = foto_producto
+        material_servicio.ficha_tecnica = ficha_tecnica
+
+        material_servicio.save()
+
+        # Devuelve una respuesta exitosa
+        return JsonResponse({'message': 'Material guardado exitosamente.'})
+    else:
+        # Si la solicitud no es de tipo POST, devuelves un error
+        return JsonResponse({'error': 'Se esperaba una solicitud POST.'}, status=400)
+
+
+@login_required
+def get_request_materials(request):
+    try:
+        id_solicitud = request.GET.get('id_solicitud')
+        materiales = Material.objects.filter(id_solicitud=id_solicitud).order_by('id')
+        data = [
+            {
+                'tipo_alta': material.tipo_alta,
+                'subfamilia': material.subfamilia,
+                'nombre_producto': material.nombre_producto,
+                'foto_producto': ('<img style="width: auto; max-height: 4rem" src="' + material.foto_producto.url + '" alt="Foto del producto"/>') if material.foto_producto else 'Sin foto',
+                'ficha_tecnica': ('<img style="width: auto; max-height: 4rem" src="' + material.ficha_tecnica.url + '" alt="Ficha técnica"/>') if  material.ficha_tecnica else 'Sin ficha técnica',
+                'largo': (material.largo + ' ' + material.um_largo) if material.um_largo else material.largo,
+                'ancho': (material.ancho + ' ' + material.um_ancho) if material.um_ancho else material.ancho,
+                'alto': (material.alto + ' ' + material.um_alto) if material.um_alto else material.alto,
+                'material': material.material,
+                'color': material.color,
+                'marca': material.marca,
+                'parte_modelo': material.parte_modelo,
+                'nombre_comun': material.nombre_comun,
+                'ing_activo': material.ing_activo,
+                'porcentaje_iva': material.porcentaje_iva,
+                'alias': material.alias,
+                'unidad_medida': material.unidad_medida,
+                'codigo_sat': material.codigo_sat,
+                'es_mezcla': 'Si' if material.es_mezcla else 'No',
+                'es_material_empaque': 'Si' if material.es_material_empaque else 'No',
+                'es_prod_terminado': 'Si' if material.es_prod_terminado else 'No',
+                'acciones': 
+                    '<div class="d-flex gap-2"><button id="edit_material_' 
+                    + str(material.id) 
+                    + '" class="btn btn-warning edit_material" type="button" style="font-size:0.8rem" data-bs-toggle="modal" data-bs-target="#modalId"><i class="fa fa-pencil" id="icon-material-' 
+                    + str(material.id) 
+                    + '" aria-hidden="true"></i></button>' 
+                    + '<button id="remove_material_' 
+                    + str(material.id) 
+                    + '" class="btn btn-danger remove_material" onclick="confirmAndDelete(' 
+                    + str(material.id) 
+                    + ')" type="button" style="font-size:0.8rem"><i class="fa fa-trash" aria-hidden="true"></i></button></div>',
+            } for material in materiales
+        ]
+        return JsonResponse({'materiales': data})
+    
+    except Exception as e:
+        print(f"Se produjo un error al cargar los materiales: {str(e)}")
+        return redirect('home')
+
+
+@login_required
+def delete_material(request, id):
+    try:
+        if request.method == 'POST':
+            material = get_object_or_404(Material, pk=id)
+            if material:
+                material.delete()
+                return JsonResponse({'message': 'Material eliminado con éxito'})
+            else:
+                return JsonResponse({'error': 'Material no encontrado'})
+        else:
+            return JsonResponse({'error': 'Método no permitido'})
+        
+    except Exception as e:
+        return JsonResponse({'error': f"Se produjo un error al eliminar el material: {str(e)}"})
 
 
 @login_required
 def material_create(request):
     try:
         if request.user.puede_crear_material:
-            MaterialFormSet = formset_factory(MaterialForm, extra=0)
+            #MaterialFormSet = formset_factory(MaterialForm, extra=0)
 
             if request.method == 'GET':
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
                                 'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
 
                 solicitud_form = SolicitudForm(initial=default_values)
-                material_formset = MaterialFormSet(prefix='material', initial=[{}])
+                material_form = MaterialForm()
+                id_solicitud = generar_codigo_unico()
+                #material_formset = MaterialFormSet(prefix='material', initial=[{}])
 
                 # Cargando los registros de materiales desde el archivo catalogo_productos.csv
                 csv_path = os.path.join('csv_files', 'catalogo_productos.csv')
@@ -242,7 +372,9 @@ def material_create(request):
 
                 return render(request, 'material/material_create.html', {
                     'solicitud_form': solicitud_form,
-                    'material_formset': material_formset,
+                    #'material_formset': material_formset,
+                    'material_form': material_form,
+                    'id_solicitud': id_solicitud,
                     'catalogo_material': catalogo_material,
                     'subfamilia_producto_list': SUBFAMILIA_PRODUCTO_LIST,
                     'subfamilia_servicio_list': SUBFAMILIA_SERVICIO_LIST,
@@ -252,13 +384,13 @@ def material_create(request):
             else:
                 try:
                     solicitud_form = SolicitudForm(request.POST)
-                    material_formset = MaterialFormSet(request.POST, request.FILES, prefix='material')
+                    #material_formset = MaterialFormSet(request.POST, request.FILES, prefix='material')
                     historial_form = HistorialForm(request.POST)
 
                     if solicitud_form.is_valid() and historial_form.is_valid():
-                        id_solicitud = generar_codigo_unico()
+                        #id_solicitud = generar_codigo_unico()
                         solicitud = solicitud_form.save(commit=False)
-                        solicitud.id_solicitud = id_solicitud
+                        #solicitud.id_solicitud = id_solicitud
                         solicitud.usuario = request.user
                         solicitud.save()
 

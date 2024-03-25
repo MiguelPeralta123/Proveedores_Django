@@ -54,6 +54,11 @@ urlpatterns = [
     path('materiales/crear/', views_materiales.material_create, name='material_create'),
     path('materiales/<int:material_id>/', views_materiales.material_detail, name='material_detail'),
     path('get_all_material_requests/', views_materiales.get_all_material_requests, name='get_all_material_requests'),
+    path('create_material_form/', views_materiales.create_material_form, name='create_material_form'),
+    path('save_material_form/', views_materiales.save_material_form, name='save_material_form'),
+    path('get_request_materials/', views_materiales.get_request_materials, name='get_request_materials'),
+    path('get_request_materials/', views_materiales.get_request_materials, name='get_request_materials'),
+    path('delete_material/<int:id>/', views_materiales.delete_material, name='delete_material'),
 ]
 
 if settings.DEBUG:

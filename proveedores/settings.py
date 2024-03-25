@@ -10,10 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
-
-# Static files
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,17 +25,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-z0*##4xay-48agvw#f(5old!0=jpsbu8oev@!x@sm#o@_%wj=5'
+SECRET_KEY = os.getenv('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 # Development
 ALLOWED_HOSTS = ['*']
 # Production
-#ALLOWED_HOSTS = ['23.19.74.40']
+#ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS_DOCKER')]
 # IIS
-# ALLOWED_HOSTS = ['172.16.0.90']
+#ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS_IIS')]
 
 
 # Application definition
@@ -101,11 +104,11 @@ WSGI_APPLICATION = 'proveedores.wsgi.application'
 #DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'proveedores',
-#        'USER': 'root',
-#        'PASSWORD': 'Ric0.farm$.db',
-#        'HOST': 'db',
-#        'PORT': '3306',
+#        'NAME': os.getenv('DATABASE_NAME_DOCKER'),
+#        'USER': os.getenv('DATABASE_USER_DOCKER'),
+#        'PASSWORD': os.getenv('DATABASE_PASSWORD_DOCKER'),
+#        'HOST': os.getenv('DATABASE_HOST_DOCKER'),
+#        'PORT': os.getenv('DATABASE_PORT_DOCKER'),
 #    }
 #}
 
@@ -116,6 +119,18 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# SQL Server database
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'sqlserver',
+#        'NAME': 'nombre_de_tu_base_de_datos',
+#        'USER': 'tu_usuario',
+#        'PASSWORD': 'tu_contraseña',
+#        'HOST': 'tu_host',    # Por ejemplo, 'localhost' o dirección IP
+#        'PORT': 'tu_puerto',  # Por ejemplo, '1433'
+#    }
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -141,7 +156,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/Hermosillo'
+TIME_ZONE = os.getenv('TIME_ZONE')
 
 USE_I18N = True
 
@@ -176,12 +191,12 @@ AUTH_USER_MODEL = 'iniciar_sesion.CustomUser'
 
 
 # Configuración del correo electrónico
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'altaproveedoresricofarms@gmail.com'
-EMAIL_HOST_PASSWORD = 'euid ehrx mkag vdmm'
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-# Opcional: Si deseas configurar el remitente predeterminado para tus correos
-DEFAULT_FROM_EMAIL = 'altaproveedoresricofarms@gmail.com'
+# Optional
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')

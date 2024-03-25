@@ -512,8 +512,12 @@
             <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block mb-3" style="width:fit-content;" download="">Descargar constancia de situación fiscal actualizada</a>
             <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block mb-3" style="width:fit-content;" download="">Descargar estado de cuenta bancario actualizado</a>
           {% else %}
-            <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block mb-3" style="width:fit-content;" download="">Descargar constancia de situación fiscal</a>
-            <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block mb-3" style="width:fit-content;" download="">Descargar estado de cuenta bancario</a>
+            {% if proveedor.constancia_situacion_fiscal %}
+              <a href="/{{ proveedor.constancia_situacion_fiscal }}" class="d-inline-block mb-3" style="width:fit-content;" download="">Descargar constancia de situación fiscal</a>
+            {% endif %}
+            {% if proveedor.estado_cuenta_bancario %}
+              <a href="/{{ proveedor.estado_cuenta_bancario }}" class="d-inline-block mb-3" style="width:fit-content;" download="">Descargar estado de cuenta bancario</a>
+            {% endif %}
           {% endif %}
 
           <!-- Comentarios field -->
@@ -715,7 +719,7 @@
       const telefonoPattern = /^[\d\s+\-]{10,}$/
       const correoPattern = /^[A-Za-z\d._%+-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}$/
       const codigoPostalPattern = /^\d{5}$/
-      const cuentaPattern = /^\d{10,20}$/
+      const cuentaPattern = /^\d{5,20}$/
       const clabePattern = /^\d{18}$/
       const nonAccentPattern = /^[A-Za-z\d\s]*$/
       const numberPattern = /^[\d,]*$/
@@ -1503,7 +1507,7 @@
           } else {
             errorTipoTercero.style.display = 'none'
             // ID fiscal es obligatorio para proveedores y clientes extranjeros
-            if (tipoTercero.value.toUpperCase() == 'EXTRANJERO' || tipoTercero.value.toUpperCase() == 'EXTRANJERO RELACIONADO') {
+            if (tipoTercero.value.toLowerCase() == 'extranjero' || tipoTercero.value.toLowerCase() == 'extranjero relacionado') {
               idFiscal.setAttribute('required', true)
               idFiscal.removeAttribute('disabled')
               // Régimen de capital no es obligatorio para proveedores y clientes extranjeros
@@ -1519,6 +1523,16 @@
               if (contribuyente.value.toUpperCase() == 'PERSONA MORAL') {
                 regimenCapital.setAttribute('required', true)
                 regimenCapital.removeAttribute('disabled')
+              }
+              if (codigoPostal.value) {
+                if (codigoPostalPattern.test(codigoPostal.value)) {
+                  errorCodigoPostal.style.display = 'none'
+                  enableAllFields()
+                } else {
+                  errorCodigoPostal.style.display = 'block'
+                  disableAllFields(codigoPostal)
+                }
+                enableSaveButton()
               }
             }
           }
@@ -1663,6 +1677,11 @@
       // Validación codigo postal
       if (codigoPostal) {
         const validateCodigoPostal = () => {
+          if (tipoTercero.value.toLowerCase() == 'extranjero' || tipoTercero.value.toLowerCase() == 'extranjero relacionado') {
+            errorCodigoPostal.style.display = 'none'
+            enableAllFields()
+            return
+          }
           if (codigoPostalPattern.test(codigoPostal.value)) {
             errorCodigoPostal.style.display = 'none'
             enableAllFields()
@@ -1912,12 +1931,7 @@
           clabe2.value = ''
           
           if (btnAddBanco.textContent == 'Agregar otro banco') {
-            errorBanco2.style.display = 'none'
-            errorCuenta2.style.display = 'none'
-            errorMoneda2.style.display = 'none'
-            errorClabe2.style.display = 'none'
             banco2Container.style.display = 'block'
-            
             banco2.setAttribute('required', true)
             cuenta2.setAttribute('required', true)
             moneda2.setAttribute('required', true)
@@ -1927,11 +1941,15 @@
           }
           else {
             banco2Container.style.display = 'none'
-            
             banco2.removeAttribute('required')
             cuenta2.removeAttribute('required')
             moneda2.removeAttribute('required')
             clabe2.removeAttribute('required')
+            
+            errorBanco2.style.display = 'none'
+            errorCuenta2.style.display = 'none'
+            errorMoneda2.style.display = 'none'
+            errorClabe2.style.display = 'none'
             
             btnAddBanco.textContent = 'Agregar otro banco'
           }
@@ -1941,6 +1959,9 @@
       // Validación banco 2
       if (banco2) {
         const validateBanco2 = () => {
+          if (banco2Container.style.display == 'none') {
+            return
+          }
           if (banco2.value == '') {
             errorBanco2.style.display = 'block'
           } else {
@@ -1954,6 +1975,9 @@
       
       // Validación cuenta 2
       const validateCuenta2 = () => {
+        if (banco2Container.style.display == 'none') {
+          return
+        }
         // Si es extranjero, no se hace la validación
         if (moneda2.value.toUpperCase() == 'USD') {
           return
@@ -1973,7 +1997,10 @@
       // Validación moneda 2
       if (moneda2) {
         const validateMoneda2 = () => {
-          if (moneda2.value == '') {
+          if (banco2Container.style.display == 'none') {
+            return
+          }
+          if (moneda2.style.display == 'block' && moneda2.value == '') {
             errorMoneda2.style.display = 'block'
           } else {
             errorMoneda2.style.display = 'none'
@@ -2002,6 +2029,9 @@
       
       // Validación clabe 2
       const validateClabe2 = () => {
+        if (banco2Container.style.display == 'none') {
+          return
+        }
         // Si es extranjero, no se hace la validación
         if (moneda2.value.toUpperCase() == 'USD') {
           return
@@ -2108,10 +2138,13 @@
           noAplicaParaRafaga.setAttribute('disabled', true)
           noRelacionarOc.setAttribute('disabled', true)
         }
+        if (comentarios) {
+          comentarios.setAttribute('disabled', true)
+        }
         input.removeAttribute('disabled')
       }
 
-      const enableAllFields = () => {
+      function enableAllFields() {
         if (empresaOrigen) {
           empresaOrigen.removeAttribute('disabled')
           empresaDestino.removeAttribute('disabled')
@@ -2181,6 +2214,9 @@
           noAplicaParaRafaga.removeAttribute('disabled')
           noRelacionarOc.removeAttribute('disabled')
         }
+        if (comentarios) {
+          comentarios.removeAttribute('disabled')
+        }
       }
 
       function enableSaveButton() {
@@ -2214,7 +2250,7 @@
         }
         else {
           if (errorEmpresa.style.display == 'block' || errorContribuyente.style.display == 'block' || errorRfc.style.display == 'block' || errorRfc2.style.display == 'block' || errorCurp.style.display == 'block' || errorRegimenCapital.style.display == 'block' || errorNombreFiscal.style.display == 'block' || errorNombreFiscal2.style.display == 'block' || errorNombreComercial.style.display == 'block' || errorNombreComercial2.style.display == 'block' || errorRegimenFiscal.style.display == 'block' || errorUsoCfdi.style.display == 'block' || errorRepresentanteLegal.style.display == 'block' || errorTelefono1.style.display == 'block' ||errorTelefono2.style.display == 'block' || errorContacto.style.display == 'block' || errorCorreoGeneral.style.display == 'block' || errorCorreoPagos.style.display == 'block' || errorSitioWeb.style.display == 'block' || errorRubro.style.display == 'block' || errorTipoOperacion.style.display == 'block' || errorIdFiscal.style.display == 'block' || errorAgenteAduanal.style.display == 'block' || errorDiasCredito.style.display == 'block' || errorMontoCreditoMn.style.display == 'block' || errorMontoCreditoMe.style.display == 'block' || errorRetencionIva.style.display == 'block' || errorRetencionIsr.style.display == 'block' || errorIvaFrontera.style.display == 'block' || errorCodigoPostal.style.display == 'block' || errorPais.style.display == 'block' || errorEstado.style.display == 'block' || errorCiudad.style.display == 'block' || errorMunicipio.style.display == 'block' || errorLocalidad.style.display == 'block' || errorColonia.style.display == 'block' || errorCalle.style.display == 'block' || errorNumeroExterior.style.display == 'block' || errorNumeroInterior.style.display == 'block' || errorBanco.style.display == 'block' || errorCuenta.style.display == 'block' || errorMoneda.style.display == 'block' || errorClabe.style.display == 'block' || errorBanco2.style.display == 'block' || errorCuenta2.style.display == 'block' || errorMoneda2.style.display == 'block' || errorClabe2.style.display == 'block') {
-            if (errorFairTrade && errorFairTrade.style.display == 'none') {
+            //if (errorFairTrade && errorFairTrade.style.display == 'none') {
               if(btnSave) {
                 btnSave.setAttribute('disabled', true)
                 btnDelete.setAttribute('disabled', true)
@@ -2225,7 +2261,7 @@
                   btnDecline.setAttribute('disabled', true)
                 }
               }
-            }
+            //}
           }
           else {
             if(btnSave) {

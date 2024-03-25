@@ -680,7 +680,7 @@
       const telefonoPattern = /^[\d\s+\-]{10,}$/
       const correoPattern = /^[A-Za-z\d._%+-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}$/
       const codigoPostalPattern = /^\d{5}$/
-      const cuentaPattern = /^\d{10,20}$/
+      const cuentaPattern = /^\d{5,20}$/
       const clabePattern = /^\d{18}$/
       const nonAccentPattern = /^[A-Za-z\d\s]*$/
       const numberPattern = /^[\d,]*$/
@@ -1217,14 +1217,21 @@
             regimenCapital.setAttribute('disabled', true)
             regimenCapital.value = ''
             errorRegimenCapital.style.display = 'none'
+            // Constancia de situación fiscal no es obligatoria para extranjeros
+            constanciaSituacionFiscal.removeAttribute('required')
           }
           else {
             idFiscal.setAttribute('disabled', true)
             idFiscal.removeAttribute('required')
+            // Constancia de situación fiscal es obligatoria para nacionales
+            constanciaSituacionFiscal.setAttribute('required', true)
             // Régimen de capital es obligatorio para proveedores y clientes nacionales (solo para personas morales)
             if (contribuyente.value.toUpperCase() == 'PERSONA MORAL') {
               regimenCapital.setAttribute('required', true)
               regimenCapital.removeAttribute('disabled')
+            }
+            if (codigoPostal.value) {
+              validateCodigoPostal()
             }
           }
         }
@@ -1352,6 +1359,11 @@
       
       // Validación codigo postal
       const validateCodigoPostal = () => {
+        if (tipoTercero.value.toLowerCase() == 'extranjero' || tipoTercero.value.toLowerCase() == 'extranjero relacionado') {
+          errorCodigoPostal.style.display = 'none'
+          enableAllFields()
+          return
+        }
         if (codigoPostalPattern.test(codigoPostal.value)) {
           errorCodigoPostal.style.display = 'none'
           enableAllFields()
@@ -1572,13 +1584,7 @@
         clabe2.value = ''
         
         if(btnAddBanco.textContent == 'Agregar otro banco') {
-          
-          errorBanco2.style.display = 'none'
-          errorCuenta2.style.display = 'none'
-          errorMoneda2.style.display = 'none'
-          errorClabe2.style.display = 'none'
           banco2Container.style.display = 'block'
-
           banco2.setAttribute('required', true)
           cuenta2.setAttribute('required', true)
           moneda2.setAttribute('required', true)
@@ -1588,11 +1594,15 @@
         }
         else {
           banco2Container.style.display = 'none'
-
           banco2.removeAttribute('required')
           cuenta2.removeAttribute('required')
           moneda2.removeAttribute('required')
           clabe2.removeAttribute('required')
+          
+          errorBanco2.style.display = 'none'
+          errorCuenta2.style.display = 'none'
+          errorMoneda2.style.display = 'none'
+          errorClabe2.style.display = 'none'
 
           btnAddBanco.textContent = 'Agregar otro banco'
         }
