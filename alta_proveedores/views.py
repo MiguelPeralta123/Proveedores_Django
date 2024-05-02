@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.core.mail import send_mail
 from django.db.models import Q
 import json
@@ -8,6 +9,15 @@ from threading import Timer
 from datetime import datetime, time
 from .forms import *
 from .models import *
+
+# Creating a unique id for each request
+import random
+import string
+
+def generar_codigo_unico():
+    caracteres = string.ascii_letters + string.digits
+    codigo = ''.join(random.choice(caracteres) for _ in range(10))
+    return codigo
 
 # VISTA DE INICIO
 # Decorador para obligar a iniciar sesión. La ruta a la que devuelve está definida en settings.py
@@ -294,6 +304,25 @@ def proveedor(request, tipo):
 
 
 @login_required
+def create_destination_place_form(request):
+    try:
+        destination_place_id = request.GET.get('destination_place_id')
+        if destination_place_id:
+            destination_place_instance = get_object_or_404(DestinationPlace, pk=destination_place_id)
+            destination_place_form = DestinationPlaceForm(instance=destination_place_instance)
+        else:
+            destination_place_form = DestinationPlaceForm()
+        # Renderiza el formulario como HTML
+        destination_place_form_html = destination_place_form.as_p()
+        # Devuelve el HTML del formulario en la respuesta JSON
+        return JsonResponse({'destination_place_form': destination_place_form_html})
+    
+    except Exception as e:
+        print(f"Se produjo un error al crear el formulario de lugar de destino: {str(e)}")
+        return redirect('home')
+
+
+@login_required
 def proveedor_create(request, tipo):
     try:
         if request.user.puede_crear_proveedor or request.user.puede_crear_cliente:
@@ -301,9 +330,7 @@ def proveedor_create(request, tipo):
                 default_values = {'pendiente': False, 'compras': False, 'finanzas': False, 'sistemas': False,
                                 'aprobado': False, 'rechazado_compras': False, 'rechazado_finanzas': False, 'rechazado_sistemas': False, 'eliminado': False, 'borrador': False}
 
-                # Cargando los registros de proveedores desde la base de datos
-                #catalogo_proveedor = list(CatalogoProveedor.objects.values())
-                #catalogo_proveedor_json = json.dumps(catalogo_proveedor)
+                id_solicitud = generar_codigo_unico()
 
                 # Cargando los registros de proveedores desde el archivo catalogo_proveedores.csv
                 csv_path = os.path.join('csv_files', 'catalogo_proveedores.csv')
@@ -333,6 +360,7 @@ def proveedor_create(request, tipo):
                     'form': ProveedorForm(initial=default_values),
                     'catalogo_proveedor': catalogo_proveedor,
                     'current_user': request.user,
+                    'id_solicitud': id_solicitud,
                 })
             else:
                 try:
@@ -342,6 +370,7 @@ def proveedor_create(request, tipo):
                     if proveedor_form.is_valid() and historial_form.is_valid():
                         proveedor = proveedor_form.save(commit=False)
                         proveedor.usuario = request.user
+                        proveedor.id_solicitud = request.POST.get('id_solicitud')
                         proveedor.save()
                         
                         # Guardar la creacion de la solicitud en el historial de cambios
@@ -398,6 +427,90 @@ def proveedor_create(request, tipo):
     
     except Exception as e:
         print(f"Se produjo un error al crear el proveedor: {str(e)}")
+        return redirect('home')
+
+
+@login_required
+@require_POST
+def save_destination_place_form(request):
+    if request.method == 'POST':
+        # Obtén los datos del formulario del cuerpo de la solicitud
+        id_solicitud = request.POST.get('id_solicitud')
+        descripcion = request.POST.get('descripcion')
+        mercado = request.POST.get('mercado')
+        tiempo_llegada = request.POST.get('tiempo_llegada')
+        codigo_alterno = request.POST.get('codigo_alterno')
+        consignatario = request.POST.get('consignatario')
+        direccion = request.POST.get('direccion')
+        rfc = request.POST.get('rfc')
+        contacto = request.POST.get('contacto')
+        correo = request.POST.get('correo')
+        telefono = request.POST.get('telefono')
+        pais = request.POST.get('pais')
+        estado = request.POST.get('estado')
+        municipio = request.POST.get('municipio')
+        ciudad = request.POST.get('ciudad')
+        colonia = request.POST.get('colonia')
+        codigo_postal = request.POST.get('codigo_postal')
+        numero_exterior = request.POST.get('numero_exterior')
+        numero_interior = request.POST.get('numero_interior')
+        nombre_comex = request.POST.get('nombre_comex')
+        calle_comex = request.POST.get('calle_comex')
+        id_fiscal_comex = request.POST.get('id_fiscal_comex')
+
+        destination_place_id = request.GET.get('destination_place_id')
+        if destination_place_id:
+            # Si se recibe un id, actualiza el registro existente
+            destination_place = get_object_or_404(DestinationPlace, pk=destination_place_id)
+            destination_place.descripcion = descripcion
+            destination_place.mercado = mercado
+            destination_place.tiempo_llegada = tiempo_llegada
+            destination_place.codigo_alterno = codigo_alterno
+            destination_place.consignatario = consignatario
+            destination_place.direccion = direccion
+            destination_place.rfc = rfc
+            destination_place.contacto = contacto
+            destination_place.correo = correo
+            destination_place.telefono = telefono
+            destination_place.pais = pais
+            destination_place.estado = estado
+            destination_place.municipio = municipio
+            destination_place.ciudad = ciudad
+            destination_place.colonia = colonia
+            destination_place.codigo_postal = codigo_postal
+            destination_place.numero_exterior = numero_exterior
+            destination_place.numero_interior = numero_interior
+            destination_place.nombre_comex = nombre_comex
+            destination_place.calle_comex = calle_comex
+            destination_place.id_fiscal_comex = id_fiscal_comex
+        else:
+            # Si no, crea uno nuevo
+            destination_place = DestinationPlace(id_solicitud=id_solicitud, descripcion=descripcion, mercado=mercado, tiempo_llegada=tiempo_llegada, codigo_alterno=codigo_alterno, consignatario=consignatario, direccion=direccion, rfc=rfc, contacto=contacto, correo=correo, telefono=telefono, pais=pais, estado=estado, municipio=municipio, ciudad=ciudad, colonia=colonia, codigo_postal=codigo_postal, numero_exterior=numero_exterior, numero_interior=numero_interior, nombre_comex=nombre_comex, calle_comex=calle_comex, id_fiscal_comex=id_fiscal_comex)
+        # Guarda el registro
+        destination_place.save()
+
+        # Devuelve una respuesta exitosa
+        return JsonResponse({'message': 'Lugar de destino guardado exitosamente.'})
+    else:
+        # Si la solicitud no es de tipo POST, devuelves un error
+        return JsonResponse({'error': 'Se esperaba una solicitud POST.'}, status=400)
+    
+
+@login_required
+def get_destination_places(request):
+    try:
+        id_solicitud = request.GET.get('id_solicitud')
+        destination_places = DestinationPlace.objects.filter(id_solicitud=id_solicitud).order_by('id')
+        data = [
+            {
+                'id': destination_place.id,
+                'descripcion': destination_place.descripcion,
+            } for destination_place in destination_places
+        ]
+        return JsonResponse({'destination_places': data})
+    
+    except Exception as e:
+        print(f"Se produjo un error al cargar los lugares de destino: {str(e)}")
         return redirect('home')
 
 
@@ -534,6 +647,8 @@ def proveedor_detail(request, proveedor_id):
                         # Si se registra un proveedor en Agrosmart, se notifica a contabilidad
                         if action == 'registrado' and proveedor.tipo_alta == 'Proveedor':
                             recipient_list.append('contadorsr@ricofarms.com')
+                            # Send an email to the supplier to tell him to sign up on the supplier portal
+                            sendEmailToSupplier(proveedor.correo_general, proveedor.correo_pagos)
                         # Si se aprueba, se manda correo al solicitante y al siguiente aprobador
                         elif action != 'rechazado':
                             if request.user.compras:
@@ -566,6 +681,17 @@ def proveedor_detail(request, proveedor_id):
     except Exception as e:
         print(f"Se produjo un error al cargar el proveedor: {str(e)}")
         return redirect('home')
+
+
+def sendEmailToSupplier(email, email_pagos):  
+    subject = 'Portal de proveedores Ricofarms'
+    message = 'Favor de registrarse en nuestro portal de proveedores para el seguimiento del pago de sus facturas en el siguiente enlace:\nhttp://agsportal.ddns.net/proveedores/Login'
+
+    from_email = 'altaproveedoresricofarms@gmail.com'
+    
+    recipient_list = [email, email_pagos]
+
+    #send_mail(subject, message, from_email, recipient_list, fail_silently=True)
 
 
 # ENVIANDO UN CORREO DE RECORDATORIO CADA 30 MINUTOS
