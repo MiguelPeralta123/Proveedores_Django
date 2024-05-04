@@ -106,17 +106,17 @@ def proveedor(request, tipo):
         if tipo == 'proveedores' and request.user.puede_crear_proveedor or tipo == 'clientes' and request.user.puede_crear_cliente or request.user.compras or request.user.finanzas or request.user.sistemas:
             
             # Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
-            if request.user.is_superuser:
-                if tipo == 'proveedores':
-                    all_proveedores = Proveedor.objects.filter(
-                        Q(tipo_alta='Proveedor') |
-                        Q(tipo_alta='', usuario__puede_crear_proveedor=True)
-                    ).order_by('id')
-                if tipo == 'clientes':
-                    all_proveedores = Proveedor.objects.filter(
-                        Q(tipo_alta='Cliente') |
-                        Q(tipo_alta='', usuario__puede_crear_cliente=True)
-                    ).order_by('id')
+            # if request.user.is_superuser:
+                # if tipo == 'proveedores':
+                #     all_proveedores = Proveedor.objects.filter(
+                #         Q(tipo_alta='Proveedor') |
+                #         Q(tipo_alta='', usuario__puede_crear_proveedor=True)
+                #     ).order_by('id')
+                # if tipo == 'clientes':
+                #     all_proveedores = Proveedor.objects.filter(
+                #         Q(tipo_alta='Cliente') |
+                #         Q(tipo_alta='', usuario__puede_crear_cliente=True)
+                #     ).order_by('id')
             
             # Inicializar la lista de mis_proveedores
             mis_proveedores = []
@@ -262,7 +262,7 @@ def proveedor(request, tipo):
                         'proveedores_rechazados': proveedores_rechazados,
                         'proveedores_aprobados': proveedores_aprobados,
                         'proveedores_eliminados': proveedores_eliminados,
-                        'all_proveedores': all_proveedores,
+                        # 'all_proveedores': all_proveedores,
                         'historial': historial,
                         'current_user': request.user
                     })
@@ -284,7 +284,7 @@ def proveedor(request, tipo):
                     return render(request, 'proveedor/proveedor.html', {
                         'tipo': tipo,
                         'proveedores': proveedores,
-                        'all_proveedores': all_proveedores,
+                        # 'all_proveedores': all_proveedores,
                         'historial': historial,
                         'current_user': request.user
                     })
@@ -301,6 +301,43 @@ def proveedor(request, tipo):
     except Exception as e:
         print(f"Se produjo un error al cargar los proveedores: {str(e)}")
         return redirect('home')
+
+
+# Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
+def get_all_supplier_requests(request):
+    if request.user.is_superuser:
+        historial = ProveedorHistorial.objects.all()
+        all_solicitudes = Proveedor.objects.all().order_by('id').reverse()
+        data = [
+            {
+                'id': solicitud.id,
+                'fecha': solicitud.fecha,
+                'es_migracion': solicitud.es_migracion,
+                'nombre_comercial': solicitud.nombre_comercial,
+                'borrador': solicitud.borrador,
+                'rfc_migracion': solicitud.rfc_migracion,
+                'usuario': solicitud.usuario.get_full_name() if solicitud.usuario else None,
+                'empresa_destino': solicitud.empresa_destino,
+                'empresa': solicitud.empresa,
+                'pendiente': solicitud.pendiente,
+                'compras': solicitud.compras,
+                'rechazado_compras': solicitud.rechazado_compras,
+                'comentarios': solicitud.comentarios,
+                'finanzas': solicitud.finanzas,
+                'rechazado_finanzas': solicitud.rechazado_finanzas,
+                'sistemas': solicitud.sistemas,
+                'rechazado_sistemas': solicitud.rechazado_sistemas,
+                'eliminado': solicitud.eliminado,
+            } for solicitud in all_solicitudes
+        ]
+        historialData = [
+            {
+                'id_solicitud': registro.id_proveedor,
+                'message': "Solicitud " + registro.accion + " por " + registro.usuario.get_full_name(),
+                'fecha': registro.fecha,
+            } for registro in historial
+        ]
+        return JsonResponse({'all_solicitudes': data, 'historial': historialData})
 
 
 @login_required

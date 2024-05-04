@@ -43,11 +43,15 @@ urlpatterns = [
     path('proveedores/', views_proveedores.proveedor, {'tipo': 'proveedores'}, name='proveedor'),
     path('proveedores/crear/', views_proveedores.proveedor_create, {'tipo': 'proveedor'}, name='proveedor_create'),
     path('proveedores/<int:proveedor_id>/', views_proveedores.proveedor_detail, name='proveedor_detail'),
+    path('get_all_supplier_requests/', views_proveedores.get_all_supplier_requests, name='get_all_supplier_requests'),
 
     # URL para clientes (get all, create, detail)
     path('clientes/', views_proveedores.proveedor, {'tipo': 'clientes'}, name='cliente'),
     path('clientes/crear/', views_proveedores.proveedor_create, {'tipo': 'cliente'}, name='cliente_create'),
     path('clientes/<int:cliente_id>/', views_proveedores.proveedor_detail, name='cliente_detail'),
+    path('create_destination_place_form/', views_proveedores.create_destination_place_form, name='create_destination_place_form'),
+    path('save_destination_place_form/', views_proveedores.save_destination_place_form, name='save_destination_place_form'),
+    path('get_destination_places/', views_proveedores.get_destination_places, name='get_destination_places'),
 
     # URL para materiales
     path('materiales/', views_materiales.material, name='material'),
@@ -56,7 +60,6 @@ urlpatterns = [
     path('get_all_material_requests/', views_materiales.get_all_material_requests, name='get_all_material_requests'),
     path('create_material_form/', views_materiales.create_material_form, name='create_material_form'),
     path('save_material_form/', views_materiales.save_material_form, name='save_material_form'),
-    path('get_request_materials/', views_materiales.get_request_materials, name='get_request_materials'),
     path('get_request_materials/', views_materiales.get_request_materials, name='get_request_materials'),
     path('delete_material/<int:id>/', views_materiales.delete_material, name='delete_material'),
 ]

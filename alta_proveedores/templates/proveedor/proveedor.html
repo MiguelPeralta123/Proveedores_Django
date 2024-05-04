@@ -191,7 +191,7 @@
 
             {% if current_user.is_superuser %}
                 <ul id="all-proveedores-list" style="list-style-type: none; display: none;" class="list-group mt-4">
-                    {% for proveedor in all_proveedores %}
+                    {% comment %} {% for proveedor in all_proveedores %}
                         <a class="list-group-item my-3 border rounded provider-card" 
                             href="{% url 'proveedor_detail' proveedor.id %}"
                             style="transition: 0.2s ease-in-out;">
@@ -246,7 +246,7 @@
                                 {% endif %}
                             {% endfor %}
                         </a>
-                    {% endfor %}
+                    {% endfor %} {% endcomment %}
                 </ul>
             {% endif %}
 
@@ -573,6 +573,16 @@
         font-style: italic;
         color: white;
     }
+    .loading-spinner {
+        font-size: 40px;
+        color: #3498db;
+        animation: spin 1s linear infinite;
+        margin: auto;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 </style>
 
 <script>
@@ -756,24 +766,96 @@
 
         if (btnAllProveedores) {
             btnAllProveedores.addEventListener('click', () => {
-                // Ocultar los botones para filtrar las solicitudes
-                if (filtrarSolicitudesContainer) {
-                    filtrarSolicitudesContainer.style.display = 'none'
-                }
-                proveedoresList.style.display = 'none'
-                if (misProveedoresList) {
-                    misProveedoresList.style.display = 'none'
-                }
-                if (allProveedoresList) {
-                    allProveedoresList.style.display = 'block'
-                }
-                if (proveedoresBorradoresList) {
-                    proveedoresBorradoresList.style.display = 'none'
-                    proveedoresPendientesList.style.display = 'none'
-                    proveedoresRechazadosList.style.display = 'none'
-                    proveedoresAprobadosList.style.display = 'none'
-                    proveedoresEliminadosList.style.display = 'none'
-                }
+                // Show loading message
+                allProveedoresList.innerHTML = '<p class="ningun-proveedor-text"><i class="fas fa-spinner loading-spinner text-white"></i></p>';
+                showAllRequests()
+
+                // Fetch data using Axios
+                axios.get('/get_all_supplier_requests/')
+                .then(function (response) {
+                    // Render the data when it's ready
+                    const supplierData = response.data.all_solicitudes;
+                    const historialData = response.data.historial;
+                    allProveedoresList.innerHTML = '';  // Clear loading message
+
+                    // Render data in the allProveedoresList container
+                    supplierData.forEach(solicitud => {
+                        // Create a new 'a' element
+                        const item = document.createElement('a');
+                        item.className = 'list-group-item my-3 border rounded provider-card';
+                        item.href = `/proveedores/${solicitud.id}`;
+                        item.style.transition = '0.2s ease-in-out';
+
+                        const fecha = new Date(solicitud.fecha);
+                        const fechaFormateada = fecha.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+
+                        item.innerHTML = `
+                            <div class="d-flex justify-content-between gap-3 my-2">
+                                ${
+                                    !solicitud.es_migracion && solicitud.nombre_comercial
+                                        ? `<h4 class="my-0">${solicitud.nombre_comercial}</h4>`
+                                        : !solicitud.es_migracion && solicitud.borrador
+                                        ? `<h4 class="my-0">Borrador</h4>`
+                                        : solicitud.es_migracion && solicitud.rfc_migracion
+                                        ? `<h4 class="my-0">Migración - ${solicitud.rfc_migracion}</h4>`
+                                        : `<h4 class="my-0">Migración - Borrador</h4>`
+                                }
+                                <p class="mt-1"><b>Folio solicitud:</b> ${solicitud.id}</p>
+                            </div>
+                            <p><b>Solicitante:</b> ${solicitud.usuario}</p>
+                            <div class="d-flex justify-content-between gap-3">
+                                ${
+                                    solicitud.es_migracion
+                                        ? `<p><b>Empresa:</b> ${solicitud.empresa_destino}</p>`
+                                        : `<p><b>Empresa:</b> ${solicitud.empresa}</p>`
+                                }
+                                <p><b>Fecha:</b> ${fechaFormateada}</p>
+                            </div>
+                            ${
+                                solicitud.borrador
+                                    ? `<p class="text-success">✎ Guardado como borrador</p>`
+                                    : solicitud.pendiente
+                                    ? `<p class="text-success">🕐 Pendiente compras</p>`
+                                    : solicitud.compras
+                                    ? `<p class="text-success">🕐 Pendiente finanzas</p>`
+                                    : solicitud.rechazado_compras
+                                    ? `<p class="text-danger">❌ Rechazado por compras</p>
+                                    <p class="text-danger"><b>Comentario:</b> ${solicitud.comentarios}</p>`
+                                    : solicitud.finanzas
+                                    ? `<p class="text-success">🕐 Pendiente sistemas</p>`
+                                    : solicitud.rechazado_finanzas
+                                    ? `<p class="text-danger">❌ Rechazado por finanzas</p>
+                                    <p class="text-danger"><b>Comentario:</b> ${solicitud.comentarios}</p>`
+                                    : solicitud.sistemas
+                                    ? `<p class="text-success">✅ Aprobado</p>`
+                                    : solicitud.rechazado_sistemas
+                                    ? `<p class="text-danger">❌ Rechazado por sistemas</p>
+                                    <p class="text-danger"><b>Comentario:</b> ${solicitud.comentarios}</p>`
+                                    : solicitud.eliminado
+                                    ? `<p class="text-success">🗑 Solicitud eliminada</p>`
+                                    : ``
+                            }
+                            ${
+                                historialData
+                                    ? `${historialData
+                                        .filter(registro => solicitud.id === registro.id_solicitud)
+                                        .map(registro => {
+                                            const fechaHistorial = new Date(registro.fecha);
+                                            const fechaHistorialFormateada = fechaHistorial.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+                                            return `<p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸${registro.message}</span><span>${fechaHistorialFormateada}</span></i></p>`
+                                        })
+                                        .join('')}`
+                                    : ``
+                            }
+                        `;
+
+                        // Append the new 'a' element to the container
+                        allProveedoresList.appendChild(item);
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error fetching supplier requests:', error);
+                });
             })
         }
 
@@ -891,6 +973,27 @@
                     proveedoresEliminadosList.style.display = 'block'
                 }
             })
+        }
+
+        const showAllRequests = () => {
+            // Ocultar los botones para filtrar las solicitudes
+            if (filtrarSolicitudesContainer) {
+                filtrarSolicitudesContainer.style.display = 'none'
+            }
+            proveedoresList.style.display = 'none'
+            if (misProveedoresList) {
+                misProveedoresList.style.display = 'none'
+            }
+            if (allProveedoresList) {
+                allProveedoresList.style.display = 'block'
+            }
+            if (proveedoresBorradoresList) {
+                proveedoresBorradoresList.style.display = 'none'
+                proveedoresPendientesList.style.display = 'none'
+                proveedoresRechazadosList.style.display = 'none'
+                proveedoresAprobadosList.style.display = 'none'
+                proveedoresEliminadosList.style.display = 'none'
+            }
         }
     });
 </script>
