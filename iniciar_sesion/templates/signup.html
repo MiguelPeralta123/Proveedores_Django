@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <main class="p-5 row justify-content-center">
+        <div class="card card-body" style="max-width: 40rem; margin-top: 6rem; background-color: rgb(255, 255, 255, 0.8);">
+            <div>
+                <form method="POST">
+                    <h1>Registro de usuario</h1>
+
+                    <p style="margin: 0; color: red;">{{error}}</p>
+                    
+                    {% csrf_token %}
+
+                    <!-- First name field -->
+                    <div style="width: 100%; margin-bottom:1rem;">
+                        <label>Nombre<span style="color: rgb(192, 0, 0);">*</span></label>
+                        {{ form.first_name }}
+                        <p id="error-first-name" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Last name field -->
+                    <div style="width: 100%; margin-bottom:1rem;">
+                        <label>Apellidos<span style="color: rgb(192, 0, 0);">*</span></label>
+                        {{ form.last_name }}
+                        <p id="error-last-name" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- email field -->
+                    <div style="width: 100%; margin-bottom:1rem;">
+                        <label>Correo electrónico<span style="color: rgb(192, 0, 0);">*</span></label>
+                        {{ form.email }}
+                        <p id="error-email" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Password field -->
+                    <div style="width: 100%; margin-bottom:1rem;">
+                        <label>Contraseña<span style="color: rgb(192, 0, 0);">*</span></label>
+                        {{ form.password1 }}
+                        <p id="error-password1" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+
+                    <!-- Password 2 field -->
+                    <div style="width: 100%; margin-bottom:1rem;">
+                        <label>Repetir Contraseña<span style="color: rgb(192, 0, 0);">*</span></label>
+                        {{ form.password2 }}
+                        <p id="error-password2" style="color:red; margin-bottom:0; display:none;">Este campo es obligatorio</p>
+                    </div>
+                
+                    <button class="btn" style="background-color: #008841; color: white; font-weight: bold;">
+                        Crear Usuario
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        #id_first_name,
+        #id_last_name,
+        #id_email,
+        #id_password1,
+        #id_password2 {
+            max-width: 20rem;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var email = document.getElementById("id_email");
+            var password = document.getElementById("id_password1");
+            var password2 = document.getElementById("id_password2");
+            email.classList.add("form-control");
+            password.classList.add("form-control");
+            password2.classList.add("form-control");
+        });
+    </script>
+{% endblock %}

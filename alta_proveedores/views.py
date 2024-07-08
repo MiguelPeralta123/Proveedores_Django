@@ -306,8 +306,13 @@ def proveedor(request, tipo):
 # Si el usuario es administrador, podrá ver una lista con TODAS las solicitudes
 def get_all_supplier_requests(request):
     if request.user.is_superuser:
+        # Obtener todos los registros del historial
         historial = ProveedorHistorial.objects.all()
-        all_solicitudes = Proveedor.objects.all().order_by('id').reverse()
+        # Dependiendo del tipo de alta, se filtran las solicitudes correspondientes
+        tipo_alta = request.GET.get('tipo_alta', 'proveedores')
+        all_solicitudes = Proveedor.objects.filter(
+            tipo_alta='Proveedor' if tipo_alta == 'proveedores' else 'Cliente'
+        ).order_by('id').reverse()
         data = [
             {
                 'id': solicitud.id,

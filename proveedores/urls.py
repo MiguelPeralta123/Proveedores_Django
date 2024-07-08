@@ -35,9 +35,10 @@ urlpatterns = [
     path('settings/', views_proveedores.settings, name='settings'),
     path('settings/permissions', views_proveedores.permissions, name='permissions'),
 
-    # URL para inicio de sesión (login, logout)
+    # URL para inicio de sesión (login, logout, signup)
     path('signin/', views_login.signin, name='signin'),
     path('signout/', views_login.signout, name='signout'),
+    path('signup/', views_login.signup, name='signup'),
 
     # URL para proveedores (get all, create, detail)
     path('proveedores/', views_proveedores.proveedor, {'tipo': 'proveedores'}, name='proveedor'),

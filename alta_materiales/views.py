@@ -208,7 +208,12 @@ def get_all_material_requests(request):
 @login_required
 def create_material_form(request):
     try:
-        material_form = MaterialForm()
+        material_id = request.GET.get('material_id')
+        if material_id:
+            material_instance = get_object_or_404(Material, pk=material_id)
+            material_form = MaterialForm(instance=material_instance)
+        else:
+            material_form = MaterialForm()
         # Renderiza el formulario como HTML
         material_form_html = material_form.as_p()
         # Devuelve el HTML del formulario en la respuesta JSON

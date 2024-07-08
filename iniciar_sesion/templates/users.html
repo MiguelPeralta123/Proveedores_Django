@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <main class="p-5 row justify-content-center">
+        <div class="card card-body" style="max-width: 40rem; margin-top: 6rem; background-color: rgb(255, 255, 255, 0.8);">
+            <div>
+                <h1>Usuarios del sistema</h1>
+                {% for user in users %}
+                    <p>{{ user }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <style>
+        #id_first_name,
+        #id_last_name,
+        #id_email,
+        #id_password1,
+        #id_password2 {
+            max-width: 20rem;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var email = document.getElementById("id_email");
+            var password = document.getElementById("id_password1");
+            var password2 = document.getElementById("id_password2");
+            email.classList.add("form-control");
+            password.classList.add("form-control");
+            password2.classList.add("form-control");
+        });
+    </script>
+{% endblock %}

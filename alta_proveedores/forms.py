@@ -1,6 +1,6 @@
 from django import forms
 import re
-from .models import Proveedor, ProveedorHistorial
+from .models import Proveedor, ProveedorHistorial, DestinationPlace
 from datetime import date
 from django.db.models import Q
 from iniciar_sesion.models import CustomUser
@@ -389,3 +389,35 @@ class HistorialForm(forms.ModelForm):
     class Meta:
         model = ProveedorHistorial
         fields = []
+
+
+# DESTINATION PLACE
+class DestinationPlaceForm(forms.ModelForm):
+    class Meta:
+        model = DestinationPlace
+        fields = ['id_solicitud', 'codigo', 'descripcion', 'mercado', 'tiempo_llegada', 'codigo_alterno', 'consignatario', 'direccion', 'rfc', 'contacto', 'correo', 'telefono', 'pais', 'estado', 'municipio', 'ciudad', 'colonia', 'numero_exterior', 'codigo_postal', 'numero_interior', 'nombre_comex', 'calle_comex', 'id_fiscal_comex']
+        widgets = {
+            'id_solicitud': forms.TextInput(attrs={'class':'form-control cliente_id_solicitud'}),
+            'codigo': forms.TextInput(attrs={'class':'form-control cliente_codigo'}),
+            'descripcion': forms.TextInput(attrs={'class':'form-control cliente_descripcion'}),
+            'mercado': forms.Select(choices=LUGAR_DESTINO_MERCADO_OPTIONS, attrs={'class':'form-control cliente_mercado', 'initial':''}),
+            'tiempo_llegada': forms.TextInput(attrs={'class':'form-control cliente_tiempo_llegada'}),
+            'codigo_alterno': forms.TextInput(attrs={'class':'form-control cliente_codigo_alterno'}),
+            'consignatario': forms.TextInput(attrs={'class':'form-control cliente_consignatario'}),
+            'direccion': forms.TextInput(attrs={'class':'form-control cliente_direccion'}),
+            'rfc': forms.TextInput(attrs={'class':'form-control cliente_rfc'}),
+            'contacto': forms.TextInput(attrs={'class':'form-control cliente_contacto'}),
+            'correo': forms.TextInput(attrs={'class':'form-control cliente_correo'}),
+            'telefono': forms.TextInput(attrs={'class':'form-control cliente_telefono'}),
+            'pais': forms.TextInput(attrs={'class':'form-control cliente_pais'}),
+            'estado': forms.TextInput(attrs={'class':'form-control cliente_estado'}),
+            'municipio': forms.TextInput(attrs={'class':'form-control cliente_municipio'}),
+            'ciudad': forms.TextInput(attrs={'class':'form-control cliente_ciudad'}),
+            'colonia': forms.TextInput(attrs={'class':'form-control cliente_colonia'}),
+            'numero_exterior': forms.TextInput(attrs={'class':'form-control cliente_numero_exterior'}),
+            'codigo_postal': forms.TextInput(attrs={'class':'form-control cliente_codigo_postal'}),
+            'numero_interior': forms.TextInput(attrs={'class':'form-control cliente_numero_interior'}),
+            'nombre_comex': forms.TextInput(attrs={'class':'form-control cliente_nombre_comex'}),
+            'calle_comex': forms.TextInput(attrs={'class':'form-control cliente_calle_comex'}),
+            'id_fiscal_comex': forms.TextInput(attrs={'class':'form-control cliente_id_fiscal_comex'}),
+        }

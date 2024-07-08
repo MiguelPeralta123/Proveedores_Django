@@ -2,6 +2,74 @@
 
 {% block content %}
   <main class="pt-5 m-5">
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="modal_destination_place"
+      tabindex="-1"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      
+      role="dialog"
+      aria-labelledby="modalTitleId"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
+        role="document"
+      >
+        <div class="modal-content">
+          <div class="modal-header bg-success">
+            <h5 id="modalTitleId" class="modal-title text-white" style="font-weight: bold;">Modificar Lugar de Destino</h5>
+            <!-- Close button -->
+            <i 
+              class="fa fa-times text-white fa-lg" 
+              style="cursor: pointer;"
+              aria-hidden="true"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></i>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <!-- Close button -->
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+            >
+              <b>Cerrar</b>
+            </button>
+            <!-- Save button -->
+            <!--<button 
+              type="button" 
+              id="btn-save-modal"
+              class="btn btn-success"
+              onclick="validateDestinationPlaceForm(event)"
+            >
+              <b>Guardar</b>
+            </button>-->
+            <button 
+              type="button" 
+              id="btn-save-modal"
+              class="btn btn-success"
+            >
+              <b>Guardar</b>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Optional: Place to the bottom of scripts -->
+    <script>
+      const myModal = new bootstrap.Modal(
+        document.getElementById("modal_destination_place"),
+      );
+    </script>
+    <!-- End modal -->
+
     <div class="row mt-5 justify-content-center">
       <div style="max-width: 40rem;">
         <form class="card card-body" method="POST" enctype="multipart/form-data" style="background-color: rgb(255, 255, 255, 0.8);">
@@ -367,6 +435,13 @@
               </div>
             </div>
 
+            <!-- Lugares de destino (solo para clientes) -->
+            {% if proveedor.tipo_alta == 'Cliente' %}
+              <h6>Lugares de destino</h6>
+              <div id="destination_places_container"></div>
+              <!--<button class="btn btn-success mb-3" type="button" id="btn_add_destination_place" data-bs-toggle="modal" data-bs-target="#modal_destination_place">Agregar lugar de destino</button>-->
+            {% endif %}
+
             <!-- Banco field -->
             <div style="margin-bottom:1rem;">
               <p class="m-0">{{ form.banco.label_tag }}<span style="color: rgb(192, 0, 0);">*</span></p>
@@ -714,14 +789,14 @@
       const errorComentarios = document.getElementById('error-comentarios')
       
       // Regular expressions
-      const rfcPattern = /^[A-Za-z]{3,4}\d{6}[A-Za-z\d]{3}$/
+      const rfcPattern = /^[A-Za-z&]{3,4}\d{6}[A-Za-z\d]{3}$/
       const curpPattern = /^[A-Za-z]{4}\d{6}[A-Za-z]{6}[A-Za-z\d]{2}$/
       const telefonoPattern = /^[\d\s+\-]{10,}$/
       const correoPattern = /^[A-Za-z\d._%+-]+@[A-Za-z\d.-]+\.[A-Za-z]{2,}$/
       const codigoPostalPattern = /^\d{5}$/
       const cuentaPattern = /^\d{5,20}$/
       const clabePattern = /^\d{18}$/
-      const nonAccentPattern = /^[A-Za-z\d\s]*$/
+      const nonAccentPattern = /^[A-Za-z\d\s&,]*$/
       const numberPattern = /^[\d,]*$/
 
       // Catalogo de proveedores existentes
@@ -735,7 +810,27 @@
 
       btnBack.addEventListener('click', () => {
         window.history.back()
-      })
+      });
+
+      /*const getDestinationPlaces = () => {
+        // Fetch data using Axios
+        axios.get(`/get_destination_places/?id_solicitud={{proveedor.id_solicitud}}`)
+        .then(function (response) {
+          $('#destination_places_container').empty();
+          // Render the data when it's ready
+          const destination_places = response.data.destination_places;
+          destination_places.forEach(destination_place => {
+            const row = $('<div class="d-flex justify-content-between align-items-center mx-2 mb-3"></div>');
+            row.append(`<i>${destination_place.descripcion}</i>`);
+            row.append(`<button id="${destination_place.id}" class="btn btn-warning edit_destination_place" type="button" onclick="updateDestinationPlace(event)" style="font-size:0.8rem" data-bs-toggle="modal" data-bs-target="#modal_destination_place"><i class="fa fa-pencil" id="${destination_place.id}" aria-hidden="true"></i></button>`);
+            $('#destination_places_container').append(row);
+          });
+        })
+        .catch(function (error) {
+            console.error('Error fetching material requests:', error);
+        });
+      }
+      getDestinationPlaces();*/
     
       buttonsContainer.addEventListener('click', function (event) {
         if (event.target && event.target.classList.contains('btn-save')) {
@@ -2277,6 +2372,531 @@
           }
         }
       }
+    });
+
+    // DESTINATION PLACE
+    var destination_places_counter = 0;
+    var save_destination_place_band;
+    var destination_place_id;
+
+    // Add destination place
+    $('#btn_add_destination_place').on('click', e => {
+      // As I am creating a new detination place, set the band as true
+      save_destination_place_band = true;
+
+      // Fetch data using Axios
+      axios.get('/create_destination_place_form/')
+      .then(function (response) {
+        // Create an HTML element and append the form to it
+        const formHtml = response.data.destination_place_form;
+        const formContainer = $('<div></div>');
+        formContainer.html(formHtml);
+        // Create a new form
+        const destinationPlaceForm = createDestinationPlaceForm(formContainer)
+        // Clear the modal and append the form to it
+        const modalBody = $('#modal_destination_place .modal-body')
+        modalBody.empty();
+        modalBody.append(destinationPlaceForm);
+      })
+      .catch(function (error) {
+          console.error('Error fetching destination place form: ', error);
+      });
+    });
+
+    const createDestinationPlaceForm = form => {
+
+      const codigo = form.find('.cliente_codigo');
+      codigo.id = 'id_codigo';
+
+      const descripcion = form.find('.cliente_descripcion');
+      descripcion.id = 'id_descripcion';
+
+      const mercado = form.find('.cliente_mercado');
+      mercado.id = 'id_mercado';
+
+      const tiempo_llegada = form.find('.cliente_tiempo_llegada');
+      tiempo_llegada.id = 'id_tiempo_llegada';
+
+      const codigo_alterno = form.find('.cliente_codigo_alterno');
+      codigo_alterno.id = 'id_codigo_alterno';
+
+      const consignatario = form.find('.cliente_consignatario');
+      consignatario.id = 'id_consignatario';
+
+      const direccion = form.find('.cliente_direccion');
+      direccion.id = 'id_direccion';
+
+      const rfc = form.find('.cliente_rfc');
+      rfc.id = 'id_rfc';
+
+      const contacto = form.find('.cliente_contacto');
+      contacto.id = 'id_contacto';
+
+      const correo = form.find('.cliente_correo');
+      correo.id = 'id_correo';
+
+      const telefono = form.find('.cliente_telefono');
+      telefono.id = 'id_telefono';
+
+      const pais = form.find('.cliente_pais');
+      pais.id = 'id_pais';
+
+      const estado = form.find('.cliente_estado');
+      estado.id = 'id_estado';
+
+      const municipio = form.find('.cliente_municipio');
+      municipio.id = 'id_municipio';
+
+      const ciudad = form.find('.cliente_ciudad');
+      ciudad.id = 'id_ciudad';
+
+      const colonia = form.find('.cliente_colonia');
+      colonia.id = 'id_colonia';
+
+      const numero_exterior = form.find('.cliente_numero_exterior');
+      numero_exterior.id = 'id_numero_exterior';
+
+      const codigo_postal = form.find('.cliente_codigo_postal');
+      codigo_postal.id = 'id_codigo_postal';
+
+      const numero_interior = form.find('.cliente_numero_interior');
+      numero_interior.id = 'id_numero_interior';
+
+      const nombre_comex = form.find('.cliente_nombre_comex');
+      nombre_comex.id = 'id_nombre_comex';
+
+      const calle_comex = form.find('.cliente_calle_comex');
+      calle_comex.id = 'id_calle_comex';
+
+      const id_fiscal_comex = form.find('.cliente_id_fiscal_comex');
+      id_fiscal_comex.id = 'id_id_fiscal_comex';
+
+      // Create the form
+      const DestinationPlaceForm = $('<form></form>');
+      DestinationPlaceForm.attr('id', 'destination_place_form');
+      DestinationPlaceForm.addClass('destination_place_form');
+
+      //current_user_is_sistemas = '{{current_user.sistemas}}' == 'True' ? true : false;
+      
+      // Append the fields to the form
+      /*if(current_user_is_sistemas) {
+        DestinationPlaceForm.append(
+          `<!-- Código field -->
+            <div class="codigo-container" style="margin-bottom:1rem;">
+              <p class="m-0">Código<span class="text-danger">*</span></p>
+              ${codigo[0].outerHTML}
+              <p id="error-codigo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+            </div>
+          </div>`
+        );
+        DestinationPlaceForm.find('.cliente_codigo').prop('required', true);
+      };*/
+      DestinationPlaceForm.append(`
+      
+        <!-- ID Solicitud field -->
+        <input type="hidden" name="id_solicitud" value="{{proveedor.id_solicitud}}" />
+
+        <!-- Descripción field -->
+        <div class="descripcion-container" style="margin-bottom:1rem;">
+          <p class="m-0">Descripción<span class="text-danger">*</span></p>
+          ${descripcion[0].outerHTML}
+          <p id="error-descripcion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+        </div>
+
+        <div class="d-flex gap-3 mb-3">
+          <!-- Mercado field -->
+          <div class="mercado-container" style="width: 33%;">
+            <p class="m-0">Mercado<span class="text-danger">*</span></p>
+            ${mercado[0].outerHTML}
+            <p id="error-mercado" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Tiempo llegada field -->
+          <div class="tiempo_llegada-container" style="width: 33%;">
+            <p class="m-0">Tiempo llegada<span class="text-danger">*</span></p>
+            <div class="d-flex flex-direction-column align-items-center gap-1">
+              ${tiempo_llegada[0].outerHTML} Horas
+            </div>
+            <p id="error-tiempo-llegada" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Código alterno field -->
+          <div class="codigo-alterno-container" style="width: 33%;">
+            <p class="m-0">Código alterno<span class="text-danger">*</span></p>
+            ${codigo_alterno[0].outerHTML}
+            <p id="error-codigo-alterno" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+        </div>
+
+        <!-- Consignatario field -->
+        <div class="consignatario-container" style="margin-bottom:1rem;">
+          <p class="m-0">Consignatario<span class="text-danger">*</span></p>
+          ${consignatario[0].outerHTML}
+          <p id="error-consignatario" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+        </div>
+
+        <!-- Dirección field -->
+        <div class="direccion-container" style="margin-bottom:1rem;">
+          <p class="m-0">Dirección<span class="text-danger">*</span></p>
+          ${direccion[0].outerHTML}
+          <p id="error-direccion" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+        </div>
+
+        <div class="d-flex gap-3 mb-3">
+          <!-- RFC field -->
+          <div class="rfc-container" style="width: 33%;">
+            <p class="m-0">RFC<span class="text-danger">*</span></p>
+            ${rfc[0].outerHTML}
+            <p id="error-rfc" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Contacto field -->
+          <div class="contacto-container" style="width: 33%;">
+            <p class="m-0">Contacto<span class="text-danger">*</span></p>
+            ${contacto[0].outerHTML}
+            <p id="error-contacto" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Correo field -->
+          <div class="correo-container" style="width: 33%;">
+            <p class="m-0">Correo<span class="text-danger">*</span></p>
+            ${correo[0].outerHTML}
+            <p id="error-correo" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 mb-3">
+          <!-- Teléfono field -->
+          <div class="telefono-container" style="width: 33%;">
+            <p class="m-0">Teléfono<span class="text-danger">*</span></p>
+            ${telefono[0].outerHTML}
+            <p id="error-telefono" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- País field -->
+          <div class="pais-container" style="width: 33%;">
+            <p class="m-0">País<span class="text-danger">*</span></p>
+            ${pais[0].outerHTML}
+            <p id="error-pais" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Estado field -->
+          <div class="estado-container" style="width: 33%;">
+            <p class="m-0">Estado<span class="text-danger">*</span></p>
+            ${estado[0].outerHTML}
+            <p id="error-estado" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 mb-3">
+          <!-- Municipio field -->
+          <div class="municipio-container" style="width: 33%;">
+            <p class="m-0">Municipio<span class="text-danger">*</span></p>
+            ${municipio[0].outerHTML}
+            <p id="error-municipio" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Ciudad field -->
+          <div class="ciudad-container" style="width: 33%;">
+            <p class="m-0">Ciudad<span class="text-danger">*</span></p>
+            ${ciudad[0].outerHTML}
+            <p id="error-ciudad" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Colonia field -->
+          <div class="colonia-container" style="width: 33%;">
+            <p class="m-0">Colonia<span class="text-danger">*</span></p>
+            ${colonia[0].outerHTML}
+            <p id="error-colonia" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 mb-3">
+          <!-- Código Postal field -->
+          <div class="codigo_postal-container" style="width: 33%;">
+            <p class="m-0">Código Postal<span class="text-danger">*</span></p>
+            ${codigo_postal[0].outerHTML}
+            <p id="error-codigo-postal" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Número Exterior field -->
+          <div class="numero_exterior-container" style="width: 33%;">
+            <p class="m-0">Número Exterior<span class="text-danger">*</span></p>
+            ${numero_exterior[0].outerHTML}
+            <p id="error-numero-exterior" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Número Interior field -->
+          <div class="numero_interior-container" style="width: 33%;">
+            <p class="m-0">Número Interior<span class="text-danger">*</span></p>
+            ${numero_interior[0].outerHTML}
+            <p id="error-numero-interior" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 mb-3">
+          <!-- Nombre Comex field -->
+          <div class="nombre_comex-container" style="width: 33%;">
+            <p class="m-0">Nombre Comex<span class="text-danger">*</span></p>
+            ${nombre_comex[0].outerHTML}
+            <p id="error-nombre-comex" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- Calle Comex field -->
+          <div class="calle_comex-container" style="width: 33%;">
+            <p class="m-0">Calle Comex<span class="text-danger">*</span></p>
+            ${calle_comex[0].outerHTML}
+            <p id="error-calle-comex" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+
+          <!-- ID Fiscal Comex field -->
+          <div class="id_fiscal_comex-container" style="width: 33%;">
+            <p class="m-0">ID Fiscal Comex<span class="text-danger">*</span></p>
+            ${id_fiscal_comex[0].outerHTML}
+            <p id="error-id-fiscal-comex" style="font-size: 0.9rem; color:red; margin-bottom:0; display:none;">Seleccione una opción válida</p>
+          </div>
+        </div>
+      `);
+
+      destination_places_counter++
+      return DestinationPlaceForm;
+    }
+
+    $('#btn-save-modal').on('click', event => {
+      form = $('#btn-save-modal').closest('.modal-content').find('#destination_place_form');
+
+      // Validation descripcion
+      descripcion = form.find('.cliente_descripcion');
+      if(!descripcion.val()) {
+        form.find('#error-descripcion').show();
+        return;
+      };
+      form.find('#error-descripcion').hide();
+      
+      // Validation mercado
+      mercado = form.find('.cliente_mercado');
+      if(!mercado.val()) {
+        form.find('#error-mercado').show();
+        return;
+      };
+      form.find('#error-mercado').hide();
+      
+      // Validation tiempo llegada
+      tiempo_llegada = form.find('.cliente_tiempo_llegada');
+      if(!tiempo_llegada.val()) {
+        form.find('#error-tiempo-llegada').show();
+        return;
+      };
+      form.find('#error-tiempo-llegada').hide();
+      
+      // Validation codigo alterno
+      codigo_alterno = form.find('.cliente_codigo_alterno');
+      if(!codigo_alterno.val()) {
+        form.find('#error-codigo-alterno').show();
+        return;
+      };
+      form.find('#error-codigo-alterno').hide();
+      
+      // Validation consignatario
+      consignatario = form.find('.cliente_consignatario');
+      if(!consignatario.val()) {
+        form.find('#error-consignatario').show();
+        return;
+      };
+      form.find('#error-consignatario').hide();
+      
+      // Validation direccion
+      direccion = form.find('.cliente_direccion');
+      if(!direccion.val()) {
+        form.find('#error-direccion').show();
+        return;
+      };
+      form.find('#error-direccion').hide();
+      
+      // Validation rfc
+      cliente_rfc = form.find('.cliente_rfc');
+      if(!cliente_rfc.val()) {
+        form.find('#error-rfc').show();
+        return;
+      };
+      form.find('#error-rfc').hide();
+      
+      // Validation contacto
+      cliente_contacto = form.find('.cliente_contacto');
+      if(!cliente_contacto.val()) {
+        form.find('#error-contacto').show();
+        return;
+      };
+      form.find('#error-contacto').hide();
+      
+      // Validation correo
+      correo = form.find('.cliente_correo');
+      if(!correo.val()) {
+        form.find('#error-correo').show();
+        return;
+      };
+      form.find('#error-correo').hide();
+      
+      // Validation telefono
+      telefono = form.find('.cliente_telefono');
+      if(!telefono.val()) {
+        form.find('#error-telefono').show();
+        return;
+      };
+      form.find('#error-telefono').hide();
+      
+      // Validation pais
+      cliente_pais = form.find('.cliente_pais');
+      if(!cliente_pais.val()) {
+        form.find('#error-pais').show();
+        return;
+      };
+      form.find('#error-pais').hide();
+      
+      // Validation estado
+      cliente_estado = form.find('.cliente_estado');
+      if(!cliente_estado.val()) {
+        form.find('#error-estado').show();
+        return;
+      };
+      form.find('#error-estado').hide();
+      
+      // Validation municipio
+      cliente_municipio = form.find('.cliente_municipio');
+      if(!cliente_municipio.val()) {
+        form.find('#error-municipio').show();
+        return;
+      };
+      form.find('#error-municipio').hide();
+      
+      // Validation ciudad
+      cliente_ciudad = form.find('.cliente_ciudad');
+      if(!cliente_ciudad.val()) {
+        form.find('#error-ciudad').show();
+        return;
+      };
+      form.find('#error-ciudad').hide();
+      
+      // Validation colonia
+      cliente_colonia = form.find('.cliente_colonia');
+      if(!cliente_colonia.val()) {
+        form.find('#error-colonia').show();
+        return;
+      };
+      form.find('#error-colonia').hide();
+      
+      // Validation codigo postal
+      codigo_postal = form.find('.cliente_codigo_postal');
+      if(!codigo_postal.val()) {
+        form.find('#error-codigo-postal').show();
+        return;
+      };
+      form.find('#error-codigo-postal').hide();
+      
+      // Validation numero exterior
+      numero_exterior = form.find('.cliente_numero_exterior');
+      if(!numero_exterior.val()) {
+        form.find('#error-numero-exterior').show();
+        return;
+      };
+      form.find('#error-numero-exterior').hide();
+
+      saveDestinationPlaceForm()
     })
+    
+    const validateDestinationPlaceForm = event => {
+      form = $('#btn-save-modal').closest('.modal-content').find('#destination_place_form');
+      // Validate destination place fields
+      saveDestinationPlaceForm()
+    }
+
+    const saveDestinationPlaceForm = () => {
+      // Obtén el token CSRF del documento
+      const csrftoken = '{{ csrf_token }}';
+  
+      // Crea un nuevo objeto FormData
+      const destination_place_form = $('#destination_place_form');
+      const formData = new FormData(destination_place_form[0]);
+  
+      // Añade el token CSRF a los encabezados
+      formData.append('csrfmiddlewaretoken', csrftoken);
+  
+      // Enviar los datos al servidor utilizando Axios
+      axios.post('/save_destination_place_form/', formData, {
+        headers: {
+          'X-CSRFToken': csrftoken  // Incluye el token CSRF en los encabezados
+        },
+        params: save_destination_place_band ? {} : {
+          destination_place_id: destination_place_id,
+        }
+      })
+      .then(function (response) {
+        // Create a table and append the destination place as a new row
+        if(response.data.message) {
+          getDestinationPlaces();
+        }
+        else {
+          console.log(response.data.error);
+        }
+      })
+      .catch(function (error) {
+        console.error('Error saving destination place:', error);
+      });
+
+      // Ocultar el modal
+      modal = $('#modal_destination_place');
+      const modalInstance = bootstrap.Modal.getInstance(modal);
+      modalInstance.hide();
+    };
+
+    const getDestinationPlaces = () => {
+      // Fetch data using Axios
+      axios.get(`/get_destination_places/?id_solicitud={{proveedor.id_solicitud}}`)
+      .then(function (response) {
+        $('#destination_places_container').empty();
+
+        // Render the data when it's ready
+        const destination_places = response.data.destination_places;
+        destination_places.forEach(destination_place => {
+          const row = $('<div class="d-flex justify-content-between align-items-center mx-2 mb-3 destination_place_row"></div>');
+          row.append(`<i>${destination_place.descripcion}</i>`);
+          row.append(`<button id="${destination_place.id}" class="btn btn-warning" type="button" onClick="editDestinationPlace(event)" style="font-size:0.8rem" data-bs-toggle="modal" data-bs-target="#modal_destination_place"><i id="${destination_place.id}" class="fa fa-pencil" aria-hidden="true"></i></button>`);
+          $('#destination_places_container').append(row);
+        });
+      })
+      .catch(function (error) {
+          console.error('Error fetching material requests:', error);
+      });
+    }
+    getDestinationPlaces();
+
+    const editDestinationPlace = event => {
+      // As I am updating an existing detination place, set the band as false
+      save_destination_place_band = false;
+
+      destination_place_id = event.target.id;
+      // Fetch data using Axios
+      axios.get('/create_destination_place_form/', {
+        params: {
+          destination_place_id: destination_place_id,
+        }
+      })
+      .then(function (response) {
+        // Create an HTML element and append the form to it
+        const formHtml = response.data.destination_place_form;
+        const formContainer = $('<div></div>');
+        formContainer.html(formHtml);
+        // Create a new form
+        const destinationPlaceForm = createDestinationPlaceForm(formContainer)
+        // Clear the modal and append the form to it
+        const modalBody = $('#modal_destination_place .modal-body')
+        modalBody.empty();
+        modalBody.append(destinationPlaceForm);
+      })
+      .catch(function (error) {
+          console.error('Error fetching destination place form:', error);
+      });
+    };
+
   </script>
 {% endblock %}

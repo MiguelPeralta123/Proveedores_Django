@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG')
 
 # Development
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS_DEV')]
 # Production
 #ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS_DOCKER')]
 # IIS

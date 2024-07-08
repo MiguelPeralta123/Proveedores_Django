@@ -609,6 +609,9 @@
         const btnAprobadas = document.getElementById('btn-filtrar-aprobadas')
         const btnEliminadas = document.getElementById('btn-filtrar-eliminadas')
 
+        // Tipo de alta
+        const tipo_alta = '{{tipo}}';
+
         // List requests from newest to oldest
         if (proveedoresList) {
             const proveedoresItems = Array.from(proveedoresList.children).reverse()
@@ -771,7 +774,11 @@
                 showAllRequests()
 
                 // Fetch data using Axios
-                axios.get('/get_all_supplier_requests/')
+                axios.get('/get_all_supplier_requests/', {
+                    params: {
+                        tipo_alta: tipo_alta,
+                    },
+                })
                 .then(function (response) {
                     // Render the data when it's ready
                     const supplierData = response.data.all_solicitudes;

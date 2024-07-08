@@ -5,6 +5,7 @@ from django.conf import settings
 
 # Create your models here.
 class Proveedor(models.Model):
+    id_solicitud = models.CharField(max_length=10, blank=True)
     es_migracion = models.BooleanField(default=False)
     empresa_origen = models.CharField(max_length=50, blank=True)
     empresa_destino = models.CharField(max_length=50, blank=True)
@@ -15,21 +16,21 @@ class Proveedor(models.Model):
     rfc = models.CharField(max_length=14, blank=True)
     curp = models.CharField(max_length=18, blank=True)
     regimen_capital = models.CharField(max_length=200, blank=True)
-    nombre_fiscal = models.CharField(max_length=100, blank=True)
-    nombre_comercial = models.CharField(max_length=100, blank=True)
-    regimen_fiscal = models.CharField(max_length=100, blank=True)
+    nombre_fiscal = models.CharField(max_length=200, blank=True)
+    nombre_comercial = models.CharField(max_length=200, blank=True)
+    regimen_fiscal = models.CharField(max_length=200, blank=True)
     uso_cfdi = models.CharField(max_length=100, blank=True)
-    representante_legal = models.CharField(max_length=50, blank=True)
+    representante_legal = models.CharField(max_length=100, blank=True)
     telefono_1 = models.CharField(max_length=20, blank=True)
     telefono_2 = models.CharField(max_length=20, blank=True)
-    contacto = models.CharField(max_length=50, blank=True)
-    correo_general = models.CharField(max_length=40, blank=True)
-    correo_pagos = models.CharField(max_length=40, blank=True)
-    sitio_web = models.CharField(max_length=30, blank=True)
+    contacto = models.CharField(max_length=100, blank=True)
+    correo_general = models.CharField(max_length=100, blank=True)
+    correo_pagos = models.CharField(max_length=100, blank=True)
+    sitio_web = models.CharField(max_length=100, blank=True)
     rubro = models.CharField(max_length=100, blank=True)
     tipo_operacion = models.CharField(max_length=10, blank=True)
     tipo_tercero = models.CharField(max_length=100, blank=True)
-    id_fiscal = models.CharField(max_length=10, blank=True)
+    id_fiscal = models.CharField(max_length=20, blank=True)
     agente_aduanal = models.CharField(max_length=10, blank=True)
     fair_trade = models.CharField(max_length=20, blank=True)
     dias_credito = models.CharField(max_length=10, default=0, blank=True)
@@ -38,25 +39,25 @@ class Proveedor(models.Model):
     retencion_iva = models.CharField(max_length=10, blank=True)
     retencion_isr = models.CharField(max_length=10, blank=True)
     iva_frontera = models.CharField(max_length=10, blank=True)
-    calle = models.CharField(max_length=50, blank=True)
-    numero_exterior = models.CharField(max_length=10, blank=True)
-    numero_interior = models.CharField(max_length=10, blank=True)
+    calle = models.CharField(max_length=100, blank=True)
+    numero_exterior = models.CharField(max_length=20, blank=True)
+    numero_interior = models.CharField(max_length=20, blank=True)
     codigo_postal = models.CharField(max_length=20, blank=True)
-    colonia = models.CharField(max_length=50, blank=True)
+    colonia = models.CharField(max_length=100, blank=True)
     localidad = models.CharField(max_length=50, blank=True)
-    municipio = models.CharField(max_length=30, blank=True)
-    ciudad = models.CharField(max_length=20, blank=True)
-    estado = models.CharField(max_length=20, blank=True)
-    pais = models.CharField(max_length=20, blank=True)
+    municipio = models.CharField(max_length=50, blank=True)
+    ciudad = models.CharField(max_length=50, blank=True)
+    estado = models.CharField(max_length=50, blank=True)
+    pais = models.CharField(max_length=50, blank=True)
     banco = models.CharField(max_length=100, blank=True)
     cuenta = models.CharField(max_length=20, blank=True)
-    moneda = models.CharField(max_length=3, blank=True)
+    moneda = models.CharField(max_length=10, blank=True)
     clabe = models.CharField(max_length=18, blank=True)
     swift = models.CharField(max_length=20, blank=True)
     otro_codigo_bancario = models.CharField(max_length=20, blank=True)
     banco_2 = models.CharField(max_length=100, blank=True)
     cuenta_2 = models.CharField(max_length=20, blank=True)
-    moneda_2 = models.CharField(max_length=3, blank=True)
+    moneda_2 = models.CharField(max_length=10, blank=True)
     clabe_2 = models.CharField(max_length=18, blank=True)
     swift_2 = models.CharField(max_length=20, blank=True)
     otro_codigo_bancario_2 = models.CharField(max_length=20, blank=True)
@@ -116,3 +117,38 @@ class CatalogoProveedor(models.Model):
 
     def __str__(self):
         return self.rfc + " - " + self.nombre_comercial
+
+
+# DESTINATION PLACE
+class DestinationPlace(models.Model):
+    id_solicitud = models.CharField(max_length=10, blank=True)
+    codigo = models.CharField(max_length=20, blank=True)
+    descripcion = models.CharField(max_length=200, blank=True)
+    mercado = models.CharField(max_length=50, blank=True)
+    tiempo_llegada = models.CharField(max_length=20, blank=True)
+    codigo_alterno = models.CharField(max_length=50, blank=True)
+    consignatario = models.CharField(max_length=200, blank=True)
+    direccion = models.CharField(max_length=200, blank=True)
+    rfc = models.CharField(max_length=14, blank=True)
+    contacto = models.CharField(max_length=50, blank=True)
+    correo = models.CharField(max_length=50, blank=True)
+    telefono = models.CharField(max_length=20, blank=True)
+    pais = models.CharField(max_length=50, blank=True)
+    estado = models.CharField(max_length=50, blank=True)
+    municipio = models.CharField(max_length=50, blank=True)
+    ciudad = models.CharField(max_length=50, blank=True)
+    colonia = models.CharField(max_length=50, blank=True)
+    numero_exterior = models.CharField(max_length=20, blank=True)
+    codigo_postal = models.CharField(max_length=20, blank=True)
+    numero_interior = models.CharField(max_length=20, blank=True)
+    # Configuración comercio exterior
+    nombre_comex = models.CharField(max_length=30, blank=True)
+    calle_comex = models.CharField(max_length=100, blank=True)
+    id_fiscal_comex = models.CharField(max_length=10, blank=True)
+
+    class Meta:
+        verbose_name = 'lugar de destino'
+        verbose_name_plural = "lugares de destino"
+
+    def __str__(self):
+        return self.codigo if self.codigo else "Código pendiente" + ".- " + self.descripcion

@@ -1629,6 +1629,9 @@
           modalBody.empty();
           const modalInstance = bootstrap.Modal.getInstance(modal);
           modalInstance.hide();
+
+          addEventsToTableButtons()
+          disableRemoveButtons()
       })
       .catch(function (error) {
           console.error('Error fetching material requests:', error);
@@ -1639,6 +1642,30 @@
       // Editar material
       $('.edit_material, .edit_material i').click(event => {
         editingId = event.target.id.substring(14, event.target.id.length)
+
+        // Fetch data using Axios
+        axios.get('/create_material_form/', {
+          params: {
+            material_id: editingId,
+          }
+        })
+        .then(function (response) {
+            // Create an HTML element and append the form to it
+            const formHtml = response.data.material_form;
+            const formContainer = $('<div></div>');
+            formContainer.html(formHtml);
+            // Create a new form
+            const materialForm = createMaterialForm(formContainer)
+            // Clear the modal and append the form to it
+            modalBody.empty();
+            modalBody.append(materialForm);
+            validarCamposMaterial()
+        })
+        .catch(function (error) {
+            console.error('Error fetching material requests:', error);
+        });
+
+        /*console.log(editingId)
         const form = document.getElementById(`material-form-${editingId}`)
         if (form) {
           $('#modalTitleId').text(form.querySelector('.material-nombre').value);
@@ -1647,7 +1674,7 @@
           form.style.display = "block";
           medidasIguales = false;
         }
-        editingBand = true;
+        editingBand = true;*/
       });
 
       // Eliminar material
@@ -2110,7 +2137,6 @@
     });
 
     const updateForm = event => {
-
       const modalB = document.querySelector('.modal-body');
       const form = modalB.querySelector('.material-form');
 

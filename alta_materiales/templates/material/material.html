@@ -771,90 +771,90 @@
 
                 // Fetch data using Axios
                 axios.get('/get_all_material_requests/')
-                    .then(function (response) {
-                        // Render the data when it's ready
-                        const materialData = response.data.all_solicitudes;
-                        const historialData = response.data.historial;
-                        allSolicitudesList.innerHTML = '';  // Clear loading message
+                .then(function (response) {
+                    // Render the data when it's ready
+                    const materialData = response.data.all_solicitudes;
+                    const historialData = response.data.historial;
+                    allSolicitudesList.innerHTML = '';  // Clear loading message
 
-                        // Render data in the allSolicitudesList container
-                        materialData.forEach(solicitud => {
-                            // Create a new 'a' element
-                            const item = document.createElement('a');
-                            item.className = 'list-group-item my-3 border rounded material-card';
-                            item.href = `/materiales/${solicitud.id}`;
-                            item.style.transition = '0.2s ease-in-out';
+                    // Render data in the allSolicitudesList container
+                    materialData.forEach(solicitud => {
+                        // Create a new 'a' element
+                        const item = document.createElement('a');
+                        item.className = 'list-group-item my-3 border rounded material-card';
+                        item.href = `/materiales/${solicitud.id}`;
+                        item.style.transition = '0.2s ease-in-out';
 
-                            const fecha = new Date(solicitud.fecha);
-                            const fechaFormateada = fecha.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+                        const fecha = new Date(solicitud.fecha);
+                        const fechaFormateada = fecha.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
 
-                            item.innerHTML = `
-                                <div class="d-flex justify-content-between gap-3 my-2">
-                                    ${
-                                        !solicitud.es_migracion && solicitud.justificacion
-                                            ? `<h4 class="my-0">${solicitud.justificacion}</h4>`
-                                            : !solicitud.es_migracion && solicitud.borrador
-                                            ? `<h4 class="my-0">Borrador</h4>`
-                                            : solicitud.es_migracion && solicitud.nombre_producto_migracion
-                                            ? `<h4 class="my-0">Migración - ${solicitud.nombre_producto_migracion}</h4>`
-                                            : `<h4 class="my-0">Migración - Borrador</h4>`
-                                    }
-                                    <p class="mt-1"><b>Folio solicitud:</b> ${solicitud.id}</p>
-                                </div>
-                                <p><b>Solicitante:</b> ${solicitud.usuario}</p>
-                                <div class="d-flex justify-content-between gap-3">
-                                    ${
-                                        solicitud.es_migracion
-                                            ? `<p><b>Empresa:</b> ${solicitud.empresa_destino}</p>`
-                                            : `<p><b>Empresa:</b> ${solicitud.empresa}</p>`
-                                    }
-                                    <p><b>Fecha:</b> ${fechaFormateada}</p>
-                                </div>
+                        item.innerHTML = `
+                            <div class="d-flex justify-content-between gap-3 my-2">
                                 ${
-                                    solicitud.borrador
-                                        ? `<p class="text-success">✎ Guardado como borrador</p>`
-                                        : solicitud.pendiente
-                                        ? `<p class="text-success">🕐 Pendiente compras</p>`
-                                        : solicitud.compras
-                                        ? `<p class="text-success">🕐 Pendiente finanzas</p>`
-                                        : solicitud.rechazado_compras
-                                        ? `<p class="text-danger">❌ Rechazado por compras</p>
-                                        <p class="text-danger"><b>Comentario:</b> ${solicitud.comentarios}</p>`
-                                        : solicitud.finanzas
-                                        ? `<p class="text-success">🕐 Pendiente sistemas</p>`
-                                        : solicitud.rechazado_finanzas
-                                        ? `<p class="text-danger">❌ Rechazado por finanzas</p>
-                                        <p class="text-danger"><b>Comentario:</b> ${solicitud.comentarios}</p>`
-                                        : solicitud.sistemas
-                                        ? `<p class="text-success">✅ Aprobado</p>`
-                                        : solicitud.rechazado_sistemas
-                                        ? `<p class="text-danger">❌ Rechazado por sistemas</p>
-                                        <p class="text-danger"><b>Comentario:</b> ${solicitud.comentarios}</p>`
-                                        : solicitud.eliminado
-                                        ? `<p class="text-success">🗑 Solicitud eliminada</p>`
-                                        : ``
+                                    !solicitud.es_migracion && solicitud.justificacion
+                                        ? `<h4 class="my-0">${solicitud.justificacion}</h4>`
+                                        : !solicitud.es_migracion && solicitud.borrador
+                                        ? `<h4 class="my-0">Borrador</h4>`
+                                        : solicitud.es_migracion && solicitud.nombre_producto_migracion
+                                        ? `<h4 class="my-0">Migración - ${solicitud.nombre_producto_migracion}</h4>`
+                                        : `<h4 class="my-0">Migración - Borrador</h4>`
                                 }
+                                <p class="mt-1"><b>Folio solicitud:</b> ${solicitud.id}</p>
+                            </div>
+                            <p><b>Solicitante:</b> ${solicitud.usuario}</p>
+                            <div class="d-flex justify-content-between gap-3">
                                 ${
-                                    historialData
-                                        ? `${historialData
-                                            .filter(registro => solicitud.id === registro.id_solicitud)
-                                            .map(registro => {
-                                                const fechaHistorial = new Date(registro.fecha);
-                                                const fechaHistorialFormateada = fechaHistorial.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-                                                return `<p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸${registro.message}</span><span>${fechaHistorialFormateada}</span></i></p>`
-                                            })
-                                            .join('')}`
-                                        : ``
+                                    solicitud.es_migracion
+                                        ? `<p><b>Empresa:</b> ${solicitud.empresa_destino}</p>`
+                                        : `<p><b>Empresa:</b> ${solicitud.empresa}</p>`
                                 }
-                            `;
+                                <p><b>Fecha:</b> ${fechaFormateada}</p>
+                            </div>
+                            ${
+                                solicitud.borrador
+                                    ? `<p class="text-success">✎ Guardado como borrador</p>`
+                                    : solicitud.pendiente
+                                    ? `<p class="text-success">🕐 Pendiente compras</p>`
+                                    : solicitud.compras
+                                    ? `<p class="text-success">🕐 Pendiente finanzas</p>`
+                                    : solicitud.rechazado_compras
+                                    ? `<p class="text-danger">❌ Rechazado por compras</p>
+                                    <p class="text-danger"><b>Comentario:</b> ${solicitud.comentarios}</p>`
+                                    : solicitud.finanzas
+                                    ? `<p class="text-success">🕐 Pendiente sistemas</p>`
+                                    : solicitud.rechazado_finanzas
+                                    ? `<p class="text-danger">❌ Rechazado por finanzas</p>
+                                    <p class="text-danger"><b>Comentario:</b> ${solicitud.comentarios}</p>`
+                                    : solicitud.sistemas
+                                    ? `<p class="text-success">✅ Aprobado</p>`
+                                    : solicitud.rechazado_sistemas
+                                    ? `<p class="text-danger">❌ Rechazado por sistemas</p>
+                                    <p class="text-danger"><b>Comentario:</b> ${solicitud.comentarios}</p>`
+                                    : solicitud.eliminado
+                                    ? `<p class="text-success">🗑 Solicitud eliminada</p>`
+                                    : ``
+                            }
+                            ${
+                                historialData
+                                    ? `${historialData
+                                        .filter(registro => solicitud.id === registro.id_solicitud)
+                                        .map(registro => {
+                                            const fechaHistorial = new Date(registro.fecha);
+                                            const fechaHistorialFormateada = fechaHistorial.toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+                                            return `<p style="margin-right: 3rem; font-size: 0.8rem; color: gray;"><i class="d-flex justify-content-between gap-3"><span>🔸${registro.message}</span><span>${fechaHistorialFormateada}</span></i></p>`
+                                        })
+                                        .join('')}`
+                                    : ``
+                            }
+                        `;
 
-                            // Append the new 'a' element to materialContainer
-                            allSolicitudesList.appendChild(item);
-                        });
-                    })
-                    .catch(function (error) {
-                        console.error('Error fetching material requests:', error);
+                        // Append the new 'a' element to materialContainer
+                        allSolicitudesList.appendChild(item);
                     });
+                })
+                .catch(function (error) {
+                    console.error('Error fetching material requests:', error);
+                });
             })
         }
 

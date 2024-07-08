@@ -281,6 +281,7 @@ BANCO_LIST = [
     ('GBM Grupo Bursátil Mexicano S.A.', 'GBM Grupo Bursátil Mexicano S.A.'),
     ('HDI Seguros S.A. de C.V.', 'HDI Seguros S.A. de C.V.'),
     ('Hipotecaria Su Casita S.A. de C.V.', 'Hipotecaria Su Casita S.A. de C.V.'),
+    ('HSBC Bank USA N.A.', 'HSBC Bank USA N.A.'),
     ('HSBC México S.A.', 'HSBC México S.A.'),
     ('ING Bank (México) S.A.', 'ING Bank (México) S.A.'),
     ('Inter Banco S.A.', 'Inter Banco S.A.'),
@@ -332,4 +333,11 @@ MONEDA_LIST = [
     ('', ' Seleccione una opción'),
     ('MXP', 'MXP'),
     ('USD', 'USD'),
+]
+
+# DESTINATION PLACE
+LUGAR_DESTINO_MERCADO_OPTIONS = [
+    ('', ' Seleccione una opción'),
+    ('Nacional', 'Nacional'),
+    ('Extranjero', 'Extranjero'),
 ]
